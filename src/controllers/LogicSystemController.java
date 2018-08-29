@@ -12,12 +12,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 
@@ -119,6 +114,16 @@ public class LogicSystemController implements Initializable {
     
     @FXML
     public void saveLogicSystem(){
+        //first check that all fields are filled
+        if(ttfdLabel.getText()==null||ttaaDescription.getText()==null){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Save Logic System");
+            alert.setHeaderText(null);
+            alert.setContentText("Please fill all fields");
+            alert.showAndWait();
+            return;
+        }
+
         Conexion conexion = appController.getConexion();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         

@@ -9,13 +9,17 @@
 
 /* from here */
 .base{
-    -fx-background-image: url("/com/amuyana/app/resources/mainApp/background.jpg");
+    -fx-background-image: url("/resources/images/background.jpg");
     -fx-padding: 20px;
 }
 
 .canvas{
     -fx-background-color: white;
-    
+}
+
+.contentInModule{
+    -fx-background-color: white;
+    -fx-padding: 10px;
 }
 
 .lbl_title1{

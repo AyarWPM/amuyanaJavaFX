@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -15,9 +15,9 @@
                      <children>
                         <TitledPane id="ttldPn_" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Inclusion">
                            <content>
-                              <HBox spacing="10.0">
+                              <VBox>
                                  <children>
-                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                    <ToolBar styleClass="tlbr_logicsystem">
                                        <items>
                                           <TextField prefWidth="90.0" promptText="Filter" />
                                           <Button fx:id="bnSave" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
@@ -25,47 +25,51 @@
                                           <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newInclusion" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
                                        </items>
                                     </ToolBar>
-                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <HBox spacing="10.0">
                                        <children>
-                                          <ListView fx:id="ltvwInclusions" prefHeight="200.0" prefWidth="200.0" />
-                                          <HBox>
+                                          <VBox spacing="10.0" HBox.hgrow="ALWAYS">
                                              <children>
-                                                <Label text="Algebraic representation of Inclusion:" />
-                                                <Label fx:id="lbFormulaInclusion" layoutX="10.0" layoutY="257.0" text="e ( (1.2.)" />
-                                             </children>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <Label text="Particular notion: " />
-                                                <ComboBox fx:id="cobxParticular" prefHeight="27.0" prefWidth="456.0" />
-                                             </children>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <VBox HBox.hgrow="ALWAYS">
+                                                <ListView fx:id="ltvwInclusions" prefHeight="200.0" prefWidth="200.0" />
+                                                <HBox>
                                                    <children>
-                                                      <Label text="General notions:" />
-                                                      <ListView fx:id="ltvwBroads" prefHeight="200.0" prefWidth="200.0" />
+                                                      <Label text="Algebraic representation of Inclusion:" />
+                                                      <Label fx:id="lbFormulaInclusion" layoutX="10.0" layoutY="257.0" text="e ( (1.2.)" />
                                                    </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER" HBox.hgrow="NEVER">
+                                                </HBox>
+                                                <HBox>
                                                    <children>
-                                                      <Button fx:id="bnAdd" disable="true" mnemonicParsing="false" onAction="#addGeneral" text="Add" />
-                                                      <Button fx:id="bnRemove" disable="true" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeGeneral" text="Remove" />
+                                                      <Label text="Particular notion: " />
+                                                      <ComboBox fx:id="cobxParticular" prefHeight="27.0" prefWidth="456.0" />
                                                    </children>
-                                                </VBox>
-                                                <VBox HBox.hgrow="ALWAYS">
+                                                </HBox>
+                                                <HBox>
                                                    <children>
-                                                      <Label text="Notions:" />
-                                                      <ListView fx:id="ltvwNotions" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
+                                                      <VBox HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Label text="General notions:" />
+                                                            <ListView fx:id="ltvwBroads" prefHeight="200.0" prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox alignment="CENTER" HBox.hgrow="NEVER">
+                                                         <children>
+                                                            <Button fx:id="bnAdd" disable="true" mnemonicParsing="false" onAction="#addGeneral" text="Add" />
+                                                            <Button fx:id="bnRemove" disable="true" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeGeneral" text="Remove" />
+                                                         </children>
+                                                      </VBox>
+                                                      <VBox HBox.hgrow="ALWAYS">
+                                                         <children>
+                                                            <Label text="Notions:" />
+                                                            <ListView fx:id="ltvwNotions" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
+                                                         </children>
+                                                      </VBox>
                                                    </children>
-                                                </VBox>
+                                                </HBox>
                                              </children>
-                                          </HBox>
+                                          </VBox>
                                        </children>
-                                    </VBox>
+                                    </HBox>
                                  </children>
-                              </HBox>
+                              </VBox>
                            </content>
                            <font>
                               <Font size="18.0" />

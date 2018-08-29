@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1040.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StatsController">
+   <content>
+      <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" styleClass="base">
+         <children>
+            <VBox>
+               <children>
+                  <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
+                     <children>
+                        <TitledPane id="ttldPn_" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Register">
+                           <content>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                       <items>
+                                          <TextField prefWidth="90.0" promptText="Filter" />
+                                          <ToggleButton disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="bttn_toolbar" text="Edit" />
+                                          <Button mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
+                                          <Button disable="true" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
+                                          <Button disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Duplicate" textAlignment="CENTER" wrapText="true" />
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <TableView prefHeight="150.0" styleClass="tblvw_logicsystem">
+                                             <columns>
+                                                <TableColumn prefWidth="92.0" text="id_register" />
+                                                <TableColumn prefWidth="170.0" text="Date of creation" />
+                                                <TableColumn prefWidth="152.0" text="label conjunction" />
+                                                <TableColumn prefWidth="112.0" text="space" />
+                                                <TableColumn prefWidth="114.0" text="time" />
+                                             </columns>
+                                          </TableView>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Creation date:" />
+                                                <Label text="_date" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Contradictional conjunction:" />
+                                                <ComboBox prefWidth="200.0" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="Quantum 1:" />
+                                                <TextField prefWidth="60.0" />
+                                                <Label layoutX="88.0" layoutY="10.0" text="units" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="Quantum 2:" />
+                                                <TextField prefWidth="60.0" />
+                                                <Label layoutX="88.0" layoutY="10.0" text="units" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="10.0" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Quanta in register #">
+                           <content>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                       <items>
+                                          <TextField prefWidth="90.0" promptText="Filter" />
+                                          <ToggleButton disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" styleClass="bttn_toolbar" text="Edit" />
+                                          <Button mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
+                                          <Button disable="true" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
+                                          <Button disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Duplicate" textAlignment="CENTER" wrapText="true" />
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <TableView prefHeight="150.0" styleClass="tblvw_logicsystem">
+                                             <columns>
+                                                <TableColumn prefWidth="131.0" text="Label quantum" />
+                                                <TableColumn prefWidth="63.0" text="Units" />
+                                                <TableColumn prefWidth="277.0" text="quantum (value - units)" />
+                                             </columns>
+                                          </TableView>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Label:" />
+                                                <TextField HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Unit:" />
+                                                <TextField HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Description:" />
+                                                <TextArea maxHeight="100.0" prefHeight="200.0" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="341.0" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Analysis of data">
+                           <content>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                       <items>
+                                          <TextField prefWidth="90.0" promptText="Filter" />
+                                          <Button disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Start" textAlignment="CENTER" wrapText="true" />
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Select syllogism to compare to:" />
+                                          <TableView prefHeight="150.0" styleClass="tblvw_logicsystem">
+                                             <columns>
+                                                <TableColumn prefWidth="131.0" text="Label syllogism" />
+                                                <TableColumn prefWidth="194.0" text="Associated conjunctions" />
+                                             </columns>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

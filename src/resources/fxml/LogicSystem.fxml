@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogicSystemController">
+   <content>
+      <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
+         <children>
+            <VBox>
+               <children>
+                  <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
+                     <children>
+                        <TitledPane id="ttldPn_" minHeight="-Infinity" text="Systems">
+                           <content>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                       <items>
+                                          <TextField prefWidth="90.0" promptText="Filter" />
+                                          <Button fx:id="bnSave" layoutX="10.0" layoutY="76.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveLogicSystem" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" />
+                                          <Button fx:id="bnUpdate" disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateLogicSystem" prefWidth="90.0" styleClass="bttn_toolbar" text="Update" />
+                                          <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="43.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteLogicSystem" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" />
+                                          <Button fx:id="bnNew" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#newLogicSystem" styleClass="bttn_toolbar" text="New" />
+                                          <Separator />
+                                          <Button fx:id="bnDuplicate" disable="true" minWidth="-Infinity" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Duplicate" />
+                                          <Button fx:id="bnJoin" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="bttn_toolbar" text="Join..." />
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <TableView fx:id="tevwLogicSystem" prefHeight="200.0" prefWidth="200.0" styleClass="tblvw" tableMenuButtonVisible="true">
+                                            <columns>
+                                              <TableColumn fx:id="tecnLabel" prefWidth="183.0" text="Label" />
+                                                <TableColumn fx:id="tecnDescription" prefWidth="203.0" text="Description" />
+                                                <TableColumn fx:id="tecnCreationDate" prefWidth="156.0" text="Creation date" />
+                                            </columns>
+                                          </TableView>
+                                          <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="220.0">
+                                             <children>
+                                                <Label minWidth="-Infinity" text="ID: " />
+                                                <TextField fx:id="ttfdId" editable="false" maxWidth="-Infinity" prefWidth="100.0" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Label minWidth="-Infinity" text="Label: " />
+                                                <TextField fx:id="ttfdLabel" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT">
+                                             <children>
+                                                <Label minWidth="-Infinity" text="Date of creation:" />
+                                                <Label fx:id="lblCreationDate" text=" " />
+                                             </children>
+                                          </HBox>
+                                          <HBox>
+                                             <children>
+                                                <Label text="Description:" />
+                                                <TextArea fx:id="ttaaDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

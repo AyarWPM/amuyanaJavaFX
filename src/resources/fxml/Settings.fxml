@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
+   <content>
+      <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
+         <children>
+            <VBox>
+               <children>
+                  <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
+                     <children>
+                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="10.0" maxWidth="900.0" minHeight="-Infinity" text="Database">
+                           <content>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
+                                       <items>
+                                          <ToggleButton fx:id="btnConnectDisconnect" mnemonicParsing="false" onAction="#connectDisconnect" prefHeight="100.0" styleClass="bttn_toolbar" text="Connect">
+                                             <font>
+                                                <Font size="12.0" />
+                                             </font>
+                                          </ToggleButton>
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Hostname:" />
+                                                <TextField fx:id="ttfdHostname" text="localhost" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="Username:" />
+                                                <TextField fx:id="ttfdDbUsername" text="admin" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="84.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="Password:" />
+                                                <TextField fx:id="ttfdDbPassword" text="admin" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <CheckBox fx:id="ckbxUseDefaultServer" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#useDefaultServer" text="Use default server" wrapText="true" />
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                        <TitledPane id="ttldPn_" maxWidth="900.0" minHeight="-Infinity" text="User">
+                           <content>
+                              <HBox minHeight="-Infinity" spacing="10.0">
+                                 <children>
+                                    <ToolBar maxHeight="1.7976931348623157E308" minHeight="150.0" orientation="VERTICAL" styleClass="tlbr_logicsystem" HBox.hgrow="ALWAYS">
+                                       <items>
+                                          <Button minHeight="-Infinity" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Create account" textAlignment="CENTER" wrapText="true" />
+                                          <Button fx:id="btnLogInOut" maxHeight="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" onAction="#logInOutUser" prefWidth="90.0" styleClass="bttn_toolbar" text="Login" textAlignment="CENTER" wrapText="true" />
+                                          <ToggleButton disable="true" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="90.0" styleClass="bttn_toolbar" text="Edit" textAlignment="CENTER" wrapText="true" />
+                                       </items>
+                                    </ToolBar>
+                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" prefWidth="200.0">
+                                             <children>
+                                                <Label text="Name:" />
+                                                <TextField fx:id="ttfdUserName" text="public_user" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="password:" />
+                                                <TextField fx:id="ttfdUserPassword" HBox.hgrow="ALWAYS" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" prefWidth="200.0" spacing="5.0">
+                                             <children>
+                                                <Label text="Joined:" />
+                                                <Label fx:id="lblDateJoined" layoutX="88.0" layoutY="10.0" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
+                              </HBox>
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="10.0" maxWidth="900.0" minHeight="-Infinity" text="User interface">
+                           <content>
+                              <HBox spacing="10.0" />
+                           </content>
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TitledPane>
+                     </children>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </content>
+</ScrollPane>

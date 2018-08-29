@@ -1,0 +1,61 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+
+}
+
+
+/* from here */
+.base{
+    -fx-background-image: url("/com/amuyana/app/resources/mainApp/background.jpg");
+    -fx-padding: 20px;
+}
+
+.canvas{
+    -fx-background-color: white;
+    
+}
+
+.lbl_title1{
+    -fx-font: 20px black;
+}
+
+.bttn_toolbar{
+    -fx-pref-width:90px;
+    /*-fx-min-height: USE_PREF_HEIGHT; USING MANUALLY USE PREF SIZE*/
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.tlbr_logicsystem{
+    -fx-border-color: black;
+    -fx-border-width: 1px;
+    -fx-border-style: solid;
+}
+
+.tblvw{
+    -fx-font-size: 13px;
+}
+
+
+.subtitle{
+    -fx-font-size: 20px;
+}
+
+
+/* CSS FOR FORMULATIONS*/
+/* TABLE OF DEDUCTIONS*/
+
+.tod_parenthesis{
+    
+}
+
+.tod_element{
+    
+}
+
+.combo-box:disabled, .combo-box:disabled > * {
+  -fx-opacity: 1.0 ;
+}

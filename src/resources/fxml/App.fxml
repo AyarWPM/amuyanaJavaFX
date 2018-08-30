@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
 
-
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
     <children>
         <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="NEVER">
             <menus>
@@ -22,9 +26,9 @@
                 </Menu>
             </menus>
         </MenuBar>
-        <SplitPane fx:id="stpeContents" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" orientation="VERTICAL" VBox.vgrow="ALWAYS">
-            <items>
-                <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS">
+      <SplitPane fx:id="stpeContents" orientation="VERTICAL">
+        <items>
+                <TabPane tabClosingPolicy="UNAVAILABLE">
                     <tabs>
                         <Tab fx:id="tbTod" text="Table of Deductions" />
                         <Tab fx:id="tbLogicSystem" text="Logic System" />
@@ -38,7 +42,7 @@
                         <Tab fx:id="tbSettings" text="Settings" />
                     </tabs>
                 </TabPane>
-            </items>
-        </SplitPane>
+        </items>
+      </SplitPane>
     </children>
 </VBox>

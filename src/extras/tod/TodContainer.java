@@ -3,19 +3,16 @@ package extras.tod;
 import controllers.AppController;
 import data.Fcc;
 import java.util.ArrayList;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
+
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
-public class TodContainer extends Pane {
+public class TodContainer extends AnchorPane {
 
     private static AppController appController;
     private Fcc initialFcc;
+
     LevelContainer firstLevel;
 
     // All Classes, all conjunctions!
@@ -24,17 +21,15 @@ public class TodContainer extends Pane {
     
     public TodContainer(Fcc initialFcc) {
         this.initialFcc = initialFcc;
-        
+
         setStyle();
-        
-        
+
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
         firstLevel = new LevelContainer(listAnalogy);
         deploy();
-        
+
     }
-    
-    
+
     public static void setAppController(AppController appController) {
         TodContainer.appController = appController;
         
@@ -42,6 +37,7 @@ public class TodContainer extends Pane {
 
     private void setStyle() {
         this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(6))));
+
     }
 
     public void deploy() {

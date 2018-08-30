@@ -20,16 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Control;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.web.HTMLEditor;
@@ -278,6 +269,11 @@ public class DualitiesController implements Initializable {
     
     @FXML
     public void saveFcc(){
+
+        if(!checkFill()){
+            return;
+        }
+
         Conexion conexion = appController.getConexion();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         
@@ -334,7 +330,53 @@ public class DualitiesController implements Initializable {
         appController.refreshDataInclusionModule();
         appController.refreshDataClassModule();
     }
-    
+
+    private boolean checkFill() {
+        boolean allFilled = true;
+
+        String message="The following fields cannot be empty: \n\n";
+
+        if(ttfdElementSymbol.getText()==null){
+            allFilled = false;
+            message += "Symbol of Element\n";
+        }
+
+        if(ttfdAElementSymbol.getText()==null&&!ckbxDefaultSymbol.isSelected()){
+            allFilled = false;
+            message += "Symbol of Anti-Element\n";
+        }
+
+        if(ttfdFccLabel.getText()==null){
+            allFilled = false;
+            message += "Label of FCC\n";
+        }
+
+        if(ttfdPositiveFormulation.getText()==null){
+            allFilled = false;
+            message += "Formulation of the Positive Conjunction\n";
+        }
+
+        if(ttfdNegativeFormulation.getText()==null){
+            allFilled = false;
+            message += "Formulation of the Negative Conjunction\n";
+        }
+
+        if(ttfdSymmetricFormulation.getText()==null){
+            allFilled = false;
+            message += "Formulation of the Symmetric Conjunction\n";
+        }
+
+        if(allFilled == false){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setResizable(true);
+            alert.setTitle("Save Logic System");
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        }
+        return allFilled;
+    }
+
     @FXML
     public void updateFcc(){
         Fcc selectedFcc = (Fcc)tevwFcc.getSelectionModel().getSelectedItem();

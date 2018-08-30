@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.web.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.HTMLEditor?>
 
-<ScrollPane fitToWidth="true" prefHeight="1800.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DualitiesController">
+<ScrollPane fitToWidth="true" prefHeight="1800.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DualitiesController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" maxWidth="1.7976931348623157E308" minWidth="400.0" styleClass="base">
          <children>
@@ -15,7 +25,7 @@
                   <ToolBar styleClass="tlbr_logicsystem">
                      <items>
                         <TextField prefWidth="90.0" promptText="Filter" />
-                        <Button fx:id="bnSaveFcc" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFcc" styleClass="bttn_toolbar" text="Save" />
+                        <Button fx:id="bnSaveFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFcc" styleClass="bttn_toolbar" text="Save" />
                         <Button fx:id="bnUpdateFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateFcc" styleClass="bttn_toolbar" text="Update" />
                         <Button fx:id="bnDeleteFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteFcc" styleClass="bttn_toolbar" text="Delete" />
                         <Button fx:id="bnDuplicateFcc" disable="true" layoutX="10.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" styleClass="bttn_toolbar" text="Duplicate" />

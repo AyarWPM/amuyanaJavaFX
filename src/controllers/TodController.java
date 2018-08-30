@@ -62,27 +62,22 @@ public class TodController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        
         listFccsInScene = new ArrayList<>();
-        //listMultiContainers = new ArrayList<>();
-        
+
         listStyles = FXCollections.observableArrayList();
         
         manageEvents();
-        
     }
     
     public void setAppController(AppController aThis) {
         this.appController=aThis;
         
-        TodContainer.setAppController(appController);
-        LevelContainer.setAppController(appController);
-        AnalogyContainer.setAppController(appController);
-        MultiContainer.setAppController(appController);
-        FccContainer.setAppController(appController);
-        FormulaContainer.setAppController(appController);
-        
+        TodContainer.setAppController(aThis);
+        LevelContainer.setAppController(aThis);
+        AnalogyContainer.setAppController(aThis);
+        MultiContainer.setAppController(aThis);
+        FccContainer.setAppController(aThis);
+        FormulaContainer.setAppController(aThis);
     }
     
     public static ArrayList<Fcc> getListFccsInScene() {
@@ -90,7 +85,6 @@ public class TodController implements Initializable {
     }
     
     private void log(String debug, String message) {
-        
         appController.addLog(debug, message);
     }
 
@@ -101,10 +95,8 @@ public class TodController implements Initializable {
         }
         
         cobxStyle.setItems(listStyles);
-        
-        //cobxStyle.getSelectionModel().selectFirst();
+
         cobxFcc.getSelectionModel().selectFirst();
-        
     }
     
     public void manageEvents(){

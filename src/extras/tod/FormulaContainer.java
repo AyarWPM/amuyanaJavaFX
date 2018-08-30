@@ -26,7 +26,8 @@ public class FormulaContainer extends HBox {
      * Attention. The order of the listDynamisms items are from most general 
      * notions to the most particular, i.e. from left to right in the Table 
      * of Deductions.
-     *
+     * 
+     * @param appController
      * @param listDynamisms 
      */
     public FormulaContainer(ArrayList<Dynamism> listDynamisms) {
@@ -136,7 +137,7 @@ public class FormulaContainer extends HBox {
             Label label = new Label(s);
             
             label.setId("implication");
-            super.getChildren().add(label);
+            this.getChildren().add(label);
             
         }
     }

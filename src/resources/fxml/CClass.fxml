@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -9,65 +9,54 @@
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" styleClass="base">
          <children>
-            <VBox>
+            <VBox styleClass="contentInModule">
                <children>
-                  <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
+                  <ToolBar styleClass="tlbr_logicsystem">
+                     <items>
+                        <TextField prefWidth="90.0" promptText="Filter" />
+                        <Button fx:id="bnSave" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="bnUpdate" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#update" prefWidth="90.0" styleClass="bttn_toolbar" text="Update" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newCClass" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
+                     </items>
+                  </ToolBar>
+                  <HBox spacing="10.0">
                      <children>
-                        <TitledPane id="ttldPn_" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Classes">
-                           <content>
-                              <HBox spacing="10.0">
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ListView fx:id="ltvwCClass" prefHeight="200.0" prefWidth="200.0" />
+                              <HBox>
                                  <children>
-                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
-                                       <items>
-                                          <TextField prefWidth="90.0" promptText="Filter" />
-                                          <Button fx:id="bnSave" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
-                                          <Button fx:id="bnUpdate" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#update" prefWidth="90.0" styleClass="bttn_toolbar" text="Update" textAlignment="CENTER" wrapText="true" />
-                                          <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
-                                          <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newCClass" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
-                                       </items>
-                                    </ToolBar>
-                                    <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <Label text="Label:" />
+                                    <TextField fx:id="ttfdLabel" minWidth="300.0" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
                                        <children>
-                                          <ListView fx:id="ltvwCClass" prefHeight="200.0" prefWidth="200.0" />
-                                          <HBox>
-                                             <children>
-                                                <Label text="Label:" />
-                                                <TextField fx:id="ttfdLabel" minWidth="300.0" HBox.hgrow="ALWAYS" />
-                                             </children>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <VBox HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label text="FCCs of the class:" />
-                                                      <ListView fx:id="ltvwCollection" prefHeight="200.0" prefWidth="200.0" />
-                                                   </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER" HBox.hgrow="NEVER">
-                                                   <children>
-                                                      <Button fx:id="bnAddToCollection" disable="true" mnemonicParsing="false" onAction="#addToCollection" text="Add" />
-                                                      <Button fx:id="bnRemoveFromCollection" disable="true" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeFromCollection" text="Remove" />
-                                                   </children>
-                                                </VBox>
-                                                <VBox HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label text="Selectable FCCs:" />
-                                                      <ListView fx:id="ltvwSelectableFccs" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
-                                                   </children>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
+                                          <Label text="FCCs of the class:" />
+                                          <ListView fx:id="ltvwCollection" prefHeight="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" HBox.hgrow="NEVER">
+                                       <children>
+                                          <Button fx:id="bnAddToCollection" disable="true" mnemonicParsing="false" onAction="#addToCollection" text="Add" />
+                                          <Button fx:id="bnRemoveFromCollection" disable="true" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeFromCollection" text="Remove" />
+                                       </children>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Selectable FCCs:" />
+                                          <ListView fx:id="ltvwSelectableFccs" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                  </children>
                               </HBox>
-                           </content>
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </TitledPane>
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </HBox>
                </children>
             </VBox>
          </children>

@@ -1,19 +1,28 @@
+
 package extras.tod;
 
 import controllers.AppController;
 import data.Fcc;
 import java.util.ArrayList;
-
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 
 
-public class AnalogyContainer extends Group {
+public class AnalogyContainer extends HBox {
 
     private static AppController appController;
     Analogy analogy;
+    
+    private static int xMove;
+    private static int yMove;
     
     //private Fcc fcc;
     
@@ -21,7 +30,7 @@ public class AnalogyContainer extends Group {
     private ArrayList<Fcc> listAnalogousFccs;
     
     // List of MultiContainers of the analogous FCC's
-    private ArrayList<MultiContainer> listMultiContainers;
+    //private ArrayList<MultiContainer> listMultiContainers;
     
     public AnalogyContainer(){
         
@@ -30,31 +39,43 @@ public class AnalogyContainer extends Group {
     public AnalogyContainer(Analogy analogy){
         this.analogy = analogy;
         
+        setStyle();
+        
+    }
+
+    /**
+     * 
+     * @param appController 
+     */
+    public static void setAppController(AppController appController) {
+        AnalogyContainer.appController = appController;
+        
+    }
+    
+    public void deploy(){
+        
         for(Fcc f:analogy){
             
             MultiContainer multiContainer = new MultiContainer(f);
                         
-            super.getChildren().add(multiContainer);
+            this.getChildren().add(multiContainer);
             
-            multiContainer.setAlignment(Pos.CENTER_LEFT);
+            multiContainer.setLayoutX(100);
             
+            System.out.println("i try");
             multiContainer.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    multiContainer.deployInclusions();
-                    System.out.println("i press indeed");
+                    //multiContainer.deployInclusions();
+                    
                 }
             });
         }
     }
 
-    /**
-     * 
-     * @param appController controller of the main app
-     */
-    public static void setAppController(AppController appController) {
-        AnalogyContainer.appController = appController;
-        
+    private void setStyle() {
+        this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));
+        this.setAlignment(Pos.CENTER);
     }
     
     

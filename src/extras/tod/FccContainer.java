@@ -1,3 +1,4 @@
+
 package extras.tod;
 
 import controllers.AppController;
@@ -22,7 +23,7 @@ public class FccContainer extends TitledPane {
     
     public FccContainer(Fcc fcc){
         this.fcc = fcc;
-        super.setCollapsible(false);
+        this.setCollapsible(false);
         
         VBox formulasContainer = new VBox();
         
@@ -41,9 +42,9 @@ public class FccContainer extends TitledPane {
         
         formulasContainer.getChildren().addAll(positiveFormula,negativeFormula,symmetricFormula);
         
-        super.setContent(formulasContainer);
+        this.setContent(formulasContainer);
         
-        super.setText(fcc.getLabel());
+        this.setText(fcc.getLabel());
     }
     
     
@@ -85,9 +86,9 @@ public class FccContainer extends TitledPane {
         formulasContainer.getChildren().add(newFormula);
         
         
-        super.setContent(formulasContainer);
+        this.setContent(formulasContainer);
         
-        super.setText(fcc.getLabel());
+        this.setText(fcc.getLabel());
         
         
     }

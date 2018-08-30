@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -8,64 +9,53 @@
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" styleClass="base">
          <children>
-            <VBox>
+            <VBox styleClass="contentInModule">
                <children>
-                  <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
+                  <ToolBar styleClass="tlbr_logicsystem">
+                     <items>
+                        <TextField prefWidth="90.0" promptText="Filter" />
+                        <Button fx:id="bnSave" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newSyllogism" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
+                     </items>
+                  </ToolBar>
+                  <HBox spacing="10.0">
                      <children>
-                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="10.0" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Syllogism">
-                           <content>
-                              <HBox spacing="10.0">
+                        <VBox layoutX="142.0" layoutY="24.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <ListView fx:id="ltvwSyllogism" prefHeight="200.0" prefWidth="200.0" />
+                              <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
                                  <children>
-                                    <ToolBar orientation="VERTICAL" styleClass="tlbr_logicsystem">
-                                       <items>
-                                          <TextField prefWidth="90.0" promptText="Filter" />
-                                          <Button fx:id="bnSave" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
-                                          <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
-                                          <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newSyllogism" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
-                                       </items>
-                                    </ToolBar>
-                                    <VBox layoutX="142.0" layoutY="24.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <Label text="Label:" />
+                                    <TextField fx:id="ttfdLabel" />
+                                 </children>
+                              </HBox>
+                              <HBox>
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
                                        <children>
-                                          <ListView fx:id="ltvwSyllogism" prefHeight="200.0" prefWidth="200.0" />
-                                          <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
-                                             <children>
-                                                <Label text="Label:" />
-                                                <TextField fx:id="ttfdLabel" />
-                                             </children>
-                                          </HBox>
-                                          <HBox>
-                                             <children>
-                                                <VBox HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label text="Associated Inclusions:" />
-                                                      <ListView fx:id="ltvwStep" prefHeight="200.0" prefWidth="200.0" />
-                                                   </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER">
-                                                   <children>
-                                                      <Button fx:id="bnAdd" mnemonicParsing="false" onAction="#addInclusion" text="Add" />
-                                                      <Button fx:id="bnRemove" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeInclusion" text="Remove" />
-                                                   </children>
-                                                </VBox>
-                                                <VBox HBox.hgrow="ALWAYS">
-                                                   <children>
-                                                      <Label text="Inclusions" />
-                                                      <ListView fx:id="ltvwInclusion" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
-                                                   </children>
-                                                </VBox>
-                                             </children>
-                                          </HBox>
+                                          <Label text="Associated Inclusions:" />
+                                          <ListView fx:id="ltvwStep" prefHeight="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER">
+                                       <children>
+                                          <Button fx:id="bnAdd" mnemonicParsing="false" onAction="#addInclusion" text="Add" />
+                                          <Button fx:id="bnRemove" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeInclusion" text="Remove" />
+                                       </children>
+                                    </VBox>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Inclusions" />
+                                          <ListView fx:id="ltvwInclusion" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                  </children>
                               </HBox>
-                           </content>
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </TitledPane>
+                           </children>
+                        </VBox>
                      </children>
-                  </VBox>
+                  </HBox>
                </children>
             </VBox>
          </children>

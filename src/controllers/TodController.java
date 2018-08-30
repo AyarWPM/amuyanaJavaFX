@@ -1,12 +1,10 @@
 package controllers;
 
 import data.CClass;
-import data.Dynamism;
 import data.Fcc;
-import data.General;
 import data.Inclusion;
-
 import extras.Styles;
+
 import extras.tod.Analogy;
 import extras.tod.FccContainer;
 import extras.tod.FormulaContainer;
@@ -92,6 +90,7 @@ public class TodController implements Initializable {
     }
     
     private void log(String debug, String message) {
+        
         appController.addLog(debug, message);
     }
 
@@ -104,7 +103,7 @@ public class TodController implements Initializable {
         cobxStyle.setItems(listStyles);
         
         //cobxStyle.getSelectionModel().selectFirst();
-        //cobxFcc.getSelectionModel().selectFirst();
+        cobxFcc.getSelectionModel().selectFirst();
         
     }
     
@@ -138,14 +137,11 @@ public class TodController implements Initializable {
         this.todContainer = new TodContainer(newValue);
         todContent.getChildren().clear();
         todContent.getChildren().add(this.todContainer);
+        this.todContainer.deploy();
     }
     
     @FXML
     public void debug(){
-        ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(cobxFcc.getSelectionModel().getSelectedItem());
-        
-        //System.out.println(listAnalogy);
-        
-    }
-    
+        ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(cobxFcc.getSelectionModel().getSelectedItem());   
+    }   
 }

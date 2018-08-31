@@ -3,7 +3,6 @@ package controllers;
 import data.CClass;
 import data.Fcc;
 import data.Inclusion;
-import extras.Styles;
 
 import extras.tod.Analogy;
 import extras.tod.FccContainer;
@@ -32,9 +31,7 @@ import javafx.scene.layout.HBox;
 public class TodController implements Initializable {
 
     private AppController appController;
-    
-    private ObservableList<Styles> listStyles;
-    
+
     private TodContainer todContainer;
     
     @FXML private HBox todContent;
@@ -45,7 +42,7 @@ public class TodController implements Initializable {
     @FXML private Accordion anMenu;
     
     // When nothing is selected, only menu of the TOD
-    @FXML private ComboBox<Styles> cobxStyle;
+
     @FXML private ComboBox<Fcc> cobxFcc;
     @FXML private ComboBox<CClass> cobxCClass;
     @FXML private ComboBox<Inclusion> cobxInclusion;
@@ -65,8 +62,6 @@ public class TodController implements Initializable {
         
         listFccsInScene = new ArrayList<>();
 
-        listStyles = FXCollections.observableArrayList();
-        
         manageEvents();
     }
     
@@ -87,13 +82,7 @@ public class TodController implements Initializable {
 
     public void fillData() {
         cobxFcc.setItems(appController.getListFcc());
-        for(Styles f:Styles.values()){
-            listStyles.add(f);
-        }
-        
-        cobxStyle.setItems(listStyles);
-
-        cobxFcc.getSelectionModel().selectFirst();
+        //cobxFcc.getSelectionModel().selectFirst();
     }
     
     public void manageEvents(){
@@ -107,15 +96,6 @@ public class TodController implements Initializable {
                     listFccsInScene.add(newValue);
                     
                     deployInitial(newValue);
-                }
-            }
-        });
-        
-        cobxStyle.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Styles>() {
-            @Override
-            public void changed(ObservableValue<? extends Styles> observable, Styles oldValue, Styles newValue) {
-                if(newValue!=null){
-                    FormulaContainer.setStyle(newValue);
                 }
             }
         });

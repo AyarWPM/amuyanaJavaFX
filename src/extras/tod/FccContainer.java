@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.VBox;
+import static extras.tod.FormulaContainer.Styles.SIMPLE;
 
 public class FccContainer extends TitledPane {
     private static AppController appController;
@@ -21,40 +22,41 @@ public class FccContainer extends TitledPane {
     
     public FccContainer(Fcc fcc){
         this.fcc = fcc;
-        
-        ArrayList<Dynamism> tempListDynamisms = new ArrayList<>();
-        
-        tempListDynamisms.add(appController.dynamismOf(0, fcc));
-        this.positiveFormula = new FormulaContainer(tempListDynamisms);
-        
-        tempListDynamisms.clear();
-        
-        tempListDynamisms.add(appController.dynamismOf(1, fcc));
-        this.negativeFormula = new FormulaContainer(tempListDynamisms);
-        
-        tempListDynamisms.clear();
-        
-        tempListDynamisms.add(appController.dynamismOf(2, fcc));
-        this.symmetricFormula = new FormulaContainer(tempListDynamisms);
-        
+
+        this.positiveFormula = new FormulaContainer();
+        this.positiveFormula.setDynamism(appController.dynamismOf(0, fcc));
+
+        this.negativeFormula = new FormulaContainer();
+        this.negativeFormula.setDynamism(appController.dynamismOf(1, fcc));
+
+        this.symmetricFormula = new FormulaContainer();
+        this.symmetricFormula.setDynamism(appController.dynamismOf(2, fcc));
+
         this.setText(fcc.getLabel());
         
         setStyle();
     }
-    
+
+    public static void setControllers(AppController appController, TodController todController) {
+        FccContainer.appController = appController;
+        FccContainer.todController = todController;
+    }
+
     private void setStyle(){
         this.setCollapsible(false);
     }
 
     void deploy(){
-        this.setContent(new VBox(this.positiveFormula,this.negativeFormula,this.symmetricFormula));
-        this.positiveFormula.deploy();
-        this.negativeFormula.deploy();
-        this.symmetricFormula.deploy();
-    }
-    
-    public static void setControllers(AppController appController, TodController todController) {
-        FccContainer.appController = appController;
-        FccContainer.todController = todController;
+        VBox vBox = new VBox();
+
+        vBox.getChildren().addAll(this.positiveFormula,this.negativeFormula,this.symmetricFormula);
+
+        vBox.setSpacing(3);
+
+        this.setContent(vBox);
+
+        this.positiveFormula.write(SIMPLE);
+        this.negativeFormula.write(SIMPLE);
+        this.symmetricFormula.write(SIMPLE);
     }
 }

@@ -36,7 +36,7 @@ public class TodController implements Initializable {
     private ObservableList<Styles> listStyles;
     
     private TodContainer todContainer;
-       
+    
     @FXML private HBox todContent;
     
     // MENU BAR
@@ -62,6 +62,7 @@ public class TodController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         listFccsInScene = new ArrayList<>();
 
         listStyles = FXCollections.observableArrayList();
@@ -72,12 +73,8 @@ public class TodController implements Initializable {
     public void setAppController(AppController aThis) {
         this.appController=aThis;
         
-        TodContainer.setAppController(aThis);
-        LevelContainer.setAppController(aThis);
-        AnalogyContainer.setAppController(aThis);
-        MultiContainer.setAppController(aThis);
-        FccContainer.setAppController(aThis);
-        FormulaContainer.setAppController(aThis);
+        setControllers(this);
+        
     }
     
     public static ArrayList<Fcc> getListFccsInScene() {
@@ -136,4 +133,13 @@ public class TodController implements Initializable {
     public void debug(){
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(cobxFcc.getSelectionModel().getSelectedItem());   
     }   
+
+    private void setControllers(TodController todController) {
+        TodContainer.setControllers(this.appController, todController);
+        LevelContainer.setControllers(this.appController, todController);
+        AnalogyContainer.setControllers(this.appController, todController);
+        MultiContainer.setControllers(this.appController, todController);
+        FccContainer.setControllers(this.appController, todController);
+        FormulaContainer.setControllers(this.appController, todController);
+    }
 }

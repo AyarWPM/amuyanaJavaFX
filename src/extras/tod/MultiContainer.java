@@ -1,6 +1,7 @@
 package extras.tod;
 
 import controllers.AppController;
+import controllers.TodController;
 import data.Fcc;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -17,8 +18,9 @@ import javafx.scene.paint.Color;
 public class MultiContainer extends HBox {
 
     private static AppController appController;
+    private static TodController todController;
     
-    public Fcc fcc;
+    public FccContainer fccContainer;
     
     public VBox positionLeft;
     public VBox positionCenter;
@@ -27,11 +29,6 @@ public class MultiContainer extends HBox {
     public VBox positionTop;
     public VBox positionMiddle;
     public VBox positionBottom;
-    
-    
-    private int xMove=0;
-    private int yMove=0;
-    private int zMove=-10000;
     
     /** This is the central container.
      * It has 3 columns. 1st is for all the
@@ -45,12 +42,11 @@ public class MultiContainer extends HBox {
      * - 4th is center 
      * - 5th is bottom
      * 
+     * @param fcc
     */
             
     public MultiContainer(Fcc fcc) {
-        this.fcc = fcc;
-        
-        this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
+        this.fccContainer = new FccContainer(fcc);;
         
         positionLeft = new VBox();
         positionCenter = new VBox();
@@ -59,61 +55,37 @@ public class MultiContainer extends HBox {
         positionBottom=  new VBox();
         positionRight = new VBox();
         
-        FccContainer fccContainer = new FccContainer(fcc);
-        
-        fccContainer.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    System.out.println("getLayoutBounds(): " + getLayoutBounds());
-                    System.out.println("getLayoutX(): " + getLayoutX());
-                    System.out.println("getLocalToParentTransform(): " + getLocalToParentTransform());
-                    System.out.println("getLocalToSceneTransform(): " + getLocalToSceneTransform());
-                }
-            });
-        
-        positionCenter.getChildren().add(fccContainer);
-        
-        positionRight.getChildren().addAll(positionTop,positionMiddle,positionBottom);
-        
-        this.getChildren().addAll(positionLeft,positionCenter,positionRight);
-        
-        this.setTranslateX(xMove);
-        this.setTranslateY(yMove);
-        //this.setTranslateZ(zMove);
-        
-        xMove-=20;
-        yMove+=25;
-        //zMove+=10;
+        setStyle();
         manageEvents();
     }
     
-    public static void setAppController(AppController appController) {
+    public static void setControllers(AppController appController, TodController todController) {
         MultiContainer.appController = appController;
+        MultiContainer.todController = todController;
     }
     
+    private void setStyle(){
+        this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
+    }
     
     private void manageEvents() {
         
     }
     
-    public Fcc getFcc() {
-        return fcc;
-    }
-
-    public void setFcc(Fcc fcc) {
-        this.fcc = fcc;
-    }
-
-    public void deployInclusions(){
-        positionLeft.getChildren().addAll(new LevelContainer(appController.getListAnalogyForInitial(fcc)));
+    void deploy(){
+        this.getChildren().addAll(this.positionLeft,this.positionCenter,this.positionRight);
         
+        this.positionCenter.getChildren().add(this.fccContainer);
+        
+        this.fccContainer.deploy();
+        
+        this.positionRight.getChildren().addAll(this.positionTop,this.positionMiddle,this.positionBottom);
     }
     
-//    public void deployPositionCenter(){
-//        // I add one FccContainer only, the one that belong to the 
-//        // MultiContainer . This position should be deployed automatically...
-//        
-//    }
+    public void deployInclusions(){
+        //positionLeft.getChildren().addAll(new LevelContainer(appController.getListAnalogyForInitial(fcc)));
+        
+    }
     
     public void deployPositiveDeductions(){
         // I add as many ZContainers as there are notions that are particular 

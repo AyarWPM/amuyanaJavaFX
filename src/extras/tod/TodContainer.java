@@ -1,16 +1,17 @@
 package extras.tod;
 
 import controllers.AppController;
+import controllers.TodController;
 import data.Fcc;
 import java.util.ArrayList;
-
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
+import javafx.scene.Group;
 
 
-public class TodContainer extends AnchorPane {
+
+public class TodContainer extends Group {
 
     private static AppController appController;
+    private static TodController todController;
     private Fcc initialFcc;
 
     LevelContainer firstLevel;
@@ -21,28 +22,29 @@ public class TodContainer extends AnchorPane {
     
     public TodContainer(Fcc initialFcc) {
         this.initialFcc = initialFcc;
-
+        
         setStyle();
 
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
         firstLevel = new LevelContainer(listAnalogy);
-        deploy();
-
+        
     }
 
-    public static void setAppController(AppController appController) {
+    public static void setControllers(AppController appController, TodController todController) {
         TodContainer.appController = appController;
+        TodContainer.todController = todController;
         
     }
 
     private void setStyle() {
-        this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(6))));
-
+        //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(6))));
+        
     }
 
     public void deploy() {
         this.getChildren().clear();
         this.getChildren().add(firstLevel);
+        firstLevel.deploy();
     }
     
     

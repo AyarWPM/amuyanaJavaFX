@@ -1,6 +1,7 @@
 package extras.tod;
 
 import controllers.AppController;
+import controllers.TodController;
 import data.Dynamism;
 import data.Element;
 import data.Fcc;
@@ -16,6 +17,7 @@ import javafx.scene.layout.HBox;
 public class FormulaContainer extends HBox {
 
     private static AppController appController;
+    private static TodController todController;
     private Fcc fcc;
     
     private ArrayList<Dynamism> listDynamisms;
@@ -27,7 +29,6 @@ public class FormulaContainer extends HBox {
      * notions to the most particular, i.e. from left to right in the Table 
      * of Deductions.
      * 
-     * @param appController
      * @param listDynamisms 
      */
     public FormulaContainer(ArrayList<Dynamism> listDynamisms) {
@@ -41,14 +42,81 @@ public class FormulaContainer extends HBox {
         
         
         style = Styles.SIMPLE;
-        draw(listDynamisms);
+        
+        //draw(listDynamisms);
         //System.out.println("hi");
     }
     
-    public static void setAppController(AppController appController){
+    public static void setControllers(AppController appController, TodController todController) {
         FormulaContainer.appController = appController;
+        FormulaContainer.todController = todController;
     }
 
+    void deploy(){
+        ArrayList<String> listSymbols = new ArrayList<>();
+        
+        listSymbols.add(new String());
+        
+        for(Dynamism d:listDynamisms){
+            Element element = appController.elementOf(0, d.getFcc());
+            String e = element.getSymbol();
+            
+            Element antiElement = appController.elementOf(1, d.getFcc());
+            String aE = antiElement.getSymbol();
+            
+            int middlePosition = (listSymbols.size()-1)/2;
+            
+            ArrayList<String> left = new ArrayList<>();
+            ArrayList<String> right = new ArrayList<>();
+            
+            left.addAll(listSymbols);
+            right.addAll(listSymbols);
+            
+            switch (d.getOrientation()) {
+                case 0:{
+                    left.set(middlePosition, e);
+                    left.add(middlePosition+1,"A");
+                    right.set(middlePosition, aE);
+                    right.add(middlePosition+1,"P");
+                    break;
+                }
+                case 1:{
+                    left.set(middlePosition, aE);
+                    left.add(middlePosition+1,"A");
+                    right.set(middlePosition, e);
+                    right.add(middlePosition+1,"P");
+                    break;
+                }
+                    
+                case 2:{
+                    left.set(middlePosition, e);
+                    left.add(middlePosition+1,"T");
+                    right.set(middlePosition, aE);
+                    right.add(middlePosition+1,"T");
+                    break;
+                }
+                default:
+                    break;
+            }
+            
+            listSymbols.clear();
+            listSymbols.add("(");
+            listSymbols.addAll(left);
+            listSymbols.add(")");
+            listSymbols.add("\u2283");
+            listSymbols.add("(");
+            listSymbols.addAll(right);
+            listSymbols.add(")");
+        
+        }
+        
+        for(String s:listSymbols){
+            Label label = new Label(s);
+            
+            this.getChildren().add(label);
+        }
+    }
+    
     public static void setStyle(Styles formulaStyle) {
         style = formulaStyle;
         

@@ -12,7 +12,7 @@ public class Analogy extends ArrayList<Fcc> {
 
     public enum Type {
         CCLASS, INCLUSION, MIXED, NONE
-    };
+    }
     
     private Type type;
     

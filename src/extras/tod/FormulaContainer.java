@@ -193,7 +193,7 @@ public class FormulaContainer extends HBox {
                 sign.setText("(");
                 sign.setStyle(
                       "-fx-padding: 0 2 0 2;" +
-                      "-fx-font:15px \"Sans\";"
+                              "-fx-font:17px \"Sans\";"
                 );
                 break;
             }
@@ -201,7 +201,7 @@ public class FormulaContainer extends HBox {
                 sign.setText(")");
                 sign.setStyle(
                         "-fx-padding: 0 2 0 2;" +
-                                "-fx-font:15px \"Sans\";"
+                                "-fx-font:17px \"Sans\";"
 
                 );
                 break;

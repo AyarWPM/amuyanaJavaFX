@@ -38,7 +38,7 @@ public class LevelContainer extends VBox {
 
     private void setStyle() {
         this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
-        this.setSpacing(5);
+        this.setSpacing(10);
         
     }
 

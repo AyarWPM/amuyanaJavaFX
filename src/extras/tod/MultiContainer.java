@@ -4,6 +4,7 @@ import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -46,8 +47,17 @@ public class MultiContainer extends HBox {
     */
             
     public MultiContainer(Fcc fcc) {
-        this.fccContainer = new FccContainer(fcc);;
-        
+
+        this.fccContainer = new FccContainer(fcc);
+
+        if(TodController.getListFccsInScene().contains(fcc)){
+            fccContainer.setType(FccContainer.FccType.MIRROR);
+        } else if(!TodController.getListFccsInScene().contains(fcc)){
+
+            TodController.addFccInScene(fcc);
+            fccContainer.setType(FccContainer.FccType.NORMAL);
+        }
+
         positionLeft = new VBox();
         positionCenter = new VBox();
         positionTop = new VBox();
@@ -57,6 +67,11 @@ public class MultiContainer extends HBox {
         
         setStyle();
         manageEvents();
+    }
+
+    void turnToFront(FccContainer fccContainer){
+        AnalogyContainer analogyContainer = (AnalogyContainer) this.getParent();
+        analogyContainer.turnToFront(fccContainer);
     }
     
     public static void setControllers(AppController appController, TodController todController) {
@@ -76,7 +91,7 @@ public class MultiContainer extends HBox {
         this.getChildren().addAll(this.positionLeft,this.positionCenter,this.positionRight);
         
         this.positionCenter.getChildren().add(this.fccContainer);
-        
+
         this.fccContainer.deploy();
         
         this.positionRight.getChildren().addAll(this.positionTop,this.positionMiddle,this.positionBottom);

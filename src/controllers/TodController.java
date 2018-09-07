@@ -19,12 +19,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 
 
@@ -53,8 +56,8 @@ public class TodController implements Initializable {
     @FXML private ToggleButton tebnExpandNegative;
     @FXML private ToggleButton tebnExpandSymmetric;
     
-    public static ArrayList<Fcc> listFccsInScene;
-    
+    private static ArrayList<Fcc> listFccsInScene;
+
     //public static ArrayList<MultiContainer> listMultiContainers;
     
     @Override
@@ -71,11 +74,19 @@ public class TodController implements Initializable {
         setControllers(this);
         
     }
-    
+
     public static ArrayList<Fcc> getListFccsInScene() {
         return listFccsInScene;
     }
-    
+
+    public static void addFccInScene(Fcc fcc) {
+        listFccsInScene.add(fcc);
+    }
+
+    public static void removeFccInScene(Fcc fcc) {
+        listFccsInScene.remove(fcc);
+    }
+
     private void log(String debug, String message) {
         appController.addLog(debug, message);
     }
@@ -92,8 +103,8 @@ public class TodController implements Initializable {
                 if(newValue!=null){
                     
                     // list of fcc's, setting the first one
-                    listFccsInScene.clear();
-                    listFccsInScene.add(newValue);
+                    //listFccsInScene.clear();
+                    //listFccsInScene.add(newValue);
                     
                     deployInitial(newValue);
                 }
@@ -111,7 +122,7 @@ public class TodController implements Initializable {
     
     @FXML
     public void debug(){
-        ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(cobxFcc.getSelectionModel().getSelectedItem());   
+
     }   
 
     private void setControllers(TodController todController) {
@@ -122,4 +133,8 @@ public class TodController implements Initializable {
         FccContainer.setControllers(this.appController, todController);
         FormulaContainer.setControllers(this.appController, todController);
     }
+
+    //AnalogyContainer analogyContainerOf(MultiContainer multiContainer){
+
+    //}
 }

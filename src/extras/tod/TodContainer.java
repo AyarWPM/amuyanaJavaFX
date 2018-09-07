@@ -14,7 +14,7 @@ public class TodContainer extends Group {
     private static TodController todController;
     private Fcc initialFcc;
 
-    LevelContainer firstLevel;
+    private LevelContainer firstLevel;
 
     // All Classes, all conjunctions!
     

@@ -69,11 +69,6 @@ public class MultiContainer extends HBox {
         manageEvents();
     }
 
-    void turnToFront(FccContainer fccContainer){
-        AnalogyContainer analogyContainer = (AnalogyContainer) this.getParent();
-        analogyContainer.turnToFront(fccContainer);
-    }
-    
     public static void setControllers(AppController appController, TodController todController) {
         MultiContainer.appController = appController;
         MultiContainer.todController = todController;

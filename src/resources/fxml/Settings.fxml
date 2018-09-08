@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
@@ -12,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SettingsController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
          <children>
@@ -44,13 +48,13 @@
                                           <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" prefWidth="200.0" spacing="5.0">
                                              <children>
                                                 <Label text="Username:" />
-                                                <TextField fx:id="ttfdDbUsername" text="amuyana" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="ttfdDbUsername" text="admin" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="84.0" prefWidth="200.0" spacing="5.0">
                                              <children>
                                                 <Label text="Password:" />
-                                                <TextField fx:id="ttfdDbPassword" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="ttfdDbPassword" text="admin" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <CheckBox fx:id="ckbxUseDefaultServer" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#useDefaultServer" text="Use default server" wrapText="true" />

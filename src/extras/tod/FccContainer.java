@@ -53,23 +53,17 @@ public class FccContainer extends TitledPane {
         setStyle();
     }
 
-    void turnToFront(){
-
-    }
-
-
     private void setMenu(FccType type){
         this.menu = new ContextMenu();
 
         MenuItem muimTurnToFront = new MenuItem("Turn to this");
+        
         muimTurnToFront.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-
-                System.out.println(getParent().getParent());
-                System.out.println(this);
-
-                turnToFront();
+                MultiContainer multiContainer = (MultiContainer)getParent().getParent();
+                AnalogyContainer analogyContainer = (AnalogyContainer)multiContainer.getParent();
+                analogyContainer.turnToFront(multiContainer);
             }
         });
 

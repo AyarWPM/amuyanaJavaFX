@@ -5,10 +5,14 @@ import controllers.TodController;
 import data.Fcc;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.layout.VBox;
 
 
 public class AnalogyContainer extends Group {
-
+    private final static double TRANSLATE_X=20;
+    private final static double TRANSLATE_Y=28;
+    private final static double TRANSPARENCY=0.2;
+    
     private static AppController appController;
     private static TodController todController;
 
@@ -34,33 +38,61 @@ public class AnalogyContainer extends Group {
     }
     
     void deploy(){
-
         for(Fcc f:this.analogy){
-            int size=this.getChildren().size();
-            double factor = size*0.15;
             MultiContainer multiContainer = new MultiContainer(f);
+            
             this.getChildren().add(multiContainer);
-            multiContainer.setTranslateX(this.getChildren().indexOf(multiContainer)*20);
-            multiContainer.setTranslateY(-this.getChildren().indexOf(multiContainer)*28);
+            int index = this.getChildren().indexOf(multiContainer);
+            
+            
+            
+            multiContainer.setLayoutX(index*TRANSLATE_X);
+            multiContainer.setLayoutY(-index*TRANSLATE_Y);
+            multiContainer.setOpacity(1-index*TRANSPARENCY);
             multiContainer.toBack();
-
-            multiContainer.setOpacity(1-factor);
-
+            
             multiContainer.deploy();
         }
     }
 
-    public void turnToFront(FccContainer fccContainer){
-
-        for(Node n:getChildren()){
-            //MultiContainer multi = (MultiContainer)n;
-            if(((MultiContainer) n).getChildren().get(1).equals(fccContainer)){
-                System.out.println("yes");
-            } else if(!((MultiContainer) n).getChildren().get(1).equals(fccContainer)){
-                System.out.println("no");
-            }
-        }
+    public void turnToFront(MultiContainer multiContainer){
+        
+        int POS = getChildren().indexOf(multiContainer);
+        
+        
+        
     }
+    
+//    public void turnToFront(MultiContainer multiContainer){
+//        int POS = getChildren().indexOf(multiContainer);
+//        
+//        int index = 0;
+//        
+//        for(int i=POS;i<getChildren().size();i++){
+//            MultiContainer multi = (MultiContainer)getChildren().get(i);
+//            
+//            multi.setLayoutX(index*TRANSLATE_X);
+//            multi.setLayoutY(-index*TRANSLATE_Y);
+//            multi.toBack();
+//            
+//            System.out.println("Multi " + multi + " in x " + multi.getLayoutX() + " and in y " + multi.getLayoutY());
+//            
+//            index++;
+//        }
+//        
+//        for(int i = 0;i<POS;i++){
+//            MultiContainer multi = (MultiContainer)getChildren().get(i);
+//            
+//            multi.setLayoutX(index*TRANSLATE_X);
+//            multi.setLayoutY(-index*TRANSLATE_Y);
+//            multi.toBack();
+//            
+//            System.out.println("Multi " + multi + " in x " + multi.getLayoutX() + " and in y " + multi.getLayoutY());
+//            
+//            index++;
+//        }
+//        
+//    }
 
     private void setStyle() {
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));

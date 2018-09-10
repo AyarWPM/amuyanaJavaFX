@@ -33,11 +33,15 @@ public class FccContainer extends TitledPane {
         FccContainer.todController = todController;
     }
 
-    public void setType(FccType type){
+    public Fcc getFcc(){
+        return this.fcc;
+    }
+
+    void setType(FccType type){
         this.type = type;
     }
 
-    public FccContainer(Fcc fcc){
+    FccContainer(Fcc fcc){
         this.fcc = fcc;
 
         this.positiveFormula = new FormulaContainer();
@@ -56,13 +60,14 @@ public class FccContainer extends TitledPane {
     private void setMenu(FccType type){
         this.menu = new ContextMenu();
 
+        MultiContainer multiContainer = (MultiContainer)getParent().getParent();
+        AnalogyContainer analogyContainer = (AnalogyContainer)multiContainer.getParent();
+
         MenuItem muimTurnToFront = new MenuItem("Turn to this");
         
         muimTurnToFront.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                MultiContainer multiContainer = (MultiContainer)getParent().getParent();
-                AnalogyContainer analogyContainer = (AnalogyContainer)multiContainer.getParent();
                 analogyContainer.turnToFront(multiContainer);
             }
         });
@@ -70,10 +75,40 @@ public class FccContainer extends TitledPane {
         switch(type){
             case NORMAL:{
                 Menu deployMenu = new Menu("Deploy");
+
                 CheckMenuItem inclusion = new CheckMenuItem("Deploy inclusions");
+                inclusion.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        multiContainer.deployInclusions();
+                    }
+                });
+
+
                 CheckMenuItem positiveDeductions= new CheckMenuItem("Deploy positive deductions");
+                positiveDeductions.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        multiContainer.deployPositiveDeductions();
+                    }
+                });
+
                 CheckMenuItem negativeDeductions= new CheckMenuItem("Deploy negative deductions");
+                negativeDeductions.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        multiContainer.deployNegativeDeductions();
+                    }
+                });
+
                 CheckMenuItem symmetricDeductions = new CheckMenuItem("Deploy symmetric deductions");
+                symmetricDeductions.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        multiContainer.deploySymmetricDeductions();
+                    }
+                });
+
 
                 deployMenu.getItems().addAll(inclusion, positiveDeductions, negativeDeductions, symmetricDeductions);
                 this.menu.getItems().addAll(muimTurnToFront,deployMenu);

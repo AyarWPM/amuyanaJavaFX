@@ -493,8 +493,11 @@ public class AppController {
     }
 
 
-    // METHODS FOR TOD
-
+    /**
+     * This method returns a list of lists (Analogy is a list) of FCC's that are generals
+     * @param fcc
+     * @return
+     */
     private ArrayList<Analogy> getListAnalogyInclusionOf(Fcc fcc){
 
         ArrayList<Analogy> list = new ArrayList<>();
@@ -526,40 +529,6 @@ public class AppController {
             }
             list.add(tempList);
         }
-
-        // Sort the fcc's in each analogy because otherwise we can't remove
-        // duplicates. I'll use id as criteria to sort.
-
-
-
-//        ArrayList<Analogy> tempListAnalogy = new ArrayList<>();
-//
-//        for(Analogy a:list){
-//
-//            Analogy tempAnalogy = new Analogy();
-//
-//            for(Fcc f1:a){
-//                for(Fcc f2:a){
-//                    if(f1.getIdFcc()<f2.getIdFcc()){
-//                        if(!tempAnalogy.contains(f1)){
-//                            tempAnalogy.add(f1);
-//                            System.out.println("i got here");
-//                        }
-//                    }
-//                }
-//            }
-//
-//            for(Fcc f:a){
-//                if(!tempAnalogy.contains(f)){
-//                    tempAnalogy.add(f);
-//                }
-//            }
-//
-//            tempListAnalogy.add(tempAnalogy);
-//        }
-//
-//        list.clear();
-//        list.addAll(tempListAnalogy);
 
         return list;
     }
@@ -637,12 +606,46 @@ public class AppController {
     public ArrayList<Analogy> getListAnalogyForInclusion(Fcc fcc){
         ArrayList<Analogy> listAnalogyInclusion = new ArrayList<>();
 
+        ArrayList<Fcc> tempListFcc = new ArrayList<>();
+
+        // 1. get all fccs (in the ForInitial level it was only one, here there are many)
+        for(Inclusion i:getListInclusions()){
+            if(i.getDynamism().getFcc().equals(fcc)){
+                for(General g:getListGenerals()){
+                    if(g.getInclusion().equals(i)){
+                        if(!tempListFcc.contains(g.getDynamism().getFcc())){
+                            tempListFcc.add(g.getDynamism().getFcc());
+                        }
+                    }
+                }
+            }
+        }
+
+        for(Fcc f:tempListFcc){
+            listAnalogyInclusion.addAll(getListAnalogyInclusionOf(f));
+            listAnalogyInclusion.addAll(getListAnalogyCClassOf(f));
+        }
+
+        removeDuplicates(listAnalogyInclusion);
+        orderAnalogyList(listAnalogyInclusion);
+
         return listAnalogyInclusion;
     }
 
-    public ArrayList<Analogy> getListAnalogyForDeduction(Dynamism dynamism){
-        ArrayList<Analogy> listAnalogyInclusion = new ArrayList<>();
+    public ArrayList<Analogy> getListAnalogyForPositiveDeduction(Dynamism dynamism){
+        ArrayList<Analogy> listAnalogy = new ArrayList<>();
+        return listAnalogy;
+    }
 
-        return listAnalogyInclusion;
+    public ArrayList<Analogy> getListAnalogyForNegativeDeduction(Dynamism dynamism){
+        ArrayList<Analogy> listAnalogy = new ArrayList<>();
+
+        return listAnalogy;
+    }
+
+    public ArrayList<Analogy> getListAnalogyForSymmetricDeduction(Dynamism dynamism){
+        ArrayList<Analogy> listAnalogy = new ArrayList<>();
+
+        return listAnalogy;
     }
 }

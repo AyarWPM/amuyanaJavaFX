@@ -93,27 +93,35 @@ public class MultiContainer extends HBox {
     }
     
     public void deployInclusions(){
-        //positionLeft.getChildren().addAll(new LevelContainer(appController.getListAnalogyForInitial(fcc)));
-        
+        LevelContainer inclusionLevel = new LevelContainer(appController.getListAnalogyForInclusion(fccContainer.getFcc()));
+        this.positionLeft.getChildren().add(inclusionLevel);
+        inclusionLevel.deploy();
     }
     
     public void deployPositiveDeductions(){
-        // I add as many ZContainers as there are notions that are particular 
-        // in a inclusion with respect to the POSITIVE orientation of the Fcc 
-        // of the MultiContainer 
-        
+        LevelContainer positiveDeductionsLevel = new LevelContainer(
+                (appController.getListAnalogyForPositiveDeduction(appController.dynamismOf(0,fccContainer.getFcc())))
+        );
+        this.positionTop.getChildren().add(positiveDeductionsLevel);
     }
+
     public void deployNegativeDeductions(){
-        // I add as many ZContainers as there are notions that are particular 
-        // in a inclusion with respect to the NEGATIVE orientation of the Fcc 
-        // of the MultiContainer 
-        
+        LevelContainer negativeDeductionsLevel = new LevelContainer(
+                (appController.getListAnalogyForNegativeDeduction(appController.dynamismOf(1,fccContainer.getFcc())))
+        );
+        this.positionMiddle.getChildren().add(negativeDeductionsLevel);
     }
+
     public void deploySymmetricDeductions(){
-        // I add as many ZContainers as there are notions that are particular 
-        // in a inclusion with respect to the SYMETTRIC orientation of the Fcc 
-        // of the MultiContainer 
-        
+        LevelContainer symmetricDeductionsLevel = new LevelContainer(
+                (appController.getListAnalogyForSymmetricDeduction(appController.dynamismOf(2,fccContainer.getFcc())))
+        );
+        this.positionTop.getChildren().add(symmetricDeductionsLevel);
+    }
+
+    @Override
+    public String toString(){
+        return "[\"" + fccContainer.getFcc().toString() + "\"" + " container]";
     }
 
     

@@ -1,11 +1,16 @@
 package extras.tod;
 
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+
+import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class AnalogyContainer extends Group {
@@ -43,58 +48,47 @@ public class AnalogyContainer extends Group {
             
             this.getChildren().add(multiContainer);
             int index = this.getChildren().indexOf(multiContainer);
-            
-            
-            
+
             multiContainer.setLayoutX(index*TRANSLATE_X);
             multiContainer.setLayoutY(-index*TRANSLATE_Y);
-            multiContainer.setOpacity(1-index*TRANSPARENCY);
+            //multiContainer.setOpacity(1-index*TRANSPARENCY);
             multiContainer.toBack();
             
             multiContainer.deploy();
         }
     }
 
+    /**
+     * This method will change the order
+     * @param multiContainer
+     */
     public void turnToFront(MultiContainer multiContainer){
-        
         int POS = getChildren().indexOf(multiContainer);
-        
-        
-        
+        ArrayList<MultiContainer> listMultiContainer = new ArrayList<>();
+
+        for(int i = POS;i>=0;i--){
+            listMultiContainer.add((MultiContainer)getChildren().get(i));
+            getChildren().remove(i);
+        }
+
+        // Add the multiContainers in list in reverse order
+        Collections.reverse(listMultiContainer);
+        getChildren().addAll(listMultiContainer);
+
+        // Position the multiContainers
+        int index = getChildren().size()-1;
+        for(Node n:getChildren()){
+
+            MultiContainer multi = (MultiContainer)n;
+            multi.setLayoutX(index*TRANSLATE_X);
+            multi.setLayoutY(-index*TRANSLATE_Y);
+            //multi.setOpacity(1-index*TRANSPARENCY);
+            index--;
+        }
     }
-    
-//    public void turnToFront(MultiContainer multiContainer){
-//        int POS = getChildren().indexOf(multiContainer);
-//        
-//        int index = 0;
-//        
-//        for(int i=POS;i<getChildren().size();i++){
-//            MultiContainer multi = (MultiContainer)getChildren().get(i);
-//            
-//            multi.setLayoutX(index*TRANSLATE_X);
-//            multi.setLayoutY(-index*TRANSLATE_Y);
-//            multi.toBack();
-//            
-//            System.out.println("Multi " + multi + " in x " + multi.getLayoutX() + " and in y " + multi.getLayoutY());
-//            
-//            index++;
-//        }
-//        
-//        for(int i = 0;i<POS;i++){
-//            MultiContainer multi = (MultiContainer)getChildren().get(i);
-//            
-//            multi.setLayoutX(index*TRANSLATE_X);
-//            multi.setLayoutY(-index*TRANSLATE_Y);
-//            multi.toBack();
-//            
-//            System.out.println("Multi " + multi + " in x " + multi.getLayoutX() + " and in y " + multi.getLayoutY());
-//            
-//            index++;
-//        }
-//        
-//    }
 
     private void setStyle() {
+        //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));
         //this.setAlignment(Pos.CENTER);
     }

@@ -504,7 +504,7 @@ public class AppController {
 
         ArrayList<Inclusion> tempListInclusion = new ArrayList<>();
 
-        // 1. Get all Inclusions it belongs as general.
+        // 1. From inclusions it belongs as general.
         for(Inclusion i:getListInclusions()){
             if(generalsOf(i).contains(dynamismOf(0, fcc))||
                     generalsOf(i).contains(dynamismOf(1, fcc))||
@@ -599,7 +599,22 @@ public class AppController {
         removeDuplicates(listAnalogyForInitial);
 
         orderAnalogyList(listAnalogyForInitial);
-
+        
+        // There's a case in which FCC will not appear because it doesn't 
+        // belong to any general list nor a cClass, in that case we add it
+        // manually
+        for(Analogy a:listAnalogyForInitial){
+            if(a.contains(fcc)){
+                return listAnalogyForInitial;
+            }
+        }
+        
+        // if it gets here it hasn't found an analogy containing the fcc, so we 
+        // create an analogy for it and add it to the listAnalogyForInitial
+        Analogy analogy = new Analogy();
+        analogy.add(fcc);
+        listAnalogyForInitial.add(analogy);
+        
         return listAnalogyForInitial;
     }
 
@@ -634,6 +649,25 @@ public class AppController {
 
     public ArrayList<Analogy> getListAnalogyForPositiveDeduction(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
+        ArrayList<Fcc> tempList = new ArrayList<>();
+        
+        for(General g:getListGenerals()){
+            if(g.getDynamism().equals(dynamism)){
+                tempList.add(g.getInclusion().getDynamism().getFcc());
+            }
+        }
+        
+        System.out.println(tempList);  
+        
+        for(Fcc f:tempList){
+            listAnalogy.addAll(getListAnalogyInclusionOf(f));
+            listAnalogy.addAll(getListAnalogyCClassOf(f));
+        }
+        removeDuplicates(listAnalogy);
+        orderAnalogyList(listAnalogy);
+        
+        System.out.println(listAnalogy);
+        
         return listAnalogy;
     }
 

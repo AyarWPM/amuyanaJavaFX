@@ -11,6 +11,7 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import javafx.geometry.Pos;
 
 
 public class AnalogyContainer extends Group {

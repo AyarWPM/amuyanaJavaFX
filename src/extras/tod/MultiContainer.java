@@ -4,6 +4,7 @@ import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
@@ -60,6 +61,7 @@ public class MultiContainer extends HBox {
 
         positionLeft = new VBox();
         positionCenter = new VBox();
+        positionCenter.setAlignment(Pos.CENTER);
         positionTop = new VBox();
         positionMiddle = new VBox();
         positionBottom=  new VBox();
@@ -76,6 +78,7 @@ public class MultiContainer extends HBox {
     
     private void setStyle(){
         this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
+        //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
     
     private void manageEvents() {
@@ -103,6 +106,7 @@ public class MultiContainer extends HBox {
                 (appController.getListAnalogyForPositiveDeduction(appController.dynamismOf(0,fccContainer.getFcc())))
         );
         this.positionTop.getChildren().add(positiveDeductionsLevel);
+        positiveDeductionsLevel.deploy();
     }
 
     public void deployNegativeDeductions(){

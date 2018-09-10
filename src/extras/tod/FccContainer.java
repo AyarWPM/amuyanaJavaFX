@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 
 import static extras.tod.FccContainer.FccType.NORMAL;
 import static extras.tod.FormulaContainer.Styles.SIMPLE;
+import javafx.geometry.Pos;
 
 public class FccContainer extends TitledPane {
     private static AppController appController;
@@ -128,6 +129,7 @@ public class FccContainer extends TitledPane {
 
     private void setStyle(){
         this.setCollapsible(false);
+        this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
     void deploy(){

@@ -25,7 +25,6 @@ public class LevelContainer extends VBox {
     public LevelContainer(ArrayList<Analogy> listAnalogy) {
         this.listAnalogy = listAnalogy;
         setStyle();
-        System.out.println(this.getAlignment());
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -36,7 +35,7 @@ public class LevelContainer extends VBox {
     private void setStyle() {
         this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(5))));
         this.setSpacing(10);
-        this.setAlignment(Pos.TOP_CENTER);
+        this.setAlignment(Pos.CENTER);
         
     }
 

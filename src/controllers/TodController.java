@@ -103,7 +103,7 @@ public class TodController implements Initializable {
                 if(newValue!=null){
                     
                     // list of fcc's, setting the first one
-                    //listFccsInScene.clear();
+                    listFccsInScene.clear();
                     //listFccsInScene.add(newValue);
                     
                     deployInitial(newValue);
@@ -113,7 +113,6 @@ public class TodController implements Initializable {
     }
 
     private void deployInitial(Fcc newValue) {
-        
         this.todContainer = new TodContainer(newValue);
         todContent.getChildren().clear();
         todContent.getChildren().add(this.todContainer);
@@ -133,8 +132,4 @@ public class TodController implements Initializable {
         FccContainer.setControllers(this.appController, todController);
         FormulaContainer.setControllers(this.appController, todController);
     }
-
-    //AnalogyContainer analogyContainerOf(MultiContainer multiContainer){
-
-    //}
 }

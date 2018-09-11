@@ -83,7 +83,7 @@ public class AnalogyContainer extends Group {
             MultiContainer multi = (MultiContainer)n;
             multi.setLayoutX(index*TRANSLATE_X);
             multi.setLayoutY(-index*TRANSLATE_Y);
-            //multi.setOpacity(1-index*TRANSPARENCY);
+
             index--;
         }
     }

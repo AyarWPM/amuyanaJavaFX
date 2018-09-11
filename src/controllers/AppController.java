@@ -647,7 +647,7 @@ public class AppController {
         return listAnalogyInclusion;
     }
 
-    public ArrayList<Analogy> getListAnalogyForPositiveDeduction(Dynamism dynamism){
+    public ArrayList<Analogy> getListAnalogyForDeduction(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
         ArrayList<Fcc> tempList = new ArrayList<>();
         
@@ -656,21 +656,28 @@ public class AppController {
                 tempList.add(g.getInclusion().getDynamism().getFcc());
             }
         }
-        
-        System.out.println(tempList);  
-        
+
         for(Fcc f:tempList){
             listAnalogy.addAll(getListAnalogyInclusionOf(f));
             listAnalogy.addAll(getListAnalogyCClassOf(f));
         }
+
+        // Take into account those FCC's that aren't part of a general nor a cClass (aka "simple particulars")
+        for(Fcc f:tempList){
+            if(!listAnalogy.contains(f)){
+                Analogy analogy = new Analogy();
+                analogy.add(f);
+                listAnalogy.add(analogy);
+            }
+        }
+
         removeDuplicates(listAnalogy);
         orderAnalogyList(listAnalogy);
-        
-        System.out.println(listAnalogy);
-        
+
         return listAnalogy;
     }
 
+    /*
     public ArrayList<Analogy> getListAnalogyForNegativeDeduction(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
 
@@ -682,4 +689,5 @@ public class AppController {
 
         return listAnalogy;
     }
+    */
 }

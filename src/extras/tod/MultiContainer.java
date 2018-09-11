@@ -3,17 +3,8 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 
@@ -22,15 +13,20 @@ public class MultiContainer extends HBox {
     private static AppController appController;
     private static TodController todController;
     
-    public FccContainer fccContainer;
-    
-    public VBox positionLeft;
-    public VBox positionCenter;
-    
-    public VBox positionRight;
-    public VBox positionTop;
-    public VBox positionMiddle;
-    public VBox positionBottom;
+    private FccContainer fccContainer;
+
+    private VBox positionLeft;
+    private VBox positionCenter;
+
+    private VBox positionRight;
+    private VBox positionTop;
+    private VBox positionMiddle;
+    private VBox positionBottom;
+
+    private boolean inclusionDeployed;
+    private boolean positiveDeductionDeployed;
+    private boolean negativeDeductionDeployed;
+    private boolean symmetricDeductionDeployed;
     
     /** This is the central container.
      * It has 3 columns. 1st is for all the
@@ -60,12 +56,19 @@ public class MultiContainer extends HBox {
         }
 
         positionLeft = new VBox();
+        positionLeft.setAlignment(Pos.CENTER_RIGHT);
+
         positionCenter = new VBox();
         positionCenter.setAlignment(Pos.CENTER);
+
+        positionRight = new VBox();
+        positionRight.setAlignment(Pos.CENTER_LEFT);
+
         positionTop = new VBox();
         positionMiddle = new VBox();
         positionBottom=  new VBox();
-        positionRight = new VBox();
+
+
         
         setStyle();
         manageEvents();
@@ -75,57 +78,111 @@ public class MultiContainer extends HBox {
         MultiContainer.appController = appController;
         MultiContainer.todController = todController;
     }
-    
-    private void setStyle(){
+
+    boolean isInclusionDeployed(){
+        return inclusionDeployed;
+    }
+
+    boolean isPositiveDeductionsDeployed() {
+        return positiveDeductionDeployed;
+    }
+
+    boolean isNegativeDeductionsDeployed() {
+        return negativeDeductionDeployed;
+    }
+
+    boolean isSymmetricDeductionsDeployed() {
+        return symmetricDeductionDeployed;
+    }
+
+    void setInclusionDeployed(boolean inclusionDeployed) {
+        this.inclusionDeployed = inclusionDeployed;
+    }
+
+    void setPositiveDeductionDeployed(boolean positiveDeductionDeployed) {
+        this.positiveDeductionDeployed = positiveDeductionDeployed;
+    }
+
+    void setNegativeDeductionDeployed(boolean negativeDeductionDeployed) {
+        this.negativeDeductionDeployed = negativeDeductionDeployed;
+    }
+
+    void setSymmetricDeductionDeployed(boolean symmetricDeductionDeployed) {
+        this.symmetricDeductionDeployed = symmetricDeductionDeployed;
+    }
+
+    void setStyle(){
         this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
     
-    private void manageEvents() {
+    void manageEvents() {
         
     }
     
     void deploy(){
         this.getChildren().addAll(this.positionLeft,this.positionCenter,this.positionRight);
-        
         this.positionCenter.getChildren().add(this.fccContainer);
-
         this.fccContainer.deploy();
-        
         this.positionRight.getChildren().addAll(this.positionTop,this.positionMiddle,this.positionBottom);
     }
     
-    public void deployInclusions(){
+    void deployInclusions(){
         LevelContainer inclusionLevel = new LevelContainer(appController.getListAnalogyForInclusion(fccContainer.getFcc()));
         this.positionLeft.getChildren().add(inclusionLevel);
         inclusionLevel.deploy();
+        setInclusionDeployed(true);
     }
     
-    public void deployPositiveDeductions(){
+    void deployPositiveDeductions(){
         LevelContainer positiveDeductionsLevel = new LevelContainer(
-                (appController.getListAnalogyForPositiveDeduction(appController.dynamismOf(0,fccContainer.getFcc())))
+                (appController.getListAnalogyForDeduction(appController.dynamismOf(0,fccContainer.getFcc())))
         );
         this.positionTop.getChildren().add(positiveDeductionsLevel);
         positiveDeductionsLevel.deploy();
+        setPositiveDeductionDeployed(true);
     }
 
-    public void deployNegativeDeductions(){
+    void deployNegativeDeductions(){
         LevelContainer negativeDeductionsLevel = new LevelContainer(
-                (appController.getListAnalogyForNegativeDeduction(appController.dynamismOf(1,fccContainer.getFcc())))
+                (appController.getListAnalogyForDeduction(appController.dynamismOf(1,fccContainer.getFcc())))
         );
         this.positionMiddle.getChildren().add(negativeDeductionsLevel);
+        negativeDeductionsLevel.deploy();
+        setNegativeDeductionDeployed(true);
     }
 
-    public void deploySymmetricDeductions(){
+    void deploySymmetricDeductions(){
         LevelContainer symmetricDeductionsLevel = new LevelContainer(
-                (appController.getListAnalogyForSymmetricDeduction(appController.dynamismOf(2,fccContainer.getFcc())))
+                (appController.getListAnalogyForDeduction(appController.dynamismOf(2,fccContainer.getFcc())))
         );
-        this.positionTop.getChildren().add(symmetricDeductionsLevel);
+        this.positionBottom.getChildren().add(symmetricDeductionsLevel);
+        symmetricDeductionsLevel.deploy();
+        setSymmetricDeductionDeployed(true);
     }
+
+    void clearInclusions(){
+        this.positionLeft.getChildren().clear();
+        setInclusionDeployed(false);
+    }
+
+    void clearPositiveDeductions(){
+        this.positionTop.getChildren().clear();
+        setPositiveDeductionDeployed(false);
+    }
+    void clearNegativeDeductions(){
+        this.positionMiddle.getChildren().clear();
+        setNegativeDeductionDeployed(false);
+    }
+    void clearSymmetricDeductions(){
+        this.positionBottom.getChildren().clear();
+        setSymmetricDeductionDeployed(false);
+    }
+
 
     @Override
     public String toString(){
-        return "[\"" + fccContainer.getFcc().toString() + "\"" + " container]";
+        return "[\"" + fccContainer.getFcc().toString() + "\"" + " multiContainer]";
     }
 
     

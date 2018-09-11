@@ -1,6 +1,7 @@
 
 package extras.tod;
 
+import com.sun.org.apache.xpath.internal.operations.Mult;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
@@ -8,6 +9,7 @@ import data.Fcc;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
 import static extras.tod.FccContainer.FccType.NORMAL;
@@ -55,7 +57,45 @@ public class FccContainer extends TitledPane {
 
         this.setText(fcc.getLabel());
 
+        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                info();
+            }
+        });
+
         setStyle();
+    }
+
+    void info(){
+        System.out.println(this);
+        System.out.println(getParent().localToParent(getBoundsInParent()));
+        System.out.println(getParent().getParent().localToParent(getBoundsInParent()) + "\n");
+
+
+/*
+        System.out.println(this.getParent());
+        System.out.println(getParent().getLayoutBounds());
+        System.out.println(getParent().getBoundsInParent());
+
+        System.out.println(this.getParent().getParent());
+        System.out.println(getParent().getParent().getLayoutBounds());
+        System.out.println(getParent().getParent().getBoundsInParent());
+
+        System.out.println(this.getParent().getParent().getParent());
+        System.out.println(getParent().getParent().getParent().getLayoutBounds());
+        System.out.println(getParent().getParent().getParent().getBoundsInParent());
+
+        System.out.println(this.getParent().getParent().getParent().getParent());
+        System.out.println(getParent().getParent().getParent().getParent().getLayoutBounds());
+        System.out.println(getParent().getParent().getParent().getParent().getBoundsInParent());
+
+        System.out.println(this.getParent().getParent().getParent().getParent().getParent());
+        System.out.println(getParent().getParent().getParent().getParent().getParent().getLayoutBounds());
+        System.out.println(getParent().getParent().getParent().getParent().getParent().getBoundsInParent());
+        */
+
+
     }
 
     private void setMenu(FccType type){
@@ -81,7 +121,11 @@ public class FccContainer extends TitledPane {
                 inclusion.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        multiContainer.deployInclusions();
+                        if(multiContainer.isInclusionDeployed()){
+                            multiContainer.clearInclusions();
+                        } else if(!multiContainer.isInclusionDeployed()){
+                            multiContainer.deployInclusions();
+                        }
                     }
                 });
 
@@ -90,7 +134,11 @@ public class FccContainer extends TitledPane {
                 positiveDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        multiContainer.deployPositiveDeductions();
+                        if(multiContainer.isPositiveDeductionsDeployed()){
+                            multiContainer.clearPositiveDeductions();
+                        } else if(!multiContainer.isPositiveDeductionsDeployed()){
+                            multiContainer.deployPositiveDeductions();
+                        }
                     }
                 });
 
@@ -98,7 +146,11 @@ public class FccContainer extends TitledPane {
                 negativeDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        multiContainer.deployNegativeDeductions();
+                        if(multiContainer.isNegativeDeductionsDeployed()){
+                            multiContainer.clearNegativeDeductions();
+                        } else if(!multiContainer.isNegativeDeductionsDeployed()){
+                            multiContainer.deployNegativeDeductions();
+                        }
                     }
                 });
 
@@ -106,7 +158,11 @@ public class FccContainer extends TitledPane {
                 symmetricDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        multiContainer.deploySymmetricDeductions();
+                        if(multiContainer.isSymmetricDeductionsDeployed()){
+                            multiContainer.clearSymmetricDeductions();
+                        } else if(!multiContainer.isSymmetricDeductionsDeployed()){
+                            multiContainer.deploySymmetricDeductions();
+                        }
                     }
                 });
 
@@ -129,7 +185,7 @@ public class FccContainer extends TitledPane {
 
     private void setStyle(){
         this.setCollapsible(false);
-        this.setAlignment(Pos.BOTTOM_RIGHT);
+        //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
     void deploy(){

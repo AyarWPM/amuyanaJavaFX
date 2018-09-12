@@ -70,7 +70,7 @@ public class MultiContainer extends HBox {
 
 
         
-        setStyle();
+        setProperties();
         manageEvents();
     }
 
@@ -111,8 +111,9 @@ public class MultiContainer extends HBox {
         this.symmetricDeductionDeployed = symmetricDeductionDeployed;
     }
 
-    void setStyle(){
+    void setProperties(){
         this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
+        this.setSpacing(40);
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
     

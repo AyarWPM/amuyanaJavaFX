@@ -15,6 +15,7 @@ import javafx.scene.layout.VBox;
 import static extras.tod.FccContainer.FccType.NORMAL;
 import static extras.tod.FormulaContainer.Styles.SIMPLE;
 import javafx.geometry.Pos;
+import javafx.scene.layout.Border;
 
 public class FccContainer extends TitledPane {
     private static AppController appController;
@@ -64,38 +65,13 @@ public class FccContainer extends TitledPane {
             }
         });
 
-        setStyle();
+        setProperties();
     }
 
     void info(){
         System.out.println(this);
         System.out.println(getParent().localToParent(getBoundsInParent()));
         System.out.println(getParent().getParent().localToParent(getBoundsInParent()) + "\n");
-
-
-/*
-        System.out.println(this.getParent());
-        System.out.println(getParent().getLayoutBounds());
-        System.out.println(getParent().getBoundsInParent());
-
-        System.out.println(this.getParent().getParent());
-        System.out.println(getParent().getParent().getLayoutBounds());
-        System.out.println(getParent().getParent().getBoundsInParent());
-
-        System.out.println(this.getParent().getParent().getParent());
-        System.out.println(getParent().getParent().getParent().getLayoutBounds());
-        System.out.println(getParent().getParent().getParent().getBoundsInParent());
-
-        System.out.println(this.getParent().getParent().getParent().getParent());
-        System.out.println(getParent().getParent().getParent().getParent().getLayoutBounds());
-        System.out.println(getParent().getParent().getParent().getParent().getBoundsInParent());
-
-        System.out.println(this.getParent().getParent().getParent().getParent().getParent());
-        System.out.println(getParent().getParent().getParent().getParent().getParent().getLayoutBounds());
-        System.out.println(getParent().getParent().getParent().getParent().getParent().getBoundsInParent());
-        */
-
-
     }
 
     private void setMenu(FccType type){
@@ -183,9 +159,8 @@ public class FccContainer extends TitledPane {
         this.setContextMenu(menu);
     }
 
-    private void setStyle(){
+    private void setProperties(){
         this.setCollapsible(false);
-        //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
     void deploy(){

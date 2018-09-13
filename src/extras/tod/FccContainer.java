@@ -14,8 +14,11 @@ import javafx.scene.layout.VBox;
 
 import static extras.tod.FccContainer.FccType.NORMAL;
 import static extras.tod.FormulaContainer.Styles.SIMPLE;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.layout.Border;
+import javafx.scene.shape.Circle;
 
 public class FccContainer extends TitledPane {
     private static AppController appController;
@@ -61,31 +64,29 @@ public class FccContainer extends TitledPane {
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                info();
+                debug();
             }
         });
 
         setProperties();
     }
 
-    void info(){
-        System.out.println(this);
-        System.out.println(getParent().localToParent(getBoundsInParent()));
-        System.out.println(getParent().getParent().localToParent(getBoundsInParent()) + "\n");
+    void debug(){
+        
     }
-
+    
     private void setMenu(FccType type){
         this.menu = new ContextMenu();
 
-        MultiContainer multiContainer = (MultiContainer)getParent().getParent();
-        AnalogyContainer analogyContainer = (AnalogyContainer)multiContainer.getParent();
+        MultiContainer parentMultiContainer = (MultiContainer)getParent().getParent();
+        AnalogyContainer analogyContainer = (AnalogyContainer)parentMultiContainer.getParent();
 
         MenuItem muimTurnToFront = new MenuItem("Turn to this");
         
         muimTurnToFront.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                analogyContainer.turnToFront(multiContainer);
+                analogyContainer.turnToFront(parentMultiContainer);
             }
         });
 
@@ -97,10 +98,10 @@ public class FccContainer extends TitledPane {
                 inclusion.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        if(multiContainer.isInclusionDeployed()){
-                            multiContainer.clearInclusions();
-                        } else if(!multiContainer.isInclusionDeployed()){
-                            multiContainer.deployInclusions();
+                        if(parentMultiContainer.isInclusionDeployed()){
+                            parentMultiContainer.clearInclusions();
+                        } else if(!parentMultiContainer.isInclusionDeployed()){
+                            parentMultiContainer.deployInclusions();
                         }
                     }
                 });
@@ -110,10 +111,10 @@ public class FccContainer extends TitledPane {
                 positiveDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        if(multiContainer.isPositiveDeductionsDeployed()){
-                            multiContainer.clearPositiveDeductions();
-                        } else if(!multiContainer.isPositiveDeductionsDeployed()){
-                            multiContainer.deployPositiveDeductions();
+                        if(parentMultiContainer.isPositiveDeductionsDeployed()){
+                            parentMultiContainer.clearPositiveDeductions();
+                        } else if(!parentMultiContainer.isPositiveDeductionsDeployed()){
+                            parentMultiContainer.deployPositiveDeductions();
                         }
                     }
                 });
@@ -122,10 +123,10 @@ public class FccContainer extends TitledPane {
                 negativeDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        if(multiContainer.isNegativeDeductionsDeployed()){
-                            multiContainer.clearNegativeDeductions();
-                        } else if(!multiContainer.isNegativeDeductionsDeployed()){
-                            multiContainer.deployNegativeDeductions();
+                        if(parentMultiContainer.isNegativeDeductionsDeployed()){
+                            parentMultiContainer.clearNegativeDeductions();
+                        } else if(!parentMultiContainer.isNegativeDeductionsDeployed()){
+                            parentMultiContainer.deployNegativeDeductions();
                         }
                     }
                 });
@@ -134,10 +135,10 @@ public class FccContainer extends TitledPane {
                 symmetricDeductions.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-                        if(multiContainer.isSymmetricDeductionsDeployed()){
-                            multiContainer.clearSymmetricDeductions();
-                        } else if(!multiContainer.isSymmetricDeductionsDeployed()){
-                            multiContainer.deploySymmetricDeductions();
+                        if(parentMultiContainer.isSymmetricDeductionsDeployed()){
+                            parentMultiContainer.clearSymmetricDeductions();
+                        } else if(!parentMultiContainer.isSymmetricDeductionsDeployed()){
+                            parentMultiContainer.deploySymmetricDeductions();
                         }
                     }
                 });
@@ -177,7 +178,14 @@ public class FccContainer extends TitledPane {
         } else if(this.type==FccType.MIRROR){
             this.setContent(new Label("The FCC has been\ndrawn somewhere else..."));
         }
-
+        
+        DoubleProperty start = new SimpleDoubleProperty();
+        //start.bind(this.);
+        Circle c = new Circle(start.get(), start.get(), 10);
+        VBox v = (VBox)getParent();
+        v.getChildren().add(c);
+        System.out.println(c.getCenterX());
+        
         setMenu(this.type);
     }
 }

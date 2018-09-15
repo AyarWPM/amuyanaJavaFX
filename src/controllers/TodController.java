@@ -34,38 +34,32 @@ import javafx.scene.layout.HBox;
 public class TodController implements Initializable {
 
     private AppController appController;
-
     private TodContainer todContainer;
     
     @FXML private HBox todContent;
-    
-    // MENU BAR
-    @FXML private TitledPane tdpeFcc;
-    @FXML private TitledPane tdpeTod;
-    @FXML private Accordion anMenu;
-    
-    // When nothing is selected, only menu of the TOD
-
     @FXML private ComboBox<Fcc> cobxFcc;
-    @FXML private ComboBox<CClass> cobxCClass;
-    @FXML private ComboBox<Inclusion> cobxInclusion;
-    
-    // When a FCC is selected
-    @FXML private ToggleButton tebnExpandInclusions;
-    @FXML private ToggleButton tebnExpandPositive;
-    @FXML private ToggleButton tebnExpandNegative;
-    @FXML private ToggleButton tebnExpandSymmetric;
-    
-    private static ArrayList<Fcc> listFccsInScene;
 
-    //public static ArrayList<MultiContainer> listMultiContainers;
-    
+    //private static ArrayList<Fcc> listFccsInScene;
+
+    private static ArrayList<FccContainer> listFccContainers;
+
+    public static boolean isInTod(Fcc fcc) {
+        //boolean itIs = false;
+        for(FccContainer fc : listFccContainers){
+            if(fc.getFcc().equals(fcc)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-        listFccsInScene = new ArrayList<>();
+        listFccContainers = new ArrayList<>();
 
         manageEvents();
+
     }
     
     public void setAppController(AppController aThis) {
@@ -75,18 +69,23 @@ public class TodController implements Initializable {
         
     }
 
-    public static ArrayList<Fcc> getListFccsInScene() {
-        return listFccsInScene;
+    public static ArrayList<FccContainer> getListFccContainers() {
+        return listFccContainers;
     }
 
-    public static void addFccInScene(Fcc fcc) {
-        listFccsInScene.add(fcc);
-    }
+    /*
+        public static ArrayList<Fcc> getListFccsInScene() {
+            return listFccsInScene;
+        }
 
-    public static void removeFccInScene(Fcc fcc) {
-        listFccsInScene.remove(fcc);
-    }
+        public static void addFccInScene(Fcc fcc) {
+            listFccsInScene.add(fcc);
+        }
 
+        public static void removeFccInScene(Fcc fcc) {
+            listFccsInScene.remove(fcc);
+        }
+    */
     private void log(String debug, String message) {
         appController.addLog(debug, message);
     }
@@ -103,7 +102,7 @@ public class TodController implements Initializable {
                 if(newValue!=null){
                     
                     // list of fcc's, setting the first one
-                    listFccsInScene.clear();
+                    //listFccsInScene.clear();
                     //listFccsInScene.add(newValue);
                     
                     deployInitial(newValue);

@@ -31,16 +31,17 @@ public class FormulaContainer extends HBox {
      * of Deductions.
      *
      */
-    public FormulaContainer() {
+    public FormulaContainer(Dynamism dynamism) {
         // we don't need to instantiate this
         //this.listDynamisms = new ArrayList<>();
+        this.listDynamisms = new ArrayList<>();
+        this.listDynamisms.add(dynamism);
     }
 
 
     public void setDynamism(Dynamism dynamism){
         // Don't forget to "reset" the list because this method will be called several times
-        this.listDynamisms = new ArrayList<>();
-        this.listDynamisms.add(dynamism);
+
     }
 
     public void setListDynamisms(ArrayList<Dynamism> listDynamisms){

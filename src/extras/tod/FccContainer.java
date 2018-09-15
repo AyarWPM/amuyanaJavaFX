@@ -1,37 +1,43 @@
 
 package extras.tod;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import static extras.tod.FccContainer.FccType.NORMAL;
 import static extras.tod.FormulaContainer.Styles.SIMPLE;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.geometry.Pos;
-import javafx.scene.layout.Border;
-import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
 
-public class FccContainer extends TitledPane {
+public class FccContainer extends VBox {
     private static AppController appController;
     private static TodController todController;
     
     private final Fcc fcc;
-    private final FormulaContainer positiveFormula;
-    private final FormulaContainer negativeFormula;
-    private final FormulaContainer symmetricFormula;
+
+    Text bracket;
+    HBox content;
+    HBox header;
+    Label title;
+    GridPane formulas;
+
+    private FormulaContainer positiveFormula;
+    private FormulaContainer negativeFormula;
+    private FormulaContainer symmetricFormula;
 
     private FccType type;
 
-    private ContextMenu menu;
+    private final Label MIRROR_MESSAGE = new Label("The FCC has been\ndrawn somewhere else...");
 
     enum FccType{NORMAL, MIRROR}
 
@@ -48,18 +54,22 @@ public class FccContainer extends TitledPane {
         this.type = type;
     }
 
+    public FccType getType(){
+        return this.type;
+    }
+
     FccContainer(Fcc fcc){
         this.fcc = fcc;
 
-        this.positiveFormula = new FormulaContainer();
-        this.negativeFormula = new FormulaContainer();
-        this.symmetricFormula = new FormulaContainer();
+        //initContainer();
+        this.title = new Label();
 
-        this.positiveFormula.setDynamism(appController.dynamismOf(0, fcc));
-        this.negativeFormula.setDynamism(appController.dynamismOf(1, fcc));
-        this.symmetricFormula.setDynamism(appController.dynamismOf(2, fcc));
+        this.formulas = new GridPane();
 
-        this.setText(fcc.getLabel());
+        // methods that could be accessed later
+        setTitle(fcc.getLabel());
+        setFormulas();
+        setStyle();
 
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -67,21 +77,43 @@ public class FccContainer extends TitledPane {
                 debug();
             }
         });
+    }
 
-        setProperties();
+    private void setStyle(){
+        //this.setAlignment(Pos.CENTER_RIGHT);
+        setStyle("-fx-background-color:ivory");
+    }
+
+    private void setTitle(String label) {
+        this.title.setText(label);
+    }
+
+    private void setFormulas(){
+        this.positiveFormula = new FormulaContainer(appController.dynamismOf(0, fcc));
+        this.negativeFormula = new FormulaContainer(appController.dynamismOf(1, fcc));
+        this.symmetricFormula = new FormulaContainer(appController.dynamismOf(2, fcc));
+
+        this.formulas.add(this.positiveFormula,0,0);
+        this.formulas.add(this.negativeFormula,0,1);
+        this.formulas.add(this.symmetricFormula,0,2);
+
+        this.positiveFormula.write(SIMPLE);
+        this.negativeFormula.write(SIMPLE);
+        this.symmetricFormula.write(SIMPLE);
     }
 
     void debug(){
-        
+        System.out.println(bracket.prefHeight(-1));
+        System.out.println(content.getHeight());
     }
     
-    private void setMenu(FccType type){
-        this.menu = new ContextMenu();
+    private MenuButton getMenu(){
+        MenuButton menu = new MenuButton();
 
         MultiContainer parentMultiContainer = (MultiContainer)getParent().getParent();
         AnalogyContainer analogyContainer = (AnalogyContainer)parentMultiContainer.getParent();
 
-        MenuItem muimTurnToFront = new MenuItem("Turn to this");
+        MenuItem muimTurnToFront = new MenuItem("Show in front");
         
         muimTurnToFront.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -90,7 +122,7 @@ public class FccContainer extends TitledPane {
             }
         });
 
-        switch(type){
+        switch(this.type){
             case NORMAL:{
                 Menu deployMenu = new Menu("Deploy");
 
@@ -105,7 +137,6 @@ public class FccContainer extends TitledPane {
                         }
                     }
                 });
-
 
                 CheckMenuItem positiveDeductions= new CheckMenuItem("Deploy positive deductions");
                 positiveDeductions.setOnAction(new EventHandler<ActionEvent>() {
@@ -145,47 +176,81 @@ public class FccContainer extends TitledPane {
 
 
                 deployMenu.getItems().addAll(inclusion, positiveDeductions, negativeDeductions, symmetricDeductions);
-                this.menu.getItems().addAll(muimTurnToFront,deployMenu);
+
+                menu.getItems().addAll(muimTurnToFront,deployMenu);
 
                 break;
             }
             case MIRROR:{
                 MenuItem drawHere = new MenuItem("Draw here");
-                this.menu.getItems().addAll(muimTurnToFront,drawHere);
+
+                drawHere.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        drawHere();
+                    }
+                });
+
+                menu.getItems().addAll(muimTurnToFront,drawHere);
                 break;
             }
             default: break;
         }
 
-        this.setContextMenu(menu);
-    }
-
-    private void setProperties(){
-        this.setCollapsible(false);
+        return menu;
     }
 
     void deploy(){
+        header = new HBox();
+        content = new HBox();
+
+        header.getChildren().add(this.title);
+        header.setAlignment(Pos.CENTER);
+
+        header.getChildren().add(getMenu());
+
+        bracket = new Text("{");
+
+        //scaleBracket(bracket);
+
+        content.getChildren().add(bracket);
+        content.getChildren().add(new HBox()); // this will be replace right away
 
         if(this.type==NORMAL){
-            VBox vBox = new VBox();
-            vBox.getChildren().addAll(this.positiveFormula,this.negativeFormula,this.symmetricFormula);
-            vBox.setSpacing(3);
-            this.setContent(vBox);
-            this.positiveFormula.write(SIMPLE);
-            this.negativeFormula.write(SIMPLE);
-            this.symmetricFormula.write(SIMPLE);
-
-        } else if(this.type==FccType.MIRROR){
-            this.setContent(new Label("The FCC has been\ndrawn somewhere else..."));
+            setNormal();
+            //content.getChildren().add(this.formulas);
+        } else if(this.type == FccType.MIRROR){
+            setMirror();
         }
-        
-        DoubleProperty start = new SimpleDoubleProperty();
-        //start.bind(this.);
-        Circle c = new Circle(start.get(), start.get(), 10);
-        VBox v = (VBox)getParent();
-        v.getChildren().add(c);
-        System.out.println(c.getCenterX());
-        
-        setMenu(this.type);
+
+        this.getChildren().add(header);
+        this.getChildren().add(content);
+
+    }
+
+    private void drawHere() {
+        // clear content, add the formulas and change type
+        this.setNormal();
+
+        // Find the FccContainer where it was drawn and make it mirror
+        // setMirror();
+        for(FccContainer fc:TodController.getListFccContainers()){
+            if(fc.getType().equals(FccType.NORMAL)){
+
+            }
+        }
+    }
+
+    private void setNormal(){
+        this.setType(FccType.NORMAL);
+        this.header.getChildren().set(1,getMenu());
+        this.content.getChildren().set(1,this.formulas);
+    }
+
+    private void setMirror(){
+        this.setType(FccType.MIRROR);
+        this.header.getChildren().set(1,getMenu());
+        this.content.getChildren().set(1,this.MIRROR_MESSAGE);
+
     }
 }

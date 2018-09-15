@@ -37,9 +37,9 @@ public class MultiContainer extends HBox {
      * - 1st is the 1st column which is a VBox
      * - 2nd is the 2nd column which is also a VBox
      * - 3d is first position of VBox occupying the 3d column
-     * - 4th is center 
+     * - 4th is center
      * - 5th is bottom
-     * 
+     *
      * @param fcc
     */
             
@@ -47,13 +47,14 @@ public class MultiContainer extends HBox {
 
         this.fccContainer = new FccContainer(fcc);
 
-        if(TodController.getListFccsInScene().contains(fcc)){
+        //if(TodController.getListFccContainers().contains(fcc)){
+        if(TodController.isInTod(fcc)){
             fccContainer.setType(FccContainer.FccType.MIRROR);
-        } else if(!TodController.getListFccsInScene().contains(fcc)){
-
-            TodController.addFccInScene(fcc);
+        } else if(!TodController.isInTod(fcc)){
             fccContainer.setType(FccContainer.FccType.NORMAL);
         }
+
+        TodController.getListFccContainers().add(this.fccContainer);
 
         positionLeft = new VBox();
         positionLeft.setAlignment(Pos.CENTER_RIGHT);
@@ -68,8 +69,6 @@ public class MultiContainer extends HBox {
         positionMiddle = new VBox();
         positionBottom=  new VBox();
 
-
-        
         setProperties();
         manageEvents();
     }
@@ -113,7 +112,7 @@ public class MultiContainer extends HBox {
 
     void setProperties(){
         this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
-        this.setSpacing(40);
+        this.setSpacing(30);
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
     
@@ -126,6 +125,7 @@ public class MultiContainer extends HBox {
         this.positionCenter.getChildren().add(this.fccContainer);
         this.fccContainer.deploy();
         this.positionRight.getChildren().addAll(this.positionTop,this.positionMiddle,this.positionBottom);
+        //this.fccContainer.scale
     }
     
     void deployInclusions(){

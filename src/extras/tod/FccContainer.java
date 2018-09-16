@@ -190,7 +190,7 @@ public class FccContainer extends VBox {
                         drawHere();
                     }
                 });
-
+                
                 menu.getItems().addAll(muimTurnToFront,drawHere);
                 break;
             }
@@ -229,14 +229,13 @@ public class FccContainer extends VBox {
     }
 
     private void drawHere() {
-        // clear content, add the formulas and change type
-        this.setNormal();
-
-        // Find the FccContainer where it was drawn and make it mirror
-        // setMirror();
+        // Find the MultiContainer that contains the FccContainer of the 
+        // fcc of type NORMAL, then switch it...
+        
         for(FccContainer fc:TodController.getListFccContainers()){
             if(fc.getType().equals(FccType.NORMAL)){
-
+                MultiContainer multiContainer = (MultiContainer)fc.getParent().getParent();
+                
             }
         }
     }

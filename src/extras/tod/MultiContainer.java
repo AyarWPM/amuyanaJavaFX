@@ -47,7 +47,6 @@ public class MultiContainer extends HBox {
 
         this.fccContainer = new FccContainer(fcc);
 
-        //if(TodController.getListFccContainers().contains(fcc)){
         if(TodController.isInTod(fcc)){
             fccContainer.setType(FccContainer.FccType.MIRROR);
         } else if(!TodController.isInTod(fcc)){

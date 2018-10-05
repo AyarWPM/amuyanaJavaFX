@@ -402,13 +402,24 @@ public class TodController implements Initializable {
     }
 
     private void positionMultiContainers(){
-        // start by the last levelContainers
-
-        for(Node ac:getTodContainer().getMainLevelContainer().getChildren()){
+        // start by the last levelContainer
+        
+        for(Node nodeAnalogy:getTodContainer().getMainLevelContainer().getChildren()){
             AnalogyContainer analogyContainer = (AnalogyContainer)ac;
-            
-
+            /*
+            // For each MultiContainer in each analogy
+            for(node nodeMulti:analogyContainer.getChildren()){
+                MultiContainer multiContainer = (MultiContainer)nodeMulti;
+                
+                if()
+                
+            }
+*/
         }
+        
+        //AnalogyContainer analogyContainer = (AnalogyContainer)todContainer.getMainLevelContainer().getChildren().get(0);
+        
+        
 
     }
 

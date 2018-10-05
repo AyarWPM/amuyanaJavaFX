@@ -43,29 +43,23 @@ public class AnalogyContainer extends Group {
         
     }
 
-
-
     void deploy(){
-
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
 
             this.getChildren().add(multiContainer);
-
+/*
             int index = this.getChildren().indexOf(multiContainer);
             multiContainer.setLayoutX(-index*TRANSLATE_X);
             multiContainer.setLayoutY(index*TRANSLATE_Y);
-
+*/
             //setPosition(multiContainer);
             
             multiContainer.deploy();
-
         }
-
     }
 
     void setPosition(MultiContainer multiContainer){
-
 
     }
 
@@ -87,6 +81,7 @@ public class AnalogyContainer extends Group {
         getChildren().addAll(listMultiContainer);
 
         // Position the multiContainers
+/*
         int index = getChildren().size()-1;
         for(Node n:getChildren()){
 
@@ -96,6 +91,7 @@ public class AnalogyContainer extends Group {
 
             index--;
         }
+*/
     }
 
     private void setStyle() {

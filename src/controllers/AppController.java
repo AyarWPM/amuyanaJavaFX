@@ -81,9 +81,6 @@ public class AppController {
     TableColumn<Log, String> tecnType;
     TableColumn<Log, String> tecnMessage;
 
-
-
-
     public void initialize() throws IOException {
         initLog();
 
@@ -93,58 +90,6 @@ public class AppController {
 
         settingsController.autoClicks();
         addLog("System", "Welcome to Amuyaña! Waiting for user actions.");
-    }
-
-    public ObservableList<LogicSystem> getListLogicSystem(){
-        return logicSystemController.getListLogicSystem();
-    }
-
-    public ObservableList<Fcc> getListFcc(){
-        return dualitiesController.getListFcc();
-    }
-
-    public ObservableList<FccHasLogicSystem> getListFccHasLogicSystem(){
-        return dualitiesController.getListFccHasLogicSystem();
-    }
-
-    public ObservableList<Element> getListElements(){
-        return dualitiesController.getListElement();
-    }
-
-    public ObservableList<Dynamism> getListDynamisms(){
-        return dualitiesController.getListDynamisms();
-    }
-
-    public ObservableList<CClass> getListCClass() {
-        return cClassController.getListCClass();
-    }
-
-    public ObservableList<CClassHasFcc> getListCClassHasFcc() {
-        return cClassController.getListCClassHasFcc();
-    }
-
-    public ObservableList<Inclusion> getListInclusions(){
-        return inclusionController.getListInclusions();
-    }
-
-    public ObservableList<General> getListGenerals(){
-        return inclusionController.getListGenerals();
-    }
-
-    public ObservableList<User> getListUser(){
-        return settingsController.getListUser();
-    }
-
-    public Conexion getConexion(){
-        return this.conexion;
-    }
-
-    public ObservableList<Log> getListLog() {
-        return listLog;
-    }
-
-    public AppController getAppController(){
-        return this;
     }
 
     private void loadModules() throws IOException {
@@ -228,7 +173,6 @@ public class AppController {
 //        Space.loadList(conexion.getConnection(), listSpace);
 //        Time.loadList(conexion.getConnection(), listTime);
 //        Quantum.loadList(conexion.getConnection(), listQuantum);
-
 
         for(Module m:Module.values()){
             switch(m){
@@ -329,69 +273,56 @@ public class AppController {
         conexion.cerrarConexion();
     }
 
-    @FXML public void showHideLog(){
-        if("Show Log panel".equals(muimShowHideLog.getText())) {
-            stpeContents.getItems().add(slpeLog);
-            muimShowHideLog.setText("Hide Log panel");
-
-        } else if ("Hide Log panel".equals(muimShowHideLog.getText())){
-            stpeContents.getItems().remove(stpeContents.getItems().size()-1);
-            muimShowHideLog.setText("Show Log panel");
-        }
+    public ObservableList<LogicSystem> getListLogicSystem(){
+        return logicSystemController.getListLogicSystem();
     }
 
-    public void clearLists(){
-        logicSystemController.getListLogicSystem().clear();
-
+    public ObservableList<Fcc> getListFcc(){
+        return dualitiesController.getListFcc();
     }
 
-    // called from dualityController to reload the list of dynamisms once we
-    // create or duplicate new fccs
-    public void refreshDataInclusionModule(){
-        inclusionController.refreshData();
+    public ObservableList<FccHasLogicSystem> getListFccHasLogicSystem(){
+        return dualitiesController.getListFccHasLogicSystem();
     }
 
-    public void refreshDataClassModule(){
-        cClassController.refreshData();
+    public ObservableList<Element> getListElements(){
+        return dualitiesController.getListElement();
     }
 
-    public void initLog(){
-
-        tevwLog = new TableView(listLog);
-
-        slpeLog = new ScrollPane(tevwLog);
-        slpeLog.setFitToWidth(true);
-        slpeLog.setFitToHeight(true);
-
-        tecnDate = new TableColumn<>("Date");
-        tecnType = new TableColumn<>("Type");
-        tecnMessage = new TableColumn<>("Message");
-
-        tecnDate.setCellValueFactory(new PropertyValueFactory<Log,Timestamp>("date"));
-        tecnType.setCellValueFactory(new PropertyValueFactory<Log,String>("type"));
-        tecnMessage.setCellValueFactory(new PropertyValueFactory<Log,String>("message"));
-
-        tevwLog.getColumns().addAll(tecnDate,tecnType,tecnMessage);
-
-        //listLog = FXCollections.observableArrayList();
-        tevwLog.setItems(listLog);
-
-//        tevwLog.getSelectionModel().selectedItemProperty().addListener(
-//				new ChangeListener<Log>() {
-//					@Override
-//					public void changed(ObservableValue<? extends Log> arg0,
-//							Log valorAnterior, Log valorSeleccionado) {
-//                                            // TODO
-//                                            System.out.println("selection was " + valorAnterior + " y ahora es: " + valorSeleccionado);
-//                                    }
-//                                }
-//		);
-
-
+    public ObservableList<Dynamism> getListDynamisms(){
+        return dualitiesController.getListDynamisms();
     }
 
-    public void addLog(String type, String message){
-        listLog.add(new Log(Timestamp.valueOf(LocalDateTime.now()), type, message));
+    public ObservableList<CClass> getListCClass() {
+        return cClassController.getListCClass();
+    }
+
+    public ObservableList<CClassHasFcc> getListCClassHasFcc() {
+        return cClassController.getListCClassHasFcc();
+    }
+
+    public ObservableList<Inclusion> getListInclusions(){
+        return inclusionController.getListInclusions();
+    }
+
+    public ObservableList<General> getListGenerals(){
+        return inclusionController.getListGenerals();
+    }
+
+    public ObservableList<User> getListUser(){
+        return settingsController.getListUser();
+    }
+
+    public Conexion getConexion(){
+        return this.conexion;
+    }
+
+    public ObservableList<Log> getListLog() {
+        return listLog;
+    }
+
+    public AppController getAppController(){
+        return this;
     }
 
     public Element elementOf(int polarity, Fcc fcc){
@@ -477,22 +408,6 @@ public class AppController {
         return listCClassOf;
     }
 
-    public ArrayList<Dynamism> debugDynamisms(){
-        int[] idDynamisms = new int[]{36};
-        ArrayList<Dynamism> listDynamisms = new ArrayList<>();
-
-        for(int i:idDynamisms){
-            for(Dynamism d:getListDynamisms()){
-                if(d.getIdDynamism()==i){
-                    listDynamisms.add(d);
-                }
-            }
-        }
-
-        return listDynamisms;
-    }
-
-
     /**
      * This method returns a list of lists (Analogy is a list) of FCC's that are generals
      * @param fcc
@@ -529,15 +444,12 @@ public class AppController {
             }
             list.add(tempList);
         }
-
         return list;
     }
 
     private ArrayList<Analogy> getListAnalogyCClassOf(Fcc fcc){
-
         // Get all Classes the initial FCC belongs in, convert each class
         // into an Analogy containing fccs only
-
         ArrayList<Analogy> list = new ArrayList<>();
 
         Analogy tempAnalogy = new Analogy();
@@ -548,37 +460,6 @@ public class AppController {
             list.add(tempAnalogy);
         }
         return list;
-    }
-
-    private void removeDuplicates(ArrayList<Analogy> listAnalogy){
-        Set<Analogy> listAnalogyWithoutDuplicates = new HashSet<>(listAnalogy);
-        listAnalogy.clear();
-        listAnalogy.addAll(listAnalogyWithoutDuplicates);
-
-        ArrayList<Analogy> tempList = new ArrayList<>();
-
-        for(Analogy a:listAnalogy){
-            for(Analogy b:listAnalogy){
-                if(a!=b){
-                    if(a.containsAll(b)&&b.containsAll(a)){
-                        if(!tempList.contains(b)){
-                            tempList.add(a);
-                        }
-                    }
-                }
-            }
-        }
-
-        listAnalogy.removeAll(tempList);
-    }
-
-    private void orderAnalogyList(ArrayList<Analogy> listAnalogyForInitial) {
-        Collections.sort(listAnalogyForInitial, new Comparator<ArrayList>(){
-            @Override
-            public int compare(ArrayList a1, ArrayList a2) {
-                return a1.size() - a2.size(); // assumes you want biggest to smallest
-            }
-        });
     }
 
     /**
@@ -599,8 +480,8 @@ public class AppController {
         removeDuplicates(listAnalogyForInitial);
 
         orderAnalogyList(listAnalogyForInitial);
-        
-        // There's a case in which FCC will not appear because it doesn't 
+
+        // There's a case in which FCC will not appear because it doesn't
         // belong to any general list nor a cClass, in that case we add it
         // manually
         for(Analogy a:listAnalogyForInitial){
@@ -608,13 +489,13 @@ public class AppController {
                 return listAnalogyForInitial;
             }
         }
-        
-        // if it gets here it hasn't found an analogy containing the fcc, so we 
+
+        // if it gets here it hasn't found an analogy containing the fcc, so we
         // create an analogy for it and add it to the listAnalogyForInitial
         Analogy analogy = new Analogy();
         analogy.add(fcc);
         listAnalogyForInitial.add(analogy);
-        
+
         return listAnalogyForInitial;
     }
 
@@ -650,7 +531,7 @@ public class AppController {
     public ArrayList<Analogy> getListAnalogyForDeduction(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
         ArrayList<Fcc> tempList = new ArrayList<>();
-        
+
         for(General g:getListGenerals()){
             if(g.getDynamism().equals(dynamism)){
                 tempList.add(g.getInclusion().getDynamism().getFcc());
@@ -677,6 +558,41 @@ public class AppController {
         return listAnalogy;
     }
 
+    public boolean isDeduction(Dynamism effect, Dynamism cause){
+        System.out.println("entering isDeduction...");
+        for(Inclusion i:getListInclusions()){
+            System.out.println("A for ok...");
+            if(i.getDynamism().equals(effect)){
+                System.out.println("A if ok...");
+                for(Dynamism d:generalsOf(i)){
+                    System.out.println("B for ok...");
+                    if(d.equals(cause)){
+                        System.out.println("A if ok...");
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
+    public boolean isDeduction(Fcc deducedFcc, Dynamism cause){
+        for(Inclusion i:getListInclusions()){
+            if(i.getDynamism().equals(dynamismOf(0,deducedFcc))||
+                    i.getDynamism().equals(dynamismOf(1,deducedFcc))||
+                    i.getDynamism().equals(dynamismOf(2,deducedFcc))){
+                for(Dynamism d:generalsOf(i)){
+                    if(d.equals(cause)){
+                        return true;
+                    }
+                }
+
+            }
+        }
+        return false;
+    }
+
     /*
     public ArrayList<Analogy> getListAnalogyForNegativeDeduction(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
@@ -690,4 +606,100 @@ public class AppController {
         return listAnalogy;
     }
     */
+
+    @FXML public void showHideLog(){
+        if("Show Log panel".equals(muimShowHideLog.getText())) {
+            stpeContents.getItems().add(slpeLog);
+            muimShowHideLog.setText("Hide Log panel");
+
+        } else if ("Hide Log panel".equals(muimShowHideLog.getText())){
+            stpeContents.getItems().remove(stpeContents.getItems().size()-1);
+            muimShowHideLog.setText("Show Log panel");
+        }
+    }
+
+    // TODO
+    public void clearLists(){
+        logicSystemController.getListLogicSystem().clear();
+    }
+
+    // called from dualityController to reload the list of dynamisms once we
+    // create or duplicate new fccs
+    public void refreshDataInclusionModule(){
+        inclusionController.refreshData();
+    }
+
+    public void refreshDataClassModule(){
+        cClassController.refreshData();
+    }
+
+    public void initLog(){
+
+        tevwLog = new TableView(listLog);
+
+        slpeLog = new ScrollPane(tevwLog);
+        slpeLog.setFitToWidth(true);
+        slpeLog.setFitToHeight(true);
+
+        tecnDate = new TableColumn<>("Date");
+        tecnType = new TableColumn<>("Type");
+        tecnMessage = new TableColumn<>("Message");
+
+        tecnDate.setCellValueFactory(new PropertyValueFactory<Log,Timestamp>("date"));
+        tecnType.setCellValueFactory(new PropertyValueFactory<Log,String>("type"));
+        tecnMessage.setCellValueFactory(new PropertyValueFactory<Log,String>("message"));
+
+        tevwLog.getColumns().addAll(tecnDate,tecnType,tecnMessage);
+
+        tevwLog.setItems(listLog);
+    }
+
+    public void addLog(String type, String message){
+        listLog.add(new Log(Timestamp.valueOf(LocalDateTime.now()), type, message));
+    }
+
+    public ArrayList<Dynamism> debugDynamisms(){
+        int[] idDynamisms = new int[]{36};
+        ArrayList<Dynamism> listDynamisms = new ArrayList<>();
+
+        for(int i:idDynamisms){
+            for(Dynamism d:getListDynamisms()){
+                if(d.getIdDynamism()==i){
+                    listDynamisms.add(d);
+                }
+            }
+        }
+        return listDynamisms;
+    }
+
+    private void removeDuplicates(ArrayList<Analogy> listAnalogy){
+        Set<Analogy> listAnalogyWithoutDuplicates = new HashSet<>(listAnalogy);
+        listAnalogy.clear();
+        listAnalogy.addAll(listAnalogyWithoutDuplicates);
+
+        ArrayList<Analogy> tempList = new ArrayList<>();
+
+        for(Analogy a:listAnalogy){
+            for(Analogy b:listAnalogy){
+                if(a!=b){
+                    if(a.containsAll(b)&&b.containsAll(a)){
+                        if(!tempList.contains(b)){
+                            tempList.add(a);
+                        }
+                    }
+                }
+            }
+        }
+
+        listAnalogy.removeAll(tempList);
+    }
+
+    private void orderAnalogyList(ArrayList<Analogy> listAnalogyForInitial) {
+        Collections.sort(listAnalogyForInitial, new Comparator<ArrayList>(){
+            @Override
+            public int compare(ArrayList a1, ArrayList a2) {
+                return a1.size() - a2.size(); // assumes you want biggest to smallest
+            }
+        });
+    }
 }

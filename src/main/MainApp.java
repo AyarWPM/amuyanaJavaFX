@@ -28,5 +28,6 @@ public class MainApp extends Application {
         stage.setTitle("Amuyaña");
         stage.setScene(scene);
         stage.show();
+        //stage.close();
     }
 }

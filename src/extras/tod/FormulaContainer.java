@@ -5,14 +5,10 @@ import controllers.TodController;
 import data.Dynamism;
 import data.Element;
 import data.Fcc;
-
 import java.util.ArrayList;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-
 import static extras.tod.FormulaContainer.Signs.*;
-import static extras.tod.FormulaContainer.Styles.*;
-
 
 public class FormulaContainer extends HBox {
 
@@ -36,8 +32,13 @@ public class FormulaContainer extends HBox {
         //this.listDynamisms = new ArrayList<>();
         this.listDynamisms = new ArrayList<>();
         this.listDynamisms.add(dynamism);
+        setStyle();
     }
 
+    private void setStyle(){
+        //this.setStyle("-fx-background-color:red;");
+
+    }
 
     public void setDynamism(Dynamism dynamism){
         // Don't forget to "reset" the list because this method will be called several times
@@ -203,7 +204,6 @@ public class FormulaContainer extends HBox {
                 sign.setStyle(
                         "-fx-padding: 0 2 0 2;" +
                                 "-fx-font:17px \"Sans\";"
-
                 );
                 break;
             }

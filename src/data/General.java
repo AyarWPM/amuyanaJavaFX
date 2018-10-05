@@ -74,12 +74,9 @@ public class General{
             
             statement.setInt(1, this.getDynamism().getIdDynamism());
             statement.setInt(2, this.getInclusion().getIdInclusion());
+
             int returnInt = statement.executeUpdate();
-            
-//            ResultSet rs = statement.getGeneratedKeys();
-//            if(rs.next()){
-//                General.currentAutoIncrement = rs.getInt(1);
-//            }
+
             return returnInt;
             
         } catch (SQLException ex) {

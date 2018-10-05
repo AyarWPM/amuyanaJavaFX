@@ -15,9 +15,9 @@ import javafx.geometry.Pos;
 
 
 public class AnalogyContainer extends Group {
-    private final static double TRANSLATE_X=20;
-    private final static double TRANSLATE_Y=28;
-    private final static double TRANSPARENCY=0.2;
+    public final static double TRANSLATE_X=20;
+    public final static double TRANSLATE_Y=28;
+    //private final static double TRANSPARENCY=0.2;
     
     private static AppController appController;
     private static TodController todController;
@@ -42,21 +42,31 @@ public class AnalogyContainer extends Group {
         AnalogyContainer.todController = todController;
         
     }
-    
+
+
+
     void deploy(){
+
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
-            
-            this.getChildren().add(multiContainer);
-            int index = this.getChildren().indexOf(multiContainer);
 
-            multiContainer.setLayoutX(index*TRANSLATE_X);
-            multiContainer.setLayoutY(-index*TRANSLATE_Y);
-            //multiContainer.setOpacity(1-index*TRANSPARENCY);
-            multiContainer.toBack();
+            this.getChildren().add(multiContainer);
+
+            int index = this.getChildren().indexOf(multiContainer);
+            multiContainer.setLayoutX(-index*TRANSLATE_X);
+            multiContainer.setLayoutY(index*TRANSLATE_Y);
+
+            //setPosition(multiContainer);
             
             multiContainer.deploy();
+
         }
+
+    }
+
+    void setPosition(MultiContainer multiContainer){
+
+
     }
 
     /**

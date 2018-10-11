@@ -20,16 +20,10 @@ public class TodContainer extends Group {
     // Then all Fccs that are added
     
     public TodContainer(Fcc initialFcc) {
-
-
         this.initialFcc = initialFcc;
-        
         setStyle();
-
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
-
-        mainLevelContainer = new LevelContainer(listAnalogy);
-
+        this.mainLevelContainer = new LevelContainer(listAnalogy, LevelContainer.LevelType.MAIN);
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -54,7 +48,6 @@ public class TodContainer extends Group {
     }
 
     private void addRules() {
-
         Line xAxis = new Line(0,0,400,0);
         Line yAxis = new Line(0,0,0,400);
 
@@ -87,8 +80,6 @@ public class TodContainer extends Group {
             }
 
             this.getChildren().addAll(markX,markY);
-
         }
-
     }
 }

@@ -3,6 +3,7 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -12,7 +13,8 @@ import static extras.tod.FccContainer.FccType.NORMAL;
 public class MultiContainer extends HBox {
     private static AppController appController;
     private static TodController todController;
-    
+    private final Fcc centralFcc;
+
     private FccContainer fccContainer;
     private VBox positionLeft, positionFccContainer, positionRight, positionTop, positionCenter, positionBottom;
 
@@ -32,15 +34,7 @@ public class MultiContainer extends HBox {
      * @param fcc
     */
     public MultiContainer(Fcc fcc) {
-        this.fccContainer = new FccContainer(fcc);
-
-        if(TodController.isInTod(fcc)){
-            fccContainer.setType(FccContainer.FccType.MIRROR);
-        } else if(!TodController.isInTod(fcc)){
-            fccContainer.setType(NORMAL);
-        }
-
-        TodController.getListFccContainers().add(this.fccContainer);
+        this.centralFcc = fcc;
 
         positionLeft = new VBox();
         positionLeft.setAlignment(Pos.CENTER_RIGHT);
@@ -65,8 +59,10 @@ public class MultiContainer extends HBox {
     }
 
     void setStyle(){
-        this.setBorder(new Border(new BorderStroke(Color.YELLOW, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
-        this.setSpacing(10);
+        this.setBorder(new Border(new BorderStroke(Color.YELLOWGREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
+        this.setSpacing(30);
+        //this.setPadding(new Insets(0,20,0,20));
+        //this.setMargin(positionFccContainer,new Insets(0,20,0,20));
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
@@ -131,10 +127,21 @@ public class MultiContainer extends HBox {
     }
 
     void deploy(){
-        this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
+        this.fccContainer = new FccContainer(centralFcc);
+
+        if(TodController.isInTod(centralFcc)){
+            fccContainer.setType(FccContainer.FccType.MIRROR);
+        } else if(!TodController.isInTod(centralFcc)){
+            fccContainer.setType(NORMAL);
+        }
+
+        TodController.getListFccContainers().add(this.fccContainer);
+
         this.positionFccContainer.getChildren().add(this.fccContainer);
-        this.fccContainer.deploy();
         this.positionRight.getChildren().addAll(this.positionTop,this.positionCenter,this.positionBottom);
+
+        this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
+        this.fccContainer.deploy();
     }
 
 

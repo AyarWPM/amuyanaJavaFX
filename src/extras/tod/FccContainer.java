@@ -3,10 +3,8 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
-import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -67,6 +65,51 @@ public class FccContainer extends VBox {
         FccContainer.todController = todController;
     }
 
+    void manageEvents(){
+
+        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                debug();
+            }
+        });
+
+    }
+
+    public void deploy(){
+        // method initialize() is here because when we clear positions of multicontainers and if fcc is normal, we are looking
+        // for mirrors (supposedly this) and we deploy it, but if initialize() was called in the constructor then
+        // we would have to "reset" attributes one by one, so we rather initialize it here...
+        // Same for setStyle(); which is called at the end of this method
+        initialize();
+
+        addChildren();
+
+//        Task<Void> setBracketAndKnobs = new Task<Void>() {
+//            @Override
+//            protected Void call() throws Exception {
+//                Thread.sleep(500);
+//                Platform.runLater(() -> setBracketAndKnobs());
+//                return null;
+//            }
+//        };
+//
+//        new Thread(setBracketAndKnobs).start();
+/*
+        Task<Void> tie = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Thread.sleep(750);
+                Platform.runLater(()-> todController.tie(getThis()));
+                return null;
+            }
+        };
+
+        new Thread(tie).start();
+*/
+        setStyle();
+    }
+
     private void initialize(){
         this.header = new HBox();
 
@@ -80,19 +123,29 @@ public class FccContainer extends VBox {
         this.knob4 = new Knob(getThis());
     }
 
-    private void setTitle(String label) {
-        this.title.setText(label);
+    private void addChildren() {
+        setTitle(fcc.getLabel());
+        this.header.getChildren().add(getMenu());
+        this.header.getChildren().add(this.title);
+
+        Pane bracketHolder = getBracketHolder();
+        formulasHolder = getFormulasHolder();
+        VBox knobsHolder = getKnobsHolder();
+
+        this.content.setLeft(bracketHolder);
+        this.content.setCenter(formulasHolder);
+        this.content.setRight(knobsHolder);
+
+        //bracketHolder.setAlignment(Pos.CENTER_LEFT);
+        formulasHolder.setAlignment(Pos.CENTER_LEFT);
+        knobsHolder.setAlignment(Pos.CENTER_RIGHT);
+
+        this.getChildren().add(header);
+        this.getChildren().add(content);
     }
 
-    void manageEvents(){
-/*
-        this.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                debug();
-            }
-        });
-*/
+    private void setTitle(String label) {
+        this.title.setText(label);
     }
 
     private void setStyle(){
@@ -124,7 +177,7 @@ public class FccContainer extends VBox {
     }
 
     private AnalogyContainer getParentAnalogyContainer(){
-        return todController.getAnalogyContainer(getParentMultiContainer());
+        return todController.getAnalogyContainerOf(getParentMultiContainer());
     }
 
     public boolean isInclusionDeployed(){
@@ -159,62 +212,8 @@ public class FccContainer extends VBox {
         this.symmetricDeductionDeployed = symmetricDeductionDeployed;
     }
 
-    public void deploy(){
-        // method initialize() is here because when we clear positions of multicontainers and if fcc is normal, we are looking
-        // for mirrors (supposedly this) and we deploy it, but if initialize() was called in the constructor then
-        // we would have to "reset" attributes one by one, so we rather initialize it here...
-        // Same for setStyle(); which is called at the end of this method
-        initialize();
 
-        addChildren();
-
-        Task<Void> setBracketAndKnobs = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(500);
-                Platform.runLater(() -> setBracketAndKnobs());
-                return null;
-            }
-        };
-
-        new Thread(setBracketAndKnobs).start();
-/*
-        Task<Void> tie = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(750);
-                Platform.runLater(()-> todController.tie(getThis()));
-                return null;
-            }
-        };
-
-        new Thread(tie).start();
-*/
-        setStyle();
-    }
-
-    private void addChildren(){
-        setTitle(fcc.getLabel());
-        this.header.getChildren().add(getMenu());
-        this.header.getChildren().add(this.title);
-
-        Pane bracketHolder = getBracketHolder();
-        formulasHolder = getFormulasHolder();
-        VBox knobsHolder = getKnobsHolder();
-
-        this.content.setLeft(bracketHolder);
-        this.content.setCenter(formulasHolder);
-        this.content.setRight(knobsHolder);
-
-        //bracketHolder.setAlignment(Pos.CENTER_LEFT);
-        formulasHolder.setAlignment(Pos.CENTER_LEFT);
-        knobsHolder.setAlignment(Pos.CENTER_RIGHT);
-
-        this.getChildren().add(header);
-        this.getChildren().add(content);
-    }
-
-    private void setBracketAndKnobs(){
+    public void setBracketAndKnobs(){
         // Size of bracket is proportional to content size
 
         double i = formulasHolder.getHeight();
@@ -355,7 +354,8 @@ public class FccContainer extends VBox {
         if(isInclusionDeployed()){
             todController.clearInclusions(getThis());
         } else if(!isInclusionDeployed()){
-            todController.deployInclusions(getThis());
+            new Thread(todController.getTaskDeployInclusions(getThis())).start();
+            //todController.deployInclusions(getThis());
         }
         /*
         // set knobpoints of all fcccontainers
@@ -438,8 +438,7 @@ public class FccContainer extends VBox {
     }
 
     void debug(){
-        todController.getMultiContainer(getThis()).setLayoutY(600);
-        System.out.println("debug");
+        //todController.assembleTod();
     }
 
     public double getKnob0X() {

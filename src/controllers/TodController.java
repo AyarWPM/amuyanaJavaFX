@@ -1,6 +1,5 @@
 package controllers;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import data.Dynamism;
 import data.Fcc;
 import extras.tod.*;
@@ -43,13 +42,27 @@ public class TodController implements Initializable {
         cobxFcc.setItems(appController.getListFcc());
         //cobxFcc.getSelectionModel().selectFirst();
     }
-
+    
+    public void manageEvents(){
+        cobxFcc.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Fcc>() {
+            @Override
+            public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
+                if(newValue!=null){
+                    listFccContainers.clear();
+                    new Thread(getTaskDeployTodContainer(newValue)).start();
+                    cobxFcc.setDisable(true);
+                }
+            }
+        });
+    }
+    
     private Task<Void> getTaskDeployTodContainer(Fcc initialFcc){
         Task<Void> deployTodContainer = new Task<Void>(){
             @Override
             protected Void call() {
 
                 Platform.runLater(()-> deployTod(initialFcc));
+                
                 return null;
             }
 
@@ -81,8 +94,8 @@ public class TodController implements Initializable {
 
             @Override
             protected void succeeded() {
-                // Every time we must reposition all multiContainers...
-                new Thread(getTaskPositionMultiContainers()).start();
+                new Thread(getTaskSetTiers())
+                //new Thread(getTaskPositionMultiContainers()).start();
                 super.succeeded();
             }
         };
@@ -102,25 +115,12 @@ public class TodController implements Initializable {
             protected void succeeded() {
                 if(cobxFcc.isDisable())
                     cobxFcc.setDisable(false);
+                
                 super.succeeded();
             }
         };
 
         return positionMultiContainers;
-    }
-
-
-    public void manageEvents(){
-        cobxFcc.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Fcc>() {
-            @Override
-            public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
-                if(newValue!=null){
-                    listFccContainers.clear();
-                    new Thread(getTaskDeployTodContainer(newValue)).start();
-                    cobxFcc.setDisable(true);
-                }
-            }
-        });
     }
 
     public void setAppController(AppController aThis) {

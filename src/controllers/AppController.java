@@ -468,6 +468,7 @@ public class AppController {
      * @return
      */
     public ArrayList<Analogy> getListAnalogyForInitial(Fcc fcc){
+
         ArrayList<Analogy> listAnalogyForInitial = new ArrayList<>();
 
         ArrayList<Analogy> listAnalogyInclusion = getListAnalogyInclusionOf(fcc);
@@ -478,24 +479,35 @@ public class AppController {
         listAnalogyForInitial.addAll(listAnalogyCClass);
 
         removeDuplicates(listAnalogyForInitial);
-
         orderAnalogyList(listAnalogyForInitial);
 
         // There's a case in which FCC will not appear because it doesn't
         // belong to any general list nor a cClass, in that case we add it
         // manually
+
+        if(listAnalogyForInitial.size()==0){
+            listAnalogyForInitial.add(new Analogy(fcc));
+        }
+
+        // Because we want to draw the fcc in front, we modify the analogies accordingly:
+        for(Analogy a:listAnalogyForInitial){
+            a.remove(fcc);
+            a.add(fcc);
+        }
+
+/*
+
         for(Analogy a:listAnalogyForInitial){
             if(a.contains(fcc)){
                 return listAnalogyForInitial;
             }
         }
-
         // if it gets here it hasn't found an analogy containing the fcc, so we
         // create an analogy for it and add it to the listAnalogyForInitial
         Analogy analogy = new Analogy();
         analogy.add(fcc);
         listAnalogyForInitial.add(analogy);
-
+*/
         return listAnalogyForInitial;
     }
 
@@ -695,11 +707,13 @@ public class AppController {
     }
 
     private void orderAnalogyList(ArrayList<Analogy> listAnalogyForInitial) {
+        // Makes analogies in increasing order, ie. analogy of size 1 first (but there's only one), then of size 2, and so on
         Collections.sort(listAnalogyForInitial, new Comparator<ArrayList>(){
             @Override
             public int compare(ArrayList a1, ArrayList a2) {
                 return a1.size() - a2.size(); // assumes you want biggest to smallest
             }
         });
+
     }
 }

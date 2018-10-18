@@ -28,8 +28,8 @@ public class LevelContainer extends VBox {
     }
 
     private void setStyle() {
-        this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
-        this.setSpacing(10);
+        this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
+        this.setSpacing(20);
         this.setAlignment(Pos.CENTER);
     }
 

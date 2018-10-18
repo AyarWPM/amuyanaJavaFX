@@ -42,6 +42,7 @@ public class TodContainer extends Group {
     public void deploy() {
         this.getChildren().clear();
         addRules();
+        addBorder();
         this.getChildren().add(mainLevelContainer);
 
         mainLevelContainer.deploy();
@@ -81,5 +82,9 @@ public class TodContainer extends Group {
 
             this.getChildren().addAll(markX,markY);
         }
+    }
+
+    private void addBorder(){
+        //Line top = new Line()
     }
 }

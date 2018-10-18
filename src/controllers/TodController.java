@@ -5,6 +5,7 @@ import data.Fcc;
 import extras.tod.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 
 import static extras.tod.FccContainer.FccType.MIRROR;
 import static extras.tod.FccContainer.FccType.NORMAL;
@@ -55,73 +57,6 @@ public class TodController implements Initializable {
             }
         });
     }
-    
-    private Task<Void> getTaskDeployTodContainer(Fcc initialFcc){
-        Task<Void> deployTodContainer = new Task<Void>(){
-            @Override
-            protected Void call() {
-
-                Platform.runLater(()-> deployTod(initialFcc));
-                
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                // Because this is the first deployment, all fccContainers are new
-                // Or we could use the mainLevelContainer
-                //new Thread(getTaskSetBracketAndKnobs(getListFccContainers())).start();
-                new Thread(getTaskSetBracketAndKnobs(getTodContainer().getMainLevelContainer())).start();
-                super.succeeded();
-            }
-        };
-        return deployTodContainer;
-    }
-
-    //private Task<Void> getTaskSetBracketAndKnobs(ArrayList<FccContainer> fccContainers){
-    private Task<Void> getTaskSetBracketAndKnobs(LevelContainer levelContainer){
-        Task<Void> setBracketAndKnobs = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(50);
-                Platform.runLater(() -> {
-                    for(FccContainer fc:getFccContainersOf(levelContainer)){
-                        fc.setBracketAndKnobs();
-                    }
-                });
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                new Thread(getTaskSetTiers())
-                //new Thread(getTaskPositionMultiContainers()).start();
-                super.succeeded();
-            }
-        };
-        return setBracketAndKnobs;
-    }
-
-    private Task<Void> getTaskPositionMultiContainers(){
-        Task<Void> positionMultiContainers = new Task<Void>() {
-            @Override
-            protected Void call() throws InterruptedException {
-                Thread.sleep(100);
-                Platform.runLater(()->positionMultiContainers());
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                if(cobxFcc.isDisable())
-                    cobxFcc.setDisable(false);
-                
-                super.succeeded();
-            }
-        };
-
-        return positionMultiContainers;
-    }
 
     public void setAppController(AppController aThis) {
         this.appController=aThis;
@@ -137,6 +72,10 @@ public class TodController implements Initializable {
         FormulaContainer.setControllers(this.appController, todController);
         Tier.setControllers(this.appController,todController);
     }
+
+    /*
+    START OF GETTERS AND SETTERS
+     */
 
     public static boolean isInTod(Fcc fcc) {
         //boolean itIs = false;
@@ -187,18 +126,50 @@ public class TodController implements Initializable {
         return listFccContainers;
     }
 
+    public LevelContainer getInclusionsLevel(FccContainer fccContainer) {
+        LevelContainer levelContainer =(LevelContainer)getMultiContainer(fccContainer).getPositionLeft().getChildren().get(0);
+        return levelContainer;
+    }
+
+    private double getInclusionsLevelWidth(FccContainer fccContainer){
+        double width = 0;
+        if(fccContainer.isInclusionDeployed()){
+            width = getInclusionsLevel(fccContainer).getWidth();
+        }
+        return width;
+    }
+
+    private FccContainer getFrontFccContainer(AnalogyContainer analogyContainer) {
+        return getFccContainerOf((MultiContainer)analogyContainer.getChildren().get(analogyContainer.getChildren().size()-1));
+    }
+
+    private LevelContainer getParentLevelContainer(LevelContainer levelContainer) {
+        LevelContainer parentLevelContainer = null;
+
+        if(levelContainer.getLevelType()== LevelContainer.LevelType.INCLUSION){
+            MultiContainer parentMultiContainer = (MultiContainer)levelContainer.getParent().getParent();
+            AnalogyContainer parentAnalogyContainer = getAnalogyContainerOf(parentMultiContainer);
+            parentLevelContainer = (LevelContainer)parentAnalogyContainer.getParent();
+        }
+
+        return parentLevelContainer;
+    }
+
+    /*
+    END OF GETTERS AND SETTERS
+     */
+
+    /*
+    START OF TODCONTAINER METHODS
+     */
+
     private void deployTod(Fcc newValue) {
         this.todContainer = new TodContainer(newValue);
-        todContent.getChildren().clear();
-        todContent.getChildren().add(this.todContainer);
-
+        //todContent.getChildren().clear();
+        todContent.getChildren().setAll(this.todContainer);
         this.todContainer.deploy();
     }
 
-    @FXML
-    public void debug(){
-
-    }
 
     /**
      * This is the method that switches the mirror fccContainer with the normal fccContainer as required by the user
@@ -230,6 +201,88 @@ public class TodController implements Initializable {
         normalAnalogyContainer.getChildren().add(normalIndex,mirrorMultiContainer);
     }
 
+
+    /**
+     * This method will change the order
+     * @param multiContainer
+     */
+    @Deprecated //replaced by just toFront() because it has been overriden
+    public void turnToFront(MultiContainer multiContainer){
+        multiContainer.toFront();
+    }
+
+    private void positionMultiContainers(LevelContainer levelContainer){
+        // Which MultiContainer is reference for alignment? -> If it is mainLevelContainer it is the one in front,
+        // if levelContainer is deployment of inclusion side then
+        // the one that has the largest deduction-level-container side, if is deployment of deduction side then the
+        // one that has the largest inclusion-level-container side.
+
+        // To know the size of any multiContainer we must ask if inclusion or deduction levels are deployed, and
+        // calculate sizes accordingly
+        // LevelContainer levelContainer = todContainer.getMainLevelContainer();
+
+        for (Node analogyContainerNode : levelContainer.getChildren()) {
+            AnalogyContainer analogyContainer = (AnalogyContainer)analogyContainerNode;
+
+            for(Node multiContainerNode:analogyContainer.getChildren()) {
+                // Only if its not a line do stuff
+                if (!multiContainerNode.getClass().equals(Line.class)) {
+                    int i = analogyContainer.getChildren().indexOf(multiContainerNode);
+                    MultiContainer multiContainer = (MultiContainer) multiContainerNode;
+
+                    FccContainer fccContainer = getFccContainerOf(multiContainer);
+
+                    final double DRIFT = 0; // IT WAS 30
+
+                    multiContainer.setLayoutX(-getInclusionsLevelWidth(fccContainer) - i * DRIFT);
+                    if (analogyContainer.getChildren().indexOf(multiContainer) == 0) {
+                        multiContainer.setLayoutY(i * 30);
+                    } else if (analogyContainer.getChildren().indexOf(multiContainer) != 0) {
+                        MultiContainer firstMulti = (MultiContainer) analogyContainer.getChildren().get(0);
+
+                        multiContainer.setLayoutY(i * 30 + firstMulti.getFccContainer().getLayoutY());
+                    }
+                }
+            }
+        }
+
+    }
+
+    /**
+     * After all multi containers have been positioned we know the position of the first one, hence we can
+     *         move analogyContainers so that the fists fccContainers are aligned. REMEMBER you're in one levelContainer
+     *         although for now it is for mainLevelContainer, but later you'll have to do three iterations for the
+     *         deductions side
+     * @param levelContainer
+     */
+    private void positionAnalogyContainers(LevelContainer levelContainer) {
+        // We align analogies so that each fccContainer is at the same X position
+        for(Node analogyNode : levelContainer.getChildren()){
+            AnalogyContainer analogyContainer = (AnalogyContainer)analogyNode;
+
+            // frontFccContainer is the reference container. If fccContainers were aligned with a drift (like going
+            // on a diagonal) it would matter, if they're just aligned on top of each other it wouldn't.
+            FccContainer frontFccContainer = getFrontFccContainer(analogyContainer);
+
+            Point2D p1 = todContainer.sceneToLocal(frontFccContainer.localToScene(0, 0));
+
+            System.out.println(frontFccContainer + " " + p1.getX());
+
+            //analogyContainer.setTranslateX(-p1.getX());
+
+            analogyContainer.setTranslateX(-p1.getX());
+        }
+    }
+
+
+    /*
+    END OF TODCONTAINER METHODS
+     */
+
+    /*
+    START OF LEVELCONTAINER METHODS
+     */
+
     /**
      * This method creates a Tier for each pair of Knobs, one in each Fcc's that have a relation in the
      * sense of the Inclusion operation.
@@ -242,7 +295,7 @@ public class TodController implements Initializable {
 
         /*
          * NewFccContainer as Inclusion of any existingDynamism
-        */
+         */
         for(FccContainer existingFccContainer:listFccContainers){
             Fcc existingFcc = existingFccContainer.getFcc();
 
@@ -353,40 +406,21 @@ public class TodController implements Initializable {
         tier.endXProperty().bind(fccContainer2.knob0XProperty());
         tier.endYProperty().bind(fccContainer2.knob0YProperty());
         todContainer.getChildren().add(tier);
+        tier.toBack();
     }
 
-    public void setKnobsPositions(){
-        for(FccContainer fc:listFccContainers){
-            fc.setKnobsPositions();
-        }
-    }
+    /*
+    END OF LEVELCONTAINER METHODS
+     */
 
-    /* FROM HERE
-    USED IN MULTICONTAINER
+    /*
+    START OF MULTICONTAINER METHODS
      */
     private void deployInclusions(FccContainer fccContainer){
         LevelContainer inclusionLevel = new LevelContainer(appController.getListAnalogyForInclusion(fccContainer.getFcc()), LevelContainer.LevelType.INCLUSION);
         getMultiContainer(fccContainer).getPositionLeft().getChildren().add(inclusionLevel);
         inclusionLevel.deploy();
         fccContainer.setInclusionDeployed(true);
-    }
-
-    public Task<Void> getTaskDeployInclusions(FccContainer fccContainer){
-        Task<Void> deployInclusions = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                //Thread.sleep(100);
-                Platform.runLater(()->deployInclusions(fccContainer));
-                return null;
-            }
-
-            @Override
-            protected void succeeded() {
-                new Thread(getTaskSetBracketAndKnobs(getInclusionsLevel(fccContainer))).start();
-                super.succeeded();
-            }
-        };
-        return deployInclusions;
     }
 
     public void deployPositiveDeductions(FccContainer fccContainer){
@@ -399,7 +433,13 @@ public class TodController implements Initializable {
 
     public void deployNegativeDeductions(FccContainer fccContainer){
         LevelContainer negativeDeductionsLevel =
-                new LevelContainer(appController.getListAnalogyForDeduction(appController.dynamismOf(1,fccContainer.getFcc())), LevelContainer.LevelType.DEDUCTION);
+                new LevelContainer(
+                        appController.getListAnalogyForDeduction(
+                                appController.dynamismOf(
+                                        1,fccContainer.getFcc()
+                                )
+                        ), LevelContainer.LevelType.DEDUCTION
+                );
         getMultiContainer(fccContainer).getPositionCenter().getChildren().add(negativeDeductionsLevel);
         negativeDeductionsLevel.deploy();
         fccContainer.setNegativeDeductionDeployed(true);
@@ -489,82 +529,270 @@ public class TodController implements Initializable {
         getMultiContainer(fccContainer).getPositionBottom().getChildren().clear();
         fccContainer.setSymmetricDeductionDeployed(false);
     }
-
-    public LevelContainer getInclusionsLevel(FccContainer fccContainer) {
-        LevelContainer levelContainer =(LevelContainer)getMultiContainer(fccContainer).getPositionLeft().getChildren().get(0);
-        //System.out.println(levelContainer.getChildren());
-        return levelContainer;
-    }
-
-    /* TO HERE
-    USED IN MULTICONTAINER
+    /*
+    END OF MULTICONTAINER METHODS
      */
 
-    public void assembleTod(){
-        // 1. Position multiContainers -- This seems to be a method to apply at the levelContainer level
-        //positionMultiContainers();
+    /*
+    START OF FCCCONTAINER METHODS
+     */
 
-        // 2. Set knobs positions -- this seems to be a method to apply globally at the TOD level
-       // setKnobsPositions();
+    /*
+    END OF FCCCONTAINER METHODS
+     */
 
-        // 3. Draw lines -- this seems to be a method to apply globally at the TOD level
+    /*
+    START OF TASKS
+     */
+    private Task<Void> getTaskDeployTodContainer(Fcc initialFcc){
+        Task<Void> deployTodContainer = new Task<Void>(){
+            @Override
+            protected Void call() {
+                Platform.runLater(()-> deployTod(initialFcc));
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                // Because this is the first deployment, all fccContainers are new
+                // Or we could use the mainLevelContainer
+                //new Thread(getTaskSetBracketAndKnobs(getListFccContainers())).start();
+                new Thread(getTaskSetBracketAndKnobs(getTodContainer().getMainLevelContainer())).start();
+                super.succeeded();
+            }
+        };
+        return deployTodContainer;
     }
 
-    private void positionMultiContainers(){
-        // Which MultiContainer is reference for alignment? -> If it is mainLevelContainer it is the one in front,
-        // if levelContainer is deployment of inclusion side then
-        // the one that has the largest deduction-level-container side, if is deployment of deduction side then the
-        // one that has the largest inclusion-level-container side.
+    public Task<Void> getTaskDeployInclusions(FccContainer fccContainer){
+        Task<Void> deployInclusions = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                //Thread.sleep(100);
+                Platform.runLater(()->deployInclusions(fccContainer));
+                return null;
+            }
 
-        // To know the size of any multiContainer we must ask if inclusion or deduction levels are deployed, and
-        // calculate sizes accordingly
+            @Override
+            protected void succeeded() {
+                new Thread(getTaskSetBracketAndKnobs(getInclusionsLevel(fccContainer))).start();
+                super.succeeded();
+            }
+        };
+        return deployInclusions;
+    }
 
-        for (Node analogyContainerNode : todContainer.getMainLevelContainer().getChildren()) {
-            AnalogyContainer analogyContainer = (AnalogyContainer)analogyContainerNode;
+    public Task<Void> getTaskDeployDeduction() {
+        Task<Void> deployDeduction = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                //Thread.sleep(100);
+                //Platform.runLater(()->deployNegativeDeductions());
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                //new Thread().start();
+                super.succeeded();
+            }
+        };
+        return deployDeduction;
+    }
 
 
-            //for (int i = analogyContainer.getChildren().size() - 1; i >=0 ; i--) {
-            for(Node multiContainerNode:analogyContainer.getChildren()){
-                int size = analogyContainer.getChildren().size();
-                int i = analogyContainer.getChildren().indexOf(multiContainerNode);
 
-                MultiContainer multiContainer = (MultiContainer)analogyContainer.getChildren().get(i);
+    //private Task<Void> getTaskSetBracketAndKnobs(ArrayList<FccContainer> fccContainers){
+    private Task<Void> getTaskSetBracketAndKnobs(LevelContainer levelContainer){
+        Task<Void> setBracketAndKnobs = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                //Thread.sleep(50);
+                Platform.runLater(() -> {
+                    for(FccContainer fc:getFccContainersOf(levelContainer)){
+                        fc.setBracketAndKnobs();
+                    }
+                });
+                return null;
+            }
 
-                FccContainer fccContainer = getFccContainerOf(multiContainer);
-                System.out.println(i + " :" + multiContainer + " of inclusion width: "+getInclusionsLevelWidth(fccContainer));
-                multiContainer.setLayoutX(-getInclusionsLevelWidth(fccContainer)-i*30);
-                if (analogyContainer.getChildren().indexOf(multiContainer) == 0) {
-                    multiContainer.setLayoutY(i*30);
-                } else if (analogyContainer.getChildren().indexOf(multiContainer) != 0) {
-                    MultiContainer firstMulti = (MultiContainer)analogyContainer.getChildren().get(0);
-                    double moveDown = getProfundityFccContainer(firstMulti.getFccContainer());
-                    multiContainer.setLayoutY(i*30+moveDown);
+            @Override
+            protected void succeeded() {
+                // Only if it is not the mainLevelContainer proceed to adding tiers.
+                // Else just to positionMultiContainers
+                if (levelContainer == todContainer.getMainLevelContainer()) {
+                    new Thread(getTaskPositionMultiContainers(levelContainer)).start();
+                    super.succeeded();
+                } else if (levelContainer != todContainer.getMainLevelContainer()) {
+                    new Thread(getTaskSetTiers(levelContainer)).start();
+                    super.succeeded();
                 }
 
+                super.succeeded();
             }
+        };
+        return setBracketAndKnobs;
+    }
+
+    private Task<Void> getTaskSetTiers(LevelContainer levelContainer) {
+        Task<Void> setTiers = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                Platform.runLater(()->{
+                    for (FccContainer fc : getFccContainersOf(levelContainer)) {
+                        tie(fc);
+                    }
+                });
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                new Thread(getTaskPositionMultiContainers(levelContainer)).start();
+                super.succeeded();
+            }
+        };
+
+        return setTiers;
+    }
+
+    public Task<Void> getTaskPositionMultiContainers(LevelContainer levelContainer){
+        Task<Void> positionMultiContainers = new Task<Void>() {
+            @Override
+            protected Void call() throws InterruptedException {
+                Thread.sleep(100);
+                Platform.runLater(()->positionMultiContainers(levelContainer));
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                new Thread(getTaskSetKnobsPositions()).start();
+                new Thread(getTaskPositionAnalogyContainers(levelContainer)).start();
+                super.succeeded();
+            }
+        };
+
+        return positionMultiContainers;
+    }
+
+    public Task<Void> getTaskPositionAnalogyContainers(LevelContainer levelContainer){
+        Task<Void> positionAnalogyContainers = new Task<Void>() {
+            @Override
+            protected Void call() throws InterruptedException {
+                Thread.sleep(100);
+                Platform.runLater(()->positionAnalogyContainers(levelContainer));
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if (!levelContainer.equals((todContainer.getMainLevelContainer()))) {
+                    new Thread(getTaskPositionMultiContainers(getParentLevelContainer(levelContainer))).start();
+                    System.out.println("going");
+                } else if (levelContainer.equals((todContainer.getMainLevelContainer()))) {
+                    new Thread(getTaskSetKnobsPositions()).start();
+                    //new Thread(getTaskSetBorderAnalogy(levelContainer)).start();
+                }
+
+                super.succeeded();
+            }
+        };
+        return positionAnalogyContainers;
+    }
+
+    private Task<Void> getTaskSetKnobsPositions() {
+        Task<Void> setKnobsPositions = new Task<Void>() {
+            @Override
+            protected Void call() throws InterruptedException {
+                Thread.sleep(100);
+                Platform.runLater(()->{
+                    for(FccContainer fc:listFccContainers){
+                        fc.setKnobsPositions();
+                    }
+                });
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                if(cobxFcc.isDisable())
+                    cobxFcc.setDisable(false);
+
+                super.succeeded();
+            }
+        };
+
+        return setKnobsPositions;
+    }
+
+    private Task<Void> getTaskSetBorderAnalogy(LevelContainer levelContainer) {
+        Task<Void> setBorderAnalogy = new Task<Void>() {
+            @Override
+            protected Void call() throws InterruptedException {
+
+                Platform.runLater(()->{
+                    setBorderAnalogy(levelContainer);
+                });
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+            }
+        };
+
+        return setBorderAnalogy;
+    }
+
+    private void setBorderAnalogy(LevelContainer levelContainer) {
+        ArrayList<AnalogyContainer> listAnalogyContainers = new ArrayList<>();
+
+        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:2;";
+
+        for(Node analogyNode:levelContainer.getChildren()){
+
+            AnalogyContainer analogyContainer = (AnalogyContainer) analogyNode;
+
+            double width = analogyContainer.prefWidth(-1);
+            double height = analogyContainer.prefHeight(-1);
+
+            Line topLine = new Line(0,0,width,0);
+            Line rightLine = new Line(width,0,width,height);
+            Line bottomLine = new Line(width,height,0,height);
+            Line leftLine = new Line(0,height,0,0);
+
+            topLine.setStyle(style);
+            rightLine.setStyle(style);
+            bottomLine.setStyle(style);
+            leftLine.setStyle(style);
+
+            analogyContainer.getChildren().addAll(topLine, rightLine, bottomLine, leftLine);
         }
+    }
 
-        AnalogyContainer firstAnalogyContainer = (AnalogyContainer)todContainer.getMainLevelContainer().getChildren().get(0);
-        MultiContainer frontMultiContainer = (MultiContainer)firstAnalogyContainer.getChildren().get(firstAnalogyContainer.getChildren().size()-1);
-        FccContainer frontFccContainer = frontMultiContainer.getFccContainer();
+    private void setBorderAnalogy(AnalogyContainer analogyContainer) {
 
-        Point2D originFirstFccContainer = todContainer.getMainLevelContainer().sceneToLocal(frontFccContainer.localToScene(0, 0));
+        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:3;";
 
-        System.out.println(originFirstFccContainer);
+        double width = analogyContainer.prefWidth(-1);
+        double height = analogyContainer.prefHeight(-1);
+
+        Line topLine = new Line(0,0,width,0);
+        Line rightLine = new Line(width,0,width,height);
+        Line bottomLine = new Line(width,height,0,height);
+        Line leftLine = new Line(0,height,0,0);
+        topLine.setStyle(style);
+        rightLine.setStyle(style);
+        bottomLine.setStyle(style);
+        leftLine.setStyle(style);
+        analogyContainer.getChildren().addAll(topLine, rightLine, bottomLine, leftLine);
+
 
     }
 
-    private double getInclusionsLevelWidth(FccContainer fccContainer){
-        double width = 0;
-        if(fccContainer.isInclusionDeployed()){
-            width = getInclusionsLevel(fccContainer).getWidth();
-            System.out.println(width);
-        }
-        return width;
-    }
-
-    private double getProfundityFccContainer(FccContainer fccContainer){
-        return fccContainer.getLayoutY();
-    }
-
+    /*
+    END OF TASKS
+     */
 }

@@ -14,6 +14,10 @@ public class Analogy extends ArrayList<Fcc> {
     public Analogy() {
 
     }
+
+    public Analogy(Fcc fcc) {
+        add(fcc);
+    }
     
     public void setType(Type type){
         this.type=type;

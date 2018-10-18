@@ -5,12 +5,17 @@ import controllers.TodController;
 import data.Fcc;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+
+import java.util.Collections;
 
 import static extras.tod.FccContainer.FccType.MIRROR;
 import static extras.tod.FccContainer.FccType.NORMAL;
@@ -73,7 +78,14 @@ public class FccContainer extends VBox {
                 debug();
             }
         });
+    }
 
+    void debug(){
+        Point2D p1 = todController.getLevelContainerOf(getThis()).sceneToLocal(getThis().localToScene(0, 0));
+        System.out.println("In levelContainer: " + p1);
+        System.out.println("In levelContainer: " + p1);
+
+        //todController.getAnalogyContainerOf(getParentMultiContainer()).setTranslateX(-p1.getX()/2);
     }
 
     public void deploy(){
@@ -82,31 +94,7 @@ public class FccContainer extends VBox {
         // we would have to "reset" attributes one by one, so we rather initialize it here...
         // Same for setStyle(); which is called at the end of this method
         initialize();
-
         addChildren();
-
-//        Task<Void> setBracketAndKnobs = new Task<Void>() {
-//            @Override
-//            protected Void call() throws Exception {
-//                Thread.sleep(500);
-//                Platform.runLater(() -> setBracketAndKnobs());
-//                return null;
-//            }
-//        };
-//
-//        new Thread(setBracketAndKnobs).start();
-/*
-        Task<Void> tie = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(750);
-                Platform.runLater(()-> todController.tie(getThis()));
-                return null;
-            }
-        };
-
-        new Thread(tie).start();
-*/
         setStyle();
     }
 
@@ -136,7 +124,6 @@ public class FccContainer extends VBox {
         this.content.setCenter(formulasHolder);
         this.content.setRight(knobsHolder);
 
-        //bracketHolder.setAlignment(Pos.CENTER_LEFT);
         formulasHolder.setAlignment(Pos.CENTER_LEFT);
         knobsHolder.setAlignment(Pos.CENTER_RIGHT);
 
@@ -312,7 +299,8 @@ public class FccContainer extends VBox {
         MenuButton menu = new MenuButton();
         MenuItem muimTurnToFront = new MenuItem("Show in front");
 
-        muimTurnToFront.setOnAction(event -> getParentAnalogyContainer().turnToFront(getParentMultiContainer()));
+        //muimTurnToFront.setOnAction(event -> todController.turnToFront(todController.getMultiContainer(getThis())));
+        muimTurnToFront.setOnAction(event -> todController.getMultiContainer(getThis()).toFront());
 
         switch(this.type){
             case NORMAL:{
@@ -357,20 +345,6 @@ public class FccContainer extends VBox {
             new Thread(todController.getTaskDeployInclusions(getThis())).start();
             //todController.deployInclusions(getThis());
         }
-        /*
-        // set knobpoints of all fcccontainers
-        Task<Void> setKnobsPositions = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000);
-                Platform.runLater(()->todController.setKnobsPositions());
-                return null;
-            }
-        };
-
-        new Thread(setKnobsPositions).start();
-        */
-
     }
 
     private void deployPositiveDeductions(){
@@ -379,18 +353,6 @@ public class FccContainer extends VBox {
         } else if(!isPositiveDeductionsDeployed()){
             todController.deployPositiveDeductions(getThis());
         }
-        // set knobpoints of all fcccontainers
-/*
-        Task<Void> setKnobsPositions = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000);
-                Platform.runLater(()->todController.setKnobsPositions());
-                return null;
-            }
-        };
-        new Thread(setKnobsPositions).start();
-        */
     }
 
     private void deployNegativeDeductions(){
@@ -399,18 +361,6 @@ public class FccContainer extends VBox {
         } else if(!isNegativeDeductionsDeployed()){
             todController.deployNegativeDeductions(getThis());
         }
-        /*
-        Task<Void> setKnobsPositions = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000);
-                Platform.runLater(()->todController.setKnobsPositions());
-                return null;
-            }
-        };
-
-        new Thread(setKnobsPositions).start();
-        */
     }
 
     private void deploySymmetricDeductions(){
@@ -419,26 +369,11 @@ public class FccContainer extends VBox {
         } else if(!isSymmetricDeductionsDeployed()){
             todController.deploySymmetricDeductions(getThis());
         }
-        /*
-        Task<Void> setKnobsPositions = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                Thread.sleep(1000);
-                Platform.runLater(()->todController.setKnobsPositions());
-                return null;
-            }
-        };
-        new Thread(setKnobsPositions).start();
-        */
     }
 
     @Override
     public String toString(){
         return "[\"" + getFcc().toString() + "\"" + " fccContainer]";
-    }
-
-    void debug(){
-        //todController.assembleTod();
     }
 
     public double getKnob0X() {

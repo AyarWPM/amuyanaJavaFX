@@ -59,8 +59,8 @@ public class MultiContainer extends HBox {
     }
 
     void setStyle(){
-        this.setBorder(new Border(new BorderStroke(Color.YELLOWGREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(3))));
-        this.setSpacing(30);
+        this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
+        //this.setSpacing(30);
         //this.setPadding(new Insets(0,20,0,20));
         //this.setMargin(positionFccContainer,new Insets(0,20,0,20));
         //this.setAlignment(Pos.BOTTOM_RIGHT);
@@ -105,27 +105,6 @@ public class MultiContainer extends HBox {
         this.positionBottom = positionBottom;
     }
 
-    @Deprecated
-    // renamed getInclusionsLevel() in TodController
-    public LevelContainer getInclusions() {
-        return (LevelContainer)positionLeft.getChildren().get(0);
-    }
-
-    @Deprecated
-    public LevelContainer getPositiveDeductions() {
-        return (LevelContainer)positionTop.getChildren().get(0);
-    }
-
-    @Deprecated
-    public LevelContainer getNegativeDeductions() {
-        return (LevelContainer) positionCenter.getChildren().get(0);
-    }
-
-    @Deprecated
-    public LevelContainer getSymmetricDeductions() {
-        return (LevelContainer)positionBottom.getChildren().get(0);
-    }
-
     void deploy(){
         this.fccContainer = new FccContainer(centralFcc);
 
@@ -150,4 +129,14 @@ public class MultiContainer extends HBox {
         return "[\"" + fccContainer.getFcc().toString() + "\"" + " multiContainer]";
     }
 
+    @Override
+    public void toBack() {
+        super.toBack();
+    }
+
+    @Override
+    public void toFront() {
+        super.toFront();
+        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(fccContainer))).start();
+    }
 }

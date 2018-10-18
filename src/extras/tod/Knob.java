@@ -13,5 +13,6 @@ public class Knob extends Circle {
 
     private void setStyle(){
         setRadius(3);
+        setStyle("-fx-stroke:white;-fx-stroke-type:outside;-fx-stroke-width:2;");
     }
 }

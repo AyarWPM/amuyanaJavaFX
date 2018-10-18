@@ -61,37 +61,6 @@ public class AnalogyContainer extends Group {
         this.getChildren().add(redCircle);*/
     }
 
-    /**
-     * This method will change the order
-     * @param multiContainer
-     */
-    public void turnToFront(MultiContainer multiContainer){
-        int POS = getChildren().indexOf(multiContainer);
-        ArrayList<MultiContainer> listMultiContainer = new ArrayList<>();
-
-        for(int i = POS;i>=0;i--){
-            listMultiContainer.add((MultiContainer)getChildren().get(i));
-            getChildren().remove(i);
-        }
-
-        // Add the multiContainers in list in reverse order
-        Collections.reverse(listMultiContainer);
-        getChildren().addAll(listMultiContainer);
-
-        // Position the multiContainers
-/*
-        int index = getChildren().size()-1;
-        for(Node n:getChildren()){
-
-            MultiContainer multi = (MultiContainer)n;
-            multi.setLayoutX(index*TRANSLATE_X);
-            multi.setLayoutY(-index*TRANSLATE_Y);
-
-            index--;
-        }
-*/
-    }
-
     private void setStyle() {
         //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));

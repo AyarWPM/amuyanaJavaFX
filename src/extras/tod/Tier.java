@@ -3,6 +3,8 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import javafx.geometry.Point2D;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 import java.util.ArrayList;
@@ -26,7 +28,12 @@ public class Tier extends Line {
     }
 
     private void setStyle(){
-        this.setStrokeWidth(2);
+        //this.setStrokeWidth(2);
+
+        setStyle("-fx-stroke:black;-fx-stroke-type:outside;-fx-stroke-width:1;");
+        // This hides the line as if it were behind
+        // It could work nice if I put knobs 1,2,3 and 4 in the border
+        //this.setBlendMode(BlendMode.COLOR_BURN);
     }
 
     public void setKnobStart(Knob knob){

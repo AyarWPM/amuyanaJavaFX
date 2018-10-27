@@ -4,6 +4,9 @@ import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
 import java.util.ArrayList;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.shape.Line;
 
@@ -15,10 +18,6 @@ public class TodContainer extends Group {
 
     final private LevelContainer mainLevelContainer;
 
-    // All Classes, all conjunctions!
-    
-    // Then all Fccs that are added
-    
     public TodContainer(Fcc initialFcc) {
         this.initialFcc = initialFcc;
         setStyle();
@@ -87,4 +86,23 @@ public class TodContainer extends Group {
     private void addBorder(){
         //Line top = new Line()
     }
+
+    public ObservableList<FccContainer> getFccContainers(ObservableList<FccContainer> listFccContainers,LevelContainer levelContainer) {
+        ObservableList<FccContainer> tempListFccContainers = FXCollections.observableArrayList();
+        tempListFccContainers.addAll(listFccContainers);
+
+        for (AnalogyContainer analogyContainer : levelContainer.getAnalogyContainers()) {
+            tempListFccContainers.addAll(analogyContainer.getFccContainers());
+            for (MultiContainer multiContainer : analogyContainer.getMultiContainers()) {
+                if (multiContainer.isAntecedentDeployed()) {
+                    tempListFccContainers.addAll(getFccContainers(tempListFccContainers,multiContainer.getAntecedentsLevelContainer()));
+                }
+                if (multiContainer.isPositiveDeductionsDeployed()) {
+
+                }
+            }
+        }
+        return tempListFccContainers;
+    }
+
 }

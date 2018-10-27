@@ -5,17 +5,12 @@ import controllers.TodController;
 import data.Fcc;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-
-import java.util.Collections;
 
 import static extras.tod.FccContainer.FccType.MIRROR;
 import static extras.tod.FccContainer.FccType.NORMAL;
@@ -30,8 +25,6 @@ public class FccContainer extends VBox {
     private HBox header;
     private VBox formulasHolder, knobsHolder;
     private BorderPane content;
-
-    private boolean inclusionDeployed, positiveDeductionDeployed, negativeDeductionDeployed, symmetricDeductionDeployed;
 
     private Label title;
 
@@ -85,7 +78,6 @@ public class FccContainer extends VBox {
         System.out.println("In levelContainer: " + p1);
         System.out.println("In levelContainer: " + p1);
 
-        //todController.getAnalogyContainerOf(getParentMultiContainer()).setTranslateX(-p1.getX()/2);
     }
 
     public void deploy(){
@@ -159,44 +151,12 @@ public class FccContainer extends VBox {
         return this;
     }
 
-    private MultiContainer getParentMultiContainer(){
-        return todController.getMultiContainer(getThis());
+    public MultiContainer getMultiContainerParent(){
+        return (MultiContainer)getParent().getParent();
     }
 
     private AnalogyContainer getParentAnalogyContainer(){
-        return todController.getAnalogyContainerOf(getParentMultiContainer());
-    }
-
-    public boolean isInclusionDeployed(){
-        return inclusionDeployed;
-    }
-
-    public boolean isPositiveDeductionsDeployed() {
-        return positiveDeductionDeployed;
-    }
-
-    public boolean isNegativeDeductionsDeployed() {
-        return negativeDeductionDeployed;
-    }
-
-    public boolean isSymmetricDeductionsDeployed() {
-        return symmetricDeductionDeployed;
-    }
-
-    public void setInclusionDeployed(boolean inclusionDeployed) {
-        this.inclusionDeployed = inclusionDeployed;
-    }
-
-    public void setPositiveDeductionDeployed(boolean positiveDeductionDeployed) {
-        this.positiveDeductionDeployed = positiveDeductionDeployed;
-    }
-
-    public void setNegativeDeductionDeployed(boolean negativeDeductionDeployed) {
-        this.negativeDeductionDeployed = negativeDeductionDeployed;
-    }
-
-    public void setSymmetricDeductionDeployed(boolean symmetricDeductionDeployed) {
-        this.symmetricDeductionDeployed = symmetricDeductionDeployed;
+        return todController.getAnalogyContainerOf(getMultiContainerParent());
     }
 
 
@@ -300,14 +260,14 @@ public class FccContainer extends VBox {
         MenuItem muimTurnToFront = new MenuItem("Show in front");
 
         //muimTurnToFront.setOnAction(event -> todController.turnToFront(todController.getMultiContainer(getThis())));
-        muimTurnToFront.setOnAction(event -> todController.getMultiContainer(getThis()).toFront());
+        muimTurnToFront.setOnAction(event -> getThis().getMultiContainerParent().toFront());
 
         switch(this.type){
             case NORMAL:{
                 Menu deployMenu = new Menu("Deploy");
 
-                CheckMenuItem inclusion = new CheckMenuItem("Deploy inclusions");
-                inclusion.setOnAction(event -> deployInclusions());
+                CheckMenuItem antecedent = new CheckMenuItem("Deploy antecedents");
+                antecedent.setOnAction(event -> deployAntecedents());
 
                 CheckMenuItem positiveDeductions= new CheckMenuItem("Deploy positive deductions");
                 positiveDeductions.setOnAction(event -> deployPositiveDeductions());
@@ -318,7 +278,7 @@ public class FccContainer extends VBox {
                 CheckMenuItem symmetricDeductions = new CheckMenuItem("Deploy symmetric deductions");
                 symmetricDeductions.setOnAction(event -> deploySymmetricDeductions());
 
-                deployMenu.getItems().addAll(inclusion, positiveDeductions, negativeDeductions, symmetricDeductions);
+                deployMenu.getItems().addAll(antecedent, positiveDeductions, negativeDeductions, symmetricDeductions);
 
                 menu.getItems().addAll(muimTurnToFront,deployMenu);
 
@@ -328,7 +288,7 @@ public class FccContainer extends VBox {
             case MIRROR:{
                 MenuItem drawHere = new MenuItem("Draw here");
 
-                drawHere.setOnAction(event -> todController.switchMultiContainers(todController.getMultiContainer(getThis())));
+                drawHere.setOnAction(event -> todController.switchMultiContainers(getThis().getMultiContainerParent()));
 
                 menu.getItems().addAll(muimTurnToFront,drawHere);
                 break;
@@ -338,36 +298,35 @@ public class FccContainer extends VBox {
         return menu;
     }
 
-    private void deployInclusions(){
-        if(isInclusionDeployed()){
-            todController.clearInclusions(getThis());
-        } else if(!isInclusionDeployed()){
-            new Thread(todController.getTaskDeployInclusions(getThis())).start();
-            //todController.deployInclusions(getThis());
+    private void deployAntecedents(){
+        if(getMultiContainerParent().isAntecedentDeployed()){
+            todController.clearAntecedents(getThis());
+        } else if(!getMultiContainerParent().isAntecedentDeployed()){
+            new Thread(todController.getTaskDeployAntecedents(getMultiContainerParent())).start();
         }
     }
 
     private void deployPositiveDeductions(){
-        if(isPositiveDeductionsDeployed()){
+        if(getMultiContainerParent().isPositiveDeductionsDeployed()){
             todController.clearPositiveDeductions(getThis());
-        } else if(!isPositiveDeductionsDeployed()){
-            todController.deployPositiveDeductions(getThis());
+        } else if(!getMultiContainerParent().isPositiveDeductionsDeployed()){
+            //todController.deployPositiveDeductions(getThis());
         }
     }
 
     private void deployNegativeDeductions(){
-        if(isNegativeDeductionsDeployed()){
+        if(getMultiContainerParent().isNegativeDeductionsDeployed()){
             todController.clearNegativeDeductions(getThis());
-        } else if(!isNegativeDeductionsDeployed()){
-            todController.deployNegativeDeductions(getThis());
+        } else if(!getMultiContainerParent().isNegativeDeductionsDeployed()){
+            //todController.deployNegativeDeductions(getThis());
         }
     }
 
     private void deploySymmetricDeductions(){
-        if(isSymmetricDeductionsDeployed()){
+        if(getMultiContainerParent().isSymmetricDeductionsDeployed()){
             todController.clearSymmetricDeductions(getThis());
-        } else if(!isSymmetricDeductionsDeployed()){
-            todController.deploySymmetricDeductions(getThis());
+        } else if(!getMultiContainerParent().isSymmetricDeductionsDeployed()){
+            //todController.deploySymmetricDeductions(getThis());
         }
     }
 

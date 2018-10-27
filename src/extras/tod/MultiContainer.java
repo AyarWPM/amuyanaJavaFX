@@ -3,7 +3,6 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,6 +15,9 @@ public class MultiContainer extends HBox {
     private final Fcc centralFcc;
 
     private FccContainer fccContainer;
+
+    private boolean antecedentDeployed, positiveDeductionDeployed, negativeDeductionDeployed, symmetricDeductionDeployed;
+
     private VBox positionLeft, positionFccContainer, positionRight, positionTop, positionCenter, positionBottom;
 
     
@@ -60,13 +62,57 @@ public class MultiContainer extends HBox {
 
     void setStyle(){
         this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
-        //this.setSpacing(30);
+        this.setSpacing(30);
         //this.setPadding(new Insets(0,20,0,20));
         //this.setMargin(positionFccContainer,new Insets(0,20,0,20));
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
     void manageEvents() {
+    }
+
+    void deploy(){
+        this.fccContainer = new FccContainer(this.centralFcc);
+
+        if(todController.isInTod(centralFcc)){
+            fccContainer.setType(FccContainer.FccType.MIRROR);
+        } else if(!todController.isInTod(centralFcc)){
+            fccContainer.setType(NORMAL);
+        }
+
+        //TodController.getListFccContainers().add(this.fccContainer);
+
+        this.positionFccContainer.getChildren().add(this.fccContainer);
+        this.positionRight.getChildren().addAll(this.positionTop,this.positionCenter,this.positionBottom);
+
+        this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
+        this.fccContainer.deploy();
+    }
+
+    public void deployAntecedents() {
+        LevelContainer antecedentLevel = new LevelContainer(
+                appController.getListAnalogyForInclusion(this.fccContainer.getFcc()), LevelContainer.LevelType.INCLUSION);
+
+        getPositionLeft().getChildren().add(antecedentLevel);
+
+        antecedentLevel.deploy();
+        setAntecedentDeployed(true);
+    }
+
+    @Override
+    public String toString(){
+        return "[\"" + fccContainer.getFcc().toString() + "\"" + " multiContainer]";
+    }
+
+    @Override
+    public void toBack() {
+        super.toBack();
+    }
+
+    @Override
+    public void toFront() {
+        super.toFront();
+        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(fccContainer))).start();
     }
 
     public FccContainer getFccContainer(){
@@ -105,38 +151,47 @@ public class MultiContainer extends HBox {
         this.positionBottom = positionBottom;
     }
 
-    void deploy(){
-        this.fccContainer = new FccContainer(centralFcc);
+    public AnalogyContainer getAnalogyContainerParent() {
+        return (AnalogyContainer)getParent();
+    }
 
-        if(TodController.isInTod(centralFcc)){
-            fccContainer.setType(FccContainer.FccType.MIRROR);
-        } else if(!TodController.isInTod(centralFcc)){
-            fccContainer.setType(NORMAL);
-        }
-
-        TodController.getListFccContainers().add(this.fccContainer);
-
-        this.positionFccContainer.getChildren().add(this.fccContainer);
-        this.positionRight.getChildren().addAll(this.positionTop,this.positionCenter,this.positionBottom);
-
-        this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
-        this.fccContainer.deploy();
+    public LevelContainer getAntecedentsLevelContainer() {
+        return (LevelContainer)getPositionLeft().getChildren().get(0);
     }
 
 
-    @Override
-    public String toString(){
-        return "[\"" + fccContainer.getFcc().toString() + "\"" + " multiContainer]";
+    public boolean isAntecedentDeployed(){
+        return antecedentDeployed;
     }
 
-    @Override
-    public void toBack() {
-        super.toBack();
+    public boolean isPositiveDeductionsDeployed() {
+        return positiveDeductionDeployed;
     }
 
-    @Override
-    public void toFront() {
-        super.toFront();
-        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(fccContainer))).start();
+    public boolean isNegativeDeductionsDeployed() {
+        return negativeDeductionDeployed;
     }
+
+    public boolean isSymmetricDeductionsDeployed() {
+        return symmetricDeductionDeployed;
+    }
+
+    public void setAntecedentDeployed(boolean antecedentDeployed) {
+        this.antecedentDeployed = antecedentDeployed;
+    }
+
+    public void setPositiveDeductionDeployed(boolean positiveDeductionDeployed) {
+        this.positiveDeductionDeployed = positiveDeductionDeployed;
+    }
+
+    public void setNegativeDeductionDeployed(boolean negativeDeductionDeployed) {
+        this.negativeDeductionDeployed = negativeDeductionDeployed;
+    }
+
+    public void setSymmetricDeductionDeployed(boolean symmetricDeductionDeployed) {
+        this.symmetricDeductionDeployed = symmetricDeductionDeployed;
+    }
+
+
+
 }

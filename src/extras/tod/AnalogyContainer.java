@@ -4,7 +4,9 @@ import com.sun.org.apache.xpath.internal.operations.Mult;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -12,6 +14,8 @@ import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
 import javafx.geometry.Pos;
 import javafx.scene.shape.Circle;
 
@@ -65,5 +69,51 @@ public class AnalogyContainer extends Group {
         //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));
         //this.setAlignment(Pos.CENTER);
+    }
+
+    public void positionMultiContainers() {
+        for (MultiContainer multiContainer : getMultiContainers()) {
+            int index = getChildren().indexOf(multiContainer);
+            Point2D refPointMultiContainer = multiContainer.localToScene(0,0);
+            Point2D refPointAnalogyContainer = this.localToScene(0,0);
+
+            double diffX = refPointMultiContainer.getX()-refPointAnalogyContainer.getX();
+            double diffY = refPointMultiContainer.getY()-refPointAnalogyContainer.getY();
+
+            multiContainer.setLayoutX(-diffX);
+            multiContainer.setLayoutY(-diffY+index*30);
+        }
+
+    }
+
+    public FccContainer getFrontFccContainer() {
+        return getMultiContainers().get(getMultiContainers().size()-1).getFccContainer();
+    }
+
+    public ObservableList<MultiContainer> getMultiContainers() {
+        ObservableList<MultiContainer> listMultiContainers = FXCollections.observableArrayList();
+        for (Node node : this.getChildren()) {
+            MultiContainer multiContainer = (MultiContainer)node;
+            listMultiContainers.add(multiContainer);
+        }
+        return listMultiContainers;
+    }
+
+    /**
+     * It gets the FccContainers that are in the central position of the MultiContainer only.
+     * @return
+     */
+    public ObservableList<FccContainer> getFccContainers() {
+        ObservableList<FccContainer> listFccContainers = FXCollections.observableArrayList();
+        for (Node node : this.getChildren()) {
+            MultiContainer multiContainer = (MultiContainer)node;
+            listFccContainers.add(multiContainer.getFccContainer());
+        }
+        return listFccContainers;
+    }
+
+
+    public LevelContainer getLevelContainerParent() {
+        return (LevelContainer)getParent();
     }
 }

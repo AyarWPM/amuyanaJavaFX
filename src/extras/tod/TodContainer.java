@@ -40,7 +40,7 @@ public class TodContainer extends Group {
 
     public void deploy() {
         this.getChildren().clear();
-        addRules();
+        //addRules();
         addBorder();
         this.getChildren().add(mainLevelContainer);
 
@@ -103,6 +103,25 @@ public class TodContainer extends Group {
             }
         }
         return tempListFccContainers;
+    }
+    
+    public ObservableList<AnalogyContainer> getAnalogyContainers(ObservableList<AnalogyContainer> listAnalogyContainers, LevelContainer levelContainer){
+        ObservableList<AnalogyContainer> tempListAnalogyContainers = FXCollections.observableArrayList();
+        
+        for(AnalogyContainer analogyContainer : levelContainer.getAnalogyContainers()){
+            tempListAnalogyContainers.add(analogyContainer);
+            
+            for(MultiContainer multiContainer:analogyContainer.getMultiContainers()){
+                if(multiContainer.isAntecedentDeployed()){
+                    tempListAnalogyContainers.addAll(getAnalogyContainers(tempListAnalogyContainers,multiContainer.getAntecedentsLevelContainer()));
+                }
+                
+                // TODO
+                // if deductions are deployed...
+                
+            }
+        }
+        return tempListAnalogyContainers;
     }
 
 }

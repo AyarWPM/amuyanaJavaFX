@@ -8,13 +8,15 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import static extras.tod.FccContainer.FccType.NORMAL;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 
 public class MultiContainer extends HBox {
     private static AppController appController;
     private static TodController todController;
     private final Fcc centralFcc;
 
-    private FccContainer fccContainer;
+    //private FccContainer fccContainer;
 
     private boolean antecedentDeployed, positiveDeductionDeployed, negativeDeductionDeployed, symmetricDeductionDeployed;
 
@@ -40,17 +42,26 @@ public class MultiContainer extends HBox {
 
         positionLeft = new VBox();
         positionLeft.setAlignment(Pos.CENTER_RIGHT);
-
+        positionLeft.setPickOnBounds(false);
+        
         positionFccContainer = new VBox();
         positionFccContainer.setAlignment(Pos.CENTER);
-
+        positionFccContainer.setPickOnBounds(false);
+        
+        
         positionRight = new VBox();
         positionRight.setAlignment(Pos.CENTER_LEFT);
-
+        positionRight.setPickOnBounds(false);
+        
         positionTop = new VBox();
+        positionTop.setPickOnBounds(false);
+        
         positionCenter = new VBox();
+        positionCenter.setPickOnBounds(false);
+        
         positionBottom=  new VBox();
-
+        positionBottom.setPickOnBounds(false);
+        setPickOnBounds(false);
         setStyle();
         manageEvents();
     }
@@ -61,37 +72,44 @@ public class MultiContainer extends HBox {
     }
 
     void setStyle(){
-        this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
+        //this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
         this.setSpacing(30);
+        setStyle("-fx-background-color:transparent;");
+        //setBackground(Background.EMPTY);
+        setPickOnBounds(false);
+        setMouseTransparent(false);
+        //System.out.println(pickOnBoundsProperty());
         //this.setPadding(new Insets(0,20,0,20));
         //this.setMargin(positionFccContainer,new Insets(0,20,0,20));
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
     void manageEvents() {
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("multi of " + getFccContainer() + " clicked, and pickOnBounds is: " + pickOnBoundsProperty());
+            }
+        });
     }
 
     void deploy(){
-        this.fccContainer = new FccContainer(this.centralFcc);
-
-        if(todController.isInTod(centralFcc)){
-            fccContainer.setType(FccContainer.FccType.MIRROR);
-        } else if(!todController.isInTod(centralFcc)){
-            fccContainer.setType(NORMAL);
-        }
-
-        //TodController.getListFccContainers().add(this.fccContainer);
-
-        this.positionFccContainer.getChildren().add(this.fccContainer);
+        FccContainer fccContainer = new FccContainer(this.centralFcc);
+        
+        this.positionFccContainer.getChildren().add(fccContainer);
         this.positionRight.getChildren().addAll(this.positionTop,this.positionCenter,this.positionBottom);
 
         this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
-        this.fccContainer.deploy();
+        
+        // setType before deploy!
+        fccContainer.setType();
+        
+        fccContainer.deploy();
     }
 
     public void deployAntecedents() {
         LevelContainer antecedentLevel = new LevelContainer(
-                appController.getListAnalogyForInclusion(this.fccContainer.getFcc()), LevelContainer.LevelType.INCLUSION);
+                appController.getListAnalogyForInclusion(getFccContainer().getFcc()), LevelContainer.LevelType.INCLUSION);
 
         getPositionLeft().getChildren().add(antecedentLevel);
 
@@ -101,7 +119,7 @@ public class MultiContainer extends HBox {
 
     @Override
     public String toString(){
-        return "[\"" + fccContainer.getFcc().toString() + "\"" + " multiContainer]";
+        return "[\"" + getFccContainer().getFcc().toString() + "\"" + " multiContainer]";
     }
 
     @Override
@@ -112,11 +130,11 @@ public class MultiContainer extends HBox {
     @Override
     public void toFront() {
         super.toFront();
-        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(fccContainer))).start();
+        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(getFccContainer()))).start();
     }
 
     public FccContainer getFccContainer(){
-        return fccContainer;
+        return (FccContainer)positionFccContainer.getChildren().get(0);
     }
 
     public VBox getPositionLeft() {

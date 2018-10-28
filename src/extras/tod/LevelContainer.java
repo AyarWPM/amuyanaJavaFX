@@ -37,6 +37,7 @@ public class LevelContainer extends Group {
         //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
         //this.setSpacing(20);
         //this.setAlignment(Pos.CENTER);
+        setPickOnBounds(false);
     }
 
     public void deploy() {
@@ -54,7 +55,6 @@ public class LevelContainer extends Group {
     }
 
     public void positionAnalogyContainers() {
-
         for (AnalogyContainer analogyContainer : getAnalogyContainers()) {
 
             FccContainer frontFccContainer = analogyContainer.getFrontFccContainer();
@@ -64,14 +64,15 @@ public class LevelContainer extends Group {
 
             double diffX = refAnalogyContainer.getX()-refPointLevelContainer.getX();
             double diffY = refAnalogyContainer.getY()-refPointLevelContainer.getY();
-
-            analogyContainer.setLayoutX(-diffX);
-            if(getAnalogyContainers().indexOf(analogyContainer)==0) continue;
-
+            
             int index = getAnalogyContainers().indexOf(analogyContainer);
-            double previousAnalogyContainerBoundaryMaxY = getAnalogyContainers().get(index-1).getBoundsInParent().getMaxY();
-
-
+            double previousAnalogyContainerBoundaryMaxY = 0;
+            
+            if(index!=0){
+                previousAnalogyContainerBoundaryMaxY = getAnalogyContainers().get(index-1).getBoundsInParent().getMaxY();
+            }
+            
+            analogyContainer.setLayoutX(-diffX);
             analogyContainer.setLayoutY(-diffY+previousAnalogyContainerBoundaryMaxY+30);
 
         }

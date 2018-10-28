@@ -30,7 +30,7 @@ public class Tier extends Line {
     private void setStyle(){
         //this.setStrokeWidth(2);
 
-        setStyle("-fx-stroke:black;-fx-stroke-type:outside;-fx-stroke-width:1;");
+        setStyle("-fx-stroke:black;-fx-stroke-type:centered;-fx-stroke-width:1;");
         // This hides the line as if it were behind
         // It could work nice if I put knobs 1,2,3 and 4 in the border
         //this.setBlendMode(BlendMode.COLOR_BURN);

@@ -65,6 +65,13 @@ public class FccContainer extends VBox {
 
     void manageEvents(){
 
+        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println("on mouse entered yes");
+            }
+        });
+        
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -74,10 +81,7 @@ public class FccContainer extends VBox {
     }
 
     void debug(){
-        Point2D p1 = todController.getLevelContainerOf(getThis()).sceneToLocal(getThis().localToScene(0, 0));
-        System.out.println("In levelContainer: " + p1);
-        System.out.println("In levelContainer: " + p1);
-
+        System.out.println("Clicked on " + getThis());
     }
 
     public void deploy(){
@@ -89,6 +93,15 @@ public class FccContainer extends VBox {
         addChildren();
         setStyle();
     }
+    
+    public void setType(){
+        if(todController.isMirrorFccContainer(getThis())){
+            setType(FccContainer.FccType.MIRROR);
+        } else if(!todController.isMirrorFccContainer(getThis())){
+            setType(NORMAL);
+        }
+    }
+    
 
     private void initialize(){
         this.header = new HBox();
@@ -118,7 +131,7 @@ public class FccContainer extends VBox {
 
         formulasHolder.setAlignment(Pos.CENTER_LEFT);
         knobsHolder.setAlignment(Pos.CENTER_RIGHT);
-
+        knobsHolder.setTranslateX(5);
         this.getChildren().add(header);
         this.getChildren().add(content);
     }

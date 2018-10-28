@@ -49,6 +49,7 @@ public class AnalogyContainer extends Group {
     void deploy(){
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
+            multiContainer.setPickOnBounds(false);
             this.getChildren().add(multiContainer);
 
 /*
@@ -69,21 +70,22 @@ public class AnalogyContainer extends Group {
         //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));
         //this.setAlignment(Pos.CENTER);
+        setPickOnBounds(false);
     }
 
     public void positionMultiContainers() {
         for (MultiContainer multiContainer : getMultiContainers()) {
             int index = getChildren().indexOf(multiContainer);
+            
+            Point2D refPointFccContainer = multiContainer.getFccContainer().localToScene(0,0);
             Point2D refPointMultiContainer = multiContainer.localToScene(0,0);
-            Point2D refPointAnalogyContainer = this.localToScene(0,0);
 
-            double diffX = refPointMultiContainer.getX()-refPointAnalogyContainer.getX();
-            double diffY = refPointMultiContainer.getY()-refPointAnalogyContainer.getY();
+            double diffX = refPointFccContainer.getX()-refPointMultiContainer.getX();
+            double diffY = refPointFccContainer.getY()-refPointMultiContainer.getY();
 
             multiContainer.setLayoutX(-diffX);
             multiContainer.setLayoutY(-diffY+index*30);
         }
-
     }
 
     public FccContainer getFrontFccContainer() {

@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 
 import static extras.tod.FccContainer.FccType.MIRROR;
 import static extras.tod.FccContainer.FccType.NORMAL;
+import javafx.geometry.Bounds;
 
 public class TodController implements Initializable {
 
@@ -80,29 +81,35 @@ public class TodController implements Initializable {
     START OF GETTERS AND SETTERS
      */
 
-    public boolean isInTod(Fcc fcc) {
+    public boolean isMirrorFccContainer(FccContainer fccContainer) {
         //boolean itIs = false;
         int i = 0;
+        
         for(FccContainer fc : getFccContainers()){
-            System.out.println(i);
-            if(fc.getFcc().equals(fcc)){
-                System.out.println("yep!");
-                return true;
+            if(fc.getFcc().equals(fccContainer.getFcc())){
+                if(!fc.equals(fccContainer)){
+                    return true;
+                }
             }
             i++;
         }
         return false;
     }
 
-    private ObservableList<FccContainer> getFccContainers() {
-        ObservableList<FccContainer> listFccContainers = FXCollections.observableArrayList();
-        return todContainer.getFccContainers(listFccContainers,todContainer.getMainLevelContainer());
-    }
 
     public TodContainer getTodContainer(){
         return todContainer;
     }
 
+    private ObservableList<FccContainer> getFccContainers() {
+        ObservableList<FccContainer> listFccContainers = FXCollections.observableArrayList();
+        return todContainer.getFccContainers(listFccContainers,todContainer.getMainLevelContainer());
+    }
+    
+    public ObservableList<AnalogyContainer> getAnalogies(){
+        ObservableList<AnalogyContainer> listAnalogies = FXCollections.observableArrayList();
+        return todContainer.getAnalogyContainers(listAnalogies,todContainer.getMainLevelContainer());
+    }
 
     public FccContainer getFccContainerOf(MultiContainer multiContainer){
         VBox vBox = (VBox)multiContainer.getChildren().get(1);
@@ -559,7 +566,7 @@ public class TodController implements Initializable {
         Task<Void> positionAnalogyContainers = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
-                Thread.sleep(200);
+                Thread.sleep(100);
                 Platform.runLater(levelContainer::positionAnalogyContainers);
                 return null;
             }
@@ -585,7 +592,7 @@ public class TodController implements Initializable {
         Task<Void> setKnobsPositions = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
-                Thread.sleep(300);
+                //Thread.sleep(300);
                 Platform.runLater(()->{
                     for(FccContainer fc:getFccContainers()){
                         fc.setKnobsPositions();
@@ -596,6 +603,8 @@ public class TodController implements Initializable {
 
             @Override
             protected void succeeded() {
+                //new Thread(getTaskSetBorderAnalogy()).start();
+                //new Thread(getTaskPutFccContainersInFront()).start();
                 if(cobxFcc.isDisable())
                     cobxFcc.setDisable(false);
                 super.succeeded();
@@ -604,15 +613,13 @@ public class TodController implements Initializable {
 
         return setKnobsPositions;
     }
-
-    private Task<Void> getTaskSetBorderAnalogy(LevelContainer levelContainer) {
+    
+    private Task<Void> getTaskPutFccContainersInFront() {
         Task<Void> setBorderAnalogy = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
-
-                Platform.runLater(()->{
-                    setBorderAnalogy(levelContainer);
-                });
+                //Thread.sleep(400);
+                Platform.runLater(()->putFccContainersInFront());
                 return null;
             }
 
@@ -625,50 +632,58 @@ public class TodController implements Initializable {
         return setBorderAnalogy;
     }
 
-    private void setBorderAnalogy(LevelContainer levelContainer) {
+    private Task<Void> getTaskSetBorderAnalogy() {
+        Task<Void> setBorderAnalogy = new Task<Void>() {
+            @Override
+            protected Void call() throws InterruptedException {
+                //Thread.sleep(400);
+                Platform.runLater(()->setBorderAnalogy());
+                return null;
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+            }
+        };
+
+        return setBorderAnalogy;
+    }
+
+    private void setBorderAnalogy() {
         ArrayList<AnalogyContainer> listAnalogyContainers = new ArrayList<>();
 
-        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:2;";
+        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:1;";
 
-        for(Node analogyNode:levelContainer.getChildren()){
-
-            AnalogyContainer analogyContainer = (AnalogyContainer) analogyNode;
-
-            double width = analogyContainer.prefWidth(-1);
-            double height = analogyContainer.prefHeight(-1);
-
-            Line topLine = new Line(0,0,width,0);
-            Line rightLine = new Line(width,0,width,height);
-            Line bottomLine = new Line(width,height,0,height);
-            Line leftLine = new Line(0,height,0,0);
+        for(AnalogyContainer analogyContainer:getAnalogies()){
+            
+            Bounds bounds = todContainer.sceneToLocal(analogyContainer.localToScene(analogyContainer.getBoundsInLocal()));
+            
+            double minX, maxX, minY, maxY;
+            
+            minX = bounds.getMinX();
+            maxX = bounds.getMaxX();
+            minY = bounds.getMinY();
+            maxY = bounds.getMaxY();
+            
+            Line topLine = new Line(minX,minY,maxX,minY);
+            Line rightLine = new Line(maxX,minY,maxX,maxY);
+            Line bottomLine = new Line(maxX,maxY,minX,maxY);
+            Line leftLine = new Line(minX,maxY,minX,minY);
 
             topLine.setStyle(style);
             rightLine.setStyle(style);
             bottomLine.setStyle(style);
             leftLine.setStyle(style);
 
-            analogyContainer.getChildren().addAll(topLine, rightLine, bottomLine, leftLine);
+            todContainer.getChildren().addAll(topLine, rightLine, bottomLine, leftLine);
         }
     }
 
-    private void setBorderAnalogy(AnalogyContainer analogyContainer) {
-
-        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:3;";
-
-        double width = analogyContainer.prefWidth(-1);
-        double height = analogyContainer.prefHeight(-1);
-
-        Line topLine = new Line(0,0,width,0);
-        Line rightLine = new Line(width,0,width,height);
-        Line bottomLine = new Line(width,height,0,height);
-        Line leftLine = new Line(0,height,0,0);
-        topLine.setStyle(style);
-        rightLine.setStyle(style);
-        bottomLine.setStyle(style);
-        leftLine.setStyle(style);
-        analogyContainer.getChildren().addAll(topLine, rightLine, bottomLine, leftLine);
-
-
+    public void putFccContainersInFront(){
+        for(FccContainer fc:getFccContainers()){
+            fc.toFront();
+        }
     }
 
     /*

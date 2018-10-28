@@ -12,7 +12,7 @@ public class Knob extends Circle {
     }
 
     private void setStyle(){
-        setRadius(3);
-        setStyle("-fx-stroke:white;-fx-stroke-type:outside;-fx-stroke-width:2;");
+        setRadius(4);
+        //setStyle("-fx-stroke:transparent;-fx-stroke-type:outside;-fx-stroke-width:2;");
     }
 }

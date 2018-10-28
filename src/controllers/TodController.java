@@ -603,7 +603,7 @@ public class TodController implements Initializable {
 
             @Override
             protected void succeeded() {
-                //new Thread(getTaskSetBorderAnalogy()).start();
+                new Thread(getTaskSetBorderAnalogy()).start();
                 //new Thread(getTaskPutFccContainersInFront()).start();
                 if(cobxFcc.isDisable())
                     cobxFcc.setDisable(false);

@@ -6,9 +6,11 @@ import controllers.TodController;
 import data.Fcc;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -39,6 +41,7 @@ public class AnalogyContainer extends Group {
     AnalogyContainer(Analogy analogy){
         this.analogy = analogy;
         setStyle();
+        manageEvents();
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -49,28 +52,25 @@ public class AnalogyContainer extends Group {
     void deploy(){
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
-            multiContainer.setPickOnBounds(false);
             this.getChildren().add(multiContainer);
-
-/*
-            int index = this.getChildren().indexOf(multiContainer);
-            multiContainer.setLayoutX(-index*TRANSLATE_X);
-            multiContainer.setLayoutY(index*TRANSLATE_Y);
-
-            //setPosition(multiContainer);
-*/
             multiContainer.deploy();
-
         }
-        /*Circle redCircle = new Circle(3,Color.RED);
-        this.getChildren().add(redCircle);*/
+    }
+
+    private void manageEvents() {
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(this + " is " + isPickOnBounds());
+            }
+        });
     }
 
     private void setStyle() {
         //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");
         //this.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(4))));
         //this.setAlignment(Pos.CENTER);
-        setPickOnBounds(false);
+        //this.setPickOnBounds(true);
     }
 
     public void positionMultiContainers() {
@@ -85,6 +85,7 @@ public class AnalogyContainer extends Group {
 
             multiContainer.setLayoutX(-diffX);
             multiContainer.setLayoutY(-diffY+index*30);
+            //multiContainer.toFront();
         }
     }
 

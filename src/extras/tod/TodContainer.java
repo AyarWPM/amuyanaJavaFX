@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Line;
 
 public class TodContainer extends Group {
@@ -43,7 +45,13 @@ public class TodContainer extends Group {
         //addRules();
         addBorder();
         this.getChildren().add(mainLevelContainer);
-
+        //setPickOnBounds(true);
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            System.out.println(this + " is " + isPickOnBounds());
+        }
+        });
         mainLevelContainer.deploy();
     }
 

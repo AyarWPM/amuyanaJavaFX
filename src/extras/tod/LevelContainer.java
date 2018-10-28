@@ -6,10 +6,12 @@ import java.util.ArrayList;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -26,6 +28,12 @@ public class LevelContainer extends Group {
         this.listAnalogy = listAnalogy;
         this.levelType = levelType;
         setStyle();
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(this + " is " + isPickOnBounds());
+            }
+        });
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -37,7 +45,7 @@ public class LevelContainer extends Group {
         //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
         //this.setSpacing(20);
         //this.setAlignment(Pos.CENTER);
-        setPickOnBounds(false);
+        //this.setPickOnBounds(true);
     }
 
     public void deploy() {
@@ -56,8 +64,6 @@ public class LevelContainer extends Group {
 
     public void positionAnalogyContainers() {
         for (AnalogyContainer analogyContainer : getAnalogyContainers()) {
-
-            FccContainer frontFccContainer = analogyContainer.getFrontFccContainer();
 
             Point2D refAnalogyContainer = analogyContainer.localToScene(0,0);
             Point2D refPointLevelContainer = this.localToScene(0,0);

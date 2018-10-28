@@ -53,8 +53,6 @@ public class FccContainer extends VBox {
 
     FccContainer(Fcc fcc){
         this.fcc = fcc;
-        //initialize();
-        //setStyle();
         manageEvents();
     }
 
@@ -101,7 +99,6 @@ public class FccContainer extends VBox {
             setType(NORMAL);
         }
     }
-    
 
     private void initialize(){
         this.header = new HBox();
@@ -143,7 +140,7 @@ public class FccContainer extends VBox {
     private void setStyle(){
         this.header.setAlignment(Pos.CENTER_LEFT);
         this.header.setSpacing(5);
-
+        this.setPickOnBounds(true);
         this.setStyle("-fx-background-color:white;-fx-border-color:black;");
         this.setSpacing(5);
     }
@@ -171,7 +168,6 @@ public class FccContainer extends VBox {
     private AnalogyContainer getParentAnalogyContainer(){
         return todController.getAnalogyContainerOf(getMultiContainerParent());
     }
-
 
     public void setBracketAndKnobs(){
         // Size of bracket is proportional to content size
@@ -264,7 +260,6 @@ public class FccContainer extends VBox {
         } else if(this.type == MIRROR){
             this.knobsHolder.getChildren().add(knob4);
         }
-
         return knobsHolder;
     }
 
@@ -294,7 +289,6 @@ public class FccContainer extends VBox {
                 deployMenu.getItems().addAll(antecedent, positiveDeductions, negativeDeductions, symmetricDeductions);
 
                 menu.getItems().addAll(muimTurnToFront,deployMenu);
-
                 break;
             }
 

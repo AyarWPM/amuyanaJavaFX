@@ -22,7 +22,6 @@ public class MultiContainer extends HBox {
 
     private VBox positionLeft, positionFccContainer, positionRight, positionTop, positionCenter, positionBottom;
 
-    
     /** This is the central container.
      * It has 3 columns. 1st is for all the
      * previous dynamisms. 2dn is for
@@ -42,26 +41,25 @@ public class MultiContainer extends HBox {
 
         positionLeft = new VBox();
         positionLeft.setAlignment(Pos.CENTER_RIGHT);
-        positionLeft.setPickOnBounds(false);
         
         positionFccContainer = new VBox();
         positionFccContainer.setAlignment(Pos.CENTER);
         positionFccContainer.setPickOnBounds(false);
-        
+        positionFccContainer.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(positionFccContainer.toString() + " is " + positionFccContainer.isPickOnBounds());
+            }
+        });
         
         positionRight = new VBox();
         positionRight.setAlignment(Pos.CENTER_LEFT);
-        positionRight.setPickOnBounds(false);
         
         positionTop = new VBox();
-        positionTop.setPickOnBounds(false);
         
         positionCenter = new VBox();
-        positionCenter.setPickOnBounds(false);
         
         positionBottom=  new VBox();
-        positionBottom.setPickOnBounds(false);
-        setPickOnBounds(false);
         setStyle();
         manageEvents();
     }
@@ -74,10 +72,11 @@ public class MultiContainer extends HBox {
     void setStyle(){
         //this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
         this.setSpacing(30);
-        setStyle("-fx-background-color:transparent;");
+        //setStyle("-fx-background-color:transparent;");
         //setBackground(Background.EMPTY);
-        setPickOnBounds(false);
-        setMouseTransparent(false);
+
+        this.setPickOnBounds(false);
+
         //System.out.println(pickOnBoundsProperty());
         //this.setPadding(new Insets(0,20,0,20));
         //this.setMargin(positionFccContainer,new Insets(0,20,0,20));
@@ -88,7 +87,7 @@ public class MultiContainer extends HBox {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println("multi of " + getFccContainer() + " clicked, and pickOnBounds is: " + pickOnBoundsProperty());
+                System.out.println(this + " is " + isPickOnBounds());
             }
         });
     }
@@ -130,7 +129,7 @@ public class MultiContainer extends HBox {
     @Override
     public void toFront() {
         super.toFront();
-        new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(getFccContainer()))).start();
+        //new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(getFccContainer()))).start();
     }
 
     public FccContainer getFccContainer(){

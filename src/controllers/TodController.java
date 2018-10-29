@@ -23,6 +23,7 @@ import javafx.scene.shape.Line;
 
 import static extras.tod.FccContainer.FccType.MIRROR;
 import static extras.tod.FccContainer.FccType.NORMAL;
+import java.util.Random;
 import javafx.geometry.Bounds;
 
 public class TodController implements Initializable {
@@ -653,8 +654,25 @@ public class TodController implements Initializable {
     private void setBorderAnalogy() {
         ArrayList<AnalogyContainer> listAnalogyContainers = new ArrayList<>();
 
-        String style = "-fx-stroke:blue;-fx-stroke-type:outside;-fx-stroke-width:1;";
-
+        Random randomizer = new Random();
+        ArrayList<String> listOfcolors = new ArrayList<>();
+        
+        listOfcolors.add("red");
+        listOfcolors.add("green");
+        listOfcolors.add("blue");
+        listOfcolors.add("yellow");
+        listOfcolors.add("black");
+        listOfcolors.add("brown");
+        listOfcolors.add("darkorange");
+        listOfcolors.add("darkviolet");
+        listOfcolors.add("forestgreen");
+        listOfcolors.add("hotpink");
+        listOfcolors.add("lawngreen");
+        listOfcolors.add("lightgray");
+        listOfcolors.add("maroon");
+        listOfcolors.add("navy");
+        listOfcolors.add("orange");
+        
         for(AnalogyContainer analogyContainer:getAnalogies()){
             
             Bounds bounds = todContainer.sceneToLocal(analogyContainer.localToScene(analogyContainer.getBoundsInLocal()));
@@ -670,7 +688,8 @@ public class TodController implements Initializable {
             Line rightLine = new Line(maxX,minY,maxX,maxY);
             Line bottomLine = new Line(maxX,maxY,minX,maxY);
             Line leftLine = new Line(minX,maxY,minX,minY);
-
+            
+            String style = "-fx-stroke:"+ listOfcolors.get(randomizer.nextInt(listOfcolors.size())) + ";-fx-stroke-type:outside;-fx-stroke-width:1;";
             topLine.setStyle(style);
             rightLine.setStyle(style);
             bottomLine.setStyle(style);

@@ -28,12 +28,6 @@ public class LevelContainer extends Group {
         this.listAnalogy = listAnalogy;
         this.levelType = levelType;
         setStyle();
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(this + " is " + isPickOnBounds());
-            }
-        });
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -71,16 +65,42 @@ public class LevelContainer extends Group {
             double diffX = refAnalogyContainer.getX()-refPointLevelContainer.getX();
             double diffY = refAnalogyContainer.getY()-refPointLevelContainer.getY();
             
+            
+            double cumulativeHeight=0;
+            for(AnalogyContainer previousAnalogyContainer:getAnalogyContainers()){
+                if(previousAnalogyContainer.equals(analogyContainer)){
+                    break;
+                } else if (!previousAnalogyContainer.equals(analogyContainer)){
+                    cumulativeHeight+=previousAnalogyContainer.prefHeight(-1);
+                    
+                }
+            }
+            
+            
+            
+            analogyContainer.setLayoutX(-diffX);
+            analogyContainer.setLayoutY(cumulativeHeight);
+            
+            /* ONE APPROACH
             int index = getAnalogyContainers().indexOf(analogyContainer);
             double previousAnalogyContainerBoundaryMaxY = 0;
             
             if(index!=0){
                 previousAnalogyContainerBoundaryMaxY = getAnalogyContainers().get(index-1).getBoundsInParent().getMaxY();
             }
+            */
             
-            analogyContainer.setLayoutX(-diffX);
-            analogyContainer.setLayoutY(-diffY+previousAnalogyContainerBoundaryMaxY+30);
-
+            /* SECOND APPROACH
+            double heightForPrevious=0;
+            
+            for(AnalogyContainer previousAnalogyContainer:getAnalogyContainers()){
+                if(previousAnalogyContainer.equals(analogyContainer)){
+                    break;
+                } else if (!previousAnalogyContainer.equals(analogyContainer)){
+                    heightForPrevious+=previousAnalogyContainer.prefHeight(-1);
+                }
+            }
+            */
         }
     }
 

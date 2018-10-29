@@ -62,13 +62,6 @@ public class FccContainer extends VBox {
     }
 
     void manageEvents(){
-
-        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println("on mouse entered yes");
-            }
-        });
         
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

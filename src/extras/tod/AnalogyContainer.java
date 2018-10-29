@@ -41,7 +41,12 @@ public class AnalogyContainer extends Group {
     AnalogyContainer(Analogy analogy){
         this.analogy = analogy;
         setStyle();
-        manageEvents();
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(this);
+            }
+        });
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -57,14 +62,6 @@ public class AnalogyContainer extends Group {
         }
     }
 
-    private void manageEvents() {
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(this + " is " + isPickOnBounds());
-            }
-        });
-    }
 
     private void setStyle() {
         //this.setStyle("-fx-border-width:1px;-fx-border-color:black;-fx-border-style:solid;");

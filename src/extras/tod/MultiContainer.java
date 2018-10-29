@@ -61,7 +61,7 @@ public class MultiContainer extends HBox {
         
         positionBottom=  new VBox();
         setStyle();
-        manageEvents();
+        
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -70,7 +70,7 @@ public class MultiContainer extends HBox {
     }
 
     void setStyle(){
-        //this.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
+        this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
         this.setSpacing(30);
         //setStyle("-fx-background-color:transparent;");
         //setBackground(Background.EMPTY);
@@ -83,14 +83,6 @@ public class MultiContainer extends HBox {
         //this.setAlignment(Pos.BOTTOM_RIGHT);
     }
 
-    void manageEvents() {
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                System.out.println(this + " is " + isPickOnBounds());
-            }
-        });
-    }
 
     void deploy(){
         FccContainer fccContainer = new FccContainer(this.centralFcc);

@@ -25,6 +25,12 @@ public class TodContainer extends Group {
         setStyle();
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
         this.mainLevelContainer = new LevelContainer(listAnalogy, LevelContainer.LevelType.MAIN);
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                System.out.println(getAnalogyContainers(FXCollections.observableArrayList(), mainLevelContainer));
+            }
+        });
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -42,16 +48,10 @@ public class TodContainer extends Group {
 
     public void deploy() {
         this.getChildren().clear();
-        //addRules();
+        addRules();
         addBorder();
         this.getChildren().add(mainLevelContainer);
-        //setPickOnBounds(true);
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            System.out.println(this + " is " + isPickOnBounds());
-        }
-        });
+        
         mainLevelContainer.deploy();
     }
 
@@ -70,10 +70,10 @@ public class TodContainer extends Group {
 
             markX.setStartX(i);
             markX.setEndX(i);
-            markX.setStartY(-2);
+            markX.setStartY(-3);
             markX.setEndY(3);
 
-            markY.setStartX(-2);
+            markY.setStartX(-3);
             markY.setEndX(3);
             markY.setStartY(i);
             markY.setEndY(i);

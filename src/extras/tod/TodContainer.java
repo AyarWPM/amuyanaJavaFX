@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 public class TodContainer extends Group {
@@ -28,7 +29,9 @@ public class TodContainer extends Group {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println(getAnalogyContainers(FXCollections.observableArrayList(), mainLevelContainer));
+
+//                prefWidth(2000);
+//                minWidth(2000);
             }
         });
     }
@@ -82,8 +85,10 @@ public class TodContainer extends Group {
 
             if(i==50||i==100||i==150||i==200||i==250||i==300||i==350||i==400){
                 markX.setStrokeWidth(2);
+                markX.setStartY(-6);
                 markX.setEndY(10);
                 markY.setStrokeWidth(2);
+                markY.setStartX(-6);
                 markY.setEndX(10);
             }
 
@@ -130,6 +135,24 @@ public class TodContainer extends Group {
             }
         }
         return tempListAnalogyContainers;
+    }
+
+    public ObservableList<LevelContainer> getLevelContainers(ObservableList<LevelContainer> listLevelContainer, LevelContainer levelContainer) {
+        ObservableList<LevelContainer> tempListLevelContainers = FXCollections.observableArrayList();
+
+        tempListLevelContainers.addAll(listLevelContainer);
+        for (AnalogyContainer analogyContainer : levelContainer.getAnalogyContainers()) {
+
+            for (MultiContainer multiContainer : analogyContainer.getMultiContainers()) {
+                // for the Antecedent level and Descendant level
+                tempListLevelContainers.addAll(multiContainer.getAntecedentsLevelContainer());
+
+                tempListLevelContainers.addAll(multiContainer.getDescendantsLevelContainers());
+
+            }
+        }
+
+        return  tempListLevelContainers;
     }
 
 }

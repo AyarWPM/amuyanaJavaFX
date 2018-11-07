@@ -7,7 +7,7 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import static extras.tod.FccContainer.FccType.NORMAL;
+//import static extras.tod.FccContainer.FccType.NORMAL;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 
@@ -20,7 +20,7 @@ public class MultiContainer extends HBox {
 
     private boolean antecedentDeployed, positiveDeductionDeployed, negativeDeductionDeployed, symmetricDeductionDeployed;
 
-    private VBox positionLeft, positionFccContainer, positionRight, positionTop, positionCenter, positionBottom;
+    private VBox positionAntecedents, positionFccContainer, positionDescendants;
 
     /** This is the central container.
      * It has 3 columns. 1st is for all the
@@ -39,8 +39,8 @@ public class MultiContainer extends HBox {
     public MultiContainer(Fcc fcc) {
         this.centralFcc = fcc;
 
-        positionLeft = new VBox();
-        positionLeft.setAlignment(Pos.CENTER_RIGHT);
+        positionAntecedents = new VBox();
+        positionAntecedents.setAlignment(Pos.CENTER_RIGHT);
         
         positionFccContainer = new VBox();
         positionFccContainer.setAlignment(Pos.CENTER);
@@ -48,18 +48,12 @@ public class MultiContainer extends HBox {
         positionFccContainer.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                System.out.println(positionFccContainer.toString() + " is " + positionFccContainer.isPickOnBounds());
+
             }
         });
         
-        positionRight = new VBox();
-        positionRight.setAlignment(Pos.CENTER_LEFT);
-        
-        positionTop = new VBox();
-        
-        positionCenter = new VBox();
-        
-        positionBottom=  new VBox();
+        positionDescendants = new VBox();
+        positionDescendants.setAlignment(Pos.CENTER_LEFT);
         setStyle();
         
     }
@@ -88,23 +82,20 @@ public class MultiContainer extends HBox {
         FccContainer fccContainer = new FccContainer(this.centralFcc);
         
         this.positionFccContainer.getChildren().add(fccContainer);
-        this.positionRight.getChildren().addAll(this.positionTop,this.positionCenter,this.positionBottom);
 
-        this.getChildren().addAll(this.positionLeft,this.positionFccContainer,this.positionRight);
-        
-        // setType before deploy!
-        fccContainer.setType();
-        
+        this.getChildren().addAll(this.positionAntecedents,this.positionFccContainer,this.positionDescendants);
+
         fccContainer.deploy();
     }
 
     public void deployAntecedents() {
         LevelContainer antecedentLevel = new LevelContainer(
-                appController.getListAnalogyForInclusion(getFccContainer().getFcc()), LevelContainer.LevelType.INCLUSION);
+                appController.getListAnalogyForInclusion(getFccContainer().getFcc()), LevelContainer.LevelType.ANTECEDENT);
 
-        getPositionLeft().getChildren().add(antecedentLevel);
-
+        //antecedentLevel.setScale(previousScale*0.8);
         antecedentLevel.deploy();
+
+        getPositionAntecedents().getChildren().add(antecedentLevel);
         setAntecedentDeployed(true);
     }
 
@@ -128,36 +119,16 @@ public class MultiContainer extends HBox {
         return (FccContainer)positionFccContainer.getChildren().get(0);
     }
 
-    public VBox getPositionLeft() {
-        return positionLeft;
+    public VBox getPositionAntecedents() {
+        return positionAntecedents;
     }
 
-    public void setPositionLeft(VBox positionLeft) {
-        this.positionLeft = positionLeft;
+    public VBox getPositionDescendants() {
+        return positionDescendants;
     }
 
-    public VBox getPositionTop() {
-        return positionTop;
-    }
-
-    public void setPositionTop(VBox positionTop) {
-        this.positionTop = positionTop;
-    }
-
-    public VBox getPositionCenter() {
-        return positionCenter;
-    }
-
-    public void setPositionCenter(VBox positionCenter) {
-        this.positionCenter = positionCenter;
-    }
-
-    public VBox getPositionBottom() {
-        return positionBottom;
-    }
-
-    public void setPositionBottom(VBox positionBottom) {
-        this.positionBottom = positionBottom;
+    public void setPositionAntecedents(VBox positionAntecedents) {
+        this.positionAntecedents = positionAntecedents;
     }
 
     public AnalogyContainer getAnalogyContainerParent() {
@@ -165,9 +136,12 @@ public class MultiContainer extends HBox {
     }
 
     public LevelContainer getAntecedentsLevelContainer() {
-        return (LevelContainer)getPositionLeft().getChildren().get(0);
+        return (LevelContainer) positionAntecedents.getChildren().get(0);
     }
 
+    public LevelContainer getDescendantsLevelContainers() {
+        return (LevelContainer)positionDescendants.getChildren().get(0);
+    }
 
     public boolean isAntecedentDeployed(){
         return antecedentDeployed;

@@ -45,11 +45,6 @@ public class FormulaContainer extends HBox {
 
     }
 
-    public void setListDynamisms(ArrayList<Dynamism> listDynamisms){
-        this.listDynamisms = listDynamisms;
-    }
-
-
     public static void setControllers(AppController appController, TodController todController) {
         FormulaContainer.appController = appController;
         FormulaContainer.todController = todController;

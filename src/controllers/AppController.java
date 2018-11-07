@@ -647,7 +647,7 @@ public class AppController {
 
     public void initLog(){
 
-        tevwLog = new TableView(listLog);
+        tevwLog = new TableView(this.listLog);
 
         slpeLog = new ScrollPane(tevwLog);
         slpeLog.setFitToWidth(true);

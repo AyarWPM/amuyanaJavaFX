@@ -21,9 +21,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
-import static extras.tod.FccContainer.FccType.MIRROR;
-import static extras.tod.FccContainer.FccType.NORMAL;
+//import static extras.tod.FccContainer.FccType.MIRROR;
+//import static extras.tod.FccContainer.FccType.NORMAL;
+
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javafx.geometry.Bounds;
 
 public class TodController implements Initializable {
@@ -34,11 +38,15 @@ public class TodController implements Initializable {
     @FXML private HBox todContent;
     @FXML private ComboBox<Fcc> cobxFcc;
 
+    ExecutorService executorService;
+
     //private static ArrayList<FccContainer> listFccContainers;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //listFccContainers = new ArrayList<>();
+        this.executorService = Executors.newSingleThreadExecutor();
+
         manageEvents();
     }
 
@@ -53,10 +61,13 @@ public class TodController implements Initializable {
             public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
                 if(newValue!=null){
 
-                    //ObservableList<FccContainer> emptyList = FXCollections.observableArrayList();
-                    //getTodContainer().getFccContainers(emptyList,todContainer.getMainLevelContainer()).clear();
+                    //Thread thread = new Thread(getTaskDeployTod(newValue));
+                    //thread.setDaemon(true);
+                    //thread.start();
 
-                    new Thread(getTaskDeployTod(newValue)).start();
+                    //executorService.submit(getTaskDeployTod(newValue));
+                    executorService.execute(getTaskDeployTod(newValue));
+
                     cobxFcc.setDisable(true);
                 }
             }
@@ -78,10 +89,6 @@ public class TodController implements Initializable {
         Tier.setControllers(this.appController,todController);
     }
 
-    /*
-    START OF GETTERS AND SETTERS
-     */
-
     public boolean isMirrorFccContainer(FccContainer fccContainer) {
         //boolean itIs = false;
         int i = 0;
@@ -96,7 +103,6 @@ public class TodController implements Initializable {
         }
         return false;
     }
-
 
     public TodContainer getTodContainer(){
         return todContainer;
@@ -125,13 +131,9 @@ public class TodController implements Initializable {
         return (LevelContainer)fccContainer.getParent().getParent().getParent().getParent();
     }
 
-    /*
-    END OF GETTERS AND SETTERS
-     */
-
-    /*
-    START OF TODCONTAINER METHODS
-     */
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
 
     private void deployTod(Fcc newValue) {
         this.todContainer = new TodContainer(newValue);
@@ -145,6 +147,7 @@ public class TodController implements Initializable {
      * This is the method that switches the mirror fccContainer with the normal fccContainer as required by the user
      * @param mirrorMultiContainer The multiContainer that has the mirror fccContainer
      */
+    /*
     public void switchMultiContainers(MultiContainer mirrorMultiContainer) {
         AnalogyContainer mirrorAnalogyContainer = getAnalogyContainerOf(mirrorMultiContainer);
         int mirrorIndex = mirrorAnalogyContainer.getChildren().indexOf(mirrorMultiContainer);
@@ -171,7 +174,7 @@ public class TodController implements Initializable {
         mirrorAnalogyContainer.getChildren().add(mirrorIndex,normalMultiContainer);
         normalAnalogyContainer.getChildren().add(normalIndex,mirrorMultiContainer);
     }
-
+*/
 
 
     /**
@@ -197,15 +200,6 @@ public class TodController implements Initializable {
         }
     }
 
-
-    /*
-    END OF TODCONTAINER METHODS
-     */
-
-    /*
-    START OF LEVELCONTAINER METHODS
-     */
-
     /**
      * This method creates a Tier for each pair of Knobs, one in each Fcc's that have a relation in the
      * sense of the Inclusion operation.
@@ -224,28 +218,14 @@ public class TodController implements Initializable {
 
             // check if its positive, negative or symmetric orientation
             if(appController.isDeduction(existingFcc, newPositiveDynamism)){
-                // If the newFccContainer is a MIRROR or a NORMAL we care about knobs 4 or 1,2,3 respectively
-                // For the existingFccContainer we care only about knob 0
-                if(newFccContainer.getType()== NORMAL){
-                    // TODO if there exists already a Tier linking these two don't add it...
-                    tie(newFccContainer,1,existingFccContainer);
-                } else if(newFccContainer.getType()== MIRROR){
-                    tie(newFccContainer,4,existingFccContainer);
-                }
+                // TODO if there exists already a Tier linking these two don't add it...
+                tie(newFccContainer,1,existingFccContainer);
             }
             if(appController.isDeduction(existingFcc,newNegativeDynamism)){
-                if(newFccContainer.getType()== NORMAL){
-                    tie(newFccContainer,2,existingFccContainer);
-                } else if(newFccContainer.getType()== MIRROR){
-                    tie(newFccContainer,4,existingFccContainer);
-                }
+                tie(newFccContainer,2,existingFccContainer);
             }
             if(appController.isDeduction(existingFcc,newSymmetricDynamism)){
-                if(newFccContainer.getType()== NORMAL){
-                    tie(newFccContainer,3,existingFccContainer);
-                } else if(newFccContainer.getType()== MIRROR){
-                    tie(newFccContainer,4,existingFccContainer);
-                }
+                tie(newFccContainer,3,existingFccContainer);
             }
 
             /*
@@ -258,33 +238,21 @@ public class TodController implements Initializable {
             Dynamism existingSymmetricDynamism = appController.dynamismOf(2,existingFcc);
 
             if(appController.isDeduction(newFcc,existingPositiveDynamism)){
-                if(existingFccContainer.getType()== NORMAL){
-                    tie(existingFccContainer,1,newFccContainer);
-                } else if(existingFccContainer.getType()==MIRROR){
-                    tie(existingFccContainer,4,newFccContainer);
-                }
+                tie(existingFccContainer,1,newFccContainer);
             }
 
             /*
              * NewFccContainer as negative Deduction of any existingDynamism
              * */
             if(appController.isDeduction(newFcc,existingNegativeDynamism)){
-                if(existingFccContainer.getType()== NORMAL){
-                    tie(existingFccContainer,2,newFccContainer);
-                } else if(existingFccContainer.getType()==MIRROR){
-                    tie(existingFccContainer,4,newFccContainer);
-                }
+                tie(existingFccContainer,2,newFccContainer);
             }
 
             /*
              * NewFccContainer as symmetric Deduction of any existingDynamism
              * */
             if(appController.isDeduction(newFcc,existingSymmetricDynamism)){
-                if(existingFccContainer.getType()== NORMAL){
-                    tie(existingFccContainer,3,newFccContainer);
-                } else if(existingFccContainer.getType()==MIRROR){
-                    tie(existingFccContainer,4,newFccContainer);
-                }
+                tie(existingFccContainer,3,newFccContainer);
             }
 
         }
@@ -317,12 +285,6 @@ public class TodController implements Initializable {
                 tier.startYProperty().bind(fccContainer1.knob3YProperty());
                 break;
             }
-            case(4):{
-                tier.setKnobStart(fccContainer1.knob4);
-                tier.startXProperty().bind(fccContainer1.knob4XProperty());
-                tier.startYProperty().bind(fccContainer1.knob4YProperty());
-                break;
-            }
             default: break;
         }
         tier.setKnobFinal(fccContainer2.knob0);
@@ -332,20 +294,11 @@ public class TodController implements Initializable {
         tier.toBack();
     }
 
-    /*
-    END OF LEVELCONTAINER METHODS
-     */
-
-    /*
-    START OF MULTICONTAINER METHODS
-     */
-
     public void clearAntecedents(FccContainer fccContainer){
         ArrayList<AnalogyContainer> tempListAnalogyContainers = new ArrayList<>();
         //MultiContainer mainParentMultiContainer = getMultiContainer(fccContainer);
 
         //test if there are children in the LevelContainer of Inclusions
-        //if(!parentMultiContainer.getPositionLeft().getChildren().isEmpty()){
         if(fccContainer.getMultiContainerParent().isAntecedentDeployed()){
             for(Node nodeAnalogy:fccContainer.getMultiContainerParent().getAntecedentsLevelContainer().getChildren()){
                 AnalogyContainer analogyContainer = (AnalogyContainer)nodeAnalogy;
@@ -358,16 +311,9 @@ public class TodController implements Initializable {
                     FccContainer subFccContainer = multiContainer.getFccContainer();
 
                     clearAntecedents(subFccContainer);
-                    clearPositiveDeductions(subFccContainer);
-                    clearNegativeDeductions(subFccContainer);
-                    clearSymmetricDeductions(subFccContainer);
 
-                    //subFccContainer.getMultiContainerParent().
-
-                    subFccContainer.getMultiContainerParent().getPositionLeft().getChildren().clear();
-                    subFccContainer.getMultiContainerParent().getPositionTop().getChildren().clear();
-                    subFccContainer.getMultiContainerParent().getPositionCenter().getChildren().clear();
-                    subFccContainer.getMultiContainerParent().getPositionBottom().getChildren().clear();
+                    subFccContainer.getMultiContainerParent().getPositionAntecedents().getChildren().clear();
+                    subFccContainer.getMultiContainerParent().getPositionDescendants().getChildren().clear();
 
                     // take into account: removing the lines that either arrive (to knob0) or
                     // depart (from knob1, knob2, knob3 or knob4) from fccContainer of this multiContainer
@@ -377,59 +323,19 @@ public class TodController implements Initializable {
                         Tier.getListTiers().remove(t);
                     }
 
-                    // If fccContainer is of type NORMAL, find for another MIRROR of the same fcc and make it NORMAL,
-                    // if there's no mirror just remove it...
-                    if(subFccContainer.getType()==NORMAL){
-                        for(FccContainer fc:getFccContainers()){
-                            if(fc.getFcc().equals(subFccContainer.getFcc())){
-                                if(fc.getType()==MIRROR){
-                                    fc.setType(NORMAL);
-                                    fc.deploy();
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
                     // ... If fccContainer is of type MIRROR do nothing special, just remove it.
 
                     getFccContainers().remove(subFccContainer);
 
                 }
 
-                fccContainer.getMultiContainerParent().getPositionLeft().getChildren().clear();
-                fccContainer.getMultiContainerParent().getPositionTop().getChildren().clear();
-                fccContainer.getMultiContainerParent().getPositionCenter().getChildren().clear();
-                fccContainer.getMultiContainerParent().getPositionBottom().getChildren().clear();
+                fccContainer.getMultiContainerParent().getPositionAntecedents().getChildren().clear();
+                fccContainer.getMultiContainerParent().getPositionDescendants().getChildren().clear();
             }
             fccContainer.getMultiContainerParent().setAntecedentDeployed(false);
         }
 
     }
-
-    public void clearPositiveDeductions(FccContainer fccContainer){
-        fccContainer.getMultiContainerParent().getPositionTop().getChildren().clear();
-        fccContainer.getMultiContainerParent().setPositiveDeductionDeployed(false);
-    }
-    public void clearNegativeDeductions(FccContainer fccContainer){
-        fccContainer.getMultiContainerParent().getPositionCenter().getChildren().clear();
-        fccContainer.getMultiContainerParent().setNegativeDeductionDeployed(false);
-    }
-    public void clearSymmetricDeductions(FccContainer fccContainer){
-        fccContainer.getMultiContainerParent().getPositionBottom().getChildren().clear();
-        fccContainer.getMultiContainerParent().setSymmetricDeductionDeployed(false);
-    }
-    /*
-    END OF MULTICONTAINER METHODS
-     */
-
-    /*
-    START OF FCCCONTAINER METHODS
-     */
-
-    /*
-    END OF FCCCONTAINER METHODS
-     */
 
     /*
     START OF TASKS
@@ -703,6 +609,12 @@ public class TodController implements Initializable {
         for(FccContainer fc:getFccContainers()){
             fc.toFront();
         }
+    }
+
+    // for testing only
+    public void setScale(double i) {
+        todContent.setScaleX(todContent.getScaleX()+i);
+        todContent.setScaleY(todContent.getScaleY()+i);
     }
 
     /*

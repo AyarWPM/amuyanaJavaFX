@@ -11,9 +11,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 
-import static extras.tod.FccContainer.FccType.MIRROR;
-import static extras.tod.FccContainer.FccType.NORMAL;
+//import static extras.tod.FccContainer.FccType.MIRROR;
+//import static extras.tod.FccContainer.FccType.NORMAL;
 import static extras.tod.FormulaContainer.Styles.SIMPLE;
 
 public class FccContainer extends VBox {
@@ -30,15 +31,15 @@ public class FccContainer extends VBox {
 
     private final Label bracket = new Label("{");
 
-    public Knob knob0, knob1, knob2, knob3, knob4;
+    public Knob knob0, knob1, knob2, knob3;
 
     private FormulaContainer positiveFormula, negativeFormula, symmetricFormula;
 
-    private FccType type;
+    //private FccType type;
 
     private final Label MIRROR_MESSAGE = new Label("The FCC has been\ndrawn somewhere else...");
 
-    public enum FccType{NORMAL, MIRROR}
+    //public enum FccType{NORMAL, MIRROR}
 
     private DoubleProperty knob0X = new SimpleDoubleProperty();
     private DoubleProperty knob0Y = new SimpleDoubleProperty();
@@ -48,8 +49,6 @@ public class FccContainer extends VBox {
     private DoubleProperty knob2Y = new SimpleDoubleProperty();
     private DoubleProperty knob3X = new SimpleDoubleProperty();
     private DoubleProperty knob3Y = new SimpleDoubleProperty();
-    private DoubleProperty knob4X = new SimpleDoubleProperty();
-    private DoubleProperty knob4Y = new SimpleDoubleProperty();
 
     FccContainer(Fcc fcc){
         this.fcc = fcc;
@@ -72,7 +71,8 @@ public class FccContainer extends VBox {
     }
 
     void debug(){
-        System.out.println("Clicked on " + getThis());
+
+
     }
 
     public void deploy(){
@@ -84,7 +84,8 @@ public class FccContainer extends VBox {
         addChildren();
         setStyle();
     }
-    
+
+    /*
     public void setType(){
         if(todController.isMirrorFccContainer(getThis())){
             setType(FccContainer.FccType.MIRROR);
@@ -92,8 +93,10 @@ public class FccContainer extends VBox {
             setType(NORMAL);
         }
     }
+    */
 
     private void initialize(){
+
         this.header = new HBox();
 
         this.content = new BorderPane();
@@ -103,7 +106,6 @@ public class FccContainer extends VBox {
         this.knob1 = new Knob(getThis());
         this.knob2 = new Knob(getThis());
         this.knob3 = new Knob(getThis());
-        this.knob4 = new Knob(getThis());
     }
 
     private void addChildren() {
@@ -136,12 +138,14 @@ public class FccContainer extends VBox {
         this.setPickOnBounds(true);
         this.setStyle("-fx-background-color:white;-fx-border-color:black;");
         this.setSpacing(5);
+
     }
 
     public Fcc getFcc(){
         return this.fcc;
     }
 
+    /*
     public void setType(FccType type){
         this.type = type;
     }
@@ -149,6 +153,7 @@ public class FccContainer extends VBox {
     public FccType getType(){
         return this.type;
     }
+    */
 
     private FccContainer getThis(){
         return this;
@@ -178,30 +183,19 @@ public class FccContainer extends VBox {
     }
 
     public void setKnobsPositions(){
-
         Point2D pointKnob0 = todController.getTodContainer().sceneToLocal(knob0.localToScene(0,0));
+        Point2D pointKnob1 = todController.getTodContainer().sceneToLocal(knob1.localToScene(0,0));
+        Point2D pointKnob2 = todController.getTodContainer().sceneToLocal(knob2.localToScene(0,0));
+        Point2D pointKnob3 = todController.getTodContainer().sceneToLocal(knob3.localToScene(0,0));
 
         setKnob0X(pointKnob0.getX());
         setKnob0Y(pointKnob0.getY());
-
-        if(this.type==NORMAL){
-            Point2D pointKnob1 = todController.getTodContainer().sceneToLocal(knob1.localToScene(0,0));
-            Point2D pointKnob2 = todController.getTodContainer().sceneToLocal(knob2.localToScene(0,0));
-            Point2D pointKnob3 = todController.getTodContainer().sceneToLocal(knob3.localToScene(0,0));
-
-            setKnob1X(pointKnob1.getX());
-            setKnob1Y(pointKnob1.getY());
-
-            setKnob2X(pointKnob2.getX());
-            setKnob2Y(pointKnob2.getY());
-
-            setKnob3X(pointKnob3.getX());
-            setKnob3Y(pointKnob3.getY());
-        } else if(this.type==MIRROR){
-            Point2D pointKnob4 = todController.getTodContainer().sceneToLocal(knob4.localToScene(0,0));
-            setKnob4X(pointKnob4.getX());
-            setKnob4Y(pointKnob4.getY());
-        }
+        setKnob1X(pointKnob1.getX());
+        setKnob1Y(pointKnob1.getY());
+        setKnob2X(pointKnob2.getX());
+        setKnob2Y(pointKnob2.getY());
+        setKnob3X(pointKnob3.getX());
+        setKnob3Y(pointKnob3.getY());
     }
 
     private Pane getBracketHolder(){
@@ -220,39 +214,26 @@ public class FccContainer extends VBox {
     private VBox getFormulasHolder(){
         VBox formulasHolder = new VBox();
 
-        if(this.type==NORMAL){
-            this.setType(FccType.NORMAL);
+        this.positiveFormula = new FormulaContainer(appController.dynamismOf(0, fcc));
+        this.negativeFormula = new FormulaContainer(appController.dynamismOf(1, fcc));
+        this.symmetricFormula = new FormulaContainer(appController.dynamismOf(2, fcc));
 
-            this.positiveFormula = new FormulaContainer(appController.dynamismOf(0, fcc));
-            this.negativeFormula = new FormulaContainer(appController.dynamismOf(1, fcc));
-            this.symmetricFormula = new FormulaContainer(appController.dynamismOf(2, fcc));
+        this.positiveFormula.write(SIMPLE);
+        this.negativeFormula.write(SIMPLE);
+        this.symmetricFormula.write(SIMPLE);
 
-            this.positiveFormula.write(SIMPLE);
-            this.negativeFormula.write(SIMPLE);
-            this.symmetricFormula.write(SIMPLE);
+        formulasHolder.getChildren().addAll(positiveFormula,negativeFormula,symmetricFormula);
 
-            formulasHolder.getChildren().addAll(positiveFormula,negativeFormula,symmetricFormula);
+        //this.header.getChildren().set(1,getMenu());
+        //this.content.getChildren().set(2,this.formulas);
 
-            //this.header.getChildren().set(1,getMenu());
-            //this.content.getChildren().set(2,this.formulas);
-        } else if(this.type == MIRROR){
-            //this.setType(FccType.MIRROR);
-            //this.header.getChildren().set(1,getMenu());
-            formulasHolder.getChildren().add(this.MIRROR_MESSAGE);
-            //this.content.getChildren().add(this.knob4);
-        }
         return formulasHolder;
     }
 
     private VBox getKnobsHolder(){
         this.knobsHolder = new VBox();
         this.knobsHolder.setStyle("-fx-padding:0 0 0 5");
-
-        if(this.type == NORMAL){
-            this.knobsHolder.getChildren().addAll(knob1,knob2,knob3);
-        } else if(this.type == MIRROR){
-            this.knobsHolder.getChildren().add(knob4);
-        }
+        this.knobsHolder.getChildren().addAll(knob1,knob2,knob3);
         return knobsHolder;
     }
 
@@ -260,75 +241,41 @@ public class FccContainer extends VBox {
         MenuButton menu = new MenuButton();
         MenuItem muimTurnToFront = new MenuItem("Show in front");
 
-        //muimTurnToFront.setOnAction(event -> todController.turnToFront(todController.getMultiContainer(getThis())));
         muimTurnToFront.setOnAction(event -> getThis().getMultiContainerParent().toFront());
 
-        switch(this.type){
-            case NORMAL:{
-                Menu deployMenu = new Menu("Deploy");
+        Menu deployMenu = new Menu("Deploy");
 
-                CheckMenuItem antecedent = new CheckMenuItem("Deploy antecedents");
-                antecedent.setOnAction(event -> deployAntecedents());
+        CheckMenuItem cmiDeployAntecedents = new CheckMenuItem("Deploy all antecedents");
+        cmiDeployAntecedents.setOnAction(event -> deployAntecedents());
 
-                CheckMenuItem positiveDeductions= new CheckMenuItem("Deploy positive deductions");
-                positiveDeductions.setOnAction(event -> deployPositiveDeductions());
+        CheckMenuItem cmiDeployDescendants = new CheckMenuItem("Deploy all antecedents");
 
-                CheckMenuItem negativeDeductions= new CheckMenuItem("Deploy negative deductions");
-                negativeDeductions.setOnAction(event -> deployNegativeDeductions());
+        deployMenu.getItems().addAll(cmiDeployAntecedents, cmiDeployDescendants);
 
-                CheckMenuItem symmetricDeductions = new CheckMenuItem("Deploy symmetric deductions");
-                symmetricDeductions.setOnAction(event -> deploySymmetricDeductions());
+        menu.getItems().addAll(muimTurnToFront,deployMenu);
 
-                deployMenu.getItems().addAll(antecedent, positiveDeductions, negativeDeductions, symmetricDeductions);
-
-                menu.getItems().addAll(muimTurnToFront,deployMenu);
-                break;
-            }
-
-            case MIRROR:{
-                MenuItem drawHere = new MenuItem("Draw here");
-
-                drawHere.setOnAction(event -> todController.switchMultiContainers(getThis().getMultiContainerParent()));
-
-                menu.getItems().addAll(muimTurnToFront,drawHere);
-                break;
-            }
-            default: break;
-        }
         return menu;
     }
 
-    private void deployAntecedents(){
-        if(getMultiContainerParent().isAntecedentDeployed()){
-            todController.clearAntecedents(getThis());
-        } else if(!getMultiContainerParent().isAntecedentDeployed()){
-            new Thread(todController.getTaskDeployAntecedents(getMultiContainerParent())).start();
-        }
+    private void deployAntecedents() {
+        todController.getExecutorService().execute(todController.getTaskDeployAntecedents(getMultiContainerParent()));
     }
 
-    private void deployPositiveDeductions(){
-        if(getMultiContainerParent().isPositiveDeductionsDeployed()){
-            todController.clearPositiveDeductions(getThis());
-        } else if(!getMultiContainerParent().isPositiveDeductionsDeployed()){
-            //todController.deployPositiveDeductions(getThis());
-        }
-    }
-
-    private void deployNegativeDeductions(){
-        if(getMultiContainerParent().isNegativeDeductionsDeployed()){
-            todController.clearNegativeDeductions(getThis());
-        } else if(!getMultiContainerParent().isNegativeDeductionsDeployed()){
-            //todController.deployNegativeDeductions(getThis());
-        }
-    }
-
-    private void deploySymmetricDeductions(){
-        if(getMultiContainerParent().isSymmetricDeductionsDeployed()){
-            todController.clearSymmetricDeductions(getThis());
-        } else if(!getMultiContainerParent().isSymmetricDeductionsDeployed()){
-            //todController.deploySymmetricDeductions(getThis());
-        }
-    }
+//    private void deployAntecedents(){
+//        if(getMultiContainerParent().isAntecedentDeployed()){
+//            todController.clearAntecedents(getThis());
+//        } else if(!getMultiContainerParent().isAntecedentDeployed()){
+//            new Thread(todController.getTaskDeployAntecedents(getMultiContainerParent())).start();
+//        }
+//    }
+//
+//    private void deployDescendants(){
+//        if(getMultiContainerParent().isDescendantDeployed()){
+//            todController.clearDescendant(getThis());
+//        } else if(!getMultiContainerParent().isSymmetricDeductionsDeployed()){
+//            //todController.deploySymmetricDeductions(getThis());
+//        }
+//    }
 
     @Override
     public String toString(){
@@ -429,29 +376,5 @@ public class FccContainer extends VBox {
 
     public void setKnob3Y(double knob3Y) {
         this.knob3Y.set(knob3Y);
-    }
-
-    public double getKnob4X() {
-        return knob4X.get();
-    }
-
-    public DoubleProperty knob4XProperty() {
-        return knob4X;
-    }
-
-    public void setKnob4X(double knob4X) {
-        this.knob4X.set(knob4X);
-    }
-
-    public double getKnob4Y() {
-        return knob4Y.get();
-    }
-
-    public DoubleProperty knob4YProperty() {
-        return knob4Y;
-    }
-
-    public void setKnob4Y(double knob4Y) {
-        this.knob4Y.set(knob4Y);
     }
 }

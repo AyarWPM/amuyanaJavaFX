@@ -15,19 +15,40 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-public class LevelContainer extends Group {
+public class LevelContainer extends Pane {
 
     private static TodController todController;
     private ArrayList<Analogy> listAnalogy;
     private static AppController appController;
     private final LevelType levelType;
+    private double scale = 1;
 
-    public enum LevelType{MAIN, INCLUSION, DEDUCTION}
+    public enum LevelType{MAIN, ANTECEDENT, DEDUCTION}
 
     public LevelContainer(ArrayList<Analogy> listAnalogy, LevelType levelType) {
         this.listAnalogy = listAnalogy;
         this.levelType = levelType;
         setStyle();
+        setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });
+    }
+
+    public void setScale(double scale) {
+        this.scale = scale;
+        this.setScaleX(scale);
+        this.setScaleY(scale);
+    }
+
+    public double getScale() {
+        return this.scale;
+    }
+
+    private double getPriorScale() {
+        return getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent().getScaleX();
     }
 
     public static void setControllers(AppController appController, TodController todController) {
@@ -131,6 +152,9 @@ public class LevelContainer extends Group {
      * @return
      */
     public MultiContainer getMultiContainerParent() {
+        System.out.println(getParent());
+        System.out.println(getParent().getParent());
+
         return (MultiContainer)getParent().getParent();
     }
 

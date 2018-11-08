@@ -22,7 +22,7 @@ import javafx.geometry.Pos;
 import javafx.scene.shape.Circle;
 
 
-public class AnalogyContainer extends Pane {
+public class AnalogyContainer extends Group {
     public final static double TRANSLATE_X=20;
     public final static double TRANSLATE_Y=28;
     //private final static double TRANSPARENCY=0.2;

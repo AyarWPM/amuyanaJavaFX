@@ -11,7 +11,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 
 //import static extras.tod.FccContainer.FccType.MIRROR;
 //import static extras.tod.FccContainer.FccType.NORMAL;
@@ -246,10 +245,11 @@ public class FccContainer extends VBox {
         Menu deployMenu = new Menu("Deploy");
 
         CheckMenuItem cmiDeployAntecedents = new CheckMenuItem("Deploy all antecedents");
-        cmiDeployAntecedents.setOnAction(event -> deployAntecedents());
+        cmiDeployAntecedents.setOnAction(event -> getThis().getMultiContainerParent().deployAntecedents());
 
-        CheckMenuItem cmiDeployDescendants = new CheckMenuItem("Deploy all antecedents");
-
+        CheckMenuItem cmiDeployDescendants = new CheckMenuItem("Deploy all descendants");
+        cmiDeployDescendants.setOnAction(event -> getThis().getMultiContainerParent().deployDescendants());
+        
         deployMenu.getItems().addAll(cmiDeployAntecedents, cmiDeployDescendants);
 
         menu.getItems().addAll(muimTurnToFront,deployMenu);
@@ -257,9 +257,6 @@ public class FccContainer extends VBox {
         return menu;
     }
 
-    private void deployAntecedents() {
-        todController.getExecutorService().execute(todController.getTaskDeployAntecedents(getMultiContainerParent()));
-    }
 
 //    private void deployAntecedents(){
 //        if(getMultiContainerParent().isAntecedentDeployed()){

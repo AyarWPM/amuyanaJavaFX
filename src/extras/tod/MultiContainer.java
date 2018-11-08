@@ -18,7 +18,7 @@ public class MultiContainer extends HBox {
 
     //private FccContainer fccContainer;
 
-    private boolean antecedentDeployed, positiveDeductionDeployed, negativeDeductionDeployed, symmetricDeductionDeployed;
+    private boolean antecedentDeployed, descendantDeployed;
 
     private VBox positionAntecedents, positionFccContainer, positionDescendants;
 
@@ -90,15 +90,64 @@ public class MultiContainer extends HBox {
 
     public void deployAntecedents() {
         LevelContainer antecedentLevel = new LevelContainer(
-                appController.getListAnalogyForInclusion(getFccContainer().getFcc()), LevelContainer.LevelType.ANTECEDENT);
+                appController.getListAnalogyForAntecedent(getFccContainer().getFcc()), LevelContainer.LevelType.ANTECEDENT);
 
-        //antecedentLevel.setScale(previousScale*0.8);
         antecedentLevel.deploy();
 
         getPositionAntecedents().getChildren().add(antecedentLevel);
         setAntecedentDeployed(true);
+        
+        todController.startExecutor();
+        todController.getExecutorService().execute(todController.getTaskSetBracketAndKnobs(antecedentLevel));
+        todController.getExecutorService().execute(todController.getTaskSetTiers(antecedentLevel));
+        
+        boolean key=true;
+        while(key){
+            todController.getExecutorService().execute(todController.getTaskPositionMultiContainers(antecedentLevel));
+            todController.getExecutorService().execute(todController.getTaskPositionAnalogyContainers(antecedentLevel));
+            if(antecedentLevel==todController.getTodContainer().getMainLevelContainer()){
+                key=false;
+            } else if (antecedentLevel!=todController.getTodContainer().getMainLevelContainer()){
+                antecedentLevel=antecedentLevel.getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent();
+            }
+        }
+        
+        todController.getExecutorService().execute(todController.getTaskSetKnobsPositions());
+        todController.getExecutorService().execute(todController.getTaskSetBorderAnalogy());
+        
+        todController.endExecutor();
     }
 
+    public void deployDescendants(){
+        LevelContainer descendantLevel = new LevelContainer(
+                appController.getListAnalogyForDescendant(getFccContainer().getFcc()), LevelContainer.LevelType.ANTECEDENT);
+
+        descendantLevel.deploy();
+
+        getPositionDescendants().getChildren().add(descendantLevel);
+        setDescendantDeployed(true);
+        
+        todController.startExecutor();
+        todController.getExecutorService().execute(todController.getTaskSetBracketAndKnobs(descendantLevel));
+        todController.getExecutorService().execute(todController.getTaskSetTiers(descendantLevel));
+        
+        boolean key=true;
+        while(key){
+            todController.getExecutorService().execute(todController.getTaskPositionMultiContainers(descendantLevel));
+            todController.getExecutorService().execute(todController.getTaskPositionAnalogyContainers(descendantLevel));
+            if(descendantLevel==todController.getTodContainer().getMainLevelContainer()){
+                key=false;
+            } else if (descendantLevel!=todController.getTodContainer().getMainLevelContainer()){
+                descendantLevel=descendantLevel.getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent();
+            }
+        }
+        
+        todController.getExecutorService().execute(todController.getTaskSetKnobsPositions());
+        todController.getExecutorService().execute(todController.getTaskSetBorderAnalogy());
+        
+        todController.endExecutor();
+    }
+    
     @Override
     public String toString(){
         return "[\"" + getFccContainer().getFcc().toString() + "\"" + " multiContainer]";
@@ -147,34 +196,16 @@ public class MultiContainer extends HBox {
         return antecedentDeployed;
     }
 
-    public boolean isPositiveDeductionsDeployed() {
-        return positiveDeductionDeployed;
-    }
-
-    public boolean isNegativeDeductionsDeployed() {
-        return negativeDeductionDeployed;
-    }
-
-    public boolean isSymmetricDeductionsDeployed() {
-        return symmetricDeductionDeployed;
+    public boolean isDescendantDeployed() {
+        return descendantDeployed;
     }
 
     public void setAntecedentDeployed(boolean antecedentDeployed) {
         this.antecedentDeployed = antecedentDeployed;
     }
 
-    public void setPositiveDeductionDeployed(boolean positiveDeductionDeployed) {
-        this.positiveDeductionDeployed = positiveDeductionDeployed;
+    public void setDescendantDeployed(boolean descendantDeployed) {
+        this.descendantDeployed=descendantDeployed;
     }
-
-    public void setNegativeDeductionDeployed(boolean negativeDeductionDeployed) {
-        this.negativeDeductionDeployed = negativeDeductionDeployed;
-    }
-
-    public void setSymmetricDeductionDeployed(boolean symmetricDeductionDeployed) {
-        this.symmetricDeductionDeployed = symmetricDeductionDeployed;
-    }
-
-
 
 }

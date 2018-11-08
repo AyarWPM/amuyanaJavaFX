@@ -10,7 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 public class TodContainer extends Group {
@@ -110,8 +109,8 @@ public class TodContainer extends Group {
                 if (multiContainer.isAntecedentDeployed()) {
                     tempListFccContainers.addAll(getFccContainers(tempListFccContainers,multiContainer.getAntecedentsLevelContainer()));
                 }
-                if (multiContainer.isPositiveDeductionsDeployed()) {
-
+                if (multiContainer.isDescendantDeployed()) {
+                    tempListFccContainers.addAll(getFccContainers(tempListFccContainers,multiContainer.getDescendantsLevelContainers()));
                 }
             }
         }

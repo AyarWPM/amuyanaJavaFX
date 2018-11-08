@@ -511,7 +511,7 @@ public class AppController {
         return listAnalogyForInitial;
     }
 
-    public ArrayList<Analogy> getListAnalogyForInclusion(Fcc fcc){
+    public ArrayList<Analogy> getListAnalogyForAntecedent(Fcc fcc){
         ArrayList<Analogy> listAnalogyInclusion = new ArrayList<>();
 
         ArrayList<Fcc> tempListFcc = new ArrayList<>();
@@ -540,7 +540,43 @@ public class AppController {
         return listAnalogyInclusion;
     }
 
-    public ArrayList<Analogy> getListAnalogyForDeduction(Dynamism dynamism){
+    public ArrayList<Analogy> getListAnalogyForDescendant(Fcc fcc){
+        ArrayList<Analogy> listAnalogy = new ArrayList<>();
+        ArrayList<Fcc> tempList = new ArrayList<>();
+
+        for(General g:getListGenerals()){
+            if(g.getDynamism().equals(dynamismOf(0, fcc))){
+                tempList.add(g.getInclusion().getDynamism().getFcc());
+            }
+            if(g.getDynamism().equals(dynamismOf(1, fcc))){
+                tempList.add(g.getInclusion().getDynamism().getFcc());
+            }
+            if(g.getDynamism().equals(dynamismOf(2, fcc))){
+                tempList.add(g.getInclusion().getDynamism().getFcc());
+            }
+        }
+
+        for(Fcc f:tempList){
+            listAnalogy.addAll(getListAnalogyInclusionOf(f));
+            listAnalogy.addAll(getListAnalogyCClassOf(f));
+        }
+
+        // Take into account those FCC's that aren't part of a general nor a cClass (aka "simple particulars")
+        for(Fcc f:tempList){
+            if(!listAnalogy.contains(f)){
+                Analogy analogy = new Analogy();
+                analogy.add(f);
+                listAnalogy.add(analogy);
+            }
+        }
+
+        removeDuplicates(listAnalogy);
+        orderAnalogyList(listAnalogy);
+
+        return listAnalogy;
+    }
+    
+    public ArrayList<Analogy> getListAnalogyForDescendant(Dynamism dynamism){
         ArrayList<Analogy> listAnalogy = new ArrayList<>();
         ArrayList<Fcc> tempList = new ArrayList<>();
 

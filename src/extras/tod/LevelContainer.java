@@ -8,14 +8,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
-public class LevelContainer extends Pane {
+public class LevelContainer extends Group {
 
     private static TodController todController;
     private ArrayList<Analogy> listAnalogy;
@@ -29,27 +27,19 @@ public class LevelContainer extends Pane {
         this.listAnalogy = listAnalogy;
         this.levelType = levelType;
         setStyle();
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-
-            }
-        });
+        
     }
 
     public void setScale(double scale) {
         this.scale = scale;
-        this.setScaleX(scale);
-        this.setScaleY(scale);
+        //this.setScaleX(scale);
+        //this.setScaleY(scale);
     }
 
     public double getScale() {
         return this.scale;
     }
 
-    private double getPriorScale() {
-        return getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent().getScaleX();
-    }
 
     public static void setControllers(AppController appController, TodController todController) {
         LevelContainer.appController = appController;

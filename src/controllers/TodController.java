@@ -44,9 +44,7 @@ public class TodController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //listFccContainers = new ArrayList<>();
-        this.executorService = Executors.newSingleThreadExecutor();
-
+        
         manageEvents();
     }
 
@@ -60,15 +58,7 @@ public class TodController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
                 if(newValue!=null){
-
-                    //Thread thread = new Thread(getTaskDeployTod(newValue));
-                    //thread.setDaemon(true);
-                    //thread.start();
-
-                    //executorService.submit(getTaskDeployTod(newValue));
-                    executorService.execute(getTaskDeployTod(newValue));
-
-                    cobxFcc.setDisable(true);
+                    deployTod(newValue);
                 }
             }
         });
@@ -137,12 +127,27 @@ public class TodController implements Initializable {
 
     private void deployTod(Fcc newValue) {
         this.todContainer = new TodContainer(newValue);
-        //todContent.getChildren().clear();
         todContent.getChildren().setAll(this.todContainer);
         this.todContainer.deploy();
+        
+        LevelContainer mainLevelContainer = todContainer.getMainLevelContainer();
+        startExecutor();
+        executorService.execute(getTaskSetBracketAndKnobs(mainLevelContainer));
+        executorService.execute(getTaskPositionMultiContainers(mainLevelContainer));
+        executorService.execute(getTaskPositionAnalogyContainers(mainLevelContainer));
+        executorService.execute(getTaskSetKnobsPositions());
+        endExecutor();
+        
     }
 
-
+    public void startExecutor(){
+        executorService = Executors.newSingleThreadExecutor();
+    }
+    
+    public void endExecutor(){
+        executorService.shutdown();
+    }
+    
     /**
      * This is the method that switches the mirror fccContainer with the normal fccContainer as required by the user
      * @param mirrorMultiContainer The multiContainer that has the mirror fccContainer
@@ -352,8 +357,7 @@ public class TodController implements Initializable {
             protected void succeeded() {
                 // Because this is the first deployment, all fccContainers are new
                 // Or we could use the mainLevelContainer
-                //new Thread(getTaskSetBracketAndKnobs(getListFccContainers())).start();
-                new Thread(getTaskSetBracketAndKnobs(getTodContainer().getMainLevelContainer())).start();
+//                new Thread(getTaskSetBracketAndKnobs(getTodContainer().getMainLevelContainer())).start();
                 super.succeeded();
             }
         };
@@ -378,6 +382,7 @@ public class TodController implements Initializable {
         return deployDeduction;
     }
 
+    @Deprecated
     public Task<Void> getTaskDeployAntecedents(MultiContainer multiContainer){
         Task<Void> deployAntecedents = new Task<Void>() {
             @Override
@@ -389,18 +394,18 @@ public class TodController implements Initializable {
 
             @Override
             protected void succeeded() {
-                new Thread(getTaskSetBracketAndKnobs(multiContainer.getAntecedentsLevelContainer())).start();
+                //new Thread(getTaskSetBracketAndKnobs(multiContainer.getAntecedentsLevelContainer())).start();
                 super.succeeded();
             }
         };
         return deployAntecedents;
     }
 
-    private Task<Void> getTaskSetBracketAndKnobs(LevelContainer levelContainer){
+    public Task<Void> getTaskSetBracketAndKnobs(LevelContainer levelContainer){
         Task<Void> setBracketAndKnobs = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                //Thread.sleep(50);
+                Thread.sleep(50);
                 Platform.runLater(() -> {
                     for(FccContainer fc:levelContainer.getFccContainers()){
                         fc.setBracketAndKnobs();
@@ -413,13 +418,14 @@ public class TodController implements Initializable {
             protected void succeeded() {
                 // Only if it is not the mainLevelContainer proceed to adding tiers.
                 // Else just to positionMultiContainers
-                if (levelContainer.equals(todContainer.getMainLevelContainer())) {
-                    new Thread(getTaskPositionMultiContainers(levelContainer)).start();
-                    super.succeeded();
-                } else if (!levelContainer.equals(todContainer.getMainLevelContainer())) {
-                    new Thread(getTaskSetTiers(levelContainer)).start();
-                    super.succeeded();
-                }
+                
+//                if (levelContainer.equals(todContainer.getMainLevelContainer())) {
+//                    new Thread(getTaskPositionMultiContainers(levelContainer)).start();
+//                    super.succeeded();
+//                } else if (!levelContainer.equals(todContainer.getMainLevelContainer())) {
+//                    new Thread(getTaskSetTiers(levelContainer)).start();
+//                    super.succeeded();
+//                }
 
                 super.succeeded();
             }
@@ -427,7 +433,7 @@ public class TodController implements Initializable {
         return setBracketAndKnobs;
     }
 
-    private Task<Void> getTaskSetTiers(LevelContainer levelContainer) {
+    public Task<Void> getTaskSetTiers(LevelContainer levelContainer) {
         Task<Void> setTiers = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -454,14 +460,13 @@ public class TodController implements Initializable {
             @Override
             protected Void call() throws InterruptedException {
                 Thread.sleep(100);
-                // Platform.runLater(()->positionMultiContainers(levelContainer));
                 Platform.runLater(levelContainer::positionMultiContainers);
                 return null;
             }
 
             @Override
             protected void succeeded() {
-                new Thread(getTaskPositionAnalogyContainers(levelContainer)).start();
+//                new Thread(getTaskPositionAnalogyContainers(levelContainer)).start();
                 super.succeeded();
             }
         };
@@ -473,29 +478,29 @@ public class TodController implements Initializable {
         Task<Void> positionAnalogyContainers = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
-                Thread.sleep(100);
+//                Thread.sleep(100);
                 Platform.runLater(levelContainer::positionAnalogyContainers);
                 return null;
             }
 
             @Override
             protected void succeeded() {
-                if (levelContainer.equals((todContainer.getMainLevelContainer()))) {
-                    new Thread(getTaskSetKnobsPositions()).start();
-                } else if (!levelContainer.equals((todContainer.getMainLevelContainer()))) {
-                    //if it is not mainLevelContainer we know it is inside a multi, and that one inside an analogy
-                    // and that last inside another level
-                    new Thread(getTaskPositionMultiContainers(
-                        levelContainer.getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent())
-                    ).start();
-                }
+//                if (levelContainer.equals((todContainer.getMainLevelContainer()))) {
+//                    new Thread(getTaskSetKnobsPositions()).start();
+//                } else if (!levelContainer.equals((todContainer.getMainLevelContainer()))) {
+//                    //if it is not mainLevelContainer we know it is inside a multi, and that one inside an analogy
+//                    // and that last inside another level
+//                    new Thread(getTaskPositionMultiContainers(
+//                        levelContainer.getMultiContainerParent().getAnalogyContainerParent().getLevelContainerParent())
+//                    ).start();
+//                }
                 super.succeeded();
             }
         };
         return positionAnalogyContainers;
     }
 
-    private Task<Void> getTaskSetKnobsPositions() {
+    public Task<Void> getTaskSetKnobsPositions() {
         Task<Void> setKnobsPositions = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
@@ -510,7 +515,7 @@ public class TodController implements Initializable {
 
             @Override
             protected void succeeded() {
-                new Thread(getTaskSetBorderAnalogy()).start();
+//                new Thread(getTaskSetBorderAnalogy()).start();
                 //new Thread(getTaskPutFccContainersInFront()).start();
                 if(cobxFcc.isDisable())
                     cobxFcc.setDisable(false);
@@ -539,11 +544,11 @@ public class TodController implements Initializable {
         return setBorderAnalogy;
     }
 
-    private Task<Void> getTaskSetBorderAnalogy() {
+    public Task<Void> getTaskSetBorderAnalogy() {
         Task<Void> setBorderAnalogy = new Task<Void>() {
             @Override
             protected Void call() throws InterruptedException {
-                //Thread.sleep(400);
+//                Thread.sleep(400);
                 Platform.runLater(()->setBorderAnalogy());
                 return null;
             }

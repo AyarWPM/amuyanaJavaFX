@@ -55,6 +55,7 @@ public class AnalogyContainer extends Group {
     }
 
     void deploy(){
+
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
             this.getChildren().add(multiContainer);

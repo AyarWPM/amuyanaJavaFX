@@ -18,10 +18,10 @@ public class MainApp extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/App.fxml"));
         Parent rootNode = loader.load();
 
-        Scene scene = new Scene(rootNode, 800, 600);
+        Scene scene = new Scene(rootNode, 800, 600,true);
         //rootNode.setStyle("-fx-background: transparent;");
         
-        //rootNode.setDepthTest(DepthTest.ENABLE);
+        rootNode.setDepthTest(DepthTest.ENABLE);
         
         scene.getStylesheets().add("/resources/styles/mainApp.css");
         

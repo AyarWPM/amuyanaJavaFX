@@ -65,7 +65,7 @@ public class MultiContainer extends HBox {
 
     void setStyle(){
         this.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
-        this.setSpacing(30);
+        this.setSpacing(40);
         //setStyle("-fx-background-color:transparent;");
         //setBackground(Background.EMPTY);
 

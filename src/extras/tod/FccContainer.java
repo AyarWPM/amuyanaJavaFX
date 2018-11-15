@@ -60,18 +60,29 @@ public class FccContainer extends VBox {
     }
 
     void manageEvents(){
-        
         this.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 debug();
             }
         });
+
+        this.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                getThis().getMultiContainerParent().setTranslateZ(-1);
+            }
+        });
+
+        this.setOnMouseExited(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                getThis().getMultiContainerParent().setTranslateZ(0);
+            }
+        });
     }
 
     void debug(){
-
-
     }
 
     public void deploy(){

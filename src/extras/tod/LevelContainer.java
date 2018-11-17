@@ -18,18 +18,14 @@ public class LevelContainer extends Group {
     private static TodController todController;
     private ArrayList<Analogy> listAnalogy;
     private static AppController appController;
-    private final LevelType levelType;
     private double scale = 1;
 
-    public enum LevelType{MAIN, ANTECEDENT, DEDUCTION}
-
-    public LevelContainer(ArrayList<Analogy> listAnalogy, LevelType levelType) {
-        this.listAnalogy = listAnalogy;
-        this.levelType = levelType;
+    public LevelContainer(Analogy analogy) {
+        this.listAnalogy = new ArrayList<Analogy>();
+        this.listAnalogy.add(analogy);
         setStyle();
-        
     }
-
+    
     public void setScale(double scale) {
         this.scale = scale;
         //this.setScaleX(scale);
@@ -113,10 +109,6 @@ public class LevelContainer extends Group {
             }
             */
         }
-    }
-
-    public LevelType getLevelType() {
-        return levelType;
     }
 
     public ObservableList<AnalogyContainer> getAnalogyContainers() {

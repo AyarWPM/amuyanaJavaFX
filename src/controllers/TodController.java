@@ -21,9 +21,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 
-//import static extras.tod.FccContainer.FccType.MIRROR;
-//import static extras.tod.FccContainer.FccType.NORMAL;
-
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -79,21 +76,6 @@ public class TodController implements Initializable {
         Tier.setControllers(this.appController,todController);
     }
 
-    public boolean isMirrorFccContainer(FccContainer fccContainer) {
-        //boolean itIs = false;
-        int i = 0;
-        
-        for(FccContainer fc : getFccContainers()){
-            if(fc.getFcc().equals(fccContainer.getFcc())){
-                if(!fc.equals(fccContainer)){
-                    return true;
-                }
-            }
-            i++;
-        }
-        return false;
-    }
-
     public TodContainer getTodContainer(){
         return todContainer;
     }
@@ -103,7 +85,7 @@ public class TodController implements Initializable {
         return todContainer.getFccContainers(listFccContainers,todContainer.getMainLevelContainer());
     }
     
-    public ObservableList<AnalogyContainer> getAnalogies(){
+    public ObservableList<AnalogyContainer> getAnalogyContainers(){
         ObservableList<AnalogyContainer> listAnalogies = FXCollections.observableArrayList();
         return todContainer.getAnalogyContainers(listAnalogies,todContainer.getMainLevelContainer());
     }
@@ -584,7 +566,7 @@ public class TodController implements Initializable {
         listOfcolors.add("navy");
         listOfcolors.add("orange");
         
-        for(AnalogyContainer analogyContainer:getAnalogies()){
+        for(AnalogyContainer analogyContainer:getAnalogyContainers()){
             
             Bounds bounds = todContainer.sceneToLocal(analogyContainer.localToScene(analogyContainer.getBoundsInLocal()));
             

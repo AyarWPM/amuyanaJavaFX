@@ -321,10 +321,6 @@ public class AppController {
         return listLog;
     }
 
-    public AppController getAppController(){
-        return this;
-    }
-
     public Element elementOf(int polarity, Fcc fcc){
         for(Element e:getListElements()){
             if(e.getFcc().equals(fcc)){
@@ -370,6 +366,11 @@ public class AppController {
         return list;
     }
 
+    /**
+     * 
+     * @param fcc
+     * @return 
+     */
     public ArrayList<Dynamism> generalsOf(Fcc fcc) {
         ArrayList<Dynamism> listGeneralsOf = new ArrayList<>();
         for(Inclusion i:getListInclusions()){
@@ -407,7 +408,7 @@ public class AppController {
 
         return listCClassOf;
     }
-
+    
     /**
      * This method returns a list of lists (Analogy is a list) of FCC's that are generals
      * @param fcc
@@ -641,19 +642,42 @@ public class AppController {
         return false;
     }
 
-    /*
-    public ArrayList<Analogy> getListAnalogyForNegativeDeduction(Dynamism dynamism){
-        ArrayList<Analogy> listAnalogy = new ArrayList<>();
+    /**
+     * Every FCC is in at least one Conjunction. Conjunctions together with 
+     * Classes are Analogies. This method returns a list with all Conjunctions 
+     * and Classes the FCC fcc belongs to.
+     * @param fcc The fcc that belongs to listAnalogies
+     * @return List of all Analogies this dynamism belongs to.
+     */
+    public ArrayList<Analogy> getListAnalogies(Fcc fcc){
+        ArrayList<Analogy> listAnalogies = new ArrayList<>();
+        
+        listAnalogies.addAll(getListConjunctions(fcc));
+        listAnalogies.addAll(getListClasses(fcc));
 
-        return listAnalogy;
+        return listAnalogies;
     }
+    
+    public ArrayList<Analogy> getListConjunctions(Fcc fcc){
+        ArrayList<Analogy> listConjunctions = new ArrayList<>();
+        
+        generalsOf(fcc)
+        for(Inclusion i:getListInclusions()){
+            for(General g:getListGenerals()){
+                if(g.getInclusion().equals(i)){
+                    if(i.getDynamism().equals(g))
+                }
+            }
+        }
 
-    public ArrayList<Analogy> getListAnalogyForSymmetricDeduction(Dynamism dynamism){
-        ArrayList<Analogy> listAnalogy = new ArrayList<>();
-
-        return listAnalogy;
+        return listConjunctions;
     }
-    */
+    
+    public ArrayList<Analogy> getListClasses(Fcc fcc){
+        ArrayList<Analogy> listConjunctions = new ArrayList<>();
+        
+        return listConjunctions;
+    }
 
     @FXML public void showHideLog(){
         if("Show Log panel".equals(muimShowHideLog.getText())) {

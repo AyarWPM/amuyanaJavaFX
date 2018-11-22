@@ -6,16 +6,20 @@ import java.util.ArrayList;
 public class Analogy extends ArrayList<Fcc> {
 
     public enum Type {
-        CCLASS, INCLUSION, MIXED, NONE
+         CONJUNCTION, CLASS, MIXED
     }
     
     private Type type;
     
-    public Analogy() {
+    public Analogy(Type type) {
 
     }
 
     public Analogy(Fcc fcc) {
+        add(fcc);
+    }
+    
+    public Analogy(Fcc fcc, Type type) {
         add(fcc);
     }
     

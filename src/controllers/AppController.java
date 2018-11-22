@@ -386,7 +386,12 @@ public class AppController {
         }
         return listGeneralsOf;
     }
-
+    /**
+     * Method used to build the Conjunction analogy.
+     * 
+     * @param inclusion
+     * @return The list of all Dynamism that are generals of the inclusion 
+     */
     public ArrayList<Dynamism> generalsOf(Inclusion inclusion) {
         ArrayList<Dynamism> listGeneralsOf = new ArrayList<>();
         for(General g:this.getListGenerals()){
@@ -658,16 +663,41 @@ public class AppController {
         return listAnalogies;
     }
     
+    /**
+     * 
+     * @param fcc
+     * @return The list of conjunctions the fcc belongs to. 
+     */
     public ArrayList<Analogy> getListConjunctions(Fcc fcc){
         ArrayList<Analogy> listConjunctions = new ArrayList<>();
         
-        generalsOf(fcc)
-        for(Inclusion i:getListInclusions()){
-            for(General g:getListGenerals()){
-                if(g.getInclusion().equals(i)){
-                    if(i.getDynamism().equals(g))
-                }
+        // find all inclusions that have it as general
+        // Note that two inclusions can have exactly the same fcc's, because 
+        // inclusions are defined on dynamisms, not fcc's
+        // Therefore we merge two conjunctions that have exactly the same fcc's,
+        // we do not need to differentiate them.
+        
+        
+        // First get inclusions' list
+        ArrayList<Inclusion> listInclusions = new ArrayList<>();
+        for(General g:getListGenerals()){
+            if(g.getDynamism().getFcc().equals(fcc)){
+                listInclusions.add(g.getInclusion());    
             }
+        }
+        
+        // second for each inclusion create an Analogy as long as there's not 
+        // already one with the same FCCs
+        
+        for(Inclusion i:listInclusions){
+            Analogy tempAnalogy = new Analogy(Analogy.Type.CONJUNCTION);
+            
+            generalsOf(i);
+            
+            if(){
+                listConjunctions.add(tempAnalogy);
+            }
+            
         }
 
         return listConjunctions;

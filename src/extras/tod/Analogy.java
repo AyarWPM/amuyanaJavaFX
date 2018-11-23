@@ -1,6 +1,8 @@
 package extras.tod;
 
 import data.Fcc;
+import data.Inclusion;
+
 import java.util.ArrayList;
 
 public class Analogy extends ArrayList<Fcc> {
@@ -10,7 +12,11 @@ public class Analogy extends ArrayList<Fcc> {
     }
     
     private Type type;
-    
+
+    public Analogy() {
+
+    }
+
     public Analogy(Type type) {
 
     }
@@ -25,6 +31,17 @@ public class Analogy extends ArrayList<Fcc> {
     
     public void setType(Type type){
         this.type=type;
+    }
+
+    /*
+    UTILITY METHODS
+     */
+    private Analogy convertDynamismIntoFccLists(ArrayList<Inclusion> listDynamism) {
+        Analogy listFcc = new Analogy();
+
+
+
+        return listFcc;
     }
     
 }

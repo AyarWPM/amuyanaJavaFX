@@ -55,7 +55,8 @@ public class TodController implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
                 if(newValue!=null){
-                    deployTod(newValue);
+                    //deployTod(newValue);
+                    System.out.println(appController.getListAnalogies(newValue));
                 }
             }
         });

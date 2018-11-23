@@ -44,13 +44,13 @@
                                           <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" prefWidth="200.0" spacing="5.0">
                                              <children>
                                                 <Label text="Username:" />
-                                                <TextField fx:id="ttfdDbUsername" text="amuyana" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="ttfdDbUsername" text="root" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="84.0" prefWidth="200.0" spacing="5.0">
                                              <children>
                                                 <Label text="Password:" />
-                                                <TextField fx:id="ttfdDbPassword" HBox.hgrow="ALWAYS" />
+                                                <TextField fx:id="ttfdDbPassword" text="prharcopos" HBox.hgrow="ALWAYS" />
                                              </children>
                                           </HBox>
                                           <CheckBox fx:id="ckbxUseDefaultServer" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#useDefaultServer" text="Use default server" wrapText="true" />

@@ -20,6 +20,12 @@ public class LevelContainer extends Group {
     private static AppController appController;
     private double scale = 1;
 
+    @Deprecated
+    public LevelContainer(ArrayList<Analogy> listAnalogy) {
+        this.listAnalogy = listAnalogy;
+        setStyle();
+    }
+
     public LevelContainer(Analogy analogy) {
         this.listAnalogy = new ArrayList<Analogy>();
         this.listAnalogy.add(analogy);

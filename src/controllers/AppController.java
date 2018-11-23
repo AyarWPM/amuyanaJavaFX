@@ -368,7 +368,7 @@ public class AppController {
 
     /**
      * 
-     * @param fcc
+     * @param fcc Fcc of particulars
      * @return 
      */
     public ArrayList<Dynamism> generalsOf(Fcc fcc) {
@@ -671,35 +671,44 @@ public class AppController {
     public ArrayList<Analogy> getListConjunctions(Fcc fcc){
         ArrayList<Analogy> listConjunctions = new ArrayList<>();
         
-        // find all inclusions that have it as general
+        // Find all inclusions that have it as general
         // Note that two inclusions can have exactly the same fcc's, because 
         // inclusions are defined on dynamisms, not fcc's
         // Therefore we merge two conjunctions that have exactly the same fcc's,
         // we do not need to differentiate them.
         
         
-        // First get inclusions' list
+        // 1. Get inclusions' list
         ArrayList<Inclusion> listInclusions = new ArrayList<>();
         for(General g:getListGenerals()){
             if(g.getDynamism().getFcc().equals(fcc)){
+                // At this point we're sure there are not two same inclusions because
+                // there cannot be two generals with the same inclusion and the same
+                // dynamisms, even if those dynamisms are different but of the same FCC
                 listInclusions.add(g.getInclusion());    
             }
         }
         
-        // second for each inclusion create an Analogy as long as there's not 
-        // already one with the same FCCs
-        
-        for(Inclusion i:listInclusions){
-            Analogy tempAnalogy = new Analogy(Analogy.Type.CONJUNCTION);
-            
-            generalsOf(i);
-            
-            if(){
-                listConjunctions.add(tempAnalogy);
-            }
-            
-        }
+        // 2. For each inclusion create an Analogy as long as there's not
+        // already one with the same FCC, both in the general and particular sides
 
+        ArrayList<Inclusion> finalListInclusion = new ArrayList<>();
+        finalListInclusion.addAll(listInclusions);
+
+        for(Inclusion i1:listInclusions){
+            for(Inclusion i2:listInclusions){
+                // Of course don't consider the case i1==i2
+                if (i1 != i2) {
+                    if (compareGeneralsAsFccs(i1, i2)) {
+                        if (i1.getDynamism().getFcc().equals(i2.getDynamism().getFcc())) {
+                            if (finalListInclusion.contains(i2)) {
+                                finalListInclusion.remove(i2);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         return listConjunctions;
     }
     
@@ -707,6 +716,27 @@ public class AppController {
         ArrayList<Analogy> listConjunctions = new ArrayList<>();
         
         return listConjunctions;
+    }
+
+    private boolean compareGeneralsAsFccs(Inclusion inclusion1, Inclusion inclusion2) {
+        ArrayList<Fcc> listFcc1 = new ArrayList<>();
+        ArrayList<Fcc> listFcc2 = new ArrayList<>();
+
+        generalsOf(inclusion1).forEach(d -> {listFcc1.add(d.getFcc());});
+        generalsOf(inclusion2).forEach(d -> {listFcc2.add(d.getFcc());});
+
+        for (Fcc f1 : listFcc1) {
+            if (!listFcc2.contains(f1)) {
+                return false;
+            }
+        }
+
+        for (Fcc f2 : listFcc2) {
+            if (!listFcc1.contains(f2)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @FXML public void showHideLog(){

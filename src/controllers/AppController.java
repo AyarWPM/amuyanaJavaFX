@@ -681,11 +681,13 @@ public class AppController {
         // 1. Get inclusions' list
         ArrayList<Inclusion> listInclusions = new ArrayList<>();
         for(General g:getListGenerals()){
+
             if(g.getDynamism().getFcc().equals(fcc)){
                 // At this point we're sure there are not two same inclusions because
                 // there cannot be two generals with the same inclusion and the same
                 // dynamisms, even if those dynamisms are different but of the same FCC
-                listInclusions.add(g.getInclusion());    
+                listInclusions.add(g.getInclusion());
+
             }
         }
         
@@ -693,22 +695,42 @@ public class AppController {
         // already one with the same FCC, both in the general and particular sides
 
         ArrayList<Inclusion> finalListInclusion = new ArrayList<>();
+        ArrayList<Inclusion> exclusionList = new ArrayList<>();
+
         finalListInclusion.addAll(listInclusions);
 
         for(Inclusion i1:listInclusions){
             for(Inclusion i2:listInclusions){
+                if(exclusionList.contains(i2)) continue;
                 // Of course don't consider the case i1==i2
                 if (i1 != i2) {
-                    if (compareGeneralsAsFccs(i1, i2)) {
-                        if (i1.getDynamism().getFcc().equals(i2.getDynamism().getFcc())) {
+                    // If the dynamisms' FCCS that are generals in the inclusions are the same...
+                    if (haveSameGeneralFccs(i1, i2)) {
+                    // If the dynamisms' FCCS that are particular in the inclusions are the same...
+                        //if (i1.getDynamism().getFcc().equals(i2.getDynamism().getFcc())) {
+                            // If
                             if (finalListInclusion.contains(i2)) {
                                 finalListInclusion.remove(i2);
                             }
-                        }
+                        //}
                     }
                 }
+
+
             }
+            exclusionList.add(i1);
         }
+
+        // All the inclusions in finalListInclusion are unique, that is they don't have the same FCCS
+        // in generals and in particular. Now we convert the inclusion into an Analogy.
+        for (Inclusion i : finalListInclusion) {
+            Analogy newAnalogy = new Analogy(Analogy.Type.CONJUNCTION);
+            for (Dynamism d : generalsOf(i)) {
+                newAnalogy.add(d.getFcc());
+            }
+            listConjunctions.add(newAnalogy);
+        }
+
         return listConjunctions;
     }
     
@@ -718,7 +740,13 @@ public class AppController {
         return listConjunctions;
     }
 
-    private boolean compareGeneralsAsFccs(Inclusion inclusion1, Inclusion inclusion2) {
+    /**
+     * The method compares two inclusions with respect to its FCCs.
+     * @param inclusion1
+     * @param inclusion2
+     * @return True if both inclusions have same FCCS in the general side, False if they are different
+     */
+    private boolean haveSameGeneralFccs(Inclusion inclusion1, Inclusion inclusion2) {
         ArrayList<Fcc> listFcc1 = new ArrayList<>();
         ArrayList<Fcc> listFcc2 = new ArrayList<>();
 

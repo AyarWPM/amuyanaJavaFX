@@ -41,7 +41,6 @@ public class TodController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
         manageEvents();
     }
 

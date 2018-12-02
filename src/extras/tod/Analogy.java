@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class Analogy extends ArrayList<Fcc> {
 
     public enum Type {
-         CONJUNCTION, CLASS, MIXED
+         CONJUNCTION, CLASS, NONE
     }
     
     private Type type;
@@ -17,15 +17,16 @@ public class Analogy extends ArrayList<Fcc> {
 
     }
 
-    public Analogy(Type type) {
-
-    }
-
     public Analogy(Fcc fcc) {
         add(fcc);
     }
-    
+
+    public Analogy(Type type) {
+        this.type = type;
+    }
+
     public Analogy(Fcc fcc, Type type) {
+        this.type = type;
         add(fcc);
     }
     
@@ -43,5 +44,17 @@ public class Analogy extends ArrayList<Fcc> {
 
         return listFcc;
     }
-    
+
+    @Override
+    public String toString() {
+        String string = "";
+        if (type.equals(Type.CONJUNCTION)) {
+            string = "Conjunction";
+        }
+        if (type.equals(Type.CLASS)) {
+            string = "Class";
+        }
+
+    return type.toString();
+    }
 }

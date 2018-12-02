@@ -662,7 +662,29 @@ public class AppController {
 
         return listAnalogies;
     }
-    
+
+    /**
+     * This method is used when the user selects for the first time a fcc in the list.
+     * @param fcc The fcc selected by the user, the initial fcc of the TOD
+     * @return The smallest analogy, if possible of type Conjunction, otherwise of type Class.
+     */
+    public Analogy getInitialAnalogy(Fcc fcc) {
+        Analogy initialAnalogy = new Analogy();
+        if (!getListConjunctions(fcc).isEmpty()) {
+            // It gets the analogy 0 because the list is ordered, from smallest to biggest
+            initialAnalogy = getListConjunctions(fcc).get(0);
+        } else if (getListConjunctions(fcc).isEmpty()) {
+            if (!getListClasses(fcc).isEmpty()) {
+                // It gets the analogy 0 because the list is ordered, from smallest to biggest
+                initialAnalogy = getListClasses(fcc).get(0);
+            } else if (getListClasses(fcc).isEmpty()) {
+                // If Conjunction and Class analogies are empty, we create an analogy with the fcc
+                initialAnalogy = new Analogy(fcc, Analogy.Type.NONE);
+            }
+        }
+        return initialAnalogy;
+    }
+
     /**
      * 
      * @param fcc
@@ -731,13 +753,51 @@ public class AppController {
             listConjunctions.add(newAnalogy);
         }
 
+        orderAnalogyList(listConjunctions);
+
         return listConjunctions;
     }
-    
+
+    /**
+     * Find all the classes the fcc belongs to
+     * @param fcc The fcc that is going to be tested
+     * @return The list of class analogies in which fcc belongs to
+     */
     public ArrayList<Analogy> getListClasses(Fcc fcc){
-        ArrayList<Analogy> listConjunctions = new ArrayList<>();
-        
-        return listConjunctions;
+        ArrayList<Analogy> listClasses = new ArrayList<>();
+        ArrayList<CClass> tempCClass = new ArrayList<>();
+
+        for (CClassHasFcc cClassHasFcc : getListCClassHasFcc()) {
+            if (cClassHasFcc.getFcc().equals(fcc)) {
+                tempCClass.add(cClassHasFcc.getCClass());
+            }
+        }
+
+        for (CClass cClass : tempCClass) {
+            Analogy analogy = new Analogy(Analogy.Type.CLASS);
+            for (Fcc f : fccOf(cClass)) {
+                analogy.add(f);
+            }
+            listClasses.add(analogy);
+        }
+
+        orderAnalogyList(listClasses);
+
+        return listClasses;
+    }
+
+    /**
+     * This method will sort the analogies inside listAnalogy from smallest to largest, i.e. analogy with 1 fcc first,
+     * then with 2, then with 3 and so on...
+     * @param listAnalogy The list that is going to be sorted
+     */
+    private void orderAnalogyList(ArrayList<Analogy> listAnalogy) {
+        Collections.sort(listAnalogy, new Comparator<ArrayList>(){
+            @Override
+            public int compare(ArrayList a1, ArrayList a2) {
+                return a1.size() - a2.size(); // assumes you want smallest to biggest
+            }
+        });
     }
 
     /**
@@ -854,14 +914,5 @@ public class AppController {
         listAnalogy.removeAll(tempList);
     }
 
-    private void orderAnalogyList(ArrayList<Analogy> listAnalogyForInitial) {
-        // Makes analogies in increasing order, ie. analogy of size 1 first (but there's only one), then of size 2, and so on
-        Collections.sort(listAnalogyForInitial, new Comparator<ArrayList>(){
-            @Override
-            public int compare(ArrayList a1, ArrayList a2) {
-                return a1.size() - a2.size(); // assumes you want biggest to smallest
-            }
-        });
 
-    }
 }

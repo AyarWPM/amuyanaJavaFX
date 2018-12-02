@@ -6,10 +6,14 @@ import controllers.TodController;
 import data.Fcc;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HorizontalDirection;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -35,9 +39,6 @@ public class AnalogyContainer extends Group {
     private static int xMove;
     private static int yMove;
 
-    // List of MultiContainers of the analogous FCC's
-    // private ArrayList<MultiContainer> listMultiContainers;
-
     AnalogyContainer(Analogy analogy){
         this.analogy = analogy;
         setStyle();
@@ -55,12 +56,82 @@ public class AnalogyContainer extends Group {
     }
 
     void deploy(){
+        // Adding title of the analogyContainer
+        Label title = new Label(analogy.toString());
+
+        this.getChildren().add(title);
 
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
             this.getChildren().add(multiContainer);
             multiContainer.deploy();
         }
+
+        title.setContextMenu(getContextMenu());
+    }
+
+    private ContextMenu getContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        // SHOW MENU
+        Menu showMenu = new Menu("Show");
+        MenuItem recommended = new MenuItem("Recommended FCCs");
+        recommended.setOnAction(showRecommendedFccs());
+
+        MenuItem all = new MenuItem("All FCCs");
+        all.setOnAction(showAllFccs());
+
+        Menu specific = new Menu("Specific FCCs");
+
+        for (MultiContainer multiContainer : getMultiContainers()) {
+            CheckMenuItem checkMenuItem = new CheckMenuItem(multiContainer.getFccContainer().getFcc().toString());
+            checkMenuItem.setOnAction(showHideSpecific(multiContainer));
+            specific.getItems().add(checkMenuItem);
+        }
+
+        showMenu.getItems().addAll(recommended,all,specific);
+
+        // MOVE MENU
+        Menu moveMenu = new Menu("Move");
+
+        MenuItem up = new MenuItem("Up");
+        MenuItem down = new MenuItem("Down");
+        MenuItem lower = new MenuItem("Lower Level");
+        MenuItem higher = new MenuItem("Higher Level");
+
+        moveMenu.getItems().addAll(up,down,lower,higher);
+
+        contextMenu.getItems().addAll(showMenu,moveMenu);
+
+        return contextMenu;
+    }
+
+
+    private EventHandler<ActionEvent> showRecommendedFccs() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> showAllFccs() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> showHideSpecific(MultiContainer multiContainer) {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
     }
 
 
@@ -82,7 +153,7 @@ public class AnalogyContainer extends Group {
             double diffY = refPointFccContainer.getY()-refPointMultiContainer.getY();
 
             multiContainer.setLayoutX(-diffX);
-            multiContainer.setLayoutY(-diffY+index*30);
+            multiContainer.setLayoutY(-diffY+(index)*30);
             //multiContainer.toFront();
         }
     }
@@ -94,8 +165,11 @@ public class AnalogyContainer extends Group {
     public ObservableList<MultiContainer> getMultiContainers() {
         ObservableList<MultiContainer> listMultiContainers = FXCollections.observableArrayList();
         for (Node node : this.getChildren()) {
-            MultiContainer multiContainer = (MultiContainer)node;
-            listMultiContainers.add(multiContainer);
+            if (node.getClass().equals(MultiContainer.class)) {
+                MultiContainer multiContainer = (MultiContainer)node;
+                listMultiContainers.add(multiContainer);
+            }
+
         }
         return listMultiContainers;
     }
@@ -107,8 +181,11 @@ public class AnalogyContainer extends Group {
     public ObservableList<FccContainer> getFccContainers() {
         ObservableList<FccContainer> listFccContainers = FXCollections.observableArrayList();
         for (Node node : this.getChildren()) {
-            MultiContainer multiContainer = (MultiContainer)node;
-            listFccContainers.add(multiContainer.getFccContainer());
+            if (node.getClass().equals(MultiContainer.class)) {
+                MultiContainer multiContainer = (MultiContainer)node;
+                listFccContainers.add(multiContainer.getFccContainer());
+            }
+
         }
         return listFccContainers;
     }
@@ -117,4 +194,6 @@ public class AnalogyContainer extends Group {
     public LevelContainer getLevelContainerParent() {
         return (LevelContainer)getParent();
     }
+
+
 }

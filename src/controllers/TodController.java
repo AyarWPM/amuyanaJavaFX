@@ -32,7 +32,7 @@ public class TodController implements Initializable {
     private AppController appController;
     private TodContainer todContainer;
     
-    @FXML private HBox todContent;
+    @FXML private HBox canvas;
     @FXML private ComboBox<Fcc> cobxFcc;
 
     ExecutorService executorService;
@@ -41,24 +41,14 @@ public class TodController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        this.todContainer = new TodContainer();
+        canvas.getChildren().setAll(this.todContainer);
         manageEvents();
     }
 
     public void fillData() {
         cobxFcc.setItems(appController.getListFcc());
         //cobxFcc.getSelectionModel().selectFirst();
-    }
-    
-    public void manageEvents(){
-        cobxFcc.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Fcc>() {
-            @Override
-            public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
-                if(newValue!=null){
-                    //deployTod(newValue);
-                    System.out.println(appController.getListAnalogies(newValue));
-                }
-            }
-        });
     }
 
     public void setAppController(AppController aThis) {
@@ -74,6 +64,29 @@ public class TodController implements Initializable {
         FccContainer.setControllers(this.appController, todController);
         FormulaContainer.setControllers(this.appController, todController);
         Tier.setControllers(this.appController,todController);
+    }
+
+    public void manageEvents(){
+        cobxFcc.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Fcc>() {
+            @Override
+            public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
+                if(newValue!=null){
+                    //System.out.println(appController.getListClasses(newValue));
+                    deployTod(appController.getInitialAnalogy(newValue));
+                }
+            }
+        });
+    }
+
+    private void deployTod(Analogy initialAnalogy) {
+        this.todContainer.deploy(initialAnalogy);
+        LevelContainer mainLevelContainer = todContainer.getMainLevelContainer();
+        startExecutor();
+        executorService.execute(getTaskSetBracketAndKnobs(mainLevelContainer));
+        executorService.execute(getTaskPositionMultiContainers(mainLevelContainer));
+        executorService.execute(getTaskPositionAnalogyContainers(mainLevelContainer));
+        executorService.execute(getTaskSetKnobsPositions());
+        endExecutor();
     }
 
     public TodContainer getTodContainer(){
@@ -105,21 +118,6 @@ public class TodController implements Initializable {
 
     public ExecutorService getExecutorService() {
         return this.executorService;
-    }
-
-    private void deployTod(Fcc newValue) {
-        this.todContainer = new TodContainer(newValue);
-        todContent.getChildren().setAll(this.todContainer);
-        this.todContainer.deploy();
-        
-        LevelContainer mainLevelContainer = todContainer.getMainLevelContainer();
-        startExecutor();
-        executorService.execute(getTaskSetBracketAndKnobs(mainLevelContainer));
-        executorService.execute(getTaskPositionMultiContainers(mainLevelContainer));
-        executorService.execute(getTaskPositionAnalogyContainers(mainLevelContainer));
-        executorService.execute(getTaskSetKnobsPositions());
-        endExecutor();
-        
     }
 
     public void startExecutor(){
@@ -331,7 +329,7 @@ public class TodController implements Initializable {
         Task<Void> deployTod = new Task<Void>(){
             @Override
             protected Void call() {
-                Platform.runLater(()-> deployTod(initialFcc));
+                //Platform.runLater(()-> deployTod());
                 return null;
             }
 
@@ -600,8 +598,8 @@ public class TodController implements Initializable {
 
     // for testing only
     public void setScale(double i) {
-        todContent.setScaleX(todContent.getScaleX()+i);
-        todContent.setScaleY(todContent.getScaleY()+i);
+        canvas.setScaleX(canvas.getScaleX()+i);
+        canvas.setScaleY(canvas.getScaleY()+i);
     }
 
     /*

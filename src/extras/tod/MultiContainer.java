@@ -164,6 +164,10 @@ public class MultiContainer extends HBox {
         //new Thread(todController.getTaskPositionMultiContainers(todController.getLevelContainerOf(getFccContainer()))).start();
     }
 
+    /**
+     * Get the central fccContainer, i.e. the one uniquely associated to the multiContainer
+     * @return The fccContainer in the center of the MultiContainer
+     */
     public FccContainer getFccContainer(){
         return (FccContainer)positionFccContainer.getChildren().get(0);
     }

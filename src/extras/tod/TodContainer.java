@@ -19,16 +19,20 @@ public class TodContainer extends Group {
     private static TodController todController;
     private Fcc initialFcc;
 
-    final private LevelContainer mainLevelContainer;
+    private LevelContainer mainLevelContainer;
+
+    public TodContainer() {
+        setStyle();
+    }
 
     public TodContainer(Fcc initialFcc) {
         this.initialFcc = initialFcc;
         setStyle();
-        
+
         ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
-        
+
         this.mainLevelContainer = new LevelContainer(appController.getListAnalogies(initialFcc).get(0));
-        
+
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -52,13 +56,11 @@ public class TodContainer extends Group {
         return mainLevelContainer;
     }
 
-    public void deploy() {
-        this.getChildren().clear();
+    public void deploy(Analogy initialAnalogy) {
         addRules();
-        addBorder();
-        this.getChildren().add(mainLevelContainer);
-        
-        mainLevelContainer.deploy();
+        this.mainLevelContainer = new LevelContainer(initialAnalogy);
+        this.getChildren().setAll(this.mainLevelContainer);
+        this.mainLevelContainer.deploy();
     }
 
     private void addRules() {

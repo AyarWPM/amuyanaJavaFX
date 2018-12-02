@@ -20,7 +20,7 @@
                <children>
                   <VBox alignment="CENTER" fillWidth="false">
                      <children>
-                        <HBox fx:id="todContent" alignment="CENTER" fillHeight="false" />
+                        <HBox fx:id="canvas" alignment="CENTER" fillHeight="false" />
                      </children>
                   </VBox>
                </children>

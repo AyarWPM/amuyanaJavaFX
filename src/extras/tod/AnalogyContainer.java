@@ -1,6 +1,5 @@
 package extras.tod;
 
-import com.sun.org.apache.xpath.internal.operations.Mult;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
@@ -8,22 +7,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HorizontalDirection;
-import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javafx.geometry.Pos;
-import javafx.scene.shape.Circle;
 
 
 public class AnalogyContainer extends Group {
@@ -35,12 +25,15 @@ public class AnalogyContainer extends Group {
     private static TodController todController;
 
     Analogy analogy;
-    
+
+    ObservableList<MultiContainer> permanentListMultiContainer;
+
     private static int xMove;
     private static int yMove;
 
     AnalogyContainer(Analogy analogy){
         this.analogy = analogy;
+
         setStyle();
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -55,19 +48,53 @@ public class AnalogyContainer extends Group {
         AnalogyContainer.todController = todController;
     }
 
+
+
     void deploy(){
         // Adding title of the analogyContainer
         Label title = new Label(analogy.toString());
 
         this.getChildren().add(title);
 
+        title.setContextMenu(getContextMenu());
+        //title.setOnMouseClicked();
+
+        if (analogy.size() >0 & analogy.size()<6) {
+            // Add them all
+            for (Fcc f : this.analogy) {
+                MultiContainer multiContainer = new MultiContainer(f);
+                //displayedMultiContainers.add(multiContainer);
+            }
+        } else if (analogy.size() >5) {
+            // Add the three dots then the first 5 fcc-multiContainers
+        }
+
+
+
+
+        makeIgnoreListForDefault();
+
+        deployRetained();
+    }
+
+    void makeIgnoreListForDefault() {
+
+        if (analogy.size() >0 & analogy.size()<6) {
+            // Add them all
+            //for(MultiContainer multiContainer)
+        } else if (analogy.size() >5) {
+            // Add the first 5 and then three dots...
+        }
+
+    }
+
+    void deployRetained() {
+
         for(Fcc f:this.analogy){
             MultiContainer multiContainer = new MultiContainer(f);
             this.getChildren().add(multiContainer);
             multiContainer.deploy();
         }
-
-        title.setContextMenu(getContextMenu());
     }
 
     private ContextMenu getContextMenu() {
@@ -75,8 +102,10 @@ public class AnalogyContainer extends Group {
 
         // SHOW MENU
         Menu showMenu = new Menu("Show");
-        MenuItem recommended = new MenuItem("Recommended FCCs");
-        recommended.setOnAction(showRecommendedFccs());
+        MenuItem defaultFccs = new MenuItem("Default FCCs");
+        //recommended.selectedProperty().bind
+
+        defaultFccs.setOnAction(showDefaultFccs());
 
         MenuItem all = new MenuItem("All FCCs");
         all.setOnAction(showAllFccs());
@@ -89,15 +118,19 @@ public class AnalogyContainer extends Group {
             specific.getItems().add(checkMenuItem);
         }
 
-        showMenu.getItems().addAll(recommended,all,specific);
+        showMenu.getItems().addAll(defaultFccs,all,specific);
 
         // MOVE MENU
         Menu moveMenu = new Menu("Move");
 
         MenuItem up = new MenuItem("Up");
+        up.setOnAction(moveToUp());
         MenuItem down = new MenuItem("Down");
+        down.setOnAction(moveToDown());
         MenuItem lower = new MenuItem("Lower Level");
+        lower.setOnAction(moveToLower());
         MenuItem higher = new MenuItem("Higher Level");
+        higher.setOnAction(moveToHigher());
 
         moveMenu.getItems().addAll(up,down,lower,higher);
 
@@ -106,14 +139,17 @@ public class AnalogyContainer extends Group {
         return contextMenu;
     }
 
-
-    private EventHandler<ActionEvent> showRecommendedFccs() {
-        return new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                // TODO
-            }
+    /**
+     * In this method we create the list of FCCs to ignore/consider
+     * @return The EventHandler for the
+     */
+    private EventHandler<ActionEvent> showDefaultFccs() {
+        EventHandler<ActionEvent> event = event1 -> {
+            makeIgnoreListForDefault();
+            deployRetained();
         };
+
+        return event;
     }
 
     private EventHandler<ActionEvent> showAllFccs() {
@@ -126,6 +162,44 @@ public class AnalogyContainer extends Group {
     }
 
     private EventHandler<ActionEvent> showHideSpecific(MultiContainer multiContainer) {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+
+    private EventHandler<ActionEvent> moveToUp() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> moveToDown() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+
+    private EventHandler<ActionEvent> moveToLower() {
+        return new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                // TODO
+            }
+        };
+    }
+
+    private EventHandler<ActionEvent> moveToHigher() {
         return new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -169,7 +243,6 @@ public class AnalogyContainer extends Group {
                 MultiContainer multiContainer = (MultiContainer)node;
                 listMultiContainers.add(multiContainer);
             }
-
         }
         return listMultiContainers;
     }

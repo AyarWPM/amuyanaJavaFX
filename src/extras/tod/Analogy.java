@@ -1,17 +1,21 @@
 package extras.tod;
 
+import data.CClass;
+import data.Dynamism;
 import data.Fcc;
 import data.Inclusion;
 
 import java.util.ArrayList;
 
 public class Analogy extends ArrayList<Fcc> {
+    Conjunction conjunction;
+    CClass cClass;
+
+    private Type type;
 
     public enum Type {
-         CONJUNCTION, CLASS, NONE
+        CONJUNCTION, CLASS, NONE
     }
-    
-    private Type type;
 
     public Analogy() {
 
@@ -28,6 +32,22 @@ public class Analogy extends ArrayList<Fcc> {
     public Analogy(Fcc fcc, Type type) {
         this.type = type;
         add(fcc);
+    }
+
+    public void setConjunction(Conjunction conjunction) {
+        this.conjunction = conjunction;
+    }
+
+    public Conjunction getConjunction() {
+        return this.conjunction;
+    }
+
+    public CClass getcClass() {
+        return cClass;
+    }
+
+    public void setcClass(CClass cClass) {
+        this.cClass = cClass;
     }
     
     public void setType(Type type){
@@ -47,14 +67,7 @@ public class Analogy extends ArrayList<Fcc> {
 
     @Override
     public String toString() {
-        String string = "";
-        if (type.equals(Type.CONJUNCTION)) {
-            string = "Conjunction";
-        }
-        if (type.equals(Type.CLASS)) {
-            string = "Class";
-        }
 
-    return type.toString();
+    return "Analogy [" +type.toString() + "]";
     }
 }

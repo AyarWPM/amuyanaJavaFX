@@ -2,6 +2,8 @@ package controllers;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 
 /**
@@ -10,7 +12,7 @@ import javafx.fxml.Initializable;
  * @author ayar
  */
 public class DialecticController implements Initializable {
-
+    @FXML
     private AppController appController;
 
     /**

@@ -112,6 +112,7 @@ public class FccContainer extends VBox {
 
         this.content = new BorderPane();
         this.title = new Label();
+        this.title.setContextMenu(new ContextMenu(getMenu()));
 
         this.knob0 = new Knob(getThis());
         this.knob1 = new Knob(getThis());
@@ -121,7 +122,6 @@ public class FccContainer extends VBox {
 
     private void addChildren() {
         setTitle(fcc.getLabel());
-        this.header.getChildren().add(getMenu());
         this.header.getChildren().add(this.title);
 
         Pane bracketHolder = getBracketHolder();
@@ -248,8 +248,24 @@ public class FccContainer extends VBox {
         return knobsHolder;
     }
 
-    private MenuButton getMenu(){
-        MenuButton menu = new MenuButton();
+    private Menu getMenu(){
+        Menu menu = new Menu();
+        Menu deployMenu = new Menu("Deploy");
+
+        Menu deployInThisLevelMenu = new Menu("In this level");
+        Menu conjunctionsWithFccMenu = new Menu("Conjunctions with FCC-" + getFcc().getIdFcc());
+        //conjunctionsWithFccMenu.getItems().addAll(appController.getListConjunctionsForMenu(getFcc()));
+        Menu classesWithFccMenu = new Menu("Conjunctions with FCC-" + getFcc().getIdFcc());
+        deployInThisLevelMenu.getItems().addAll(conjunctionsWithFccMenu,classesWithFccMenu);
+
+
+        Menu deployAntecedent = new Menu("Antecedent");
+        Menu deployDescendant = new Menu("Descendant");
+
+
+
+
+/*
         MenuItem muimTurnToFront = new MenuItem("Show in front");
 
         muimTurnToFront.setOnAction(event -> getThis().getMultiContainerParent().toFront());
@@ -264,27 +280,10 @@ public class FccContainer extends VBox {
         
         deployMenu.getItems().addAll(cmiDeployAntecedents, cmiDeployDescendants);
 
-        menu.getItems().addAll(muimTurnToFront,deployMenu);
+        menu.getItems().addAll(muimTurnToFront,deployMenu);*/
 
         return menu;
     }
-
-
-//    private void deployAntecedents(){
-//        if(getMultiContainerParent().isAntecedentDeployed()){
-//            todController.clearAntecedents(getThis());
-//        } else if(!getMultiContainerParent().isAntecedentDeployed()){
-//            new Thread(todController.getTaskDeployAntecedents(getMultiContainerParent())).start();
-//        }
-//    }
-//
-//    private void deployDescendants(){
-//        if(getMultiContainerParent().isDescendantDeployed()){
-//            todController.clearDescendant(getThis());
-//        } else if(!getMultiContainerParent().isSymmetricDeductionsDeployed()){
-//            //todController.deploySymmetricDeductions(getThis());
-//        }
-//    }
 
     @Override
     public String toString(){

@@ -1,5 +1,6 @@
 package controllers;
 
+import javafx.scene.control.*;
 import main.Module;
 import data.CClass;
 import data.CClassHasFcc;
@@ -30,13 +31,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.control.Tab;
 import javafx.collections.ObservableList;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
 public class AppController {
@@ -50,6 +45,9 @@ public class AppController {
     @FXML private InclusionController inclusionController;
     @FXML private CClassController cClassController;
     @FXML private TodController todController;
+    @FXML private TodToolbarController todToolbarController;
+    @FXML private TodLeftPanelController todLeftPanelController;
+    @FXML private TodRightPanelController todRightPanelController;
     @FXML private DialecticController dialecticController;
     @FXML private StcController stcController;
     @FXML private SyllogismController syllogismController;
@@ -90,6 +88,10 @@ public class AppController {
 
         settingsController.autoClicks();
         addLog("System", "Welcome to Amuyaña! Waiting for user actions.");
+    }
+
+    public TodToolbarController getTodToolbarController() {
+        return todToolbarController;
     }
 
     private void loadModules() throws IOException {
@@ -137,10 +139,32 @@ public class AppController {
                     this.tbTod.setContent(m.getNode());
                     break;
                 }
+                case TODTOOLBAR:{
+                    this.todToolbarController= loader.getController();
+                    this.todToolbarController.setAppController(this);
+                    this.todController.setToolbar((ToolBar) m.getNode());
+
+                    break;
+                }
+                case TODLEFTPANEL:{
+                    this.todLeftPanelController = loader.getController();
+                    this.todLeftPanelController.setAppController(this);
+                    this.todController.setLeftPanel((ScrollPane) m.getNode());
+                    break;
+                }
+
+                case TODRIGHTPANEL:{
+                    this.todRightPanelController = loader.getController();
+                    this.todRightPanelController.setAppController(this);
+                    this.todController.setRightPanel((ScrollPane) m.getNode());
+                    break;
+                }
+
+
                 case DIALECTIC:{
-                    this.dialecticController = loader.getController();
-                    this.dialecticController.setAppController(this);
-                    this.tbDialectic.setContent(m.getNode());
+                    //this.dialecticController = loader.getController();
+                    //this.dialecticController.setAppController(this);
+                    //this.tbDialectic.setContent(m.getNode());
                     break;
                 }
                 case STC:{
@@ -243,6 +267,19 @@ public class AppController {
                     todController.fillData();
                     break;
                 }
+                case TODTOOLBAR: {
+                    todToolbarController.fillData();
+                    break;
+                }
+                case TODLEFTPANEL:{
+                    todLeftPanelController.fillData();
+                    break;
+                }
+                case TODRIGHTPANEL:{
+                    //todController.fillData();
+                    break;
+                }
+
 //                case DIALECTIC:{
 //                    this.listLogicSystem = FXCollections.observableArrayList();
 //                    logicSystemController.fillData(conexion, this.listLogicSystem);

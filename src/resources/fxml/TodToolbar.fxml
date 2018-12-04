@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ToolBar xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodToolbarController">
+   <items>
+      <Label text="Initial FCC:" />
+      <ComboBox fx:id="initialFccComboBox" prefWidth="150.0" promptText="Initial FCC" />
+      <Separator orientation="VERTICAL" />
+   </items>
+</ToolBar>

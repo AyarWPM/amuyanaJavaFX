@@ -19,16 +19,27 @@ public class SettingsController implements Initializable {
 
     @FXML private AppController appController;
 
-    @FXML private ToggleButton btnConnectDisconnect;
-    @FXML private Button btnLogInOut;
-    @FXML private CheckBox ckbxUseDefaultServer;
-    
-    @FXML private TextField ttfdHostname;
-    @FXML private TextField ttfdDbUsername;
-    @FXML private TextField ttfdDbPassword;
-    
-    @FXML private TextField ttfdUserName;
-    @FXML private TextField ttfdUserPassword;
+    @FXML private ToggleButton connectDisconnectToggleButton;
+
+    @FXML private CheckBox useDefaultServerCheckBox;
+
+    @FXML private TextField hostNameTextField;
+    @FXML private TextField hostUserTextField;
+    @FXML private TextField hostPasswordTextField;
+    @FXML private TextField userNameTextField;
+    @FXML private Label userNameLabel;
+    @FXML private Label userEmailLabel;
+
+    @FXML private TextField userEmailTextField;
+    @FXML private TextField userPasswordTextField;
+    @FXML private TextField userRepeatPasswordTextField;
+
+    @FXML private Button signInButton;
+    @FXML private Button createAccountButton;
+    @FXML private Button resetPasswordButton;
+    @FXML private Button cancelButton;
+    @FXML private Button editButton;
+
     @FXML private Label lblDateJoined;
     
     @FXML final private String DBHOST="localhost";
@@ -58,33 +69,33 @@ public class SettingsController implements Initializable {
     
     @FXML
     private void connectDisconnect(){
-        if(btnConnectDisconnect.isSelected()){
-            if(Conexion.testConexion(ttfdHostname.getText(), ttfdDbUsername.getText(), ttfdDbPassword.getText())){
-                Conexion.setUrl(ttfdHostname.getText());
-                Conexion.setUsername(ttfdDbUsername.getText());
-                Conexion.setPassword(ttfdDbPassword.getText());
-                btnConnectDisconnect.setText("Disconnect");
-                ttfdDbPassword.setDisable(true);
-                ttfdDbUsername.setDisable(true);
-                ttfdHostname.setDisable(true);
-                ckbxUseDefaultServer.setDisable(true);
+        if(connectDisconnectToggleButton.isSelected()){
+            if(Conexion.testConexion(hostNameTextField.getText(), hostUserTextField.getText(), hostPasswordTextField.getText())){
+                Conexion.setUrl(hostNameTextField.getText());
+                Conexion.setUsername(hostUserTextField.getText());
+                Conexion.setPassword(hostPasswordTextField.getText());
+                connectDisconnectToggleButton.setText("Disconnect");
+                hostPasswordTextField.setDisable(true);
+                hostUserTextField.setDisable(true);
+                hostNameTextField.setDisable(true);
+                useDefaultServerCheckBox.setDisable(true);
                 appController.loadData();
                 appController.addLog(this.toString(), "Connection to mysql succesfull!");
                 
             } else {
-                btnConnectDisconnect.setSelected(false);
+                connectDisconnectToggleButton.setSelected(false);
                 appController.addLog(this.toString(), "The connexion could not be stablished!");
             }
         } else {
             Conexion.setUrl(null);
             Conexion.setUsername(null);
             Conexion.setPassword(null);
-            btnConnectDisconnect.setText("Connect");
-            ckbxUseDefaultServer.setDisable(false);
-            if(!ckbxUseDefaultServer.isSelected()){
-                ttfdDbPassword.setDisable(false);
-                ttfdDbUsername.setDisable(false);
-                ttfdHostname.setDisable(false);
+            connectDisconnectToggleButton.setText("Connect");
+            useDefaultServerCheckBox.setDisable(false);
+            if(!useDefaultServerCheckBox.isSelected()){
+                hostPasswordTextField.setDisable(false);
+                hostUserTextField.setDisable(false);
+                hostNameTextField.setDisable(false);
             }
             
             appController.clearLists();
@@ -96,54 +107,54 @@ public class SettingsController implements Initializable {
     @FXML
     private void logInOutUser(ActionEvent e){
         // If it is not logged in, try to login
-        if(btnLogInOut.getText().equals("Login")){
+        if(signInButton.getText().equals("Login")){
             for(User user:this.appController.getListUser()){
-                if(this.ttfdUserName.getText().equals(user.getUsername())){
-                    if(this.ttfdUserPassword.getText().equals(user.getPassword())){
+                if(this.userNameTextField.getText().equals(user.getUsername())){
+                    if(this.userEmailTextField.getText().equals(user.getPassword())){
                         setCurrentUser(user);
                         // complete
-                        this.ttfdUserName.setDisable(true);
-                        this.ttfdUserPassword.setDisable(true);
+                        this.userNameTextField.setDisable(true);
+                        this.userEmailTextField.setDisable(true);
                         this.lblDateJoined.setText(user.getDate().toString());
-                        this.btnLogInOut.setText("Logout");
+                        this.signInButton.setText("Logout");
                         appController.addLog("System", "User logged in!");
                     }
                 }
             }
         // If it is logged in, log out
-        } else if(btnLogInOut.getText().equals("Logout")){
+        } else if(signInButton.getText().equals("Logout")){
             setCurrentUser(null);
-            this.ttfdUserName.setDisable(false);
-            this.ttfdUserPassword.setDisable(false);
-            ttfdUserName.setText("");
-            ttfdUserPassword.setText("");
+            this.userNameTextField.setDisable(false);
+            this.userEmailTextField.setDisable(false);
+            userNameTextField.setText("");
+            userEmailTextField.setText("");
             lblDateJoined.setText("");
-            btnLogInOut.setText("Login");
+            signInButton.setText("Login");
         }
     }
 
     public void autoClicks() {
         
-        btnConnectDisconnect.fire();
+        connectDisconnectToggleButton.fire();
         
     }
     
     @FXML
     public void useDefaultServer(){
-        if(ckbxUseDefaultServer.isSelected()){
-            ttfdHostname.setText(this.DBHOST);
-            ttfdDbUsername.setText(this.DBUSER);
-            ttfdDbPassword.setText(this.DBPASSWORD);
-            ttfdHostname.setDisable(true);
-            ttfdDbUsername.setDisable(true);
-            ttfdDbPassword.setDisable(true);
-        } else if(!ckbxUseDefaultServer.isSelected()){
-            ttfdHostname.setText(null);
-            ttfdDbUsername.setText(null);
-            ttfdDbPassword.setText(null);
-            ttfdHostname.setDisable(false);
-            ttfdDbUsername.setDisable(false);
-            ttfdDbPassword.setDisable(false);
+        if(useDefaultServerCheckBox.isSelected()){
+            hostNameTextField.setText(this.DBHOST);
+            hostUserTextField.setText(this.DBUSER);
+            hostPasswordTextField.setText(this.DBPASSWORD);
+            hostNameTextField.setDisable(true);
+            hostUserTextField.setDisable(true);
+            hostPasswordTextField.setDisable(true);
+        } else if(!useDefaultServerCheckBox.isSelected()){
+            hostNameTextField.setText(null);
+            hostUserTextField.setText(null);
+            hostPasswordTextField.setText(null);
+            hostNameTextField.setDisable(false);
+            hostUserTextField.setDisable(false);
+            hostPasswordTextField.setDisable(false);
         }
         
         

@@ -3,6 +3,7 @@ package extras.tod;
 import controllers.AppController;
 import controllers.TodController;
 import data.Fcc;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -21,6 +22,8 @@ public class MultiContainer extends HBox {
     private boolean antecedentDeployed, descendantDeployed;
 
     private VBox positionAntecedents, positionFccContainer, positionDescendants;
+
+    ObservableList<LevelContainer> permanentListLevelContainers;
 
     /** This is the central container.
      * It has 3 columns. 1st is for all the
@@ -80,13 +83,14 @@ public class MultiContainer extends HBox {
 
     void deploy(){
         FccContainer fccContainer = new FccContainer(this.centralFcc);
-        
+
         this.positionFccContainer.getChildren().add(fccContainer);
 
         this.getChildren().addAll(this.positionAntecedents,this.positionFccContainer,this.positionDescendants);
 
         fccContainer.deploy();
     }
+
 
     public void deployAntecedents() {
         LevelContainer antecedentLevel =

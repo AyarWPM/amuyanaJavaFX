@@ -1,3 +1,4 @@
+
 package controllers;
 
 import data.Dynamism;
@@ -8,15 +9,14 @@ import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
@@ -33,7 +33,10 @@ public class TodController implements Initializable {
     private TodContainer todContainer;
     
     @FXML private HBox canvas;
-    @FXML private ComboBox<Fcc> cobxFcc;
+
+    @FXML private ScrollPane todLeftPanelScrollPane;
+    @FXML private ScrollPane todRightPanelScrollPane;
+    @FXML private VBox todTopPanelVBox;
 
     ExecutorService executorService;
 
@@ -47,8 +50,7 @@ public class TodController implements Initializable {
     }
 
     public void fillData() {
-        cobxFcc.setItems(appController.getListFcc());
-        //cobxFcc.getSelectionModel().selectFirst();
+
     }
 
     public void setAppController(AppController aThis) {
@@ -64,27 +66,49 @@ public class TodController implements Initializable {
         FccContainer.setControllers(this.appController, todController);
         FormulaContainer.setControllers(this.appController, todController);
         Tier.setControllers(this.appController,todController);
+
+        Conjunction.setControllers(this.appController,todController);
+
+        TodToolbarController.setTodController(todController);
+        TodLeftPanelController.setTodController(todController);
+        TodRightPanelController.setTodController(todController);
+
     }
+
+    public void setLeftPanel(ScrollPane leftPanel) {
+        todLeftPanelScrollPane.setContent(leftPanel);
+
+    }
+
+    public void setRightPanel(ScrollPane rightPanel) {
+        todRightPanelScrollPane.setContent(rightPanel);
+    }
+
+    public void setToolbar(ToolBar toolbar) {
+        this.todTopPanelVBox.getChildren().setAll(toolbar);
+    }
+
+    // ScrollPane getLeftPanel()
 
     public void manageEvents(){
-        cobxFcc.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Fcc>() {
-            @Override
-            public void changed(ObservableValue<? extends Fcc> observable, Fcc oldValue, Fcc newValue) {
-                if(newValue!=null){
-                    //System.out.println(appController.getListClasses(newValue));
-                    deployTod(appController.getInitialAnalogy(newValue));
-                }
-            }
-        });
+
     }
 
-    private void deployTod(Analogy initialAnalogy) {
+    public void deployTod(Analogy initialAnalogy) {
         this.todContainer.deploy(initialAnalogy);
         LevelContainer mainLevelContainer = todContainer.getMainLevelContainer();
         startExecutor();
         executorService.execute(getTaskSetBracketAndKnobs(mainLevelContainer));
         executorService.execute(getTaskPositionMultiContainers(mainLevelContainer));
         executorService.execute(getTaskPositionAnalogyContainers(mainLevelContainer));
+        executorService.execute(getTaskSetKnobsPositions());
+        endExecutor();
+    }
+
+    public void updatePositions(LevelContainer levelContainer) {
+        startExecutor();
+        executorService.execute(getTaskPositionMultiContainers(levelContainer));
+        executorService.execute(getTaskPositionAnalogyContainers(levelContainer));
         executorService.execute(getTaskSetKnobsPositions());
         endExecutor();
     }
@@ -497,8 +521,8 @@ public class TodController implements Initializable {
             protected void succeeded() {
 //                new Thread(getTaskSetBorderAnalogy()).start();
                 //new Thread(getTaskPutFccContainersInFront()).start();
-                if(cobxFcc.isDisable())
-                    cobxFcc.setDisable(false);
+                if(appController.getTodToolbarController().getInitialFccComboBox().isDisable())
+                    appController.getTodToolbarController().getInitialFccComboBox().setDisable(false);
                 super.succeeded();
             }
         };

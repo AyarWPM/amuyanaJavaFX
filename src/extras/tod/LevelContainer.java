@@ -27,16 +27,19 @@ public class LevelContainer extends Group {
     }
 
     public LevelContainer(Analogy analogy) {
-        this.listAnalogy = new ArrayList<Analogy>();
+        this.listAnalogy = new ArrayList<>();
         this.listAnalogy.add(analogy);
         setStyle();
+
     }
-    
+
+
     public void setScale(double scale) {
         this.scale = scale;
         //this.setScaleX(scale);
         //this.setScaleY(scale);
     }
+
 
     public double getScale() {
         return this.scale;
@@ -56,6 +59,7 @@ public class LevelContainer extends Group {
     }
 
     public void deploy() {
+
         for(Analogy a:this.listAnalogy){
             AnalogyContainer analogyContainer = new AnalogyContainer(a);
             this.getChildren().add(analogyContainer);
@@ -63,6 +67,27 @@ public class LevelContainer extends Group {
         }
     }
 
+    /**
+     * This method is called by the user,
+     * @param analogyContainer
+     */
+    public void addAnalogyContainer(AnalogyContainer analogyContainer) {
+        getChildren().add(analogyContainer);
+        // Update positions
+        todController.updatePositions(this);
+    }
+
+    /**
+     * This method is called by the user,
+     * @param analogyContainer
+     */
+    public void removeAnalogyContainer(AnalogyContainer analogyContainer) {
+
+    }
+
+    /**
+     * This method is called from getTaskPositionMultiContainers task in TodController
+     */
     public void positionMultiContainers() {
         for (AnalogyContainer analogyContainer : getAnalogyContainers()) {
             analogyContainer.positionMultiContainers();
@@ -140,8 +165,7 @@ public class LevelContainer extends Group {
      * @return
      */
     public MultiContainer getMultiContainerParent() {
-        System.out.println(getParent());
-        System.out.println(getParent().getParent());
+
 
         return (MultiContainer)getParent().getParent();
     }

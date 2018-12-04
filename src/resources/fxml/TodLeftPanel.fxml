@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="500.0" minHeight="-Infinity" minWidth="200.0" prefHeight="400.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodLeftPanelController">
+   <content>
+      <Accordion>
+        <panes>
+          <TitledPane fx:id="logicSystemsTitledPane" animated="false" text="Logic Systems">
+               <content>
+                  <VBox prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <ListView fx:id="logicSystemsListView" prefHeight="200.0" />
+                        <HBox alignment="CENTER">
+                           <children>
+                              <Button mnemonicParsing="false" prefWidth="100.0" text="Load/unload systems" textAlignment="CENTER" wrapText="true" />
+                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
+                              <Button layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Edit" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </content>
+          </TitledPane>
+          <TitledPane fx:id="dynamismsTitledPane" animated="false" text="Dynamisms (Processes)">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+          <TitledPane fx:id="conjunctionsTitledPane" animated="false" text="Conjunctions">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </TitledPane>
+            <TitledPane fx:id="classesTitledPane" animated="false" layoutX="10.0" layoutY="60.0" text="Classes">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </TitledPane>
+            <TitledPane fx:id="syllogismsTitledPane" animated="false" layoutX="10.0" layoutY="85.0" text="Syllogisms">
+               <content>
+                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+               </content>
+            </TitledPane>
+        </panes>
+      </Accordion>
+   </content>
+</ScrollPane>

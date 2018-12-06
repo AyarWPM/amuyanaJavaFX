@@ -3,6 +3,7 @@ package controllers;
 import data.LogicSystem;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 
@@ -13,7 +14,12 @@ public class TodLeftPanelController implements Initializable {
 
     private static TodController todController;
     private AppController appController;
-    @FXML ListView<LogicSystem> logicSystemsListView;
+
+    @FXML ListView<LogicSystem> listLSListView;
+    @FXML Button loadLSButton;
+    @FXML Button editLSButton;
+
+
 
     public static void setTodController(TodController todController) {
         TodLeftPanelController.todController = todController;

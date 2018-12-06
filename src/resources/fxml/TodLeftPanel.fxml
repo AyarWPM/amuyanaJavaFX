@@ -6,20 +6,19 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="500.0" minHeight="-Infinity" minWidth="200.0" prefHeight="400.0" prefWidth="250.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodLeftPanelController">
+<ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="500.0" minHeight="-Infinity" minWidth="200.0" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodLeftPanelController">
    <content>
       <Accordion>
         <panes>
           <TitledPane fx:id="logicSystemsTitledPane" animated="false" text="Logic Systems">
                <content>
-                  <VBox prefHeight="200.0" prefWidth="100.0">
+                  <VBox>
                      <children>
-                        <ListView fx:id="logicSystemsListView" prefHeight="200.0" />
+                        <ListView fx:id="logicSystemsListView" prefHeight="200.0" prefWidth="200.0" />
                         <HBox alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" prefWidth="100.0" text="Load/unload systems" textAlignment="CENTER" wrapText="true" />
-                              <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
-                              <Button layoutX="127.0" layoutY="10.0" mnemonicParsing="false" text="Edit" />
+                              <Button mnemonicParsing="false" prefWidth="100.0" text="Load system" textAlignment="CENTER" wrapText="true" />
+                              <Button layoutX="127.0" layoutY="10.0" mnemonicParsing="false" prefWidth="100.0" text="Edit" />
                            </children>
                         </HBox>
                      </children>

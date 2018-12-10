@@ -34,17 +34,33 @@ import javafx.scene.Node;
 import javafx.collections.ObservableList;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+/**
+ * This class is the main window (App.fxml) controller...
+ * Other controllers are instantiated here, controllers of components:
+ *
+ * - [x] Logic System
+ * - Table of Deductions
+ * - [x] Dialectics
+ * - [x] Statistics
+ *
+ * Controllers of System:
+ * - [x] Preferences
+ * - [x] Tutorials
+ *
+ */
 public class AppController {
     private Conexion conexion;
 
-    @FXML private SplitPane stpeContents;
+    @FXML private TabPane contentTabPane;
 
     // CONTROLLERS
+    @FXML private TodController todController;
     @FXML private LogicSystemController logicSystemController;
+
+/*
     @FXML private DualitiesController dualitiesController;
     @FXML private InclusionController inclusionController;
     @FXML private CClassController cClassController;
-    @FXML private TodController todController;
     @FXML private TodToolbarController todToolbarController;
     @FXML private TodLeftPanelController todLeftPanelController;
     @FXML private TodRightPanelController todRightPanelController;
@@ -53,8 +69,10 @@ public class AppController {
     @FXML private SyllogismController syllogismController;
     @FXML private StatsController statsController;
     @FXML private SettingsController settingsController;
+*/
 
     // MAIN TABS
+    /*
     @FXML Tab tbLogicSystem;
     @FXML Tab tbDualities;
     @FXML Tab tbInclusions;
@@ -64,13 +82,7 @@ public class AppController {
     @FXML Tab tbDialectic;
     @FXML Tab tbStc;
     @FXML Tab tbStats;
-    @FXML Tab tbSettings;
-
-    // Why is it instantiated this one?
-    private final ObservableList<Log> listLog = FXCollections.observableArrayList();
-
-    // FOR LOG
-    @FXML private MenuItem muimShowHideLog;
+    @FXML Tab tbSettings;*/
 
     private ScrollPane slpeLog;
     private TableView tevwLog;
@@ -79,21 +91,24 @@ public class AppController {
     TableColumn<Log, String> tecnType;
     TableColumn<Log, String> tecnMessage;
 
+
+
     public void initialize() throws IOException {
         initLog();
 
         this.conexion = new Conexion();
 
+
         loadModules();
 
-        settingsController.autoClicks();
-        addLog("System", "Welcome to Amuyaña! Waiting for user actions.");
+        //settingsController.autoClicks();
+
     }
 
-    public TodToolbarController getTodToolbarController() {
-        return todToolbarController;
-    }
-
+    /**
+     * Instantiates the controllers of other modules and sends the AppController instance.
+     * @throws IOException If can't load data from database
+     */
     private void loadModules() throws IOException {
         for(Module m:Module.values()){
 
@@ -103,12 +118,42 @@ public class AppController {
             m.setNode(node);
 
             switch(m){
+
                 case LOGIC_SYSTEM:{
                     this.logicSystemController = loader.getController();
                     this.logicSystemController.setAppController(this);
                     this.tbLogicSystem.setContent(m.getNode());
                     break;
                 }
+
+                case TOD:{
+                    this.todController = loader.getController();
+                    this.todController.setAppController(this);
+                    //this.tbTod.setContent(m.getNode());
+                    break;
+                }
+
+                case DIALECTIC:{
+                    //this.dialecticController = loader.getController();
+                    //this.dialecticController.setAppController(this);
+                    //this.tbDialectic.setContent(m.getNode());
+                    break;
+                }
+
+                case STATS:{
+                    this.statsController = loader.getController();
+                    this.statsController.setAppController(this);
+                    this.tbStats.setContent(m.getNode());
+                    break;
+                }
+
+                case SETTINGS:{
+                    this.settingsController = loader.getController();
+                    this.settingsController.setAppController(this);
+                    //this.tbSettings.setContent(m.getNode());
+                    break;
+                }
+/*
                 case DUALITIES:{
                     this.dualitiesController = loader.getController();
                     this.dualitiesController.setAppController(this);
@@ -133,12 +178,7 @@ public class AppController {
                     this.tbSyllogism.setContent(m.getNode());
                     break;
                 }
-                case TOD:{
-                    this.todController = loader.getController();
-                    this.todController.setAppController(this);
-                    this.tbTod.setContent(m.getNode());
-                    break;
-                }
+
                 case TODTOOLBAR:{
                     this.todToolbarController= loader.getController();
                     this.todToolbarController.setAppController(this);
@@ -160,37 +200,26 @@ public class AppController {
                     break;
                 }
 
-
-                case DIALECTIC:{
-                    //this.dialecticController = loader.getController();
-                    //this.dialecticController.setAppController(this);
-                    //this.tbDialectic.setContent(m.getNode());
-                    break;
-                }
                 case STC:{
                     this.stcController = loader.getController();
                     this.stcController.setAppController(this);
                     this.tbStc.setContent(m.getNode());
                     break;
                 }
-                case STATS:{
-                    this.statsController = loader.getController();
-                    this.statsController.setAppController(this);
-                    this.tbStats.setContent(m.getNode());
-                    break;
-                }
-                case SETTINGS:{
-                    this.settingsController = loader.getController();
-                    this.settingsController.setAppController(this);
-                    this.tbSettings.setContent(m.getNode());
-                    break;
-                }
+
+*/
             }
         }
     }
 
     public void loadData() {
         this.conexion.establecerConexion();
+
+        this.listFcc=FXCollections.observableArrayList();
+        this.listFccHasLogicSystem=FXCollections.observableArrayList();
+        this.listElement=FXCollections.observableArrayList();
+        this.listDynamisms=FXCollections.observableArrayList();
+
 
 //        Dialectic.loadList(conexion.getConnection(), listDialectic);
 //        Register.loadList(conexion.getConnection(), listRegister);
@@ -205,8 +234,9 @@ public class AppController {
                     logicSystemController.fillData();
                     break;
                 }
-                case DUALITIES:{
-                    Fcc.loadList(this.conexion.getConnection(), dualitiesController.getListFcc());
+
+                case TOD:{
+                    Fcc.loadList(this.conexion.getConnection(), todController.getListFcc());
 
                     FccHasLogicSystem.loadList(this.conexion.getConnection(),
                             dualitiesController.getListFccHasLogicSystem(),
@@ -220,6 +250,13 @@ public class AppController {
                     Dynamism.loadData(this.conexion.getConnection(),
                             dualitiesController.getListDynamisms(),
                             dualitiesController.getListFcc());
+
+                    todController.fillData();
+                    break;
+                }
+
+                case DUALITIES:{
+
 
                     dualitiesController.fillData();
 
@@ -263,10 +300,7 @@ public class AppController {
                     syllogismController.fillData();
                     break;
                 }
-                case TOD:{
-                    todController.fillData();
-                    break;
-                }
+
                 case TODTOOLBAR: {
                     todToolbarController.fillData();
                     break;
@@ -864,6 +898,7 @@ public class AppController {
         return true;
     }
 
+    /*
     @FXML public void showHideLog(){
         if("Show Log panel".equals(muimShowHideLog.getText())) {
             stpeContents.getItems().add(slpeLog);
@@ -873,7 +908,7 @@ public class AppController {
             stpeContents.getItems().remove(stpeContents.getItems().size()-1);
             muimShowHideLog.setText("Show Log panel");
         }
-    }
+    }*/
 
     // TODO
     public void clearLists(){

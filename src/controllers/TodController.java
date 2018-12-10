@@ -44,6 +44,7 @@ public class TodController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
         this.todContainer = new TodContainer();
         canvas.getChildren().setAll(this.todContainer);
         manageEvents();

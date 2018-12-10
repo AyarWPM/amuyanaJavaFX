@@ -7,6 +7,7 @@ import javafx.scene.Node;
  * @author Ayar Portugal <ayar.portugal@amuyaña.com>
  */
 public enum Module {
+
     LOGIC_SYSTEM("/resources/fxml/LogicSystem.fxml"),
     DUALITIES("/resources/fxml/Dualities.fxml"),
     INCLUSIONS("/resources/fxml/Inclusion.fxml"),

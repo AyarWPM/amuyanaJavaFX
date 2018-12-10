@@ -8,24 +8,28 @@
 
 <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="500.0" minHeight="-Infinity" minWidth="200.0" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodLeftPanelController">
    <content>
-      <Accordion>
+      <Accordion maxWidth="-Infinity" prefWidth="200.0">
         <panes>
-          <TitledPane fx:id="logicSystemsTitledPane" animated="false" text="Logic Systems">
+          <TitledPane fx:id="logicSystemsTitledPane" animated="false" text="Table of deductions">
                <content>
-                  <VBox>
+                  <VBox spacing="5.0">
                      <children>
-                        <ListView fx:id="logicSystemsListView" prefHeight="200.0" prefWidth="200.0" />
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label prefWidth="100.0" text="Select initial FCC:" wrapText="true" />
+                              <ComboBox prefWidth="150.0" promptText="Initial FCC" />
+                           </children>
+                        </HBox>
                         <HBox alignment="CENTER">
                            <children>
-                              <Button mnemonicParsing="false" prefWidth="100.0" text="Load system" textAlignment="CENTER" wrapText="true" />
-                              <Button layoutX="127.0" layoutY="10.0" mnemonicParsing="false" prefWidth="100.0" text="Edit" />
+                              <Button mnemonicParsing="false" text="Initialize TOD" />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
                </content>
           </TitledPane>
-          <TitledPane fx:id="dynamismsTitledPane" animated="false" text="Dynamisms (Processes)">
+          <TitledPane fx:id="dynamismsTitledPane" animated="false" maxWidth="-Infinity" prefWidth="200.0" text="Fundamental Conjunctions of Contradiction (FCCs)" wrapText="true">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>

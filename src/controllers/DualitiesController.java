@@ -80,12 +80,7 @@ public class DualitiesController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.listFcc=FXCollections.observableArrayList();
-        this.listFccHasLogicSystem=FXCollections.observableArrayList();
-//        this.listImplication=FXCollections.observableArrayList();
-//        this.listDeduction=FXCollections.observableArrayList();
-        this.listElement=FXCollections.observableArrayList();
-        this.listDynamisms=FXCollections.observableArrayList();
+
         
         ttfdAElementSymbol = new TextField();
         llAElementSymbol = new Label();

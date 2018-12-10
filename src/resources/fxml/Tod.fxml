@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodController">
-   <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="0.0" minWidth="0.0" pannable="true" BorderPane.alignment="CENTER">
+<SplitPane dividerPositions="0.2505567928730512, 0.7505567928730512" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <items>
+      <AnchorPane>
+         <children>
+            <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" minWidth="60.0" prefWidth="-1.0" style="&#10;" text="Master" textAlignment="CENTER" wrapText="false">
+               <font>
+                  <Font size="18.0" fx:id="x1" />
+               </font>
+               <textFill>
+                  <Color blue="0.624" green="0.624" red="0.624" fx:id="x2" />
+               </textFill>
+            </Label>
+         </children>
+      </AnchorPane>
+      <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
          <content>
-            <VBox alignment="CENTER" fillWidth="false">
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0">
                <children>
-                  <VBox alignment="CENTER" fillWidth="false">
-                     <children>
-                        <HBox fx:id="canvas" alignment="CENTER" fillHeight="false" />
-                     </children>
-                  </VBox>
+                  <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="View" textAlignment="CENTER" textFill="$x2" wrapText="false" />
                </children>
-            </VBox>
+            </AnchorPane>
          </content>
       </ScrollPane>
-   </center>
-   <left>
-      <ScrollPane fx:id="todLeftPanelScrollPane" fitToHeight="true" fitToWidth="true" BorderPane.alignment="CENTER" />
-   </left>
-   <right>
-      <ScrollPane fx:id="todRightPanelScrollPane" BorderPane.alignment="CENTER" />
-   </right>
-   <top>
-      <VBox fx:id="todTopPanelVBox" BorderPane.alignment="CENTER" />
-   </top>
-</BorderPane>
+      <AnchorPane>
+         <children>
+            <Label alignment="CENTER" font="$x1" layoutX="14.0" layoutY="14.0" style="&#10;" text="Details" textAlignment="CENTER" textFill="$x2" wrapText="false" />
+         </children>
+      </AnchorPane>
+   </items>
+</SplitPane>

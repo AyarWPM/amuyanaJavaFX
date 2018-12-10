@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -8,41 +14,70 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1300.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
     <children>
         <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="NEVER">
             <menus>
                 <Menu mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Manage conexions" />
-                        <MenuItem mnemonicParsing="false" text="Editable" />
+                        <MenuItem mnemonicParsing="false" text="Test connection" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem mnemonicParsing="false" text="Close" />
                     </items>
                 </Menu>
-                <Menu mnemonicParsing="false" text="View">
+                <Menu mnemonicParsing="false" text="Component">
                     <items>
-                        <MenuItem fx:id="muimShowHideLog" mnemonicParsing="false" onAction="#showHideLog" text="Show Log panel" />
+                        <MenuItem disable="true" mnemonicParsing="false" text="Logic Systems" />
+                  <MenuItem mnemonicParsing="false" text="Table of Deductions" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Dialectics (&amp;STC)" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Statistics" />
                     </items>
                 </Menu>
+            <Menu disable="true" mnemonicParsing="false" text="Tutorials">
+               <items>
+                  <MenuItem mnemonicParsing="false" text="Logic of the Contradictory" />
+               </items>
+            </Menu>
+            <Menu disable="true" mnemonicParsing="false" text="About">
+               <items>
+                  <MenuItem fx:id="muimShowHideLog111" mnemonicParsing="false" onAction="#showHideLog" text="Amuyaña" />
+                  <MenuItem fx:id="muimShowHideLog1111" mnemonicParsing="false" onAction="#showHideLog" text="The author" />
+               </items>
+            </Menu>
             </menus>
         </MenuBar>
-      <SplitPane fx:id="stpeContents" orientation="VERTICAL">
-        <items>
-                <TabPane tabClosingPolicy="UNAVAILABLE">
-                    <tabs>
-                        <Tab fx:id="tbTod" text="Table of Deductions" />
-                        <Tab fx:id="tbLogicSystem" text="Logic System" />
-                        <Tab fx:id="tbDualities" text="Dualities" />
-                        <Tab fx:id="tbInclusions" text="Inclusions" />
-                        <Tab fx:id="tbClasses" text="Classes" />
-                        <Tab fx:id="tbSyllogism" text="Syllogisms" />
-                        <Tab fx:id="tbStc" text="Space-Time Configurations" />
-                        <Tab fx:id="tbStats" text="Statistics Register" />
-                        <Tab fx:id="tbDialectic" text="Dialectics" />
-                        <Tab fx:id="tbSettings" text="Settings" />
-                    </tabs>
-                </TabPane>
-        </items>
-      </SplitPane>
+      <TabPane fx:id="contentTabPane" VBox.vgrow="ALWAYS">
+         <tabs>
+            <Tab closable="false" text="Welcome">
+               <content>
+                  <SplitPane VBox.vgrow="ALWAYS">
+                     <items>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <HBox alignment="CENTER">
+                                 <children>
+                                    <Pane prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: grey;">
+                                       <children>
+                                          <Button disable="true" layoutX="80.0" layoutY="80.0" mnemonicParsing="false" prefWidth="100.0" text="Logic Systems" textAlignment="CENTER" wrapText="true" />
+                                          <Button layoutX="228.0" layoutY="80.0" mnemonicParsing="false" prefWidth="100.0" text="Table of Deductions" textAlignment="CENTER" wrapText="true" />
+                                          <Label layoutX="103.0" layoutY="14.0" text="Amuyaña">
+                                             <font>
+                                                <Font size="41.0" />
+                                             </font>
+                                          </Label>
+                                          <Button disable="true" layoutX="80.0" layoutY="143.0" mnemonicParsing="false" prefWidth="100.0" text="Dialectics" textAlignment="CENTER" wrapText="true" />
+                                          <Button disable="true" layoutX="228.0" layoutY="143.0" mnemonicParsing="false" prefWidth="100.0" text="Statistics" textAlignment="CENTER" wrapText="true" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </items>
+                  </SplitPane>
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
     </children>
 </VBox>

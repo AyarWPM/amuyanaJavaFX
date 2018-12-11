@@ -81,9 +81,9 @@ String description, Fcc fcc) {
             this.fcc = idFcc;
     }
     
-    public static void loadData(Connection connection, 
-            ObservableList<Dynamism> listDynamisms, 
-            ObservableList<Fcc> listFcc) {
+    public static void loadList(Connection connection,
+                                ObservableList<Dynamism> listDynamisms,
+                                ObservableList<Fcc> listFcc) {
         String sql = "SELECT id_dynamism, "
                             + "orientation, "
                             + "prop_formulation, "

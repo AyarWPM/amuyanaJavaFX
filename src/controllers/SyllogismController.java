@@ -103,7 +103,7 @@ public class SyllogismController implements Initializable {
                     
                     // INCLUSIONS
                     listInclusions = FXCollections.observableArrayList();
-                    listInclusions.addAll(appController.getListInclusions());
+                    //listInclusions.addAll(appController.getListInclusions());
                     ltvwInclusion.setItems(listInclusions);
                         
                     // STEPS
@@ -260,7 +260,7 @@ public class SyllogismController implements Initializable {
         
         // Notions
         listInclusions.clear();
-        listInclusions.addAll(appController.getListInclusions());
+        //listInclusions.addAll(appController.getListInclusions());
         
         bnSave.setDisable(false);
         //bnDelete.setDisable(true);

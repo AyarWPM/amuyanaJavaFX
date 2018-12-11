@@ -19,9 +19,8 @@ public enum Module {
     CLASSES("/resources/fxml/CClass.fxml"),
     STC("/resources/fxml/Stc.fxml"),
     SYLLOGISM("/resources/fxml/Syllogism.fxml"),
-    STATS("/resources/fxml/Stats.fxml"),
-    SETTINGS("/resources/fxml/Settings.fxml");
-    
+    STATS("/resources/fxml/Stats.fxml");
+
     private final String url;
     
     private Node node;

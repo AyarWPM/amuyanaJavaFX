@@ -269,7 +269,7 @@ public class DualitiesController implements Initializable {
             return;
         }
 
-        Conexion conexion = appController.getConexion();
+        Conexion conexion = new Conexion();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         
         conexion.establecerConexion();

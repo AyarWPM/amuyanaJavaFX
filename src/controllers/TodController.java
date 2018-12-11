@@ -1,6 +1,7 @@
 
 package controllers;
 
+import data.DataInterface;
 import data.Dynamism;
 import data.Fcc;
 import extras.tod.*;
@@ -40,11 +41,12 @@ public class TodController implements Initializable {
 
     ExecutorService executorService;
 
+    private DataInterface dataInterface;
+
     //private static ArrayList<FccContainer> listFccContainers;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         this.todContainer = new TodContainer();
         canvas.getChildren().setAll(this.todContainer);
         manageEvents();
@@ -69,10 +71,7 @@ public class TodController implements Initializable {
         Tier.setControllers(this.appController,todController);
 
         Conjunction.setControllers(this.appController,todController);
-
-        TodToolbarController.setTodController(todController);
-        TodLeftPanelController.setTodController(todController);
-        TodRightPanelController.setTodController(todController);
+        this.dataInterface = appController.getDataInterface();
 
     }
 
@@ -216,9 +215,9 @@ public class TodController implements Initializable {
      *
      */
     public void tie(FccContainer newFccContainer) {
-        Dynamism newPositiveDynamism = appController.dynamismOf(0,newFccContainer.getFcc());
-        Dynamism newNegativeDynamism = appController.dynamismOf(1,newFccContainer.getFcc());
-        Dynamism newSymmetricDynamism = appController.dynamismOf(2,newFccContainer.getFcc());
+        Dynamism newPositiveDynamism = this.dataInterface.dynamismOf(0,newFccContainer.getFcc());
+        Dynamism newNegativeDynamism = this.dataInterface.dynamismOf(1,newFccContainer.getFcc());
+        Dynamism newSymmetricDynamism = this.dataInterface.dynamismOf(2,newFccContainer.getFcc());
 
         /*
          * NewFccContainer as Inclusion of any existingDynamism
@@ -227,14 +226,14 @@ public class TodController implements Initializable {
             Fcc existingFcc = existingFccContainer.getFcc();
 
             // check if its positive, negative or symmetric orientation
-            if(appController.isDeduction(existingFcc, newPositiveDynamism)){
+            if(this.dataInterface.isDeduction(existingFcc, newPositiveDynamism)){
                 // TODO if there exists already a Tier linking these two don't add it...
                 tie(newFccContainer,1,existingFccContainer);
             }
-            if(appController.isDeduction(existingFcc,newNegativeDynamism)){
+            if(this.dataInterface.isDeduction(existingFcc,newNegativeDynamism)){
                 tie(newFccContainer,2,existingFccContainer);
             }
-            if(appController.isDeduction(existingFcc,newSymmetricDynamism)){
+            if(this.dataInterface.isDeduction(existingFcc,newSymmetricDynamism)){
                 tie(newFccContainer,3,existingFccContainer);
             }
 
@@ -243,25 +242,25 @@ public class TodController implements Initializable {
              * */
             Fcc newFcc = newFccContainer.getFcc();
 
-            Dynamism existingPositiveDynamism = appController.dynamismOf(0,existingFcc);
-            Dynamism existingNegativeDynamism = appController.dynamismOf(1,existingFcc);
-            Dynamism existingSymmetricDynamism = appController.dynamismOf(2,existingFcc);
+            Dynamism existingPositiveDynamism = this.dataInterface.dynamismOf(0,existingFcc);
+            Dynamism existingNegativeDynamism = this.dataInterface.dynamismOf(1,existingFcc);
+            Dynamism existingSymmetricDynamism = this.dataInterface.dynamismOf(2,existingFcc);
 
-            if(appController.isDeduction(newFcc,existingPositiveDynamism)){
+            if(this.dataInterface.isDeduction(newFcc,existingPositiveDynamism)){
                 tie(existingFccContainer,1,newFccContainer);
             }
 
             /*
              * NewFccContainer as negative Deduction of any existingDynamism
              * */
-            if(appController.isDeduction(newFcc,existingNegativeDynamism)){
+            if(this.dataInterface.isDeduction(newFcc,existingNegativeDynamism)){
                 tie(existingFccContainer,2,newFccContainer);
             }
 
             /*
              * NewFccContainer as symmetric Deduction of any existingDynamism
              * */
-            if(appController.isDeduction(newFcc,existingSymmetricDynamism)){
+            if(this.dataInterface.isDeduction(newFcc,existingSymmetricDynamism)){
                 tie(existingFccContainer,3,newFccContainer);
             }
 
@@ -522,8 +521,6 @@ public class TodController implements Initializable {
             protected void succeeded() {
 //                new Thread(getTaskSetBorderAnalogy()).start();
                 //new Thread(getTaskPutFccContainersInFront()).start();
-                if(appController.getTodToolbarController().getInitialFccComboBox().isDisable())
-                    appController.getTodToolbarController().getInitialFccComboBox().setDisable(false);
                 super.succeeded();
             }
         };

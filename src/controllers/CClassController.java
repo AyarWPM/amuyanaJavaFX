@@ -40,7 +40,7 @@ public class CClassController implements Initializable {
     private ObservableList<CClass> listCClass;
     private ObservableList<CClassHasFcc> listCClassHasFcc;
     private ObservableList<Fcc> listCollection;
-    private ObservableList<Fcc> listSelectableFccs;    
+    private ObservableList<Fcc> listSelectableFccs;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {

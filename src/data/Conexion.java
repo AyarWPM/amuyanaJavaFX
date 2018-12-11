@@ -11,28 +11,12 @@ public class Conexion {
 
     private Connection connection;
     
-    private static String url;
-    private static String username;
-    private static String password;
-
-    public static String getUrl() {
-        return url;
-    }
-
-    public static void setUrl(String url) {
-        Conexion.url = url;
-    }
+    private static final String URL = "localhost";
+    private static final String USERNAME = "root";
+    private static final String PASSWORD = "prharcopos";
 
     public static String getUsername() {
-        return username;
-    }
-
-    public static void setUsername(String username) {
-        Conexion.username = username;
-    }
-
-    public static void setPassword(String password) {
-        Conexion.password = password;
+        return USERNAME;
     }
 
     public Connection getConnection() {
@@ -44,12 +28,12 @@ public class Conexion {
     }
     
     public void establecerConexion(){
-        
+
         try {
             //Cargar driver
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.url + "?autoReconnect=true&useSSL=false", this.username, this.password);
+                    "jdbc:mysql://" + this.URL + "?autoReconnect=true&useSSL=false", this.USERNAME, this.PASSWORD);
             
             
         } catch (ClassNotFoundException ex) {
@@ -68,9 +52,7 @@ public class Conexion {
                     "jdbc:mysql://" + url + "?autoReconnect=true&useSSL=false", username, password);
             return connection.isValid(0);
             
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SQLException ex) {
+        } catch (ClassNotFoundException | SQLException ex) {
             Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;

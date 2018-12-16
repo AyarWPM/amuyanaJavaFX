@@ -1,22 +1,14 @@
 package controllers;
 
 import data.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 
-import extras.tod.Analogy;
-
 import java.io.IOException;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.*;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.cell.PropertyValueFactory;
-import main.Module;
+import main.FXMLSource;
 
 /**
  * This class is the main window (App.fxml) controller...
@@ -35,7 +27,7 @@ import main.Module;
 public class AppController {
     DataInterface dataInterface;
 
-    @FXML private TabPane contentTabPane;
+    @FXML private TabPane mainTabPane;
 
     @FXML private LogicSystemController logicSystemController;
     @FXML private TodController todController;
@@ -48,9 +40,6 @@ public class AppController {
     @FXML private DualitiesController dualitiesController;
     @FXML private InclusionController inclusionController;
     @FXML private CClassController cClassController;
-    @FXML private TodToolbarController todToolbarController;
-    @FXML private TodLeftPanelController todLeftPanelController;
-    @FXML private TodRightPanelController todRightPanelController;
 
     @FXML private StcController stcController;
     @FXML private SyllogismController syllogismController;
@@ -59,29 +48,32 @@ public class AppController {
 */
 
     public void initialize() throws IOException {
-        dataInterface = new DataHandler();
+        this.dataInterface = new DataHandler();
 
-        loadModules();
+        // For debug or default mysql parameters:
+        this.dataInterface.setDataConnectionValues("localhost", "amuyana", "");
+        this.dataInterface.loadData();
+        loadFXMLSources();
         fillData();
     }
 
     public DataInterface getDataInterface() {
-        return dataInterface;
+        return this.dataInterface;
     }
 
     /**
      *
      * @throws IOException If can't load data from database
      */
-    private void loadModules() throws IOException {
-        for(Module m:Module.values()){
+    private void loadFXMLSources() throws IOException {
+        for(FXMLSource fxmlSource: FXMLSource.values()){
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(m.getUrl()));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlSource.getUrl()));
 
             Node node = loader.load();
-            m.setNode(node);
+            fxmlSource.setNode(node);
 
-            switch(m){
+            switch(fxmlSource){
                 case LOGIC_SYSTEM:{
                     this.logicSystemController = loader.getController();
                     this.logicSystemController.setAppController(this);
@@ -115,5 +107,31 @@ public class AppController {
 
     }
 
+    public void databaseMenuItemAction(ActionEvent actionEvent) {
 
+    }
+
+    @FXML
+    private void buttonTOD() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLSource.TOD.getUrl()));
+        TodController todController = loader.getController();
+        //todController.setAppController(this);
+        try {
+            mainTabPane.getTabs().add(new Tab("TOD",loader.load()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+/*
+    // called from dualityController to reload the list of dynamisms once we
+    // create or duplicate new fccs
+    public void refreshDataInclusionModule(){
+        inclusionController.refreshData();
+    }
+
+    public void refreshDataClassModule(){
+        cClassController.refreshData();
+    }
+*/
 }

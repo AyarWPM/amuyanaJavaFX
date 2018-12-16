@@ -225,9 +225,9 @@ public class FccContainer extends VBox {
     private VBox getFormulasHolder(){
         VBox formulasHolder = new VBox();
 
-        this.positiveFormula = new FormulaContainer(appController.dynamismOf(0, fcc));
-        this.negativeFormula = new FormulaContainer(appController.dynamismOf(1, fcc));
-        this.symmetricFormula = new FormulaContainer(appController.dynamismOf(2, fcc));
+        this.positiveFormula = new FormulaContainer(appController.getDataInterface().dynamismOf(0, fcc));
+        this.negativeFormula = new FormulaContainer(appController.getDataInterface().dynamismOf(1, fcc));
+        this.symmetricFormula = new FormulaContainer(appController.getDataInterface().dynamismOf(2, fcc));
 
         this.positiveFormula.write(SIMPLE);
         this.negativeFormula.write(SIMPLE);

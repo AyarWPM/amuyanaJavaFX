@@ -14,41 +14,41 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="850.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
     <children>
-        <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="NEVER">
-            <menus>
-                <Menu mnemonicParsing="false" text="File">
-                    <items>
-                        <MenuItem mnemonicParsing="false" onAction="#databaseMenuItemAction" text="Test connexion" />
+      <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+         <menus>
+            <Menu mnemonicParsing="false" text="File">
+               <items>
+                  <MenuItem mnemonicParsing="false" onAction="#databaseMenuItemAction" text="Test connexion" />
                   <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Close" />
-                    </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Component">
-                    <items>
-                        <MenuItem disable="true" mnemonicParsing="false" text="Logic Systems" />
-                  <MenuItem mnemonicParsing="false" text="Table of Deductions" />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Dialectics (&amp;STC)" />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Statistics" />
-                    </items>
-                </Menu>
-            <Menu disable="true" mnemonicParsing="false" text="Tutorials">
+                  <MenuItem mnemonicParsing="false" text="Close" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Logic System">
+               <items>
+                  <MenuItem disable="true" mnemonicParsing="false" text="Create new..." />
+                  <MenuItem mnemonicParsing="false" text="Load existing" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Close" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Edit" />
+               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Tutorials">
                <items>
                   <MenuItem mnemonicParsing="false" text="Logic of the Contradictory" />
                </items>
             </Menu>
-            <Menu disable="true" mnemonicParsing="false" text="About">
+            <Menu mnemonicParsing="false" text="About">
                <items>
-                  <MenuItem fx:id="muimShowHideLog111" mnemonicParsing="false" onAction="#showHideLog" text="Amuyaña" />
-                  <MenuItem fx:id="muimShowHideLog1111" mnemonicParsing="false" onAction="#showHideLog" text="The author" />
+                  <MenuItem mnemonicParsing="false" text="Amuyaña" />
+                  <MenuItem mnemonicParsing="false" text="The author" />
                </items>
             </Menu>
-            </menus>
-        </MenuBar>
-      <TabPane fx:id="contentTabPane" VBox.vgrow="ALWAYS">
+         </menus>
+      </MenuBar>
+      <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS">
          <tabs>
-            <Tab closable="false" text="Welcome">
+            <Tab closable="false" text="Start">
                <content>
                   <SplitPane VBox.vgrow="ALWAYS">
                      <items>
@@ -56,17 +56,98 @@
                            <children>
                               <HBox alignment="CENTER">
                                  <children>
-                                    <Pane prefHeight="200.0" prefWidth="400.0" style="-fx-background-color: grey;">
+                                    <Pane prefHeight="460.0" prefWidth="780.0" style="-fx-background-color: ghostwhite; -fx-border-color: black; -fx-border-width: 1;">
                                        <children>
-                                          <Button disable="true" layoutX="80.0" layoutY="80.0" mnemonicParsing="false" prefWidth="100.0" text="Logic Systems" textAlignment="CENTER" wrapText="true" />
-                                          <Button layoutX="228.0" layoutY="80.0" mnemonicParsing="false" prefWidth="100.0" text="Table of Deductions" textAlignment="CENTER" wrapText="true" />
-                                          <Label layoutX="103.0" layoutY="14.0" text="Amuyaña">
+                                          <VBox alignment="CENTER" layoutX="295.0" layoutY="14.0" spacing="10.0" style="-fx-background-color: lemonchiffon; -fx-border-width: 3; -fx-border-color: black;">
+                                             <children>
+                                                <Label text="Logic System">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <Button layoutX="80.0" layoutY="80.0" mnemonicParsing="false" text="Create new..." textAlignment="CENTER" wrapText="true" />
+                                                <Label alignment="CENTER" maxWidth="200.0" minWidth="0.0" text="No Logic System loaded" textAlignment="CENTER" wrapText="true" />
+                                                <ListView maxWidth="200.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox alignment="CENTER" layoutX="56.0" layoutY="228.0" spacing="10.0" style="-fx-background-color: linen; -fx-border-width: 3; -fx-border-color: black;">
+                                             <children>
+                                                <Label text="Table of Deductions">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <MenuButton layoutX="83.0" layoutY="66.0" mnemonicParsing="false" text="Create new...">
+                                                   <items>
+                                                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                                                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                                                   </items>
+                                                </MenuButton>
+                                                <Label alignment="CENTER" maxWidth="200.0" minWidth="0.0" text="No Table of Deductions loaded" textAlignment="CENTER" wrapText="true" />
+                                                <ListView maxWidth="200.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox alignment="CENTER" layoutX="295.0" layoutY="228.0" spacing="10.0" style="-fx-background-color: lavender; -fx-border-width: 3; -fx-border-color: black;">
+                                             <children>
+                                                <Label text="Dialectics">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <MenuButton mnemonicParsing="false" text="Create new...">
+                                                   <items>
+                                                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                                                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                                                   </items>
+                                                </MenuButton>
+                                                <MenuButton mnemonicParsing="false" text="Load...">
+                                                   <items>
+                                                      <MenuItem mnemonicParsing="false" text="Action 1" />
+                                                      <MenuItem mnemonicParsing="false" text="Action 2" />
+                                                   </items>
+                                                </MenuButton>
+                                                <Label alignment="CENTER" maxWidth="200.0" minWidth="0.0" text="No Dialectics loaded" textAlignment="CENTER" wrapText="true" />
+                                                <ListView maxWidth="200.0" minWidth="200.0" prefHeight="50.0" prefWidth="200.0" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <VBox alignment="CENTER" layoutX="533.0" layoutY="228.0" spacing="10.0" style="-fx-background-color: aliceblue; -fx-border-width: 3; -fx-border-color: black;">
+                                             <children>
+                                                <Label text="Statistics">
+                                                   <font>
+                                                      <Font size="16.0" />
+                                                   </font>
+                                                </Label>
+                                                <Separator prefWidth="200.0" />
+                                                <Button layoutX="23.0" layoutY="53.0" mnemonicParsing="false" text="Open register" textAlignment="CENTER" wrapText="true" />
+                                                <Button layoutX="69.0" layoutY="161.0" mnemonicParsing="false" text="Open descriptive statistics" textAlignment="CENTER" wrapText="true" />
+                                                <Button layoutX="44.0" layoutY="101.0" mnemonicParsing="false" text="Open inferential statistics" textAlignment="CENTER" wrapText="true" />
+                                             </children>
+                                             <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                             </padding>
+                                          </VBox>
+                                          <Label layoutX="254.0" layoutY="79.0" text="1">
                                              <font>
-                                                <Font size="41.0" />
+                                                <Font size="43.0" />
                                              </font>
                                           </Label>
-                                          <Button disable="true" layoutX="80.0" layoutY="143.0" mnemonicParsing="false" prefWidth="100.0" text="Dialectics" textAlignment="CENTER" wrapText="true" />
-                                          <Button disable="true" layoutX="228.0" layoutY="143.0" mnemonicParsing="false" prefWidth="100.0" text="Statistics" textAlignment="CENTER" wrapText="true" />
+                                          <Label layoutX="14.0" layoutY="293.0" text="2">
+                                             <font>
+                                                <Font size="43.0" />
+                                             </font>
+                                          </Label>
                                        </children>
                                     </Pane>
                                  </children>

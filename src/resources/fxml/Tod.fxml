@@ -6,57 +6,49 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<SplitPane dividerPositions="0.3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<SplitPane dividerPositions="0.3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodController">
    <items>
-      <ScrollPane fitToHeight="true" fitToWidth="true" SplitPane.resizableWithParent="false">
+      <ScrollPane fitToWidth="true" maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
          <content>
             <VBox>
                <children>
-                  <TitledPane animated="false" text="Fundamental Conjunctions of Contradiction (FCC)" wrapText="true">
-                     <content>
-                        <VBox spacing="5.0">
-                           <children>
-                              <ListView prefHeight="200.0" prefWidth="100.0" />
-                              <HBox alignment="CENTER_LEFT">
+                  <ListView minWidth="0.0" prefHeight="200.0" prefWidth="150.0" />
+                  <Accordion>
+                    <panes>
+                        <TitledPane text="FFC" wrapText="true">
+                           <content>
+                              <VBox>
                                  <children>
-                                    <Label prefWidth="100.0" text="ID: " />
-                                    <Label text="- id -" />
+                                    <HBox layoutX="20.0" layoutY="147.0" spacing="5.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" text="Edit" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT">
+                              </VBox>
+                           </content>
+                        </TitledPane>
+                        <TitledPane text="Dynamisms" wrapText="true">
+                           <content>
+                              <VBox>
                                  <children>
-                                    <Label minHeight="-Infinity" prefWidth="100.0" text="Date of creation:" wrapText="true" />
-                                    <Label text="- date -" />
+                                    <ListView minWidth="0.0" prefHeight="200.0" prefWidth="150.0" />
+                                    <HBox layoutX="20.0" layoutY="147.0" spacing="5.0">
+                                       <children>
+                                          <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Set initial FCC" />
+                                          <Button mnemonicParsing="false" text="Edit" />
+                                       </children>
+                                    </HBox>
                                  </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0">
-                                 <children>
-                                    <Label prefWidth="100.0" text="Label:" />
-                                    <TextField minWidth="0.0" HBox.hgrow="ALWAYS" />
-                                 </children>
-                              </HBox>
-                              <HBox layoutX="20.0" layoutY="35.0">
-                                 <children>
-                                    <Label prefWidth="100.0" text="Description:" />
-                                    <TextArea minWidth="0.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER" layoutX="20.0" layoutY="60.0">
-                                 <children>
-                                    <Button mnemonicParsing="false" text="Save" />
-                                    <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Cancel" />
-                                    <Button layoutX="72.0" layoutY="10.0" mnemonicParsing="false" text="Delete" />
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </content>
-                  </TitledPane>
+                              </VBox>
+                           </content>
+                        </TitledPane>
+                    </panes>
+                  </Accordion>
                </children>
             </VBox>
          </content>
       </ScrollPane>
-      <HBox />
+      <HBox fx:id="canvas" prefHeight="100.0" prefWidth="200.0" />
    </items>
 </SplitPane>

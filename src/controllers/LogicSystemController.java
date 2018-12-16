@@ -1,6 +1,7 @@
 package controllers;
 
-import data.Conexion;
+import data.DataConnection;
+import data.DataInterface;
 import data.LogicSystem;
 import java.net.URL;
 import java.sql.Timestamp;
@@ -8,18 +9,16 @@ import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.VBox;
 
 public class LogicSystemController implements Initializable {
 
     // COMPONENTES GUI
     @FXML private AppController appController;
+    private DataInterface dataInterface;
     
     @FXML private TextField ttfdId;
     @FXML private TextField ttfdLabel;
@@ -38,25 +37,25 @@ public class LogicSystemController implements Initializable {
     @FXML Button bnNew;
     @FXML Button bnDuplicate;
     @FXML Button bnJoin;
-    
-    private ObservableList<LogicSystem> listLogicSystem;
+
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        listLogicSystem = FXCollections.observableArrayList();
+
         manageEvents();
         
     }
 
     public void setAppController(AppController aThis) {
         this.appController=aThis;
+        this.dataInterface = appController.getDataInterface();
     }
     
     public void fillData(){
-        tevwLogicSystem.setItems(listLogicSystem);
+        tevwLogicSystem.setItems(appController.dataInterface.getListLogicSystem());
         
         tecnLabel.setCellValueFactory(new PropertyValueFactory<LogicSystem,String>("label"));
         tecnDescription.setCellValueFactory(new PropertyValueFactory<LogicSystem,String>("description"));
@@ -124,45 +123,41 @@ public class LogicSystemController implements Initializable {
             return;
         }
 
-        Conexion conexion = appController.getConexion();
+        DataConnection dataConnection = dataInterface.getDataConnection();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         
-        conexion.establecerConexion();
+        dataConnection.connect();
         
         LogicSystem ls = new LogicSystem(0, ttfdLabel.getText(), ttaaDescription.getText(), timestamp);
         
-        int result = ls.saveData(conexion.getConnection());
+        int result = ls.saveData(dataConnection.getConnection());
         ls.setIdLogicSystem(LogicSystem.currentAutoIncrement);
         
         if (result == 1){
-            listLogicSystem.add(ls);
+            dataInterface.getListLogicSystem().add(ls);
             
         }
-        conexion.cerrarConexion();
-        
-        // Log message
-        log("System", "New Logic System created: " + ls);
+        dataConnection.disconnect();
+
     }
     
     @FXML
     public void deleteLogicSystem(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = dataInterface.getDataConnection();
+        dataConnection.connect();
         
         LogicSystem ls = (LogicSystem)this.tevwLogicSystem.getSelectionModel().getSelectedItem();
-        int resultado = ls.deleteData(conexion.getConnection());
-        conexion.cerrarConexion();
+        int resultado = ls.deleteData(dataConnection.getConnection());
+        dataConnection.disconnect();
 
         if (resultado == 1){
-                listLogicSystem.remove(tevwLogicSystem.getSelectionModel().getSelectedIndex());
-                //JDK 8u>40
-                                 log("User", "Deleted Logic System " + ls);
+                dataInterface.getListLogicSystem().remove(tevwLogicSystem.getSelectionModel().getSelectedIndex());
         }
     }
     
     @FXML
     public void updateLogicSystem(){
-        Conexion conexion = appController.getConexion();
+        DataConnection dataConnection = dataInterface.getDataConnection();
         int index = tevwLogicSystem.getSelectionModel().getSelectedIndex();
         
         LogicSystem ls = new LogicSystem(
@@ -171,28 +166,16 @@ public class LogicSystemController implements Initializable {
                 ttaaDescription.getText(),
                 Timestamp.valueOf(lblCreationDate.getText()));
         
-        conexion.establecerConexion();
-        int result = ls.updateData(conexion.getConnection());
+        dataConnection.connect();
+        int result = ls.updateData(dataConnection.getConnection());
         
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
 
         if (result == 1){
-                listLogicSystem.set(index,ls);
-                //JDK 8u>40
-                log("User", "Updated a Logic System data: " + ls);
+                dataInterface.getListLogicSystem().set(index,ls);
         }
         tevwLogicSystem.getSelectionModel().clearAndSelect(index);
         
     }
 
-    public ObservableList<LogicSystem> getListLogicSystem() {
-        return listLogicSystem;
-    }
-
-
-    private void log(String type, String message) {
-        appController.addLog(type, message);
-    }
-    
-    
 }

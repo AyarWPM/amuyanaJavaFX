@@ -1,10 +1,8 @@
 package controllers;
 
-import data.CClass;
-import data.CClassHasFcc;
-import data.Conexion;
-import data.Dynamism;
-import data.Fcc;
+import data.*;
+import data.DataConnection;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -23,7 +21,7 @@ import javafx.scene.control.TextField;
 
 public class CClassController implements Initializable {
     private AppController appController;
-    
+
     @FXML Button bnSave;
     @FXML Button bnUpdate;
     @FXML Button bnDelete;
@@ -72,13 +70,13 @@ public class CClassController implements Initializable {
     // this one is only called at startup, avoid modifying it
     public void fillData() {
         ltvwCClass.setItems(listCClass);
-        listSelectableFccs.addAll(appController.getListFcc());
+        listSelectableFccs.addAll(appController.getDataInterface().getListFcc());
     }
     public void refreshData() {
         ltvwCClass.setItems(null);
         ltvwCClass.setItems(listCClass);
         listSelectableFccs.clear();
-        listSelectableFccs.addAll(appController.getListFcc());
+        listSelectableFccs.addAll(appController.getDataInterface().getListFcc());
     }
     
     public void manageEvents(){
@@ -96,7 +94,7 @@ public class CClassController implements Initializable {
                     
                     listCollection.clear();
                     
-                    listCollection.addAll(appController.fccOf(newValue));
+                    listCollection.addAll(appController.getDataInterface().fccOf(newValue));
                     
                     listSelectableFccs.clear();
                     listSelectableFccs.addAll(getListCandidates());
@@ -152,13 +150,13 @@ public class CClassController implements Initializable {
         ArrayList<Dynamism> listCommonGenerals = new ArrayList<>();
         
         for(Fcc f:listCollection){
-            listGeneralsOfCollection.add(appController.generalsOf(f));
+            listGeneralsOfCollection.add(appController.getDataInterface().generalsOf(f));
         }
         
         // then I compare all arrayLists and create one containing only elements in 
         // common, which is done by retaining common elements in a list wich 
         // initially has all conjunctions (listCommonGenerals)
-        listCommonGenerals.addAll(appController.getListDynamisms());
+        listCommonGenerals.addAll(appController.getDataInterface().getListDynamisms());
         for(ArrayList<Dynamism> alc:listGeneralsOfCollection){
             listCommonGenerals.retainAll(alc);
         }
@@ -166,10 +164,10 @@ public class CClassController implements Initializable {
         // Then I find those Fccs whose listOfGenerals has at least one common
         // fcc with the listCommonGenerals
         
-        for(Fcc f:appController.getListFcc()){
+        for(Fcc f:appController.getDataInterface().getListFcc()){
             ArrayList<Dynamism> tempList = new ArrayList<>();
             
-            tempList.addAll(appController.generalsOf(f));
+            tempList.addAll(appController.getDataInterface().generalsOf(f));
             
             tempList.retainAll(listCommonGenerals);
             if(!tempList.isEmpty()){
@@ -211,13 +209,13 @@ public class CClassController implements Initializable {
         }
         
         
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         //CCLASS
         CClass newCClass = new CClass(0, ttfdLabel.getText());
         
-        int result = newCClass.saveData(conexion.getConnection());
+        int result = newCClass.saveData(dataConnection.getConnection());
         
         newCClass.setIdCClass(CClass.currentAutoIncrement);
         
@@ -231,7 +229,7 @@ public class CClassController implements Initializable {
             CClassHasFcc newCClassHasFcc = new CClassHasFcc(0, newCClass, f);
             
             
-            int result2 = newCClassHasFcc.saveData(conexion.getConnection());
+            int result2 = newCClassHasFcc.saveData(dataConnection.getConnection());
             newCClassHasFcc.setIdCClassHasFcc(CClassHasFcc.currentAutoIncrement);
             
             if(result2==1){
@@ -241,33 +239,33 @@ public class CClassController implements Initializable {
         
         ltvwCClass.getSelectionModel().selectLast();
         
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML
     public void update(){
         CClass selectedCClass = ltvwCClass.getSelectionModel().getSelectedItem();
         
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         //LABEL
         selectedCClass.setLabel(ttfdLabel.getText());
-        selectedCClass.updateData(conexion.getConnection());
+        selectedCClass.updateData(dataConnection.getConnection());
         
         // COLLECTION
         ArrayList<Fcc> tempToAdd = new ArrayList<>();
         ArrayList<Fcc> tempToRemove = new ArrayList<>();
         
         for(Fcc f:listCollection){
-            if(appController.fccOf(selectedCClass).contains(f)){
+            if(appController.getDataInterface().fccOf(selectedCClass).contains(f)){
                 // the fcc remains there
-            } else if(!appController.fccOf(selectedCClass).contains(f)){
+            } else if(!appController.getDataInterface().fccOf(selectedCClass).contains(f)){
                 tempToAdd.add(f);
             } 
         }
             
-        for(Fcc f:appController.fccOf(selectedCClass)){
+        for(Fcc f:appController.getDataInterface().fccOf(selectedCClass)){
             if(listCollection.contains(f)){
                 // the fcc remains
             } else if (!listCollection.contains(f)){
@@ -277,7 +275,7 @@ public class CClassController implements Initializable {
         
         for(Fcc f: tempToAdd){
             CClassHasFcc newCClassHasFcc = new CClassHasFcc(0, selectedCClass, f);
-            int result = newCClassHasFcc.saveData(conexion.getConnection());
+            int result = newCClassHasFcc.saveData(dataConnection.getConnection());
 
             newCClassHasFcc.setIdCClassHasFcc(CClassHasFcc.currentAutoIncrement);
             //System.out.println(CClassHasFcc.currentAutoIncrement);
@@ -292,7 +290,7 @@ public class CClassController implements Initializable {
             // find that cClassHasFcc that has the f
             for(CClassHasFcc cchf:listCClassHasFcc){
                 if(cchf.getCClass().equals(selectedCClass)&&cchf.getFcc().equals(f)){
-                    if(cchf.deleteData(conexion.getConnection())==1){
+                    if(cchf.deleteData(dataConnection.getConnection())==1){
                         temp=cchf;
                     }
                 }
@@ -304,13 +302,13 @@ public class CClassController implements Initializable {
         
         ltvwCClass.refresh();
 
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML
     public void delete(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         CClass selectedCClass = ltvwCClass.getSelectionModel().getSelectedItem();
         
@@ -325,15 +323,15 @@ public class CClassController implements Initializable {
         }
         
         for(CClassHasFcc cchf:tempList){
-            if(cchf.deleteData(conexion.getConnection())==1){
+            if(cchf.deleteData(dataConnection.getConnection())==1){
                     listCClassHasFcc.remove(cchf);
                 }
         }
 
-        if(selectedCClass.deleteData(conexion.getConnection())==1){
+        if(selectedCClass.deleteData(dataConnection.getConnection())==1){
             listCClass.remove(selectedCClass);
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML
@@ -347,7 +345,7 @@ public class CClassController implements Initializable {
         
         // Selectable FCCs
         listSelectableFccs.clear();
-        listSelectableFccs.addAll(appController.getListFcc());
+        listSelectableFccs.addAll(appController.getDataInterface().getListFcc());
         ltvwSelectableFccs.setItems(listSelectableFccs);
         
         bnSave.setDisable(false);

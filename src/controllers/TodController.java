@@ -72,7 +72,6 @@ public class TodController implements Initializable {
 
         Conjunction.setControllers(this.appController,todController);
         this.dataInterface = appController.getDataInterface();
-
     }
 
     public void setLeftPanel(ScrollPane leftPanel) {

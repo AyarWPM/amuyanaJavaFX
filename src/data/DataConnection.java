@@ -7,13 +7,19 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Conexion {
+public class DataConnection {
 
     private Connection connection;
     
-    private static final String URL = "localhost";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "prharcopos";
+    private static String URL;
+    private static String USERNAME;
+    private static String PASSWORD;
+
+    public static void setValues(String url, String username, String password) {
+        DataConnection.URL = url;
+        DataConnection.USERNAME = username;
+        DataConnection.PASSWORD = password;
+    }
 
     public static String getUsername() {
         return USERNAME;
@@ -27,7 +33,7 @@ public class Conexion {
         this.connection = connection;
     }
     
-    public void establecerConexion(){
+    public void connect(){
 
         try {
             //Cargar driver
@@ -37,9 +43,9 @@ public class Conexion {
             
             
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataConnection.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         
     }
@@ -53,17 +59,17 @@ public class Conexion {
             return connection.isValid(0);
             
         } catch (ClassNotFoundException | SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return false;
     }
     
     // metodo para cerrar conexión
-    public void cerrarConexion(){
+    public void disconnect(){
         try {
             connection.close();
         } catch (SQLException ex) {
-            Logger.getLogger(Conexion.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DataConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     

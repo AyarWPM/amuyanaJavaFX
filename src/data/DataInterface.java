@@ -1,12 +1,19 @@
 package data;
 
 import extras.tod.Analogy;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
 public interface DataInterface {
+
+    void setDataConnectionValues(String url, String name, String password);
+
+    DataConnection getDataConnection();
+
+    void loadData();
 
     Element elementOf(int polarity, Fcc fcc);
 
@@ -39,6 +46,20 @@ public interface DataInterface {
     boolean isDeduction(Dynamism effect, Dynamism cause);
 
     boolean isDeduction(Fcc deducedFcc, Dynamism cause);
+
+
+    ObservableList<LogicSystem> getListLogicSystem();
+    ObservableList<Fcc> getListFcc();
+    ObservableList<FccHasLogicSystem> getListFccHasLogicSystem();
+    ObservableList<Element> getListElements();
+    ObservableList<Dynamism> getListDynamisms();
+    ObservableList<User> getListUser();
+    ObservableList<CClass> getListCClass();
+    ObservableList<CClassHasFcc> getListCClassHasFcc();
+    ObservableList<Inclusion> getListInclusions();
+    ObservableList<General> getListGenerals();
+    ObservableList<Syllogism> getListSyllogisms();
+    ObservableList<InclusionHasSyllogism> getListIHS();
 
     /**
      * Every FCC is in at least one Conjunction. Conjunctions together with

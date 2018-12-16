@@ -1,6 +1,6 @@
 package controllers;
 
-import data.Conexion;
+import data.DataConnection;
 import data.Inclusion;
 import data.InclusionHasSyllogism;
 import data.Syllogism;
@@ -193,13 +193,13 @@ public class SyllogismController implements Initializable {
             return;
         }
         
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         //INCLUSION
         Syllogism newSyllogism = new Syllogism(0, ttfdLabel.getText());
         
-        int result = newSyllogism.saveData(conexion.getConnection());
+        int result = newSyllogism.saveData(dataConnection.getConnection());
         
         newSyllogism.setIdSyllogism(Syllogism.currentAutoIncrement);
         
@@ -210,19 +210,19 @@ public class SyllogismController implements Initializable {
         // STEP
         for(Inclusion i:tempListSteps){
             InclusionHasSyllogism newIHS = new InclusionHasSyllogism(i, newSyllogism);
-            if(newIHS.saveData(conexion.getConnection())==1){
+            if(newIHS.saveData(dataConnection.getConnection())==1){
                 listIHS.add(newIHS);
             }
         }
         ltvwSyllogism.getSelectionModel().selectLast();
 
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
 
     @FXML
     public void delete(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         Syllogism s = (Syllogism)ltvwSyllogism.getSelectionModel().getSelectedItem();
         
@@ -230,7 +230,7 @@ public class SyllogismController implements Initializable {
         
         for(InclusionHasSyllogism ihs:listIHS){
             if(ihs.getSyllogism().equals(s)){
-                if(ihs.deleteData(conexion.getConnection())==1){
+                if(ihs.deleteData(dataConnection.getConnection())==1){
                     IHSs.add(ihs);
                 }
             }
@@ -240,10 +240,10 @@ public class SyllogismController implements Initializable {
         }
         
         // finally delete Syllogism
-        if(s.deleteData(conexion.getConnection())==1){
+        if(s.deleteData(dataConnection.getConnection())==1){
             listSyllogisms.remove(s);
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML

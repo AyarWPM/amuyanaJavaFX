@@ -22,7 +22,11 @@ public class DataHandler implements DataInterface {
     private ObservableList<Syllogism> listSyllogisms;
     private ObservableList<InclusionHasSyllogism> listIHS;
 
+    private DataConnection dataConnection;
+
     public DataHandler() {
+        this.dataConnection = new DataConnection();
+
         this.listLogicSystem = FXCollections.observableArrayList();
         this.listFcc = FXCollections.observableArrayList();
         this.listFccHasLogicSystem = FXCollections.observableArrayList();
@@ -35,64 +39,128 @@ public class DataHandler implements DataInterface {
         this.listGenerals = FXCollections.observableArrayList();
         this.listSyllogisms = FXCollections.observableArrayList();
         this.listIHS = FXCollections.observableArrayList();
-        loadData();
     }
 
+    /**
+     * For prototype there's only one type of user, however users might need permissions.
+     * @param url host address or name of the MYSQL database
+     * @param username username for accessing the MYSQL database
+     * @param password password of user with username
+     */
+    public void setDataConnectionValues(String url, String username, String password) {
+        this.dataConnection.setValues(url,username,password);
+    }
+
+    public DataConnection getDataConnection() {
+        return this.dataConnection;
+    }
 
     public void loadData() {
-        Conexion conexion = new Conexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = new DataConnection();
+        dataConnection.connect();
 
-        LogicSystem.loadList(conexion.getConnection(), this.listLogicSystem);
+        LogicSystem.loadList(dataConnection.getConnection(), this.listLogicSystem);
 
-        Fcc.loadList(conexion.getConnection(), this.listFcc);
+        Fcc.loadList(dataConnection.getConnection(), this.listFcc);
 
-        FccHasLogicSystem.loadList(conexion.getConnection(),
+        FccHasLogicSystem.loadList(dataConnection.getConnection(),
                 this.listFccHasLogicSystem,
                 this.listFcc,
                 this.listLogicSystem);
 
-        Element.loadList(conexion.getConnection(),
+        Element.loadList(dataConnection.getConnection(),
                 this.listElements,
                 this.listFcc);
 
-        Dynamism.loadList(conexion.getConnection(),
+        Dynamism.loadList(dataConnection.getConnection(),
                 this.listDynamisms,
                 this.listFcc);
 
-        Inclusion.loadList(conexion.getConnection(),
+        Inclusion.loadList(dataConnection.getConnection(),
                 this.listInclusions,
                 this.listDynamisms);
 
-        General.loadList(conexion.getConnection(),
+        General.loadList(dataConnection.getConnection(),
                 this.listGenerals,
                 this.listDynamisms,
                 this.listInclusions);
 
-        CClass.loadList(conexion.getConnection(),
+        CClass.loadList(dataConnection.getConnection(),
                 this.listCClass);
 
-        CClassHasFcc.loadList(conexion.getConnection(),
+        CClassHasFcc.loadList(dataConnection.getConnection(),
                 this.listCClassHasFcc,
                 this.listCClass,
                 this.listFcc);
 
-        Syllogism.loadList(conexion.getConnection(),
+        Syllogism.loadList(dataConnection.getConnection(),
                 this.listSyllogisms);
 
-        InclusionHasSyllogism.loadList(conexion.getConnection(),
+        InclusionHasSyllogism.loadList(dataConnection.getConnection(),
                 this.listIHS,
                 this.listInclusions,
                 this.listSyllogisms);
 
-//        Dialectic.loadList(conexion.getConnection(), listDialectic);
-//        Register.loadList(conexion.getConnection(), listRegister);
-//        Space.loadList(conexion.getConnection(), listSpace);
-//        Time.loadList(conexion.getConnection(), listTime);
-//        Quantum.loadList(conexion.getConnection(), listQuantum);
+//        Dialectic.loadList(dataConnection.getConnection(), listDialectic);
+//        Register.loadList(dataConnection.getConnection(), listRegister);
+//        Space.loadList(dataConnection.getConnection(), listSpace);
+//        Time.loadList(dataConnection.getConnection(), listTime);
+//        Quantum.loadList(dataConnection.getConnection(), listQuantum);
 
 
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
+    }
+
+    // GETTERS OF LISTVIEWS
+
+
+    @Override
+    public ObservableList<LogicSystem> getListLogicSystem() {
+        return listLogicSystem;
+    }
+
+    public ObservableList<Fcc> getListFcc() {
+        return listFcc;
+    }
+
+    public ObservableList<FccHasLogicSystem> getListFccHasLogicSystem() {
+        return listFccHasLogicSystem;
+    }
+
+    public ObservableList<Element> getListElements() {
+        return listElements;
+    }
+
+    public ObservableList<Dynamism> getListDynamisms() {
+        return listDynamisms;
+    }
+
+    public ObservableList<User> getListUser() {
+        return listUser;
+    }
+
+    public ObservableList<CClass> getListCClass() {
+        return listCClass;
+    }
+
+    public ObservableList<CClassHasFcc> getListCClassHasFcc() {
+        return listCClassHasFcc;
+    }
+
+    public ObservableList<Inclusion> getListInclusions() {
+        return listInclusions;
+    }
+
+    public ObservableList<General> getListGenerals() {
+        return listGenerals;
+    }
+
+    public ObservableList<Syllogism> getListSyllogisms() {
+        return listSyllogisms;
+    }
+
+    public ObservableList<InclusionHasSyllogism> getListIHS() {
+        return listIHS;
     }
 
     public Element elementOf(int polarity, Fcc fcc){

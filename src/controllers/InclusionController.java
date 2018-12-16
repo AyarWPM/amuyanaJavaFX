@@ -1,9 +1,6 @@
 package controllers;
 
-import data.Conexion;
-import data.Dynamism;
-import data.General;
-import data.Inclusion;
+import data.*;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,6 +22,8 @@ import javafx.scene.control.ListView;
 
 public class InclusionController implements Initializable {
     private AppController appController;
+
+    private DataInterface dataInterface;
     
     @FXML Button bnSave;
     @FXML Button bnDelete;
@@ -76,6 +75,7 @@ public class InclusionController implements Initializable {
 
     public void setAppController(AppController aThis) {
         this.appController=aThis;
+        this.dataInterface = this.appController.getDataInterface();
     }
 
     public void refreshData(){
@@ -85,7 +85,7 @@ public class InclusionController implements Initializable {
         
         cobxParticular.setItems(null);
         listParticulars.clear();
-        listParticulars.addAll(appController.getListDynamisms());
+        listParticulars.addAll(dataInterface.getListDynamisms());
         
         cobxParticular.setItems(listParticulars);
     }
@@ -97,7 +97,7 @@ public class InclusionController implements Initializable {
         
         ltvwNotions.setItems(listNotions);
         ltvwBroads.setItems(listBroads);
-        listParticulars.addAll(appController.getListDynamisms());
+        listParticulars.addAll(dataInterface.getListDynamisms());
         cobxParticular.setItems(listParticulars);
     }
     
@@ -117,13 +117,13 @@ public class InclusionController implements Initializable {
                     
                     // NOTIONS
                     listNotions = FXCollections.observableArrayList();
-                    listNotions.addAll(appController.getListDynamisms());
+                    listNotions.addAll(dataInterface.getListDynamisms());
                     ltvwNotions.setItems(listNotions);
                     
                         // Remove the particular dynamism and the other two
-                    Dynamism c0 = appController.dynamismOf(0, newValue.getDynamism().getFcc());
-                    Dynamism c1 = appController.dynamismOf(1, newValue.getDynamism().getFcc());
-                    Dynamism c2 = appController.dynamismOf(2, newValue.getDynamism().getFcc());
+                    Dynamism c0 = dataInterface.dynamismOf(0, newValue.getDynamism().getFcc());
+                    Dynamism c1 = dataInterface.dynamismOf(1, newValue.getDynamism().getFcc());
+                    Dynamism c2 = dataInterface.dynamismOf(2, newValue.getDynamism().getFcc());
                     
                     listNotions.remove(c0);
                     listNotions.remove(c1);
@@ -138,9 +138,9 @@ public class InclusionController implements Initializable {
                     listBroads = FXCollections.observableArrayList();
                     for(General g:listGenerals){
                         if(g.getInclusion()==newValue){
-                            listNotions.remove(appController.dynamismOf(0,g.getDynamism().getFcc()));
-                            listNotions.remove(appController.dynamismOf(1,g.getDynamism().getFcc()));
-                            listNotions.remove(appController.dynamismOf(2,g.getDynamism().getFcc()));
+                            listNotions.remove(dataInterface.dynamismOf(0,g.getDynamism().getFcc()));
+                            listNotions.remove(dataInterface.dynamismOf(1,g.getDynamism().getFcc()));
+                            listNotions.remove(dataInterface.dynamismOf(2,g.getDynamism().getFcc()));
 
                             //listNotions.remove(g.getDynamism());
                             listBroads.add(g.getDynamism());
@@ -196,13 +196,13 @@ public class InclusionController implements Initializable {
                 if(newValue!=null){
                     
                     listNotions = FXCollections.observableArrayList();
-                    listNotions.addAll(appController.getListDynamisms());
+                    listNotions.addAll(dataInterface.getListDynamisms());
                     ltvwNotions.setItems(listNotions);
                     
                     // Remove the notions of the fcc whose conjunction is included in general
-                    Dynamism c0 = appController.dynamismOf(0, newValue.getFcc());
-                    Dynamism c1 = appController.dynamismOf(1, newValue.getFcc());
-                    Dynamism c2 = appController.dynamismOf(2, newValue.getFcc());
+                    Dynamism c0 = dataInterface.dynamismOf(0, newValue.getFcc());
+                    Dynamism c1 = dataInterface.dynamismOf(1, newValue.getFcc());
+                    Dynamism c2 = dataInterface.dynamismOf(2, newValue.getFcc());
                     
                     listNotions.remove(c0);
                     listNotions.remove(c1);
@@ -257,13 +257,13 @@ public class InclusionController implements Initializable {
             return;
         }
         
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = dataInterface.getDataConnection();
+        dataConnection.connect();
         
         //INCLUSION
         Inclusion newInclusion = new Inclusion(0, cobxParticular.getSelectionModel().getSelectedItem());
         
-        int result = newInclusion.saveData(conexion.getConnection());
+        int result = newInclusion.saveData(dataConnection.getConnection());
         
         newInclusion.setIdInclusion(Inclusion.currentAutoIncrement);
         
@@ -274,20 +274,20 @@ public class InclusionController implements Initializable {
         // GENERAL
         for(Dynamism c:tempListBroads){
             General newGeneral = new General(c, newInclusion);
-            if(newGeneral.saveData(conexion.getConnection())==1){
+            if(newGeneral.saveData(dataConnection.getConnection())==1){
                 listGenerals.add(newGeneral);
             }
         }
         //cobxParticular.setItems(listAllNotions);
         ltvwInclusions.getSelectionModel().selectLast();
         
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
 
     @FXML
     public void delete(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = dataInterface.getDataConnection();
+        dataConnection.connect();
         
         Inclusion i = ltvwInclusions.getSelectionModel().getSelectedItem();
         
@@ -297,7 +297,7 @@ public class InclusionController implements Initializable {
         // find out if it has general
         for(General g:listGenerals){
             if(g.getInclusion().equals(i)){
-                if(g.deleteData(conexion.getConnection())==1){
+                if(g.deleteData(dataConnection.getConnection())==1){
                     generals.add(g);
                 }
             }
@@ -312,10 +312,10 @@ public class InclusionController implements Initializable {
         
         
         // finally delete Inclusion
-        if(i.deleteData(conexion.getConnection())==1){
+        if(i.deleteData(dataConnection.getConnection())==1){
             listInclusions.remove(i);
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML
@@ -329,7 +329,7 @@ public class InclusionController implements Initializable {
         
         // particular
         listParticulars.clear();
-        listParticulars.addAll(appController.getListDynamisms());
+        listParticulars.addAll(dataInterface.getListDynamisms());
         cobxParticular.setDisable(false);
         cobxParticular.getSelectionModel().clearSelection();
         // Broad
@@ -357,31 +357,31 @@ public class InclusionController implements Initializable {
 
             // The user wants to add selectedDynamism, but we also have to remove the other two
             // dynamisms of the same fcc the selectedDynamism belongs to, so that he can no longer select them after
-            listNotions.remove(appController.dynamismOf(0,selectedDynamism.getFcc()));
-            listNotions.remove(appController.dynamismOf(1,selectedDynamism.getFcc()));
-            listNotions.remove(appController.dynamismOf(2,selectedDynamism.getFcc()));
+            listNotions.remove(dataInterface.dynamismOf(0,selectedDynamism.getFcc()));
+            listNotions.remove(dataInterface.dynamismOf(1,selectedDynamism.getFcc()));
+            listNotions.remove(dataInterface.dynamismOf(2,selectedDynamism.getFcc()));
 
             tempListBroads.add(selectedDynamism);
         }
 
         // if the inclusion already exist (there's one selected)
         else if (!ltvwInclusions.getSelectionModel().isEmpty()){
-            Conexion conexion = appController.getConexion();
-            conexion.establecerConexion();
+            DataConnection dataConnection = dataInterface.getDataConnection();
+            dataConnection.connect();
             
             General newGeneral = new General(selectedDynamism,
                     ltvwInclusions.getSelectionModel().getSelectedItem());
             
-            if(newGeneral.saveData(conexion.getConnection())==1){
+            if(newGeneral.saveData(dataConnection.getConnection())==1){
                 listBroads.add(selectedDynamism);
                 // The user wants to add selectedDynamism, but we also have to remove the other two
                 // dynamisms of the same fcc the selectedDynamism belongs to, so that he can no longer select them after
-                listNotions.remove(appController.dynamismOf(0,selectedDynamism.getFcc()));
-                listNotions.remove(appController.dynamismOf(1,selectedDynamism.getFcc()));
-                listNotions.remove(appController.dynamismOf(2,selectedDynamism.getFcc()));
+                listNotions.remove(dataInterface.dynamismOf(0,selectedDynamism.getFcc()));
+                listNotions.remove(dataInterface.dynamismOf(1,selectedDynamism.getFcc()));
+                listNotions.remove(dataInterface.dynamismOf(2,selectedDynamism.getFcc()));
                 listGenerals.add(newGeneral);
             }
-            conexion.cerrarConexion();
+            dataConnection.disconnect();
         }
     }
     
@@ -397,9 +397,9 @@ public class InclusionController implements Initializable {
                 listBroads.remove(selectedDynamism);
 
                 // A general can't have more than one dynamism of the same FCC
-                listNotions.add(appController.dynamismOf(0,selectedDynamism.getFcc()));
-                listNotions.add(appController.dynamismOf(1,selectedDynamism.getFcc()));
-                listNotions.add(appController.dynamismOf(2,selectedDynamism.getFcc()));
+                listNotions.add(dataInterface.dynamismOf(0,selectedDynamism.getFcc()));
+                listNotions.add(dataInterface.dynamismOf(1,selectedDynamism.getFcc()));
+                listNotions.add(dataInterface.dynamismOf(2,selectedDynamism.getFcc()));
 
             } 
             // If the inclusion exists already
@@ -407,19 +407,19 @@ public class InclusionController implements Initializable {
                 General general = generalOf(selectedDynamism,
                         ltvwInclusions.getSelectionModel().getSelectedItem());
                 
-                Conexion conexion = appController.getConexion();
-                conexion.establecerConexion();
+                DataConnection dataConnection = dataInterface.getDataConnection();
+                dataConnection.connect();
                 
-                if(general.deleteData(conexion.getConnection())==1){
+                if(general.deleteData(dataConnection.getConnection())==1){
                     listGenerals.remove(general);
                     listBroads.remove(selectedDynamism);
 
                     // A general can't have more than one dynamism of the same FCC
-                    listNotions.add(appController.dynamismOf(0,selectedDynamism.getFcc()));
-                    listNotions.add(appController.dynamismOf(1,selectedDynamism.getFcc()));
-                    listNotions.add(appController.dynamismOf(2,selectedDynamism.getFcc()));
+                    listNotions.add(dataInterface.dynamismOf(0,selectedDynamism.getFcc()));
+                    listNotions.add(dataInterface.dynamismOf(1,selectedDynamism.getFcc()));
+                    listNotions.add(dataInterface.dynamismOf(2,selectedDynamism.getFcc()));
                 }
-                conexion.cerrarConexion();
+                dataConnection.disconnect();
             }
         } else if(listBroads.size()==1){
             Alert alert = new Alert(AlertType.INFORMATION);

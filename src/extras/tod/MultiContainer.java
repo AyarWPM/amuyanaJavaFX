@@ -94,7 +94,7 @@ public class MultiContainer extends HBox {
 
     public void deployAntecedents() {
         LevelContainer antecedentLevel =
-                new LevelContainer(appController.getListAnalogyForAntecedent(getFccContainer().getFcc()));
+                new LevelContainer(appController.getDataInterface().getListAnalogyForAntecedent(getFccContainer().getFcc()));
 
         antecedentLevel.deploy();
 
@@ -124,7 +124,7 @@ public class MultiContainer extends HBox {
 
     public void deployDescendants(){
         LevelContainer descendantLevel = new LevelContainer(
-                appController.getListAnalogyForDescendant(getFccContainer().getFcc()));
+                appController.getDataInterface().getListAnalogyForDescendant(getFccContainer().getFcc()));
 
         descendantLevel.deploy();
 

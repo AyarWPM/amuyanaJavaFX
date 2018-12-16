@@ -1,12 +1,7 @@
 package controllers;
 
-import data.Conexion;
-import data.Dynamism;
-import data.Element;
-import data.Fcc;
-import data.FccHasLogicSystem;
-import data.LogicSystem;
-import data.User;
+import data.*;
+import data.DataConnection;
 
 import java.net.URL;
 import java.sql.Timestamp;
@@ -27,7 +22,7 @@ import javafx.scene.web.HTMLEditor;
 
 public class DualitiesController implements Initializable {
 
-    //private Conexion conexion;
+    //private DataConnection conexion;
     
     @FXML private AppController appController;
     
@@ -152,9 +147,9 @@ public class DualitiesController implements Initializable {
                         ObservableList<LogicSystem> ls1 = FXCollections.observableArrayList();
                         ObservableList<LogicSystem> ls2 = FXCollections.observableArrayList();
                         
-                        ls2.addAll(appController.getListLogicSystem());
+                        ls2.addAll(appController.getDataInterface().getListLogicSystem());
                         
-                        for(FccHasLogicSystem fhls : appController.getListFccHasLogicSystem()){
+                        for(FccHasLogicSystem fhls : appController.getDataInterface().getListFccHasLogicSystem()){
                             if(fhls.getFcc().equals(newValue)){
                                 ls2.remove(fhls.getLogicSystem());
                                 ls1.add(fhls.getLogicSystem());
@@ -166,8 +161,8 @@ public class DualitiesController implements Initializable {
                         cobxLogicSystem.setDisable(false);
 
                         // ELEMENTS section
-                        Element e = appController.elementOf(0, selectedFcc);
-                        Element ae= appController.elementOf(1, selectedFcc);
+                        Element e = appController.getDataInterface().elementOf(0, selectedFcc);
+                        Element ae= appController.getDataInterface().elementOf(1, selectedFcc);
                         
                         ttfdElementSymbol.setText(e.getSymbol());
                         
@@ -188,9 +183,9 @@ public class DualitiesController implements Initializable {
                         
                         // DYNAMISMS section (previously known as CONJUNCTIONS)
                         
-                        Dynamism c0 = appController.dynamismOf(0, selectedFcc);
-                        Dynamism c1 = appController.dynamismOf(1, selectedFcc);
-                        Dynamism c2 = appController.dynamismOf(2, selectedFcc);
+                        Dynamism c0 = appController.getDataInterface().dynamismOf(0, selectedFcc);
+                        Dynamism c1 = appController.getDataInterface().dynamismOf(1, selectedFcc);
+                        Dynamism c2 = appController.getDataInterface().dynamismOf(2, selectedFcc);
                         
                         lblPositiveFormulation.setText(c0.toString());
                         ttfdPositiveFormulation.setText(c0.getPropFormulation());
@@ -269,15 +264,15 @@ public class DualitiesController implements Initializable {
             return;
         }
 
-        Conexion conexion = new Conexion();
+        DataConnection dataConnection = new DataConnection();
         Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         
-        conexion.establecerConexion();
+        dataConnection.connect();
         
         //FCC
         Fcc fcc = new Fcc(0, ttfdFccLabel.getText(), hmerFccDescription.getHtmlText());
         
-        int resultFcc = fcc.saveData(conexion.getConnection());
+        int resultFcc = fcc.saveData(dataConnection.getConnection());
         fcc.setIdFcc(Fcc.currentAutoIncrement);
         
         if (resultFcc == 1){
@@ -294,9 +289,9 @@ public class DualitiesController implements Initializable {
         }
         
         
-        int resultE0 = e0.saveData(conexion.getConnection());
+        int resultE0 = e0.saveData(dataConnection.getConnection());
         e0.setIdElement(Element.currentAutoIncrement);
-        int resultE1 = e1.saveData(conexion.getConnection());
+        int resultE1 = e1.saveData(dataConnection.getConnection());
         e1.setIdElement(Element.currentAutoIncrement);
         
         if (resultE0 == 1 && resultE1 == 1){
@@ -305,25 +300,25 @@ public class DualitiesController implements Initializable {
         
         // Dynamisms
         Dynamism c0 = new Dynamism(0, 0, ttfdPositiveFormulation.getText(), ttaaPositiveDescription.getText(), fcc);
-        int resultC0 = c0.saveData(conexion.getConnection());
+        int resultC0 = c0.saveData(dataConnection.getConnection());
         c0.setIdDynamism(Dynamism.currentAutoIncrement);
         Dynamism c1 = new Dynamism(0, 1, ttfdNegativeFormulation.getText(), ttaaNegativeDescription.getText(), fcc);
-        int resultC1 = c1.saveData(conexion.getConnection());
+        int resultC1 = c1.saveData(dataConnection.getConnection());
         c1.setIdDynamism(Dynamism.currentAutoIncrement);
         Dynamism c2 = new Dynamism(0, 2, ttfdSymmetricFormulation.getText(), ttaaSymmetricDescription.getText(), fcc);
-        int resultC2 = c2.saveData(conexion.getConnection());
+        int resultC2 = c2.saveData(dataConnection.getConnection());
         c2.setIdDynamism(Dynamism.currentAutoIncrement);
         
         if(resultC0==1 && resultC1 == 1 && resultC2 == 1){
             listDynamisms.addAll(c0,c1,c2);
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
         
         tevwFcc.getSelectionModel().selectLast();
         
         // UPDATE LIST IN INCLUSION
-        appController.refreshDataInclusionModule();
-        appController.refreshDataClassModule();
+        //appController.refreshDataInclusionModule();
+        //appController.refreshDataClassModule();
     }
 
     private boolean checkFill() {
@@ -405,31 +400,31 @@ public class DualitiesController implements Initializable {
         
         
         
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
-        result = selectedFcc.updateData(conexion.getConnection());
+        result = selectedFcc.updateData(dataConnection.getConnection());
         
         if (result == 1){
             listFcc.set(listFcc.indexOf(selectedFcc), selectedFcc);
         }
 
         // ELEMENT
-        Element e0 = appController.elementOf(0, selectedFcc);
+        Element e0 = appController.getDataInterface().elementOf(0, selectedFcc);
         
-        Element e1 = appController.elementOf(1, selectedFcc);
+        Element e1 = appController.getDataInterface().elementOf(1, selectedFcc);
         
         int iE0=listElement.indexOf(e0);
         int iE1=listElement.indexOf(e1);
         
         e0.setSymbol(newESymbol);
-        result = e0.updateData(conexion.getConnection());
+        result = e0.updateData(dataConnection.getConnection());
         if (result == 1){
             listElement.set(iE0, e0);
         }
         
         e1.setSymbol(newAESymbol);
-        result = e1.updateData(conexion.getConnection());
+        result = e1.updateData(dataConnection.getConnection());
         if (result == 1){
             listElement.set(iE1, e1);
         }
@@ -437,9 +432,9 @@ public class DualitiesController implements Initializable {
         
         
         // DYNAMISM
-        Dynamism c0 = appController.dynamismOf(0, selectedFcc);
-        Dynamism c1 = appController.dynamismOf(1, selectedFcc);;
-        Dynamism c2 = appController.dynamismOf(2, selectedFcc);;
+        Dynamism c0 = appController.getDataInterface().dynamismOf(0, selectedFcc);
+        Dynamism c1 = appController.getDataInterface().dynamismOf(1, selectedFcc);;
+        Dynamism c2 = appController.getDataInterface().dynamismOf(2, selectedFcc);;
         int iC0=listDynamisms.indexOf(c0);
         int iC1=listDynamisms.indexOf(c1);
         int iC2=listDynamisms.indexOf(c2);
@@ -451,17 +446,17 @@ public class DualitiesController implements Initializable {
         c2.setPropFormulation(newPropDynamism2);
         c2.setDescription(newDescDynamism2);
         
-        result = c0.updateData(conexion.getConnection());
+        result = c0.updateData(dataConnection.getConnection());
         if (result == 1){
             listDynamisms.set(iC0, c0);
         }
         
-        result = c1.updateData(conexion.getConnection());
+        result = c1.updateData(dataConnection.getConnection());
         if (result == 1){
             listDynamisms.set(iC1, c1);
         }
         
-        result = c2.updateData(conexion.getConnection());
+        result = c2.updateData(dataConnection.getConnection());
         if (result == 1){
             listDynamisms.set(iC2, c2);
         }
@@ -469,17 +464,17 @@ public class DualitiesController implements Initializable {
         
         reselectFcc();
         
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
         
         // UPDATE LIST IN INCLUSION
-        appController.refreshDataInclusionModule();
-        appController.refreshDataClassModule();
+        //appController.refreshDataInclusionModule();
+        //appController.refreshDataClassModule();
     }
     
     @FXML
     public void deleteFcc(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         Fcc fcc = (Fcc)this.tevwFcc.getSelectionModel().getSelectedItem();
         
@@ -490,7 +485,7 @@ public class DualitiesController implements Initializable {
         // Dynamism
         for(Dynamism c:listDynamisms){
             if(c.getFcc().equals(fcc)){
-                int response = c.deleteData(conexion.getConnection());
+                int response = c.deleteData(dataConnection.getConnection());
                 if(response==1){
                     tempListDynamisms.add(c);
                 }
@@ -503,7 +498,7 @@ public class DualitiesController implements Initializable {
         // element
         for(Element e:listElement){
             if(e.getFcc().equals(fcc)){
-                if(e.deleteData(conexion.getConnection())==1){
+                if(e.deleteData(dataConnection.getConnection())==1){
                     elements.add(e);
                 }
             }
@@ -515,7 +510,7 @@ public class DualitiesController implements Initializable {
         // logicSystem
         for(FccHasLogicSystem fhls : listFccHasLogicSystem){
             if(fhls.getFcc().equals(fcc)){
-                if(fhls.deleteData(conexion.getConnection())==1){
+                if(fhls.deleteData(dataConnection.getConnection())==1){
                     fhlss.add(fhls);
                 }
             }
@@ -524,23 +519,23 @@ public class DualitiesController implements Initializable {
             listFccHasLogicSystem.remove(f);
         }
         // fcc
-        int resultado = fcc.deleteData(conexion.getConnection());
+        int resultado = fcc.deleteData(dataConnection.getConnection());
         if (resultado == 1){
                 listFcc.remove(fcc);
         }
         
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
         // UPDATE LIST IN INCLUSION
-        appController.refreshDataInclusionModule();
-        appController.refreshDataClassModule();
+        //appController.refreshDataInclusionModule();
+        //appController.refreshDataClassModule();
     }
     
     @FXML
     public void duplicateFcc(){
-        Conexion conexion = appController.getConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
         //Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
         
-        conexion.establecerConexion();
+        dataConnection.connect();
         
         //current id of selected fcc
         Fcc selectedFcc = (Fcc)tevwFcc.getSelectionModel().getSelectedItem();
@@ -549,7 +544,7 @@ public class DualitiesController implements Initializable {
         //FCC
         Fcc fcc = new Fcc(0, ttfdFccLabel.getText(), hmerFccDescription.getHtmlText());
         
-        int resultFcc = fcc.saveData(conexion.getConnection());
+        int resultFcc = fcc.saveData(dataConnection.getConnection());
         fcc.setIdFcc(Fcc.currentAutoIncrement);
         
         if (resultFcc == 1){
@@ -567,9 +562,9 @@ public class DualitiesController implements Initializable {
         }
         
         
-        int resultE0 = e0.saveData(conexion.getConnection());
+        int resultE0 = e0.saveData(dataConnection.getConnection());
         e0.setIdElement(Element.currentAutoIncrement);
-        int resultE1 = e1.saveData(conexion.getConnection());
+        int resultE1 = e1.saveData(dataConnection.getConnection());
         e1.setIdElement(Element.currentAutoIncrement);
         
         if (resultE0 == 1 && resultE1 == 1){
@@ -578,27 +573,27 @@ public class DualitiesController implements Initializable {
         
         // Dynamism
         Dynamism c0 = new Dynamism(0, 0, ttfdPositiveFormulation.getText(), ttaaPositiveDescription.getText(), fcc);
-        int resultC0 = c0.saveData(conexion.getConnection());
+        int resultC0 = c0.saveData(dataConnection.getConnection());
         c0.setIdDynamism(Dynamism.currentAutoIncrement);
         
         Dynamism c1 = new Dynamism(0, 1, ttfdNegativeFormulation.getText(), ttaaNegativeDescription.getText(), fcc);
-        int resultC1 = c1.saveData(conexion.getConnection());
+        int resultC1 = c1.saveData(dataConnection.getConnection());
         c1.setIdDynamism(Dynamism.currentAutoIncrement);
         
         Dynamism c2 = new Dynamism(0, 2, ttfdSymmetricFormulation.getText(), ttaaSymmetricDescription.getText(), fcc);
-        int resultC2 = c2.saveData(conexion.getConnection());
+        int resultC2 = c2.saveData(dataConnection.getConnection());
         c2.setIdDynamism(Dynamism.currentAutoIncrement);
         
         if(resultC0==1 && resultC1 == 1 && resultC2 == 1){
             listDynamisms.addAll(c0,c1,c2);
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
         
         tevwFcc.getSelectionModel().selectLast();
         
         // UPDATE LIST IN INCLUSION
-        appController.refreshDataInclusionModule();
-        appController.refreshDataClassModule();
+        //appController.refreshDataInclusionModule();
+        //appController.refreshDataClassModule();
     }
     
     @FXML
@@ -639,41 +634,37 @@ public class DualitiesController implements Initializable {
     
     @FXML
     public void addLogicSystem(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         FccHasLogicSystem fhls = new FccHasLogicSystem(
                 (Fcc)tevwFcc.getSelectionModel().getSelectedItem(),
                 (LogicSystem)cobxLogicSystem.getSelectionModel().getSelectedItem()
         );
         
-        int result = fhls.saveData(conexion.getConnection());
+        int result = fhls.saveData(dataConnection.getConnection());
         
         if (result == 1){
             listFccHasLogicSystem.add(fhls);
             reselectFcc();
         }
-        conexion.cerrarConexion();
+        dataConnection.disconnect();
     }
     
     @FXML
     public void removeLogicSystem(){
-        Conexion conexion = appController.getConexion();
-        conexion.establecerConexion();
+        DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+        dataConnection.connect();
         
         FccHasLogicSystem fhls = getFccHasLogicSystem();
-        int resultado = fhls.deleteData(conexion.getConnection());
-        conexion.cerrarConexion();
+        int resultado = fhls.deleteData(dataConnection.getConnection());
+        dataConnection.disconnect();
         
         if(resultado==1){
             listFccHasLogicSystem.remove(fhls);
             reselectFcc();
         }
         
-    }
-
-    public void log(String type, String message){
-        appController.addLog(type, message);
     }
 
     private void reselectFcc() {

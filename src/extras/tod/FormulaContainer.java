@@ -53,10 +53,10 @@ public class FormulaContainer extends HBox {
     void write(Styles STYLE){
         switch (STYLE){
             case SIMPLE:{
-                Element element = appController.elementOf(0, listDynamisms.get(0).getFcc());
+                Element element = appController.getDataInterface().elementOf(0, listDynamisms.get(0).getFcc());
                 String e = element.getSymbol();
 
-                Element antiElement = appController.elementOf(1, listDynamisms.get(0).getFcc());
+                Element antiElement = appController.getDataInterface().elementOf(1, listDynamisms.get(0).getFcc());
                 String aE = antiElement.getSymbol();
 
                 this.getChildren().add(sign(OPENING_PARENTHESIS));
@@ -113,10 +113,10 @@ public class FormulaContainer extends HBox {
 
                 for(Dynamism d:this.listDynamisms){
 
-                    Element element = appController.elementOf(0, d.getFcc());
+                    Element element = appController.getDataInterface().elementOf(0, d.getFcc());
                     String e = element.getSymbol();
 
-                    Element antiElement = appController.elementOf(1, d.getFcc());
+                    Element antiElement = appController.getDataInterface().elementOf(1, d.getFcc());
                     String aE = antiElement.getSymbol();
 
                     int middlePosition = (listSymbols.size()-1)/2;

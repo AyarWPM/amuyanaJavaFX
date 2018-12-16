@@ -29,9 +29,9 @@ public class TodContainer extends Group {
         this.initialFcc = initialFcc;
         setStyle();
 
-        ArrayList<Analogy> listAnalogy = appController.getListAnalogyForInitial(initialFcc);
+        ArrayList<Analogy> listAnalogy = appController.getDataInterface().getListAnalogyForInitial(initialFcc);
 
-        this.mainLevelContainer = new LevelContainer(appController.getListAnalogies(initialFcc).get(0));
+        this.mainLevelContainer = new LevelContainer(appController.getDataInterface().getListAnalogies(initialFcc).get(0));
 
         setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override

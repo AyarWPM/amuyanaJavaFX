@@ -6,26 +6,25 @@ import javafx.scene.Node;
  *
  * @author Ayar Portugal <ayar.portugal@amuyaña.com>
  */
-public enum Module {
-
+public enum FXMLSource {
     LOGIC_SYSTEM("/resources/fxml/LogicSystem.fxml"),
-    DUALITIES("/resources/fxml/Dualities.fxml"),
-    INCLUSIONS("/resources/fxml/Inclusion.fxml"),
+
     TOD("/resources/fxml/Tod.fxml"),
-    TODTOOLBAR("/resources/fxml/TodToolbar.fxml"),
-    TODLEFTPANEL("/resources/fxml/TodLeftPanel.fxml"),
-    TODRIGHTPANEL("/resources/fxml/TodRightPanel.fxml"),
-    DIALECTIC("/resources/fxml/Dialectic.fxml"),
-    CLASSES("/resources/fxml/CClass.fxml"),
-    STC("/resources/fxml/Stc.fxml"),
+    FCC("/resources/fxml/Fcc.fxml"),
+    INCLUSIONS("/resources/fxml/Inclusion.fxml"),
     SYLLOGISM("/resources/fxml/Syllogism.fxml"),
+    CLASSES("/resources/fxml/CClass.fxml"),
+
+    DIALECTIC("/resources/fxml/Dialectic.fxml"),
+    STC("/resources/fxml/Stc.fxml"),
+
     STATS("/resources/fxml/Stats.fxml");
 
     private final String url;
     
     private Node node;
     
-    private Module(String url) {
+    private FXMLSource(String url) {
         this.url = url;
     }
     

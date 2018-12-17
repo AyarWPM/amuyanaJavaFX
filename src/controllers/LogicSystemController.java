@@ -19,24 +19,11 @@ public class LogicSystemController implements Initializable {
     // COMPONENTES GUI
     @FXML private AppController appController;
     private DataInterface dataInterface;
-    
-    @FXML private TextField ttfdId;
-    @FXML private TextField ttfdLabel;
-    @FXML private Label lblCreationDate;
-    @FXML private TextArea ttaaDescription;
 
-    @FXML private TableView tevwLogicSystem;
-    
-    @FXML TableColumn<LogicSystem, String> tecnLabel;
-    @FXML TableColumn<LogicSystem, String> tecnDescription;
-    @FXML TableColumn<LogicSystem, Timestamp> tecnCreationDate;
-    
-    @FXML Button bnSave;
-    @FXML Button bnUpdate;
-    @FXML Button bnDelete;
-    @FXML Button bnNew;
-    @FXML Button bnDuplicate;
-    @FXML Button bnJoin;
+    @FXML private TextField labelTextField;
+    @FXML private TextArea descriptionTextArea;
+    @FXML private Label idLabel;
+    @FXML private Label createdLabel;
 
     
     /**
@@ -55,40 +42,11 @@ public class LogicSystemController implements Initializable {
     }
     
     public void fillData(){
-        tevwLogicSystem.setItems(appController.dataInterface.getListLogicSystem());
-        
-        tecnLabel.setCellValueFactory(new PropertyValueFactory<LogicSystem,String>("label"));
-        tecnDescription.setCellValueFactory(new PropertyValueFactory<LogicSystem,String>("description"));
-        tecnCreationDate.setCellValueFactory(new PropertyValueFactory<LogicSystem,Timestamp>("creationDate"));
-                
+
     }
+
     private void manageEvents(){
-        tevwLogicSystem.getSelectionModel().selectedItemProperty().addListener(
-            new ChangeListener<LogicSystem>() {
-                @Override
-                public void changed(ObservableValue<? extends LogicSystem> arg0,
-                    LogicSystem oldValue, LogicSystem newValue) {
-                    if (newValue!=null){
-                        ttfdId.setText(String.valueOf(newValue.getIdLogicSystem()));
-                        ttfdLabel.setText(newValue.getLabel());
-                        lblCreationDate.setText(newValue.getCreationDate().toString());
-                        ttaaDescription.setText(newValue.getDescription());
-                        
-                        bnSave.setDisable(true);
-                        bnUpdate.setDisable(false);
-                        bnDelete.setDisable(false);
 
-                        bnDuplicate.setDisable(false);
-                        bnJoin.setDisable(false);
-                    } else if (newValue==null){
-                        newLogicSystem();
-                    }
-                    
-
-                }
-
-            }
-        );
     }
     
     @FXML

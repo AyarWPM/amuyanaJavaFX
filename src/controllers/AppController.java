@@ -2,6 +2,7 @@ package controllers;
 
 import data.*;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -27,25 +28,25 @@ import main.FXMLSource;
 public class AppController {
     DataInterface dataInterface;
 
-    @FXML private TabPane mainTabPane;
-
+    // CONTROLLERS
     @FXML private LogicSystemController logicSystemController;
     @FXML private TodController todController;
     @FXML private DialecticController dialecticController;
     @FXML private StatsController statsController;
 
+    // NODES
+    @FXML private TabPane mainTabPane;
+    @FXML private Button createNewLogicSystemButton;
+    @FXML private MenuButton createNewTODMenuButton;
+    @FXML private MenuButton createNewDialecticsMenuButton;
+    @FXML private MenuButton loadDialecticsMenuButton;
+    @FXML private Button openRegisterButton;
+    @FXML private Button openDescriptiveButton;
+    @FXML private Button openInferentialButton;
 
-    // CONTROLLERS
-/*
-    @FXML private DualitiesController dualitiesController;
-    @FXML private InclusionController inclusionController;
-    @FXML private CClassController cClassController;
-
-    @FXML private StcController stcController;
-    @FXML private SyllogismController syllogismController;
-
-    @FXML private SettingsController settingsController;
-*/
+    @FXML private ListView<LogicSystem> logicSystemListView;
+    @FXML private ListView tableOfDeductionsListView;
+    @FXML private ListView dialecticsListView;
 
     public void initialize() throws IOException {
         this.dataInterface = new DataHandler();
@@ -104,7 +105,46 @@ public class AppController {
     }
 
     private void fillData() {
+        this.logicSystemListView.setItems(this.dataInterface.getListLogicSystem());
+        this.logicSystemListView.setContextMenu(getLogicSystemContextMenu());
 
+    }
+
+    private ContextMenu getLogicSystemContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem load = new MenuItem("Load");
+        load.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+
+        MenuItem edit = new MenuItem("Edit");
+        edit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+            }
+        });
+        contextMenu.getItems().addAll(load,edit);
+        return contextMenu;
+    }
+
+    @FXML
+    private void createNewLogicSystem() {
+        // open new tab with the possibility to cancel an instantiated-but-not-saved-in-database logicSystem
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(FXMLSource.LOGIC_SYSTEM.getUrl()));
+
+        ScrollPane node = null;
+        try {
+            node = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Tab logicSystemTab = new Tab("New Logic System", node);
+        mainTabPane.getTabs().add(logicSystemTab);
     }
 
     public void databaseMenuItemAction(ActionEvent actionEvent) {

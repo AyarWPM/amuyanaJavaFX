@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="500.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogicSystemController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="350.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogicSystemController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
          <children>
@@ -35,15 +35,16 @@
                         <HBox alignment="CENTER_LEFT">
                            <children>
                               <Label minWidth="-Infinity" prefWidth="100.0" text="Created:" />
-                              <Label fx:id="createdLabel" text=" " />
+                              <Label fx:id="creationDateLabel" text=" " />
                            </children>
                         </HBox>
                      </children>
                   </VBox>
                   <HBox spacing="5.0">
                      <children>
-                        <Button disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveButton" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" />
-                        <Button disable="true" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteButton" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" />
+                        <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" />
+                        <Button fx:id="loadButton" layoutX="10.0" layoutY="10.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#load" prefWidth="90.0" styleClass="bttn_toolbar" text="Load" />
+                        <Button maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" />
                      </children>
                   </HBox>
                </children>

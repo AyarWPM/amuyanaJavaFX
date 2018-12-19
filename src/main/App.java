@@ -18,7 +18,7 @@ import java.io.IOException;
  * This class contains the javaFX logic
  */
 public class App extends Application {
-
+    Stage stage;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,9 +26,13 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        this.stage=stage;
         // Display main windows
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/resources/fxml/App.fxml"));
         Parent rootNode = loader.load();
+
+        AppController appController = loader.getController();
+        appController.setStage(stage);
 
         Scene scene = new Scene(rootNode, 800, 600,true);
 
@@ -39,11 +43,7 @@ public class App extends Application {
         stage.setTitle("Amuyaña");
         stage.setScene(scene);
         stage.show();
-        //stage.close();
-
 
     }
-
-
 
 }

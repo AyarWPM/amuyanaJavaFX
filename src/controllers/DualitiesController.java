@@ -664,7 +664,6 @@ public class DualitiesController implements Initializable {
             listFccHasLogicSystem.remove(fhls);
             reselectFcc();
         }
-        
     }
 
     private void reselectFcc() {

@@ -48,7 +48,7 @@ public class DataHandler implements DataInterface {
      * @param password password of user with username
      */
     public void setDataConnectionValues(String url, String username, String password) {
-        this.dataConnection.setValues(url,username,password);
+        DataConnection.setValues(url,username,password);
     }
 
     public DataConnection getDataConnection() {
@@ -61,12 +61,12 @@ public class DataHandler implements DataInterface {
 
         LogicSystem.loadList(dataConnection.getConnection(), this.listLogicSystem);
 
-        Fcc.loadList(dataConnection.getConnection(), this.listFcc);
-
         FccHasLogicSystem.loadList(dataConnection.getConnection(),
                 this.listFccHasLogicSystem,
                 this.listFcc,
                 this.listLogicSystem);
+
+        Fcc.loadList(dataConnection.getConnection(), this.listFcc);
 
         Element.loadList(dataConnection.getConnection(),
                 this.listElements,
@@ -107,12 +107,10 @@ public class DataHandler implements DataInterface {
 //        Time.loadList(dataConnection.getConnection(), listTime);
 //        Quantum.loadList(dataConnection.getConnection(), listQuantum);
 
-
         dataConnection.disconnect();
     }
 
     // GETTERS OF LISTVIEWS
-
 
     @Override
     public ObservableList<LogicSystem> getListLogicSystem() {
@@ -185,10 +183,13 @@ public class DataHandler implements DataInterface {
         return null;
     }
 
-    //Called from LogicSystemController
+    /**
+     * Get the list of FCCs that belong to a logic system
+     * @param ls
+     * @return List of fcc
+     */
     public ArrayList<Fcc> fccOf(LogicSystem ls){
         ArrayList<Fcc> list = new ArrayList<>();
-
         for(FccHasLogicSystem fhls:this.listFccHasLogicSystem){
             if(fhls.getLogicSystem().equals(ls)){
                 list.add(fhls.getFcc());

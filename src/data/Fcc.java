@@ -1,10 +1,7 @@
 package data;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.property.IntegerProperty;
@@ -118,7 +115,9 @@ public class Fcc{
 
     public static void loadList(Connection connection, 
             ObservableList<Fcc> listFcc){
+
         try {
+
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(
                 "SELECT id_fcc, "
@@ -128,7 +127,6 @@ public class Fcc{
             );
 
             while(result.next()){
-
                 listFcc.add(
                         new Fcc(
                                 result.getInt("id_fcc"), 
@@ -138,6 +136,8 @@ public class Fcc{
                 );
 
             }
+
+
         } catch (SQLException ex) {
             Logger.getLogger(Fcc.class.getName()).log(Level.SEVERE, null, ex);
         }

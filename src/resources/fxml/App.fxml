@@ -29,13 +29,12 @@
             <Menu mnemonicParsing="false" text="Logic System">
                <items>
                   <MenuItem mnemonicParsing="false" onAction="#createNewLogicSystem" text="Create new" />
-                  <Menu fx:id="loadLogicSystemMenu" mnemonicParsing="false" text="Load..." />
-                  <MenuItem mnemonicParsing="false" text="Edit..." />
+                  <Menu fx:id="listLogicSystemMenu" mnemonicParsing="false" text="Logic Systems" />
                </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Table of deductions" />
-            <Menu mnemonicParsing="false" text="Dialectics" />
-            <Menu mnemonicParsing="false" text="Statistics">
+            <Menu fx:id="tableOfDeductionsMenu" disable="true" mnemonicParsing="false" text="Table of deductions" />
+            <Menu fx:id="dialecticsMenu" disable="true" mnemonicParsing="false" text="Dialectics" />
+            <Menu fx:id="statisticsMenu" disable="true" mnemonicParsing="false" text="Statistics">
                <items>
                   <MenuItem mnemonicParsing="false" text="Register" />
                   <MenuItem mnemonicParsing="false" text="Descriptive statistics" />

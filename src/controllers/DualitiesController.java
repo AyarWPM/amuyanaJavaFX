@@ -131,7 +131,8 @@ public class DualitiesController implements Initializable {
                     Fcc oldValue, Fcc newValue) {
                     
                     Fcc selectedFcc = (Fcc)tevwFcc.getSelectionModel().getSelectedItem();
-                    
+                    DataConnection dataConnection = appController.getDataInterface().getDataConnection();
+                    dataConnection.connect();
                     if(newValue != null){
                         bnSaveFcc.setDisable(true);
                         bnUpdateFcc.setDisable(false);

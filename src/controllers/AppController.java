@@ -1,12 +1,15 @@
 package controllers;
 
 import data.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import extras.AmuyanaAlert;
+import extras.AmuyanaTab;
+import extras.LogicSystemMenu;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 
 import java.io.IOException;
+import java.util.Optional;
+
 import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import main.FXMLSource;
@@ -30,17 +33,13 @@ public class AppController {
     DataInterface dataInterface;
     LogicSystem logicSystem;
 
-    // CONTROLLERS
-    /*
-    @FXML private LogicSystemController logicSystemController;
-    @FXML private TodController todController;
-    @FXML private DialecticController dialecticController;
-    @FXML private StatsController statsController;
-    */
-
     // NODES
     @FXML private TabPane mainTabPane;
-    @FXML private Menu loadLogicSystemMenu;
+    @FXML private Menu listLogicSystemMenu;
+    @FXML private Menu tableOfDeductionsMenu;
+    @FXML private Menu dialecticsMenu;
+    @FXML private Menu statisticsMenu;
+    //@FXML private MenuItem editLogicSystemMenuItem;
 
     @FXML private ListView<LogicSystem> logicSystemListView;
     @FXML private ListView tableOfDeductionsListView;
@@ -49,12 +48,12 @@ public class AppController {
 
     public void initialize() throws IOException {
         this.dataInterface = new DataHandler();
-
+//        this.logicSystemMenu.getItems().add();
         // For debug or default mysql parameters:
         this.dataInterface.setDataConnectionValues("localhost", "amuyana", "");
         // Load logic systems and wait for the user to select one or create a new one
         this.dataInterface.loadData();
-        fillMenuLoadLogicSystem();
+        fillMenuListLogicSystem();
     }
 
     public void setStage(Stage stage) {
@@ -81,51 +80,44 @@ public class AppController {
      * This method will add the data in the Logic System Pane only, then as the user selects one logic system
      * the other panes will be added with information.
      */
-    private void fillMenuLoadLogicSystem() {
+    private void fillMenuListLogicSystem() {
         for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
-            MenuItem menuItem = new MenuItem(logicSystem.getLabel());
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource(FXMLSource.LOGIC_SYSTEM.getUrl()));
+            addToMenuListLogicSystem(logicSystem);
+        }
+    }
 
-            ScrollPane logicSystemSource = null;
-            try {
-                logicSystemSource = loader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
+    public void addToMenuListLogicSystem(LogicSystem logicSystem) {
+        LogicSystemMenu menu = new LogicSystemMenu(logicSystem);
+        menu.textProperty().bind(logicSystem.LabelProperty());
+
+        listLogicSystemMenu.getItems().add(menu);
+        MenuItem loadMenuItem = new MenuItem("Load");
+        MenuItem editMenuItem = new MenuItem("Edit");
+        MenuItem deleteMenuItem = new MenuItem("Delete");
+
+        loadMenuItem.setOnAction(event -> {
+            loadLogicSystem(logicSystem);
+        });
+
+        editMenuItem.setOnAction(event -> {
+            editLogicSystem(logicSystem);
+        });
+
+        deleteMenuItem.setOnAction(event -> {
+            deleteLogicSystem(logicSystem);
+        });
+        menu.getItems().addAll(loadMenuItem,editMenuItem,deleteMenuItem);
+    }
+
+    public void removeFromMenuListLogic(LogicSystem logicSystem) {
+        LogicSystemMenu logicSystemMenu = null;
+        for (MenuItem menu : listLogicSystemMenu.getItems()) {
+            LogicSystemMenu menu1 = (LogicSystemMenu)menu;
+            if (menu1.getLogicSystem().equals(logicSystem)) {
+                logicSystemMenu = menu1;
             }
-
-            LogicSystemController logicSystemController = loader.getController();
-            logicSystemController.setAppController(this);
-
-            Tab logicSystemTab = new Tab(logicSystem.getLabel(), logicSystemSource);
-            logicSystemController.setTab(logicSystemTab);
-            logicSystemController.setLogicSystem(logicSystem);
-            logicSystemController.fillData();
-            TODO
-            menuItem.setOnAction(event -> {//appController.setLogicSystem(ls);
-                //appController.loadLogicSystem(ls);mainTabPane.getTabs().add(logicSystemTab);});
-            loadLogicSystemMenu.getItems().add(menuItem);
         }
-    }
-
-    private void fillData2() {
-        for (Fcc fcc : this.dataInterface.fccOf(this.logicSystem)) {
-            MenuItem menuItem = new Menu(fcc.toString());
-        }
-        //TODO create EventHandler for menuItems...
-    }
-
-    private ContextMenu getLogicSystemContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
-
-        MenuItem load = new MenuItem("Load");
-        load.setOnAction(event -> loadLogicSystem(logicSystemListView.getSelectionModel().getSelectedItem()));
-
-        MenuItem edit = new MenuItem("Edit");
-        edit.setOnAction(event -> editLogicSystem(logicSystemListView.getSelectionModel().getSelectedItem()));
-
-        contextMenu.getItems().addAll(load,edit);
-        return contextMenu;
+        listLogicSystemMenu.getItems().remove(logicSystemMenu);
     }
 
     @FXML
@@ -142,9 +134,11 @@ public class AppController {
 
         LogicSystemController logicSystemController = loader.getController();
         logicSystemController.setAppController(this);
+        logicSystemController.setDisableLoadButton(true);
+        logicSystemController.setDisableDeleteButton(true);
 
+        AmuyanaTab logicSystemTab = new AmuyanaTab("New Logic System", logicSystemSource, AmuyanaTab.TabType.LOGICSYSTEM);
 
-        Tab logicSystemTab = new Tab("New Logic System", logicSystemSource);
         logicSystemController.setTab(logicSystemTab);
 
         mainTabPane.getTabs().add(logicSystemTab);
@@ -156,16 +150,13 @@ public class AppController {
      *                    More than one can be used but not simultaneously, tabs just remain open.
      */
     void loadLogicSystem(LogicSystem logicSystem) {
-        this.logicSystem = logicSystem;
-        fillData2();
-
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Logic System Loaded");
-        alert.setHeaderText(null);
-        alert.setContentText("Logic System \"" + logicSystem.getLabel() + "\" has been loaded.");
-        alert.showAndWait();
-
+        setLogicSystem(logicSystem);
+        AmuyanaAlert.loadedLogicSystemAlert();
         stage.setTitle("Amuyaña - " + logicSystem.getLabel());
+        // Menus
+        tableOfDeductionsMenu.setDisable(false);
+        dialecticsMenu.setDisable(false);
+        statisticsMenu.setDisable(false);
     }
 
     /**
@@ -182,7 +173,9 @@ public class AppController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Tab logicSystemTab = new Tab(logicSystem.getLabel(), logicSystemSource);
+        AmuyanaTab logicSystemTab = new AmuyanaTab(AmuyanaTab.TabType.LOGICSYSTEM);
+        logicSystemTab.textProperty().bind(logicSystem.LabelProperty());
+        logicSystemTab.setContent(logicSystemSource);
 
         LogicSystemController logicSystemController = loader.getController();
 
@@ -194,4 +187,35 @@ public class AppController {
         mainTabPane.getTabs().add(logicSystemTab);
     }
 
+    public void deleteLogicSystem(LogicSystem logicSystem) {
+        Alert alert = AmuyanaAlert.confirmDeletionLogicSystem();
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK){
+            System.out.println("deleting");
+            DataConnection dataConnection = dataInterface.getDataConnection();
+            dataConnection.connect();
+            int resultado = logicSystem.deleteData(dataConnection.getConnection());
+            dataConnection.disconnect();
+
+            if (resultado == 1){
+                dataInterface.getListLogicSystem().remove(logicSystem);
+            }
+
+            AmuyanaTab tabToRemove = null;
+            for (Tab tab : mainTabPane.getTabs()) {
+                AmuyanaTab amuyanaTab = (AmuyanaTab)tab;
+                if (amuyanaTab.getType().equals(AmuyanaTab.TabType.LOGICSYSTEM)) {
+                    tabToRemove = amuyanaTab;
+                }
+            }
+            getMainTabPane().getTabs().remove(tabToRemove);
+
+            removeFromMenuListLogic(logicSystem);
+        } else if (result.get()==ButtonType.CANCEL){
+            System.out.println("cancelling");
+            return;
+        }
+    }
 }

@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import extras.AmuyanaAlert;
+import extras.AmuyanaTab;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -23,12 +25,15 @@ public class LogicSystemController implements Initializable {
     @FXML private TextArea descriptionTextArea;
     @FXML private Label idLabel;
     @FXML private Label creationDateLabel;
+
+    @FXML private Button saveButton;
     @FXML private Button loadButton;
+    @FXML private Button deleteButton;
 
     private LogicSystem logicSystem;
 
     private boolean isLogicSystemNew;
-    private Tab logicSystemTab;
+    private AmuyanaTab logicSystemTab;
 
 
     /**
@@ -49,10 +54,18 @@ public class LogicSystemController implements Initializable {
         this.logicSystem = logicSystem;
     }
 
-    void setTab(Tab logicSystemTab) {
+    void setTab(AmuyanaTab logicSystemTab) {
         this.logicSystemTab = logicSystemTab;
     }
-    
+
+    void setDisableLoadButton(boolean state) {
+        this.loadButton.setDisable(state);
+    }
+
+    void setDisableDeleteButton(boolean state) {
+        this.deleteButton.setDisable(state);
+    }
+
     public void fillData(){
         labelTextField.setText(logicSystem.getLabel());
         descriptionTextArea.setText(logicSystem.getDescription());
@@ -67,11 +80,7 @@ public class LogicSystemController implements Initializable {
     public void save(){
         //first check that all fields are filled
         if(labelTextField.getText().isEmpty()|descriptionTextArea.getText().isEmpty()){
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Save Logic System");
-            alert.setHeaderText(null);
-            alert.setContentText("Please fill all fields.");
-            alert.showAndWait();
+            AmuyanaAlert.completeAllFieldsAlert();
             return;
         }
 
@@ -79,6 +88,7 @@ public class LogicSystemController implements Initializable {
         dataConnection.connect();
 
         // Second, Is new logic system or not?
+        // If the logic system is new
         if (this.isLogicSystemNew) {
             Timestamp timestamp = Timestamp.valueOf(LocalDateTime.now());
             LogicSystem ls = new LogicSystem(0, labelTextField.getText(), descriptionTextArea.getText(), timestamp);
@@ -88,13 +98,26 @@ public class LogicSystemController implements Initializable {
                 dataInterface.getListLogicSystem().add(ls);
             }
             logicSystem = ls;
-            logicSystemTab.setText(ls.getLabel());
+            //logicSystemTab.setText(ls.getLabel());
+            logicSystemTab.textProperty().bind(logicSystem.LabelProperty());
+            logicSystemTab.setLogicSystem(logicSystem);
             idLabel.setText(String.valueOf(logicSystem.getIdLogicSystem()));
             creationDateLabel.setText(String.valueOf(logicSystem.getCreationDate()));
+
             this.isLogicSystemNew=false;
             loadButton.setDisable(false);
-        } else if (!this.isLogicSystemNew) {
-            System.out.println("it's not new");
+            deleteButton.setDisable(false);
+            appController.addToMenuListLogicSystem(logicSystem);
+            AmuyanaAlert.createdLogicSystemAlert();
+        }
+        // If the logic system exists already
+        else if (!this.isLogicSystemNew) {
+            //logicSystem.setLabel(labelTextField.getText());
+            logicSystem.LabelProperty().setValue(labelTextField.getText());
+            logicSystem.DescriptionProperty().setValue(descriptionTextArea.getText());
+            logicSystem.updateData(dataConnection.getConnection());
+           //appController.refreshInMenuListLogicSystem(logicSystem);
+            AmuyanaAlert.updatedLogicSystemAlert();
         }
 
         dataConnection.disconnect();
@@ -102,30 +125,19 @@ public class LogicSystemController implements Initializable {
 
     @FXML
     void load() {
-        appController.setLogicSystem(logicSystem);
         appController.loadLogicSystem(logicSystem);
     }
     
     @FXML
     public void delete(){
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm deletion of logic system");
-        alert.setHeaderText("Are you sure you want to delete this Logic System?");
-        alert.setContentText("All the associated FCCs will be lost unless they are imported in another logic system.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK){
-            DataConnection dataConnection = dataInterface.getDataConnection();
-            dataConnection.connect();
-            int resultado = this.logicSystem.deleteData(dataConnection.getConnection());
-            dataConnection.disconnect();
+        appController.deleteLogicSystem(logicSystem);
+    }
 
-            if (resultado == 1){
-                dataInterface.getListLogicSystem().remove(logicSystem);
-            }
-            appController.getMainTabPane().getTabs().remove(logicSystemTab);
-        } else {
-            return;
-        }
-
+    private void showCompleteFieldsAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Save Logic System");
+        alert.setHeaderText(null);
+        alert.setContentText("Please complete all fields.");
+        alert.showAndWait();
     }
 }

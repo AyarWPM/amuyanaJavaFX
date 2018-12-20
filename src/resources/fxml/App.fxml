@@ -54,29 +54,6 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS">
-         <tabs>
-            <Tab closable="false" text="Start">
-               <content>
-                  <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="638.0" prefViewportWidth="850.0">
-                     <content>
-                        <VBox alignment="CENTER">
-                           <children>
-                              <HBox alignment="CENTER">
-                                 <children>
-                                    <Group>
-                                       <children>
-                                          <Label text="Welcome to amuyana" />
-                                       </children></Group>
-                                 </children>
-                              </HBox>
-                           </children>
-                        </VBox>
-                     </content>
-                  </ScrollPane>
-               </content>
-            </Tab>
-         </tabs>
-      </TabPane>
+      <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" />
     </children>
 </VBox>

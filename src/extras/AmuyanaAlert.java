@@ -44,4 +44,12 @@ public abstract class AmuyanaAlert {
         return alert;
     }
 
+    public static void alreadyEditingLogicSystem() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Edit Logic System");
+        alert.setHeaderText(null);
+        alert.setContentText("The Logic System is already being edited.");
+        alert.showAndWait();
+    }
+
 }

@@ -163,7 +163,14 @@ public class AppController {
      * The user selects to load an existing logic system.
      */
     private void editLogicSystem(LogicSystem logicSystem) {
-        // Opens a tab ...
+        for (Tab tab : mainTabPane.getTabs()) {
+            AmuyanaTab amuyanaTab = (AmuyanaTab)tab;
+            if (amuyanaTab.getLogicSystem().equals(logicSystem)) {
+                AmuyanaAlert.alreadyEditingLogicSystem();
+                return;
+            }
+        }
+        // Opens a tab if there's not one open already!
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource(FXMLSource.LOGIC_SYSTEM.getUrl()));
 
@@ -176,6 +183,7 @@ public class AppController {
         AmuyanaTab logicSystemTab = new AmuyanaTab(AmuyanaTab.TabType.LOGICSYSTEM);
         logicSystemTab.textProperty().bind(logicSystem.LabelProperty());
         logicSystemTab.setContent(logicSystemSource);
+        logicSystemTab.setLogicSystem(logicSystem);
 
         LogicSystemController logicSystemController = loader.getController();
 
@@ -193,7 +201,6 @@ public class AppController {
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK){
-            System.out.println("deleting");
             DataConnection dataConnection = dataInterface.getDataConnection();
             dataConnection.connect();
             int resultado = logicSystem.deleteData(dataConnection.getConnection());
@@ -209,6 +216,7 @@ public class AppController {
                 if (amuyanaTab.getType().equals(AmuyanaTab.TabType.LOGICSYSTEM)) {
                     tabToRemove = amuyanaTab;
                 }
+
             }
             getMainTabPane().getTabs().remove(tabToRemove);
 

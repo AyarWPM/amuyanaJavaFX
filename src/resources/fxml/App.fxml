@@ -32,7 +32,11 @@
                   <Menu fx:id="listLogicSystemMenu" mnemonicParsing="false" text="Logic Systems" />
                </items>
             </Menu>
-            <Menu fx:id="tableOfDeductionsMenu" disable="true" mnemonicParsing="false" text="Table of deductions" />
+            <Menu fx:id="tableOfDeductionsMenu" disable="true" mnemonicParsing="false" text="Table of deductions">
+               <items>
+                  <Menu mnemonicParsing="false" text="Create new" />
+                  <Menu mnemonicParsing="false" text="Tables of deductions" />
+               </items></Menu>
             <Menu fx:id="dialecticsMenu" disable="true" mnemonicParsing="false" text="Dialectics" />
             <Menu fx:id="statisticsMenu" disable="true" mnemonicParsing="false" text="Statistics">
                <items>

@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1300.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SyllogismController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1300.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.SyllogismController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" maxHeight="1.7976931348623157E308" styleClass="base">
          <children>
@@ -14,20 +14,20 @@
                   <ToolBar styleClass="tlbr_logicsystem">
                      <items>
                         <TextField prefWidth="90.0" promptText="Filter" />
-                        <Button fx:id="bnSave" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
-                        <Button fx:id="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
-                        <Button fx:id="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newSyllogism" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:idContainer2="bnSave" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#save" prefWidth="90.0" styleClass="bttn_toolbar" text="Save" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:idContainer2="bnDelete" disable="true" layoutX="10.0" layoutY="76.0" mnemonicParsing="false" onAction="#delete" prefWidth="90.0" styleClass="bttn_toolbar" text="Delete" textAlignment="CENTER" wrapText="true" />
+                        <Button fx:idContainer2="bnNew" layoutX="10.0" layoutY="43.0" mnemonicParsing="false" onAction="#newSyllogism" prefWidth="90.0" styleClass="bttn_toolbar" text="New" textAlignment="CENTER" wrapText="true" />
                      </items>
                   </ToolBar>
                   <HBox spacing="10.0">
                      <children>
                         <VBox layoutX="142.0" layoutY="24.0" spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <ListView fx:id="ltvwSyllogism" prefHeight="200.0" prefWidth="200.0" />
+                              <ListView fx:idContainer2="ltvwSyllogism" prefHeight="200.0" prefWidth="200.0" />
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="170.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Label:" />
-                                    <TextField fx:id="ttfdLabel" />
+                                    <TextField fx:idContainer2="ttfdLabel" />
                                  </children>
                               </HBox>
                               <HBox>
@@ -35,19 +35,19 @@
                                     <VBox HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label text="Associated Inclusions:" />
-                                          <ListView fx:id="ltvwStep" prefHeight="200.0" prefWidth="200.0" />
+                                          <ListView fx:idContainer2="ltvwStep" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                     <VBox alignment="CENTER">
                                        <children>
-                                          <Button fx:id="bnAdd" mnemonicParsing="false" onAction="#addInclusion" text="Add" />
-                                          <Button fx:id="bnRemove" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeInclusion" text="Remove" />
+                                          <Button fx:idContainer2="bnAdd" mnemonicParsing="false" onAction="#addInclusion" text="Add" />
+                                          <Button fx:idContainer2="bnRemove" layoutX="210.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeInclusion" text="Remove" />
                                        </children>
                                     </VBox>
                                     <VBox HBox.hgrow="ALWAYS">
                                        <children>
                                           <Label text="Inclusions" />
-                                          <ListView fx:id="ltvwInclusion" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
+                                          <ListView fx:idContainer2="ltvwInclusion" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="200.0" />
                                        </children>
                                     </VBox>
                                  </children>

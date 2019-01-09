@@ -1,63 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.scene.text.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.VBox?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="850.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.AppController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="850.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.AppController">
     <children>
-      <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
-         <menus>
-            <Menu mnemonicParsing="false" text="File">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Test connexion" />
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Close" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Logic System">
-               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#createNewLogicSystem" text="Create new" />
-                  <Menu fx:id="listLogicSystemMenu" mnemonicParsing="false" text="Logic Systems" />
-               </items>
-            </Menu>
-            <Menu fx:id="tableOfDeductionsMenu" disable="true" mnemonicParsing="false" text="Table of deductions">
-               <items>
-                  <Menu mnemonicParsing="false" text="Create new" />
-                  <Menu mnemonicParsing="false" text="Tables of deductions" />
-               </items></Menu>
-            <Menu fx:id="dialecticsMenu" disable="true" mnemonicParsing="false" text="Dialectics" />
-            <Menu fx:id="statisticsMenu" disable="true" mnemonicParsing="false" text="Statistics">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Register" />
-                  <MenuItem mnemonicParsing="false" text="Descriptive statistics" />
-                  <MenuItem mnemonicParsing="false" text="Inferential statistics" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Tutorials">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Logic of the Contradictory" />
-               </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="About">
-               <items>
-                  <MenuItem mnemonicParsing="false" text="Amuyaña" />
-                  <MenuItem mnemonicParsing="false" text="The author" />
-               </items>
-            </Menu>
-         </menus>
-      </MenuBar>
+      <HBox>
+         <children>
+            <MenuBar maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+               <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Test connexion" />
+                        <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem mnemonicParsing="false" text="Close" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Logic System">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#createNewLogicSystem" text="New..." />
+                        <Menu fx:id="savedLogicSystemMenu" mnemonicParsing="false" text="Saved" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="todMenu" disable="true" mnemonicParsing="false" text="Table of deductions">
+                     <items>
+                        <MenuItem mnemonicParsing="false" onAction="#createNewTod" text="New..." />
+                        <Menu fx:id="savedTodMenu" mnemonicParsing="false" text="Saved" />
+                     </items>
+                  </Menu>
+                  <Menu fx:id="dialecticsMenu" disable="true" mnemonicParsing="false" text="Dialectics" />
+                  <Menu fx:id="statisticsMenu" disable="true" mnemonicParsing="false" text="Statistics">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Register" />
+                        <MenuItem mnemonicParsing="false" text="Descriptive statistics" />
+                        <MenuItem mnemonicParsing="false" text="Inferential statistics" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Tutorials">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Logic of the Contradictory" />
+                     </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="About">
+                     <items>
+                        <MenuItem mnemonicParsing="false" text="Amuyaña" />
+                        <MenuItem mnemonicParsing="false" text="The author" />
+                     </items>
+                  </Menu>
+               </menus>
+            </MenuBar>
+            <Button mnemonicParsing="false" onAction="#debug" text="debug" />
+         </children>
+      </HBox>
       <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" />
     </children>
 </VBox>

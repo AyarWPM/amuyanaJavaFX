@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.HTMLEditor?>
 
-<ScrollPane fitToWidth="true" prefHeight="1800.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DualitiesController">
+<ScrollPane fitToWidth="true" prefHeight="1800.0" prefWidth="950.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.DualitiesController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" maxWidth="1.7976931348623157E308" minWidth="400.0" styleClass="base">
          <children>
@@ -25,46 +25,46 @@
                   <ToolBar styleClass="tlbr_logicsystem">
                      <items>
                         <TextField prefWidth="90.0" promptText="Filter" />
-                        <Button fx:id="bnSaveFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFcc" styleClass="bttn_toolbar" text="Save" />
-                        <Button fx:id="bnUpdateFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateFcc" styleClass="bttn_toolbar" text="Update" />
-                        <Button fx:id="bnDeleteFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteFcc" styleClass="bttn_toolbar" text="Delete" />
-                        <Button fx:id="bnDuplicateFcc" disable="true" layoutX="10.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" styleClass="bttn_toolbar" text="Duplicate" />
-                        <Button fx:id="bnNewFcc" layoutX="10.0" layoutY="178.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#newFcc" styleClass="bttn_toolbar" text="New" />
+                        <Button fx:idContainer2="bnSaveFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveFcc" styleClass="bttn_toolbar" text="Save" />
+                        <Button fx:idContainer2="bnUpdateFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateFcc" styleClass="bttn_toolbar" text="Update" />
+                        <Button fx:idContainer2="bnDeleteFcc" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteFcc" styleClass="bttn_toolbar" text="Delete" />
+                        <Button fx:idContainer2="bnDuplicateFcc" disable="true" layoutX="10.0" layoutY="118.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" styleClass="bttn_toolbar" text="Duplicate" />
+                        <Button fx:idContainer2="bnNewFcc" layoutX="10.0" layoutY="178.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#newFcc" styleClass="bttn_toolbar" text="New" />
                      </items>
                   </ToolBar>
-                  <TableView fx:id="tevwFcc" maxWidth="1.7976931348623157E308" prefHeight="300.0" styleClass="tblvw" tableMenuButtonVisible="true">
+                  <TableView fx:idContainer2="tevwFcc" maxWidth="1.7976931348623157E308" prefHeight="300.0" styleClass="tblvw" tableMenuButtonVisible="true">
                      <columns>
-                        <TableColumn fx:id="tecnFccLabel" minWidth="5.0" prefWidth="151.0" text="Label" />
-                        <TableColumn fx:id="tecnFccDescription" prefWidth="468.0" text="Description" />
+                        <TableColumn fx:idContainer2="tecnFccLabel" minWidth="5.0" prefWidth="151.0" text="Label" />
+                        <TableColumn fx:idContainer2="tecnFccDescription" prefWidth="468.0" text="Description" />
                      </columns>
                   </TableView>
                   <HBox alignment="CENTER_LEFT">
                      <children>
                         <Label text="ID:" />
-                        <TextField fx:id="ttfdFccId" editable="false" maxWidth="-Infinity" prefWidth="100.0" HBox.hgrow="ALWAYS" />
+                        <TextField fx:idContainer2="ttfdFccId" editable="false" maxWidth="-Infinity" prefWidth="100.0" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT">
                      <children>
                         <Label text="Label:" />
-                        <TextField fx:id="ttfdFccLabel" text="test" HBox.hgrow="ALWAYS" />
+                        <TextField fx:idContainer2="ttfdFccLabel" text="test" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                   <Label text="Description:" />
-                  <HTMLEditor fx:id="hmerFccDescription" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" maxWidth="-Infinity" prefHeight="300.0" />
+                  <HTMLEditor fx:idContainer2="hmerFccDescription" htmlText="&lt;html&gt;&lt;head&gt;&lt;/head&gt;&lt;body contenteditable=&quot;true&quot;&gt;&lt;/body&gt;&lt;/html&gt;" maxWidth="-Infinity" prefHeight="300.0" />
                   <VBox>
                      <children>
                         <Label text="Belongs to Logic System: " wrapText="true" />
                         <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="170.0" spacing="5.0">
                            <children>
-                              <ListView fx:id="ltvwLogicSystem" minWidth="-Infinity" prefHeight="100.0" HBox.hgrow="ALWAYS" />
+                              <ListView fx:idContainer2="ltvwLogicSystem" minWidth="-Infinity" prefHeight="100.0" HBox.hgrow="ALWAYS" />
                               <VBox HBox.hgrow="ALWAYS">
                                  <children>
-                                    <ComboBox fx:id="cobxLogicSystem" disable="true" minWidth="-Infinity" />
+                                    <ComboBox fx:idContainer2="cobxLogicSystem" disable="true" minWidth="-Infinity" />
                                     <HBox minWidth="-Infinity">
                                        <children>
-                                          <Button fx:id="bnRemoveLogicSystem" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeLogicSystem" text="Remove" />
-                                          <Button fx:id="bnAddLogicSystem" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#addLogicSystem" text="Add" />
+                                          <Button fx:idContainer2="bnRemoveLogicSystem" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeLogicSystem" text="Remove" />
+                                          <Button fx:idContainer2="bnAddLogicSystem" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#addLogicSystem" text="Add" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -78,14 +78,14 @@
                         <HBox alignment="CENTER_LEFT" prefWidth="200.0">
                            <children>
                               <Label minWidth="-Infinity" text="Symbol of element:" />
-                              <TextField fx:id="ttfdElementSymbol" maxWidth="80.0" minWidth="-Infinity" prefWidth="100.0" />
+                              <TextField fx:idContainer2="ttfdElementSymbol" maxWidth="80.0" minWidth="-Infinity" prefWidth="100.0" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefWidth="200.0">
                            <children>
                               <Label minWidth="-Infinity" text="Symbol of anti-element:" />
-                              <HBox fx:id="hxAntiElementSymbol" alignment="CENTER" minWidth="100.0" prefWidth="80.0" HBox.hgrow="ALWAYS" />
-                              <CheckBox fx:id="ckbxDefaultSymbol" minWidth="-Infinity" mnemonicParsing="false" text="Use default" />
+                              <HBox fx:idContainer2="hxAntiElementSymbol" alignment="CENTER" minWidth="100.0" prefWidth="80.0" HBox.hgrow="ALWAYS" />
+                              <CheckBox fx:idContainer2="ckbxDefaultSymbol" minWidth="-Infinity" mnemonicParsing="false" text="Use default" />
                            </children>
                         </HBox>
                      </children>
@@ -95,69 +95,69 @@
                      <children>
                         <VBox>
                            <children>
-                              <Label styleClass="subtitle" text="Positive contradictional conjunction" />
+                              <Label styleClass="subtitle" text="Positive contradictional inclusion" />
                               <HBox>
                                  <children>
                                     <Label text="Algebraic formulation:" />
-                                    <Label fx:id="lblPositiveFormulation" text="-formulation-" />
+                                    <Label fx:idContainer2="lblPositiveFormulation" text="-formulation-" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Propositional formulation:" />
-                                    <TextField fx:id="ttfdPositiveFormulation" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:idContainer2="ttfdPositiveFormulation" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Description:" />
-                                    <TextArea fx:id="ttaaPositiveDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    <TextArea fx:idContainer2="ttaaPositiveDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
                         <VBox>
                            <children>
-                              <Label styleClass="subtitle" text="Negative contradictional conjunction" />
+                              <Label styleClass="subtitle" text="Negative contradictional inclusion" />
                               <HBox>
                                  <children>
                                     <Label text="Algebraic formulation:" />
-                                    <Label fx:id="lblNegativeFormulation" text="-formulation-" />
+                                    <Label fx:idContainer2="lblNegativeFormulation" text="-formulation-" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Propositional formulation:" />
-                                    <TextField fx:id="ttfdNegativeFormulation" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:idContainer2="ttfdNegativeFormulation" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Description:" />
-                                    <TextArea fx:id="ttaaNegativeDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    <TextArea fx:idContainer2="ttaaNegativeDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>
                         </VBox>
                         <VBox layoutX="20.0" layoutY="175.0">
                            <children>
-                              <Label styleClass="subtitle" text="Symmetric contradictional conjunction" />
+                              <Label styleClass="subtitle" text="Symmetric contradictional inclusion" />
                               <HBox>
                                  <children>
                                     <Label text="Algebraic formulation:" />
-                                    <Label fx:id="lblSymmetricFormulation" text="-formulation-" />
+                                    <Label fx:idContainer2="lblSymmetricFormulation" text="-formulation-" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Propositional formulation:" />
-                                    <TextField fx:id="ttfdSymmetricFormulation" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:idContainer2="ttfdSymmetricFormulation" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
                                  <children>
                                     <Label text="Description:" />
-                                    <TextArea fx:id="ttaaSymmetricDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+                                    <TextArea fx:idContainer2="ttaaSymmetricDescription" prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>

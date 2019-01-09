@@ -5,7 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.DialecticController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.DialecticController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
          <children>
@@ -13,7 +13,7 @@
                <children>
                   <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
                      <children>
-                        <TitledPane id="ttldPn_" minHeight="-Infinity" text="Fundamental Conjunction of Contradiction (FCC)">
+                        <TitledPane idContainer2="ttldPn_" minHeight="-Infinity" text="Fundamental Conjunction of Contradiction (FCC)">
                            <content>
                               <HBox spacing="10.0">
                                  <children>
@@ -41,7 +41,7 @@
                               <Font size="18.0" />
                            </font>
                         </TitledPane>
-                        <TitledPane id="ttldPn_" minHeight="-Infinity" text="Dialectic of FCC :">
+                        <TitledPane idContainer2="ttldPn_" minHeight="-Infinity" text="Dialectic of FCC :">
                            <content>
                               <HBox spacing="10.0">
                                  <children>
@@ -83,7 +83,7 @@
                                                 <TableView prefHeight="150.0" styleClass="tblvw">
                                                    <columns>
                                                       <TableColumn prefWidth="131.0" text="Level" />
-                                                      <TableColumn prefWidth="221.0" text="Contradictional conjunction" />
+                                                      <TableColumn prefWidth="221.0" text="Contradictional inclusion" />
                                                       <TableColumn prefWidth="104.0" text="Orientation" />
                                                    </columns>
                                                 </TableView>

@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.web.*?>
 <?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="350.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.LogicSystemController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="350.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.LogicSystemController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
          <children>
@@ -50,6 +52,9 @@
                </children>
             </VBox>
          </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
       </VBox>
    </content>
 </ScrollPane>

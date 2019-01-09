@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1000.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.StcController">
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="1000.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.StcController">
    <content>
       <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
          <children>
@@ -12,7 +12,7 @@
                <children>
                   <VBox maxWidth="1.7976931348623157E308" minWidth="600.0" prefWidth="800.0" spacing="20.0">
                      <children>
-                        <TitledPane id="ttldPn_" minHeight="-Infinity" text="Spaces">
+                        <TitledPane idContainer2="ttldPn_" minHeight="-Infinity" text="Spaces">
                            <content>
                               <HBox spacing="10.0">
                                  <children>
@@ -29,7 +29,7 @@
                                              <children>
                                                 <TableView prefHeight="150.0" styleClass="tblvw_logicsystem">
                                                    <columns>
-                                                      <TableColumn prefWidth="43.0" text="#id" />
+                                                      <TableColumn prefWidth="43.0" text="#idContainer2" />
                                                       <TableColumn prefWidth="176.0" text="Space label" />
                                                       <TableColumn prefWidth="244.0" text="Description" />
                                                       <TableColumn prefWidth="164.0" text="In register of FCC" />
@@ -58,7 +58,7 @@
                               <Font size="18.0" />
                            </font>
                         </TitledPane>
-                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" text="Times">
+                        <TitledPane idContainer2="ttldPn_" layoutX="10.0" layoutY="10.0" minHeight="-Infinity" text="Times">
                            <content>
                               <HBox spacing="10.0">
                                  <children>
@@ -75,7 +75,7 @@
                                              <children>
                                                 <TableView prefHeight="150.0" styleClass="tblvw_logicsystem">
                                                    <columns>
-                                                      <TableColumn prefWidth="43.0" text="#id" />
+                                                      <TableColumn prefWidth="43.0" text="#idContainer2" />
                                                       <TableColumn prefWidth="137.0" text="Time label" />
                                                       <TableColumn prefWidth="191.0" text="Description" />
                                                       <TableColumn prefWidth="256.0" text="In register of FCC" />
@@ -93,12 +93,12 @@
                                                       <TextArea prefHeight="100.0" HBox.hgrow="ALWAYS" />
                                                    </children>
                                                 </HBox>
-                                                <HBox fx:id="hbx_starttime" layoutX="10.0" layoutY="207.0">
+                                                <HBox fx:idContainer2="hbx_starttime" layoutX="10.0" layoutY="207.0">
                                                    <children>
                                                       <Label text="Start:" />
                                                    </children>
                                                 </HBox>
-                                                <HBox fx:id="hbx_endtime" layoutX="10.0" layoutY="317.0">
+                                                <HBox fx:idContainer2="hbx_endtime" layoutX="10.0" layoutY="317.0">
                                                    <children>
                                                       <Label text="End:" />
                                                    </children>
@@ -114,7 +114,7 @@
                               <Font size="18.0" />
                            </font>
                         </TitledPane>
-                        <TitledPane id="ttldPn_" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Associated contradictional conjunctions">
+                        <TitledPane idContainer2="ttldPn_" maxWidth="900.0" minHeight="-Infinity" minWidth="600.0" text="Associated contradictional conjunctions">
                            <content>
                               <HBox spacing="10.0">
                                  <children>
@@ -130,7 +130,7 @@
                                              <columns>
                                                 <TableColumn prefWidth="131.0" text="Date of creation" />
                                                 <TableColumn prefWidth="105.0" text="FCC label" />
-                                                <TableColumn prefWidth="219.0" text="contradictional conjunction" />
+                                                <TableColumn prefWidth="219.0" text="contradictional inclusion" />
                                              </columns>
                                           </TableView>
                                        </children>
@@ -142,7 +142,7 @@
                               <Font size="18.0" />
                            </font>
                         </TitledPane>
-                        <TitledPane id="ttldPn_" layoutX="10.0" layoutY="694.0" maxWidth="900.0" minWidth="600.0" text="Graphical representation">
+                        <TitledPane idContainer2="ttldPn_" layoutX="10.0" layoutY="694.0" maxWidth="900.0" minWidth="600.0" text="Graphical representation">
                            <content>
                               <HBox minHeight="-Infinity" spacing="10.0">
                                  <children>

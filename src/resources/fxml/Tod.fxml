@@ -6,44 +6,98 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane dividerPositions="0.3" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.TodController">
+<SplitPane dividerPositions="0.4" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.controllers.TodController">
    <items>
-      <ScrollPane fitToWidth="true" maxWidth="400.0" minWidth="200.0" prefWidth="200.0" SplitPane.resizableWithParent="false">
+      <ScrollPane fx:id="leftScrollPane" fitToWidth="true" maxWidth="400.0" minWidth="200.0" SplitPane.resizableWithParent="false">
          <content>
-            <VBox>
+            <VBox minWidth="50.0">
                <children>
-                  <ListView minWidth="0.0" prefHeight="200.0" prefWidth="150.0" />
-                  <Accordion>
-                    <panes>
-                        <TitledPane text="FFC" wrapText="true">
+                  <VBox>
+                     <children>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label minWidth="-Infinity" text="Table of deduction" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                           <children>
+                              <Label fx:id="nameLabel" minWidth="-Infinity" text="name" />
+                              <TextField fx:id="nameTextField" minWidth="0.0" text="name" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="nameToggleButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#nameToggle" text="Edit" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="35.0">
+                           <children>
+                              <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <Accordion minWidth="0.0">
+                     <panes>
+                        <TitledPane contentDisplay="RIGHT" text="FCC" wrapText="true">
+                           <content>
+                              <VBox minWidth="0.0">
+                                 <children>
+                                    <Label layoutX="20.0" layoutY="35.0" minWidth="-Infinity" text="FCC" />
+                                    <HBox alignment="CENTER_LEFT">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Label: " />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="label" />
+                                       </children>
+                                    </HBox>
+                                    <Label minWidth="-Infinity" text="ELEMENTS" />
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Element: " />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="element" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="35.0" />
+                                    <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="35.0">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Anti-element" />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="element" />
+                                       </children>
+                                    </HBox>
+                                    <Label layoutX="20.0" layoutY="20.0" minWidth="-Infinity" text="ORIENTATIONS" />
+                                    <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="50.0">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Positive Orientation label:" />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="65.0">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Negative Orientation label:" />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="label" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="80.0">
+                                       <children>
+                                          <Label minWidth="-Infinity" text="Symmetric label:" />
+                                          <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="label" />
+                                       </children>
+                                    </HBox>
+                                    <Label layoutX="20.0" layoutY="50.0" minWidth="-Infinity" text="OTHER INFO" />
+                                 </children>
+                              </VBox>
+                           </content>
+                           <graphic>
+                              <Button alignment="CENTER" minWidth="-Infinity" mnemonicParsing="false" text="Open editor" />
+                           </graphic>
+                        </TitledPane>
+                        <TitledPane text="Syllogisms" wrapText="true">
                            <content>
                               <VBox>
                                  <children>
-                                    <HBox layoutX="20.0" layoutY="147.0" spacing="5.0">
-                                       <children>
-                                          <Button mnemonicParsing="false" text="Edit" />
-                                       </children>
-                                    </HBox>
+                                    <ListView minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                                    <HBox layoutX="20.0" layoutY="147.0" spacing="5.0" />
                                  </children>
                               </VBox>
                            </content>
                         </TitledPane>
-                        <TitledPane text="Dynamisms" wrapText="true">
-                           <content>
-                              <VBox>
-                                 <children>
-                                    <ListView minWidth="0.0" prefHeight="200.0" prefWidth="150.0" />
-                                    <HBox layoutX="20.0" layoutY="147.0" spacing="5.0">
-                                       <children>
-                                          <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Set initial FCC" />
-                                          <Button mnemonicParsing="false" text="Edit" />
-                                       </children>
-                                    </HBox>
-                                 </children>
-                              </VBox>
-                           </content>
-                        </TitledPane>
-                    </panes>
+                     </panes>
                   </Accordion>
                </children>
             </VBox>

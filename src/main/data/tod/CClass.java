@@ -71,13 +71,14 @@ public class CClass{
             ResultSet result = statement.executeQuery(sql);
 
             Fcc newFcc = null;
-            for (Fcc fcc : fccs) {
-                if (fcc.getIdFcc() == result.getInt("id_fcc")) {
-                    newFcc=fcc;
-                }
-            }
+
 
             while(result.next()){
+                for (Fcc fcc : fccs) {
+                    if (fcc.getIdFcc() == result.getInt("id_fcc")) {
+                        newFcc=fcc;
+                    }
+                }
                 cClasses.add(new CClass(result.getInt("id_c_class"), result.getString("label"), newFcc));
             }
         } catch (SQLException e) {

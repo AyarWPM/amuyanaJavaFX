@@ -18,16 +18,7 @@ import main.FXMLSource;
 
 /**
  * This class is the main window (App.fxml) controller...
- * Other main.controllers are instantiated here, main.controllers of components:
- *
- * - [x] Logic System
- * - [x] Table of Deductions
- * - [x] Dialectics
- * - [x] Statistics
- *
- * Controllers of System:
- * - [x] Preferences
- * - [x] Tutorials
+ * Other controllers are instantiated here and each has a unique AppController instance as a field.
  *
  */
 public class AppController {

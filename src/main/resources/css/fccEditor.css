@@ -1,0 +1,50 @@
+#FccEditorRoot {
+    -fx-background-image: url("/images/fcc_editor_background.png");
+    -fx-background-color: #f4fcf4;
+}
+
+
+#FccEditorRoot .button:hover {
+    -fx-background-color: #969A9F;
+}
+
+.FccFormula{
+
+}
+
+#FccExpressionContainer {
+    -fx-padding:5;
+    -fx-background-color: #f8fdf8;
+    -fx-border-color:black;
+}
+
+#ElementExpressionContainer{
+    -fx-padding:5;
+    -fx-background-color: #f8fdf8;
+    -fx-border-color:black;
+}
+
+#FccSectionTitle {
+    -fx-padding:5 10;
+    -fx-background-color: #f5f28b;
+    -fx-background-radius:10;
+}
+
+#FccSectionTitle .label {
+    -fx-text-fill:#0e2123;
+    -fx-font-size:14px;
+}
+
+#FccEditorRoot .button {
+    -fx-background-radius:10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #eee82c;
+}
+
+#NormalButton {
+    -fx-background-color:#2c666e;
+}
+
+#ImportantButton {
+    -fx-background-color:#92140c;
+}

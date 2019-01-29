@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="900.0" prefWidth="850.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.ConnectionController">
+   <content>
+      <VBox alignment="TOP_CENTER" fillWidth="false" styleClass="base">
+         <children>
+            <VBox>
+               <children>
+                  <HBox spacing="10.0" styleClass=".connection_main">
+                     <children>
+                        <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox alignment="CENTER_LEFT" fillHeight="false">
+                                 <children>
+                                    <Label minWidth="-Infinity" text="Hostname:" />
+                                    <TextField fx:id="hostTextField" disable="true" text="160.153.71.97:3306" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="195.0" spacing="5.0">
+                                 <children>
+                                    <Label minWidth="-Infinity" text="Username:" />
+                                    <TextField fx:id="userTextField" disable="true" text="anonymous" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="84.0" spacing="5.0">
+                                 <children>
+                                    <Label minWidth="-Infinity" text="Password:" />
+                                    <TextField fx:id="passwordTextField" disable="true" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <CheckBox fx:id="useDefaultCheckBox" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#setDefaultValues" selected="true" text="Use default values" wrapText="true" />
+                                    <Button fx:id="testConnexionButton" mnemonicParsing="false" onAction="#testConnexion" text="Set connexion" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets top="20.0" />
+         </padding>
+      </VBox>
+   </content>
+</ScrollPane>

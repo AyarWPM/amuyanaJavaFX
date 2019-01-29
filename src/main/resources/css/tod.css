@@ -1,0 +1,14 @@
+#TodContent {
+    -fx-background-color:#f4fcf4;
+    -fx-background-image: url("/images/tod_background.png");
+    -fx-background-position:left top;
+    -fx-background-repeat:repeat;
+}
+
+#SliderVBox .slider{
+    -fx-background-color:#d8e3e4;
+    -fx-border-color:black;
+    -fx-background-radius:10;
+    -fx-border-radius:10;
+        -fx-padding:5px;
+}

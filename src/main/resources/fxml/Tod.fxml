@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<SplitPane fx:id="splitPane" dividerPositions="0.2, 0.9" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
+   <items>
+      <VBox maxWidth="400.0" minWidth="300.0" spacing="5.0" SplitPane.resizableWithParent="false">
+         <children>
+           <HBox alignment="CENTER">
+              <children>
+                 <Label fx:id="todNameLabel" minHeight="-Infinity" minWidth="-Infinity" text="name" HBox.hgrow="ALWAYS">
+                    <font>
+                       <Font size="15.0" />
+                    </font>
+                 </Label>
+                 <TextField fx:id="todNameTextField" HBox.hgrow="ALWAYS" />
+              </children>
+           </HBox>
+            <VBox id="SliderVBox">
+               <children>
+                  <Label alignment="TOP_LEFT" minWidth="-Infinity" prefHeight="20.0" text="Scale factor">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Slider fx:id="scaleSlider" blockIncrement="1.0" layoutX="11.0" layoutY="11.0" majorTickUnit="1.0" max="1.0" maxWidth="-Infinity" min="1.0" minWidth="-Infinity" minorTickCount="0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" BorderPane.alignment="CENTER" HBox.hgrow="NEVER" />
+               </children>
+            </VBox>
+            <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </VBox>
+      <ScrollPane id="TodContent" fx:id="treeScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefViewportWidth="535.0">
+         <content>
+            <VBox id="TodContent" alignment="CENTER">
+               <children>
+                  <HBox id="TodContent" alignment="CENTER" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Group fx:id="canvas" />
+                     </children>
+                     <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                     </padding>
+                  </HBox>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+      <TabPane fx:id="rightTabPane" maxWidth="350.0" minWidth="300.0" side="RIGHT" tabClosingPolicy="ALL_TABS" SplitPane.resizableWithParent="false" />
+   </items>
+</SplitPane>

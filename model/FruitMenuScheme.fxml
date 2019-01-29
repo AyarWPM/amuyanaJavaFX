@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/8">
+   <children>
+      <MenuButton mnemonicParsing="false" text="MenuButton">
+        <items>
+          <MenuItem mnemonicParsing="false">
+               <graphic>
+                  <CheckBox mnemonicParsing="false" text="CheckBox" />
+               </graphic>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false">
+               <graphic>
+                  <CheckBox mnemonicParsing="false" text="CheckBox" />
+               </graphic>
+            </MenuItem>
+            <MenuItem mnemonicParsing="false">
+               <graphic>
+                  <CheckBox mnemonicParsing="false" text="CheckBox" />
+               </graphic>
+            </MenuItem>
+        </items>
+      </MenuButton>
+      <HBox alignment="CENTER" spacing="20.0">
+         <children>
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: black;">
+               <children>
+                  <Label text="BRACKET MENU" />
+                  <Separator />
+                  <Label text="FCC" />
+                  <VBox>
+                     <children>
+                        <Label text="New" />
+                        <Separator />
+                        <Label text="Fcc1Label (FccID)" />
+                        <VBox>
+                           <children>
+                              <Label layoutX="10.0" layoutY="46.0" text="From orientation" />
+                              <VBox>
+                                 <children>
+                                    <Label layoutX="30.0" layoutY="10.0" text="Positive" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Negative" />
+                                    <Label layoutX="30.0" layoutY="25.0" text="Symmetric" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                        <Label text="Fc2Label (FccID)" />
+                        <VBox>
+                           <children>
+                              <Label layoutX="10.0" layoutY="46.0" text="From orientation" />
+                              <VBox>
+                                 <children>
+                                    <Label layoutX="30.0" layoutY="10.0" text="Positive" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Negative" />
+                                    <Label layoutX="30.0" layoutY="25.0" text="Symmetric" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+                  <Label layoutX="11.0" layoutY="47.0" text="Conjunction" />
+                  <VBox layoutX="11.0" layoutY="197.0">
+                     <children>
+                        <Label layoutX="10.0" layoutY="46.0" text="New" />
+                        <Separator />
+                        <Label layoutX="30.0" layoutY="10.0" text="Conjunction 5" />
+                        <VBox>
+                           <children>
+                              <Label layoutX="30.0" layoutY="28.0" text="Inclusion 1" />
+                              <Label layoutX="30.0" layoutY="10.0" text="Inclusion 2" />
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                        <Label layoutX="30.0" layoutY="28.0" text="Conjunction 6" />
+                        <VBox layoutX="30.0" layoutY="43.0">
+                           <children>
+                              <Label layoutX="30.0" layoutY="28.0" text="Inclusion 7" />
+                              <Label layoutX="30.0" layoutY="10.0" text="Inclusion 8" />
+                              <Label layoutX="30.0" layoutY="25.0" text="Inclusion 9" />
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: black;">
+               <children>
+                  <Label text="FCC" />
+                  <Separator layoutX="10.0" layoutY="40.0" />
+                  <Label text="Edit" />
+                  <Label layoutX="11.0" layoutY="29.0" text="Duplicate" underline="true" />
+                  <Label layoutX="11.0" layoutY="44.0" text="Remove" />
+                  <Separator />
+                  <Label layoutX="11.0" layoutY="59.0" text="Change all expressions' type" />
+                  <VBox>
+                     <children>
+                        <Label text="Algebraic" />
+                        <Label layoutX="10.0" layoutY="46.0" text="Propositional" />
+                        <Label layoutX="30.0" layoutY="25.0" text="Graphic" />
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+                  <Separator />
+                  <Label layoutX="11.0" layoutY="155.0" text="Add to conjunction" />
+                  <VBox layoutX="11.0" layoutY="92.0">
+                     <children>
+                        <Label text="New" />
+                        <Separator />
+                        <Label text="Conjunction 4" />
+                        <Label layoutX="10.0" layoutY="46.0" text="Conjunction 39" />
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+                  <Label text="Add to class" />
+                  <Separator layoutX="11.0" layoutY="137.0" />
+                  <VBox layoutX="11.0" layoutY="155.0">
+                     <children>
+                        <Label text="New" />
+                        <Separator />
+                        <Label text="Class 44" />
+                        <Label layoutX="10.0" layoutY="46.0" text="Class 32" />
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox layoutX="318.0" layoutY="65.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: black;">
+               <children>
+                  <Label text="POSITIVE ORIENTATION" />
+                  <Separator />
+                  <Label text="FCC" />
+                  <Separator layoutX="10.0" layoutY="40.0" />
+                  <VBox>
+                     <children>
+                        <Label text="new FCC" />
+                        <Separator />
+                        <Label text="Fcc3Label (FccID)" />
+                        <VBox>
+                           <children>
+                              <Label layoutX="10.0" layoutY="46.0" text="To orientation" />
+                              <VBox>
+                                 <children>
+                                    <Label layoutX="30.0" layoutY="10.0" text="All" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Positive x" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Negative x" />
+                                    <Label layoutX="30.0" layoutY="25.0" text="Symmetric o" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                        <Label layoutX="30.0" layoutY="13.0" text="Fcc4Label (FccID)" />
+                        <VBox layoutX="30.0" layoutY="28.0">
+                           <children>
+                              <Label layoutX="10.0" layoutY="46.0" text="To orientation" />
+                              <VBox>
+                                 <children>
+                                    <Label layoutX="30.0" layoutY="10.0" text="All" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Positive x" />
+                                    <Label layoutX="30.0" layoutY="10.0" text="Negative x" />
+                                    <Label layoutX="30.0" layoutY="25.0" text="Symmetric o" />
+                                 </children>
+                                 <padding>
+                                    <Insets left="20.0" />
+                                 </padding>
+                              </VBox>
+                           </children>
+                           <padding>
+                              <Insets left="20.0" />
+                           </padding>
+                        </VBox>
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+                  <Label text="Class" />
+                  <VBox>
+                     <children>
+                        <Label layoutX="10.0" layoutY="46.0" text="New" />
+                        <Separator />
+                        <Label layoutX="30.0" layoutY="10.0" text="Class 4" />
+                     </children>
+                     <padding>
+                        <Insets left="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+      <HBox prefWidth="600.0">
+         <children>
+            <TextArea minHeight="-Infinity" minWidth="-Infinity" prefHeight="300.0" prefWidth="600.0" text="- Only enable BRACKET and ORIENTATION menus if there's a dynamism selected, always leave enabled the FCC menu.&#10;- &quot;From orientation&quot; simply adds the other Fruit in the leftTrunk container of the subBranch holding the Fruit of this dynamism&#10;- 'New FCC' opens a dialog box and asks to specify the orientation&#10;- Highlight those dynamisms who already are in the memory&#10;- It is sufficient for the particular of one Inclusion of 1 to 1 to be considered a Class for the program to propose the &quot;Class 4&quot; option, we don't distinguish between &quot;combinations&quot; of dynamisms (only FCCs), whereas in the BRACKET Conjunction Menu  the combination of dynamisms matters, the selected Inclusion # specifies the combination of dynamisms for each General, and the particular is provided by the user (graphical selection in Fruit).&#10;- Activating the &quot;New conjunction&quot; and &quot;New class&quot; options opens a dialog box where the user specifies the needed information. (#todo)&#10;- &quot;New class&quot; and &quot;New conjunction&quot; are possible only if Branch of the SubBranch where the Fruit of the FCC of this dynamism is not of type Conjunction or Class already (container0 attributes).&#10;- In &quot;Add to conjunction -&gt; Conjunction 4 ...&quot; we ask the user which Dynamism is being added to which Inclusion(s), in a DialogBox" wrapText="true" />
+         </children>
+      </HBox>
+   </children>
+</VBox>

@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.web.HTMLEditor?>
+
+<VBox maxWidth="200.0" minWidth="400.0" prefWidth="300.0" spacing="10.0" styleClass="lateralPaneContent" stylesheets="@../css/mainApp.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FccEditorController">
+   <children>
+      <HBox alignment="TOP_CENTER" spacing="5.0">
+         <children>
+            <Button fx:id="closeButton" disable="true" layoutX="67.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#close" styleClass="green_button" text="Close" />
+            <Button fx:id="saveAndCloseButton" disable="true" layoutX="187.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveAndClose" styleClass="green_button" text="Save and close" />
+            <Button fx:id="editOrSaveButton" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#editOrSave" styleClass="green_button" text="Edit" />
+            <Button fx:id="removeButton" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#remove" styleClass="red_button" text="Delete" />
+         </children>
+      </HBox>
+      <Label minHeight="-Infinity" styleClass="darkH2" text="Fundamental conjunction of contradiction (FCC)" wrapText="true" />
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Label text="ID:" />
+            <Label fx:id="idFccLabel" layoutX="10.0" layoutY="10.0" text="idFcc" />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER_LEFT">
+         <children>
+            <Label fx:id="nameFccLabel" text="Name" />
+            <TextField fx:id="nameFccTextField" HBox.hgrow="ALWAYS" />
+         </children>
+      </HBox>
+      <HBox>
+         <children>
+            <Label minWidth="-Infinity" text="Description:" />
+            <TextArea />
+         </children>
+      </HBox>
+      <VBox spacing="5.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label minWidth="160.0" text="Element symbol: " />
+                  <TextField fx:id="elementTextField" maxWidth="40.0" minWidth="40.0" HBox.hgrow="ALWAYS" />
+                  <Label text="e" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label minWidth="160.0" text="Anti-element symbol: " />
+                  <TextField maxWidth="40.0" minWidth="40.0" />
+                  <Label text="-e" />
+                  <CheckBox contentDisplay="RIGHT" minWidth="-Infinity" mnemonicParsing="false" text="Use default symbol" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox spacing="5.0">
+         <children>
+            <Label minWidth="-Infinity" text="Belongs to Logic System: " wrapText="true" />
+            <ListView minWidth="-Infinity" prefHeight="100.0" />
+            <ComboBox disable="true" />
+            <HBox minWidth="-Infinity" spacing="5.0">
+               <children>
+                  <Button disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="green_button" text="Add" />
+                  <Button disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="red_button" text="Remove" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <Separator prefWidth="200.0" />
+      <VBox spacing="5.0">
+         <children>
+            <Label minWidth="-Infinity" styleClass="darkH2" text="Positive orientation " />
+            <HBox alignment="TOP_CENTER">
+               <children>
+                  <VBox fx:id="positiveFormulaVBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="30.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <TextField HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Description" wrapText="true" HBox.hgrow="ALWAYS" />
+                  <TextArea prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutX="20.0" layoutY="622.0" spacing="5.0">
+         <children>
+            <Label minWidth="-Infinity" styleClass="darkH2" text="Negative orientation " />
+            <HBox alignment="TOP_CENTER">
+               <children>
+                  <VBox fx:id="negativeFormulaVBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="30.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <TextField HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Description" wrapText="true" HBox.hgrow="ALWAYS" />
+                  <TextArea prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox layoutX="20.0" layoutY="825.0" spacing="5.0">
+         <children>
+            <Label minWidth="-Infinity" styleClass="darkH2" text="Symmetric orientation " />
+            <HBox alignment="TOP_CENTER">
+               <children>
+                  <VBox fx:id="symmetricFormulaVBox" alignment="TOP_CENTER" fillWidth="false" prefHeight="30.0" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <TextField HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="40.0" prefWidth="200.0">
+               <children>
+                  <Label minWidth="-Infinity" text="Description" wrapText="true" HBox.hgrow="ALWAYS" />
+                  <TextArea prefHeight="100.0" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

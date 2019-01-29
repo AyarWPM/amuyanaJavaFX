@@ -1,0 +1,85 @@
+/*Class Fruit in java*/
+#FruitVBox{
+    -fx-border-color:red;
+}
+
+#Fruit{
+    -fx-background-color:
+    linear-gradient(from 0% 0% to 0% 30%, #9fb9bd, white);
+    -fx-background-radius:20;
+    -fx-border-radius: 20;
+    -fx-border-color:black;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+}
+
+#ImplicationsVBox{
+    -fx-border-width: 0 1 0 0;
+}
+
+#Tree{
+    /*-fx-scale-x:2;
+    -fx-scale-y:2;*/
+}
+
+#Trunk{
+    -fx-alignment: center;
+}
+
+#RightSide{
+    -fx-border-color:green;
+    -fx-alignment:center-left;
+}
+
+#LeftSide{
+    -fx-border-color:green;
+    -fx-alignment:center;
+}
+
+#BetweenBranchSubBranch{
+    /*-fx-border-color:black;
+    -fx-border-style:dotted;*/
+}
+
+#KnobMenuButton{
+    -fx-background-color:#f5e9e8;
+}
+
+#KnobMenuButton:hover{
+    -fx-background-color:#cd9490;
+}
+
+#BracketMenuButton:hover{
+    -fx-background-radius: 20 0 0 20;
+}
+
+#FruitMenuButton{
+    -fx-background-radius:10;
+    -fx-background-insets:2;
+}
+
+#Sign{
+    -fx-translate-y:-2;
+}
+.menu-button {
+    -fx-background-radius:20;
+    -fx-background-insets:5;
+    -fx-background-color:transparent;
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 3, 0.0 , 0 , 1 );
+}
+
+.menu-button > .arrow-button {
+    -fx-padding: 0;
+}
+
+.menu-button > .arrow-button > .arrow {
+    -fx-padding: 0;
+}
+
+.menu-button:hover {
+    -fx-effect: dropshadow( three-pass-box , #b96964 , 3, 0.0 , 0 , 1 );
+    -fx-background-color:#cd9490;
+}
+
+.menu-button, .menu-item{
+
+}

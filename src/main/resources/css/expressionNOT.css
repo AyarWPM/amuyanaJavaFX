@@ -1,0 +1,78 @@
+<Style type="text/css">
+.dummy{
+
+}
+
+#Expression{
+    -fx-background-color:white;
+    -fx-font-family:monospace;
+    -fx-padding:5;
+    -fx-alignment:bottom-left;
+    /*-fx-border-color:black;*/
+}
+
+#Parenthesis{
+    -fx-font-size: 18;
+    -fx-font-family:monospace;
+}
+
+#CDot {
+    -fx-font-size: 15;
+    -fx-font-family:monospace;
+}
+
+
+#SubExpression{
+    -fx-padding:0;
+}
+
+#Element {
+    -fx-font-size:16;
+    -fx-font-family:monospace;
+}
+
+#Anti{
+    -fx-border-width: 1 0 0 0;
+    -fx-border-style:solid;
+    -fx-border-color:black;
+    -fx-border-insets: 0 -2 0 -2;
+    -fx-font-size:16;
+    -fx-font-family:monospace;
+}
+
+
+#Value{
+    -fx-font-size: 14;
+}
+
+#Empty{
+    -fx-padding:10;
+}
+
+/* Nodes */
+
+#HeaderVBox{
+    -fx-alignment: center-left;
+}
+#BracketHBox{
+    -fx-alignment: center-left;
+}
+/* FOR DEBUG */
+
+
+
+#Element {
+    -fx-border-width: 0 0 0 0;
+    -fx-border-style:solid;
+    -fx-border-color:black;
+    -fx-border-insets: 0 0 0 0;
+-fx-font-size:16;
+}
+
+#Expression .Label{
+
+}
+
+
+// end of fruit
+</style>

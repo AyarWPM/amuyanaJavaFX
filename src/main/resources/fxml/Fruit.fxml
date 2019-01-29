@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<Group fx:id="fruitGroup" stylesheets="@../css/fruit.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FruitController">
+   <children>
+      <BorderPane id="Fruit" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+         <top>
+            <VBox fillWidth="false">
+               <children>
+                  <HBox>
+                     <children>
+                        <MenuButton id="FruitMenuButton" fx:id="fccMenuButton" mnemonicParsing="false" popupSide="TOP">
+                           <graphic>
+                              <ImageView>
+                                 <image>
+                                    <Image url="@../images/icons/fruit/fcc.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </MenuButton>
+                        <VBox alignment="CENTER">
+                           <children>
+                              <StackPane id="Test1" fx:id="fccNameStackPane">
+                                 <children>
+                                    <HBox id="Test2" maxWidth="299.0">
+                                       <children>
+                                          <Label id="TestExpression" text="maxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidth" wrapText="true" HBox.hgrow="NEVER" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </StackPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </BorderPane.margin>
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </VBox>
+         </top>
+         <center>
+            <VBox id="ImplicationsVBox" fx:id="expressionsVBox" alignment="CENTER" maxHeight="-Infinity" spacing="7.0" BorderPane.alignment="CENTER_LEFT">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </center>
+         <right>
+            <VBox alignment="CENTER_RIGHT" BorderPane.alignment="CENTER_LEFT">
+               <children>
+                  <HBox alignment="CENTER_LEFT" fillHeight="false" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
+                           <children>
+                              <MenuButton id="KnobMenuButton" fx:id="positiveDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <Label id="Sign" text="+" />
+                                 </graphic>
+                              </MenuButton>
+                           </children>
+                        </Pane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="10.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
+                           <children>
+                              <MenuButton id="KnobMenuButton" fx:id="negativeDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <Label id="Sign" alignment="TOP_RIGHT" contentDisplay="TOP" prefWidth="10.0" text="‒" />
+                                 </graphic>
+                              </MenuButton>
+                           </children>
+                        </Pane>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="59.0" VBox.vgrow="ALWAYS">
+                     <children>
+                        <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
+                           <children>
+                              <MenuButton id="KnobMenuButton" fx:id="symmetricDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                                 <font>
+                                    <Font size="16.0" />
+                                 </font>
+                                 <graphic>
+                                    <Label id="Sign" text="=" />
+                                 </graphic>
+                              </MenuButton>
+                           </children>
+                        </Pane>
+                     </children>
+                  </HBox>
+               </children>
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+            </VBox>
+         </right>
+         <padding>
+            <Insets bottom="5.0" right="5.0" top="5.0" />
+         </padding>
+         <left>
+            <HBox alignment="CENTER_RIGHT">
+               <children>
+                  <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0">
+                     <children>
+                        <Circle fx:id="leftKnob" centerX="-20.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
+                     </children>
+                  </Pane>
+                  <MenuButton id="BracketMenuButton" fx:id="bracketMenuButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="LEFT" BorderPane.alignment="CENTER">
+                     <graphic>
+                        <ImageView fx:id="bracketImageView">
+                           <image>
+                              <Image url="@../images/icons/fruit/bracket.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuButton>
+               </children>
+            </HBox>
+         </left>
+      </BorderPane>
+   </children>
+</Group>

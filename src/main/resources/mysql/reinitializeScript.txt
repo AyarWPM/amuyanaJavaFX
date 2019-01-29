@@ -1,0 +1,522 @@
+DROP DATABASE IF EXISTS `amuyana`;
+
+CREATE SCHEMA IF NOT EXISTS `amuyana`;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_c_class` (
+  `id_c_class` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` TINYTEXT NOT NULL,
+  PRIMARY KEY (`id_c_class`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'Contradictional Classes table\nCollection of FCC that have at least one -contradictional- conjunction \nthat is included in the same general notion -another contradictional conjunction-. ';
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_dynamism` (
+  `id_dynamism` INT(11) NOT NULL AUTO_INCREMENT,
+  `orientation` INT(1) NOT NULL,
+  `proposition` TEXT NOT NULL,
+  `description` TEXT NULL DEFAULT NULL,
+  `id_fcc` INT(11) NOT NULL,
+  PRIMARY KEY (`id_dynamism`),
+  INDEX `fk_tbl_conjunction_tbl_fcc1_idx` (`id_fcc` ASC),
+  CONSTRAINT `fk_tbl_conjunction_tbl_fcc1`
+    FOREIGN KEY (`id_fcc`)
+    REFERENCES `amuyana`.`tbl_fcc` (`id_fcc`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 34
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_element` (
+  `id_element` INT(11) NOT NULL AUTO_INCREMENT,
+  `symbol` MEDIUMTEXT NOT NULL,
+  `polarity` INT(11) NOT NULL,
+  `id_fcc` INT(11) NOT NULL,
+  PRIMARY KEY (`id_element`),
+  INDEX `fk_tbl_element_tbl_fcc_idx` (`id_fcc` ASC),
+  CONSTRAINT `fk_tbl_element_tbl_fcc`
+    FOREIGN KEY (`id_fcc`)
+    REFERENCES `amuyana`.`tbl_fcc` (`id_fcc`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 23
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_fcc` (
+  `id_fcc` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` TINYTEXT NOT NULL,
+  `description` TEXT NOT NULL,
+  PRIMARY KEY (`id_fcc`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 11
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_fcc_has_tbl_user` (
+  `id_user` INT(11) NOT NULL,
+  `id_fcc` INT(11) NOT NULL,
+  `permission` INT(1) NOT NULL,
+  PRIMARY KEY (`id_user`, `id_fcc`),
+  INDEX `fk_tbl_user_has_tbl_fcc_tbl_fcc1_idx` (`id_fcc` ASC),
+  INDEX `fk_tbl_user_has_tbl_fcc_tbl_user1_idx` (`id_user` ASC),
+  CONSTRAINT `fk_tbl_user_has_tbl_fcc_tbl_fcc1`
+    FOREIGN KEY (`id_fcc`)
+    REFERENCES `amuyana`.`tbl_fcc` (`id_fcc`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_user_has_tbl_fcc_tbl_user1`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `amuyana`.`tbl_user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'permissions:\n0 - user can only read the system\n1 - user can create, modify and delete its own FCC\n2 - user can create , modify and delete any FCC\n3 - user has privileges of level 2 and can also attribute permissions. \nExceptions: Only someone who has level 3 can attribute permission 3 to someone of level 2, but only oneself can downgrade himself from level 3 to level 2 permission.\n';
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_inclusion` (
+  `id_inclusion` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_particular` INT(11) NOT NULL,
+  `id_general` INT(11) NOT NULL,
+  PRIMARY KEY (`id_inclusion`, `id_particular`, `id_general`),
+  INDEX `fk_tbl_inclusion_tbl_conjunction1_idx` (`id_particular` ASC),
+  INDEX `fk_tbl_inclusion_tbl_dynamism1_idx` (`id_general` ASC),
+  CONSTRAINT `fk_tbl_inclusion_tbl_conjunction1`
+    FOREIGN KEY (`id_particular`)
+    REFERENCES `amuyana`.`tbl_dynamism` (`id_dynamism`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_inclusion_tbl_dynamism1`
+    FOREIGN KEY (`id_general`)
+    REFERENCES `amuyana`.`tbl_dynamism` (`id_dynamism`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 10
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_inclusion_has_tbl_syllogism` (
+  `id_inclusion` INT(11) NOT NULL,
+  `id_syllogism` INT(11) NOT NULL,
+  PRIMARY KEY (`id_inclusion`, `id_syllogism`),
+  INDEX `fk_tbl_inclusion_has_tbl_syllogism_tbl_syllogism1_idx` (`id_syllogism` ASC),
+  INDEX `fk_tbl_inclusion_has_tbl_syllogism_tbl_inclusion1_idx` (`id_inclusion` ASC),
+  CONSTRAINT `fk_tbl_inclusion_has_tbl_syllogism_tbl_inclusion1`
+    FOREIGN KEY (`id_inclusion`)
+    REFERENCES `amuyana`.`tbl_inclusion` (`id_inclusion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_inclusion_has_tbl_syllogism_tbl_syllogism1`
+    FOREIGN KEY (`id_syllogism`)
+    REFERENCES `amuyana`.`tbl_syllogism` (`id_syllogism`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_logic_system` (
+  `id_logic_system` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` TINYTEXT NOT NULL,
+  `description` TEXT NOT NULL,
+  `creation_date` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id_logic_system`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_logic_system_has_tbl_user` (
+  `id_logic_system` INT(11) NOT NULL,
+  `id_user` INT(11) NOT NULL,
+  `permission` INT(1) NOT NULL DEFAULT '5',
+  PRIMARY KEY (`id_logic_system`, `id_user`),
+  INDEX `fk_tbl_system_has_tbl_user_tbl_user1_idx` (`id_user` ASC),
+  INDEX `fk_tbl_system_has_tbl_user_tbl_system1_idx` (`id_logic_system` ASC),
+  CONSTRAINT `fk_tbl_system_has_tbl_user_tbl_system1`
+    FOREIGN KEY (`id_logic_system`)
+    REFERENCES `amuyana`.`tbl_logic_system` (`id_logic_system`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_system_has_tbl_user_tbl_user1`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `amuyana`.`tbl_user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8
+COMMENT = 'permissions:\n0 - user can only read the system\n1 - user can create, modify and delete its own FCC\n2 - user can create , modify and delete any FCC\n3 - user has privileges of level 2 and can also attribute permissions. \nExceptions: Only someone who has level 3 can attribute permission 3 to someone of level 2, but only oneself can downgrade himself from level 3 to level 2 permission.';
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_quantum` (
+  `id_quantum` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(50) NOT NULL,
+  `description` VARCHAR(500) NOT NULL,
+  `unit` VARCHAR(30) NOT NULL,
+  PRIMARY KEY (`id_quantum`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_quantum_has_tbl_register` (
+  `id_quantum` INT(11) NOT NULL,
+  `id_register` INT(11) NOT NULL COMMENT ' ',
+  PRIMARY KEY (`id_quantum`, `id_register`),
+  INDEX `fk_tbl_quantum_has_tbl_register_tbl_register1_idx` (`id_register` ASC),
+  INDEX `fk_tbl_quantum_has_tbl_register_tbl_quantum1_idx` (`id_quantum` ASC),
+  CONSTRAINT `fk_tbl_quantum_has_tbl_register_tbl_quantum1`
+    FOREIGN KEY (`id_quantum`)
+    REFERENCES `amuyana`.`tbl_quantum` (`id_quantum`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_quantum_has_tbl_register_tbl_register1`
+    FOREIGN KEY (`id_register`)
+    REFERENCES `amuyana`.`tbl_register` (`id_register`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_register` (
+  `id_register` INT(11) NOT NULL AUTO_INCREMENT,
+  `date` TIMESTAMP NULL DEFAULT NULL,
+  `value` DOUBLE NOT NULL,
+  `id_syllogism` INT(11) NOT NULL,
+  PRIMARY KEY (`id_register`),
+  INDEX `fk_tbl_register_tbl_syllogism1_idx` (`id_syllogism` ASC),
+  CONSTRAINT `fk_tbl_register_tbl_syllogism1`
+    FOREIGN KEY (`id_syllogism`)
+    REFERENCES `amuyana`.`tbl_syllogism` (`id_syllogism`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_settings` (
+  `id_settings` INT(11) NOT NULL AUTO_INCREMENT,
+  `url_database` VARCHAR(100) NULL DEFAULT NULL,
+  `id_user` INT(11) NOT NULL,
+  PRIMARY KEY (`id_settings`),
+  INDEX `fk_settings_tbl_user1_idx` (`id_user` ASC),
+  CONSTRAINT `fk_settings_tbl_user1`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `amuyana`.`tbl_user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_space` (
+  `id_space` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(30) NOT NULL,
+  `description` VARCHAR(500) NOT NULL,
+  PRIMARY KEY (`id_space`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_space_has_tbl_register` (
+  `id_space` INT(11) NOT NULL,
+  `id_register` INT(11) NOT NULL,
+  PRIMARY KEY (`id_space`, `id_register`),
+  INDEX `fk_tbl_space_has_tbl_register_tbl_register1_idx` (`id_register` ASC),
+  INDEX `fk_tbl_space_has_tbl_register_tbl_space1_idx` (`id_space` ASC),
+  CONSTRAINT `fk_tbl_space_has_tbl_register_tbl_register1`
+    FOREIGN KEY (`id_register`)
+    REFERENCES `amuyana`.`tbl_register` (`id_register`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_space_has_tbl_register_tbl_space1`
+    FOREIGN KEY (`id_space`)
+    REFERENCES `amuyana`.`tbl_space` (`id_space`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_syllogism` (
+  `id_syllogism` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` TINYTEXT NOT NULL,
+  PRIMARY KEY (`id_syllogism`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_time` (
+  `id_time` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` VARCHAR(500) NOT NULL,
+  `description` VARCHAR(30) NOT NULL,
+  `start` TIMESTAMP NULL DEFAULT NULL,
+  `end` TIMESTAMP NULL DEFAULT NULL,
+  PRIMARY KEY (`id_time`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_time_has_tbl_register` (
+  `id_time` INT(11) NOT NULL,
+  `id_register` INT(11) NOT NULL,
+  PRIMARY KEY (`id_time`, `id_register`),
+  INDEX `fk_tbl_time_has_tbl_register_tbl_register1_idx` (`id_register` ASC),
+  INDEX `fk_tbl_time_has_tbl_register_tbl_time1_idx` (`id_time` ASC),
+  CONSTRAINT `fk_tbl_time_has_tbl_register_tbl_register1`
+    FOREIGN KEY (`id_register`)
+    REFERENCES `amuyana`.`tbl_register` (`id_register`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_time_has_tbl_register_tbl_time1`
+    FOREIGN KEY (`id_time`)
+    REFERENCES `amuyana`.`tbl_time` (`id_time`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_user` (
+  `id_user` INT(11) NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(16) NOT NULL,
+  `email` VARCHAR(255) NOT NULL,
+  `password` VARCHAR(32) NOT NULL,
+  `joined_date` DATE NOT NULL,
+  PRIMARY KEY (`id_user`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_tod` (
+  `id_tod` INT(11) NOT NULL AUTO_INCREMENT,
+  `label` TINYTEXT NOT NULL,
+  `id_logic_system` INT(11) NOT NULL,
+  `id_container_0` INT(11) NOT NULL,
+  PRIMARY KEY (`id_tod`, `id_logic_system`, `id_container_0`),
+  INDEX `fk_tbl_tod_tbl_container_01_idx` (`id_container_0` ASC),
+  INDEX `fk_tbl_tod_tbl_logic_system1_idx` (`id_logic_system` ASC),
+  CONSTRAINT `fk_tbl_tod_tbl_container_01`
+    FOREIGN KEY (`id_container_0`)
+    REFERENCES `amuyana`.`tbl_container_0` (`id_container_0`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_tod_tbl_logic_system1`
+    FOREIGN KEY (`id_logic_system`)
+    REFERENCES `amuyana`.`tbl_logic_system` (`id_logic_system`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_container_0` (
+  `id_container_0` INT(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`id_container_0`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_container_1` (
+  `id_container_1` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_container_0` INT(11) NOT NULL,
+  PRIMARY KEY (`id_container_1`, `id_container_0`),
+  INDEX `fk_tbl_container_1_tbl_container_01_idx` (`id_container_0` ASC),
+  CONSTRAINT `fk_tbl_container_1_tbl_container_01`
+    FOREIGN KEY (`id_container_0`)
+    REFERENCES `amuyana`.`tbl_container_0` (`id_container_0`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_container_0_in_1` (
+  `id_container_0` INT(11) NOT NULL,
+  `id_container_1` INT(11) NOT NULL,
+  `side` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id_container_0`, `id_container_1`),
+  INDEX `fk_tbl_container_0_has_tbl_container_1_tbl_container_11_idx` (`id_container_1` ASC),
+  INDEX `fk_tbl_container_0_has_tbl_container_1_tbl_container_01_idx` (`id_container_0` ASC),
+  CONSTRAINT `fk_tbl_container_0_has_tbl_container_1_tbl_container_01`
+    FOREIGN KEY (`id_container_0`)
+    REFERENCES `amuyana`.`tbl_container_0` (`id_container_0`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_container_0_has_tbl_container_1_tbl_container_11`
+    FOREIGN KEY (`id_container_1`)
+    REFERENCES `amuyana`.`tbl_container_1` (`id_container_1`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_syllogism_has_tbl_tod` (
+  `id_syllogism` INT(11) NOT NULL,
+  `id_tod` INT(11) NOT NULL,
+  PRIMARY KEY (`id_syllogism`, `id_tod`),
+  INDEX `fk_tbl_syllogism_has_tbl_tod_tbl_tod1_idx` (`id_tod` ASC),
+  INDEX `fk_tbl_syllogism_has_tbl_tod_tbl_syllogism1_idx` (`id_syllogism` ASC),
+  CONSTRAINT `fk_tbl_syllogism_has_tbl_tod_tbl_syllogism1`
+    FOREIGN KEY (`id_syllogism`)
+    REFERENCES `amuyana`.`tbl_syllogism` (`id_syllogism`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_syllogism_has_tbl_tod_tbl_tod1`
+    FOREIGN KEY (`id_tod`)
+    REFERENCES `amuyana`.`tbl_tod` (`id_tod`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_tod_has_tbl_user` (
+  `id_tod` INT(11) NOT NULL,
+  `id_user` INT(11) NOT NULL,
+  `permission` INT(1) NOT NULL,
+  PRIMARY KEY (`id_tod`, `id_user`),
+  INDEX `fk_tbl_tod_has_tbl_user_tbl_user1_idx` (`id_user` ASC),
+  INDEX `fk_tbl_tod_has_tbl_user_tbl_tod1_idx` (`id_tod` ASC),
+  CONSTRAINT `fk_tbl_tod_has_tbl_user_tbl_tod1`
+    FOREIGN KEY (`id_tod`)
+    REFERENCES `amuyana`.`tbl_tod` (`id_tod`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_tod_has_tbl_user_tbl_user1`
+    FOREIGN KEY (`id_user`)
+    REFERENCES `amuyana`.`tbl_user` (`id_user`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_conjunction` (
+  `id_conjunction` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` TINYTEXT NOT NULL,
+  PRIMARY KEY (`id_conjunction`))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_conjunction_has_tbl_inclusion` (
+  `id_conjunction` INT(11) NOT NULL,
+  `id_inclusion` INT(11) NOT NULL,
+  PRIMARY KEY (`id_conjunction`, `id_inclusion`),
+  INDEX `fk_tbl_conjunction_has_tbl_inclusion_tbl_inclusion1_idx` (`id_inclusion` ASC),
+  INDEX `fk_tbl_conjunction_has_tbl_inclusion_tbl_conjunction1_idx` (`id_conjunction` ASC),
+  CONSTRAINT `fk_tbl_conjunction_has_tbl_inclusion_tbl_conjunction1`
+    FOREIGN KEY (`id_conjunction`)
+    REFERENCES `amuyana`.`tbl_conjunction` (`id_conjunction`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_conjunction_has_tbl_inclusion_tbl_inclusion1`
+    FOREIGN KEY (`id_inclusion`)
+    REFERENCES `amuyana`.`tbl_inclusion` (`id_inclusion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_fcc_has_tbl_logic_system` (
+  `id_fcc` INT(11) NOT NULL,
+  `id_logic_system` INT(11) NOT NULL,
+  PRIMARY KEY (`id_fcc`, `id_logic_system`),
+  INDEX `fk_tbl_fcc_has_tbl_logic_system_tbl_logic_system1_idx` (`id_logic_system` ASC),
+  INDEX `fk_tbl_fcc_has_tbl_logic_system_tbl_fcc1_idx` (`id_fcc` ASC),
+  CONSTRAINT `fk_tbl_fcc_has_tbl_logic_system_tbl_fcc1`
+    FOREIGN KEY (`id_fcc`)
+    REFERENCES `amuyana`.`tbl_fcc` (`id_fcc`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_fcc_has_tbl_logic_system_tbl_logic_system1`
+    FOREIGN KEY (`id_logic_system`)
+    REFERENCES `amuyana`.`tbl_logic_system` (`id_logic_system`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_container_2` (
+  `id_container_2` INT(11) NOT NULL AUTO_INCREMENT,
+  `id_fcc` INT(11) NOT NULL,
+  `id_container_1` INT(11) NOT NULL,
+  PRIMARY KEY (`id_container_2`, `id_fcc`, `id_container_1`),
+  INDEX `fk_tbl_container_2_tbl_fcc1_idx` (`id_fcc` ASC),
+  INDEX `fk_tbl_container_2_tbl_container_11_idx` (`id_container_1` ASC),
+  CONSTRAINT `fk_tbl_container_2_tbl_fcc1`
+    FOREIGN KEY (`id_fcc`)
+    REFERENCES `amuyana`.`tbl_fcc` (`id_fcc`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_container_2_tbl_container_11`
+    FOREIGN KEY (`id_container_1`)
+    REFERENCES `amuyana`.`tbl_container_1` (`id_container_1`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_c_class_has_tbl_container_1` (
+  `id_c_class` INT(11) NOT NULL,
+  `id_container_1` INT(11) NOT NULL,
+  PRIMARY KEY (`id_c_class`, `id_container_1`),
+  INDEX `fk_tbl_c_class_has_tbl_container_1_tbl_container_11_idx` (`id_container_1` ASC),
+  INDEX `fk_tbl_c_class_has_tbl_container_1_tbl_c_class1_idx` (`id_c_class` ASC),
+  CONSTRAINT `fk_tbl_c_class_has_tbl_container_1_tbl_c_class1`
+    FOREIGN KEY (`id_c_class`)
+    REFERENCES `amuyana`.`tbl_c_class` (`id_c_class`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_c_class_has_tbl_container_1_tbl_container_11`
+    FOREIGN KEY (`id_container_1`)
+    REFERENCES `amuyana`.`tbl_container_1` (`id_container_1`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_conjunction_has_tbl_container_1` (
+  `id_conjunction` INT(11) NOT NULL,
+  `id_container_1` INT(11) NOT NULL,
+  PRIMARY KEY (`id_conjunction`, `id_container_1`),
+  INDEX `fk_tbl_conjunction_has_tbl_container_1_tbl_container_11_idx` (`id_container_1` ASC),
+  INDEX `fk_tbl_conjunction_has_tbl_container_1_tbl_conjunction1_idx` (`id_conjunction` ASC),
+  CONSTRAINT `fk_tbl_conjunction_has_tbl_container_1_tbl_conjunction1`
+    FOREIGN KEY (`id_conjunction`)
+    REFERENCES `amuyana`.`tbl_conjunction` (`id_conjunction`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_conjunction_has_tbl_container_1_tbl_container_11`
+    FOREIGN KEY (`id_container_1`)
+    REFERENCES `amuyana`.`tbl_container_1` (`id_container_1`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_container_0_in_2` (
+  `id_container_0` INT(11) NOT NULL,
+  `id_container_2` INT(11) NOT NULL,
+  `side` TINYINT(1) NOT NULL,
+  PRIMARY KEY (`id_container_0`, `id_container_2`),
+  INDEX `fk_tbl_container_0_has_tbl_container_2_tbl_container_21_idx` (`id_container_2` ASC),
+  INDEX `fk_tbl_container_0_has_tbl_container_2_tbl_container_01_idx` (`id_container_0` ASC),
+  CONSTRAINT `fk_tbl_container_0_has_tbl_container_2_tbl_container_01`
+    FOREIGN KEY (`id_container_0`)
+    REFERENCES `amuyana`.`tbl_container_0` (`id_container_0`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_container_0_has_tbl_container_2_tbl_container_21`
+    FOREIGN KEY (`id_container_2`)
+    REFERENCES `amuyana`.`tbl_container_2` (`id_container_2`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+CREATE TABLE IF NOT EXISTS `amuyana`.`tbl_c_class_has_tbl_inclusion` (
+  `id_c_class` INT(11) NOT NULL,
+  `id_inclusion` INT(11) NOT NULL,
+  PRIMARY KEY (`id_c_class`, `id_inclusion`),
+  INDEX `fk_tbl_c_class_has_tbl_inclusion_tbl_inclusion1_idx` (`id_inclusion` ASC),
+  INDEX `fk_tbl_c_class_has_tbl_inclusion_tbl_c_class1_idx` (`id_c_class` ASC),
+  CONSTRAINT `fk_tbl_c_class_has_tbl_inclusion_tbl_c_class1`
+    FOREIGN KEY (`id_c_class`)
+    REFERENCES `amuyana`.`tbl_c_class` (`id_c_class`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_tbl_c_class_has_tbl_inclusion_tbl_inclusion1`
+    FOREIGN KEY (`id_inclusion`)
+    REFERENCES `amuyana`.`tbl_inclusion` (`id_inclusion`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

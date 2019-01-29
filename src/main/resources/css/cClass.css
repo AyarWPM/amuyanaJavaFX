@@ -1,0 +1,29 @@
+#CClassRoot{
+    -fx-background-image: url("/images/fcc_editor_background.png");
+    -fx-background-color: #f4fcf4;
+}
+
+#SectionTitle {
+    -fx-padding:5 10;
+    -fx-background-color: #f5f28b;
+    -fx-background-radius:10;
+}
+
+#SectionTitle .label {
+    -fx-text-fill:#0e2123;
+    -fx-font-size:14px;
+}
+
+#CClassRoot .button {
+    -fx-background-radius:10;
+    -fx-font-size: 13px;
+    -fx-text-fill: #eee82c;
+}
+
+#NormalButton {
+    -fx-background-color:#2c666e;
+}
+
+#ImportantButton {
+    -fx-background-color:#92140c;
+}

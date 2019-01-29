@@ -1,0 +1,26 @@
+#FccSelectorTitle{
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    -fx-font-size:17;
+}
+
+#FccSelector .label {
+
+}
+
+#FccSelector .button {
+    -fx-background-radius:10;
+    -fx-font-size:14;
+}
+
+#FccSelector .menu-button {
+    -fx-background-radius:10;
+    -fx-font-size:14;
+}
+
+#FccSelector .button:hover {
+    -fx-background-color: #969A9F;
+}
+
+#FccSelector .menu-button:hover {
+    -fx-background-color: #969A9F;
+}

@@ -251,6 +251,7 @@ public class TodController implements Initializable {
     void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
+        this.tree.updateFruits();
         canvas.getChildren().setAll(this.tree);
         showScaleSlider();
     }

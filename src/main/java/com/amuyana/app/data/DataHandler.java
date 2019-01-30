@@ -632,11 +632,9 @@ public class DataHandler implements DataInterface {
         if (inclusion.saveData(dataConnection.getConnection()) == 1) {
             listInclusions.add(inclusion);
         }
-
         dataConnection.disconnect();
         return inclusion;
     }
-
 
     /*
              _____                       _                        _   _

@@ -7,7 +7,10 @@ import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
 import com.amuyana.app.node.menu.FccMenu;
+import com.amuyana.app.node.tod.Branch;
 import com.amuyana.app.node.tod.Fruit;
+import com.amuyana.app.node.tod.SubBranch;
+import com.amuyana.app.node.tod.Tie;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.FccExp;
 import com.amuyana.app.node.tod.expression.ImplicationExp;
@@ -16,6 +19,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -168,23 +172,23 @@ public class FruitController implements Initializable {
     private void deployNewPositiveDescendant() {
         TodController todController = fruit.getTree().getTodController();
         LogicSystem logicSystem = todController.getTod().getLogicSystem();
-
         Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
-
         todController.openFccEditor(newFcc);
+        Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
 
-        fruit.getSubBranch().addToRightTrunk(newFcc);
-        Dynamism newPositiveParticular = dataInterface.getDynamism(newFcc,0);
-        Dynamism newNegativeParticular = dataInterface.getDynamism(newFcc,1);
-        Dynamism newSymmetricParticular = dataInterface.getDynamism(newFcc,2);
+        // Create dynamisms, inclusions and tie fruits
+        Dynamism dynamismOfAscendant = dataInterface.getDynamism(fruit.getFcc(), 0);
+        Dynamism positiveDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 0);
+        Dynamism negativeDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 1);
+        Dynamism symmetricDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 2);
 
-        Dynamism positiveAscendant = dataInterface.getDynamism(fruit.getFcc(),0);
-        //Dynamism negativeGeneral = dataInterface.getDynamism(fruit.getFcc(),0);
-        //Dynamism symmetricGeneral = dataInterface.getDynamism(fruit.getFcc(),0);
+        Inclusion inclusion1 = dataInterface.newInclusion(positiveDynamismOfDescendant,dynamismOfAscendant);
+        Inclusion inclusion2 = dataInterface.newInclusion(negativeDynamismOfDescendant,dynamismOfAscendant);
+        Inclusion inclusion3 = dataInterface.newInclusion(symmetricDynamismOfDescendant,dynamismOfAscendant);
 
-        Inclusion inclusion1 = dataInterface.newInclusion(newPositiveParticular,positiveAscendant);
-        Inclusion inclusion2 = dataInterface.newInclusion(newNegativeParticular,positiveAscendant);
-        Inclusion inclusion3 = dataInterface.newInclusion(newSymmetricParticular,positiveAscendant);
+        Tie tie = new Tie(newFruit,fruit);
+        fruit.getTree().addTie(tie);
+        tie.updateOrientations();
     }
 
     private void buildNegativeDescendantsMenu() {
@@ -197,6 +201,40 @@ public class FruitController implements Initializable {
 
     private void buildBracketMenu() {
         bracketMenuButton.getItems().setAll(new MenuItem("dummy"));
+    }
+
+    // Building ties for fruits in children nodes
+    public void buildTies() {
+        System.out.println("1 = " + "1");
+        // Descendants
+        for (Branch branch : this.fruit.getSubBranch().getRightTrunk().getBranches()) {
+
+            for (Fruit fruit : branch.getFruits()) {
+                if (isDescendant(fruit)) {
+                    Tie tie = new Tie(fruit, this.fruit);
+                    fruit.getTree().addTie(tie);
+                    tie.updateOrientations();
+                    System.out.println("2 = " + 2);
+                }
+            }
+        }
+        // Ascendants
+
+    }
+
+    // Is descendant if any dynamism of the fruit's fcc is particular on an
+    // inclusion where the general is any dynamism of this.fruit
+    private boolean isDescendant(Fruit fruit) {
+        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+            Dynamism particlar = inclusion.getParticular();
+            Dynamism general = inclusion.getGeneral();
+            if (fruit.getFcc().equals(particlar.getFcc())) {
+                if (this.fruit.getFcc().equals(general.getFcc())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     public Fruit getFruit(){
@@ -374,11 +412,4 @@ public class FruitController implements Initializable {
     public void setLastPart(String lastPart) {
         this.lastPart.set(lastPart);
     }
-
-    @Override
-    public String toString(){
-        return "[\"" + getFruit().toString() + "\"" + " fccContainer]";
-    }
-
-
 }

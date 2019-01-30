@@ -50,6 +50,7 @@ public class TopMenuBar extends MenuBar {
             todMenu.getItems().get(0).fire();
 
         });
+
         debugMenu.getItems().addAll(debug1,debug2);
         getMenus().add(debugMenu);
     }

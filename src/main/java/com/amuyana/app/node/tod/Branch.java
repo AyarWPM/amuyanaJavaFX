@@ -27,13 +27,13 @@ public class Branch extends HBox {
     private VBox subBranchesVBox;
 
     // For loading an existing tree
-    public Branch(Trunk trunk, Container1 container1) {
+    Branch(Trunk trunk, Container1 container1) {
         this.trunk = trunk;
         this.container1 = container1;
         makeStyle();
     }
 
-    public void loadSubBranchesAndTrunks() {
+    void loadSubBranchesAndTrunks() {
         this.subBranchesVBox = new VBox();
         this.subBranchesVBox.setId("BetweenBranchSubBranch");
 
@@ -55,7 +55,7 @@ public class Branch extends HBox {
         this.getChildren().addAll(leftTrunk, subBranchesVBox,rightTrunk);
     }
 
-    public Branch(Trunk trunk) {
+    Branch(Trunk trunk) {
         this.trunk = trunk;
         this.container1 = MainBorderPane.getDataInterface().newContainer1(this.trunk.getContainer0());
         this.subBranchesVBox = new VBox();
@@ -82,7 +82,7 @@ public class Branch extends HBox {
         return this.container1;
     }
 
-    public ObservableList<SubBranch> getSubBranches() {
+    private ObservableList<SubBranch> getSubBranches() {
         ObservableList<SubBranch> subBranches = FXCollections.observableArrayList();
         VBox vBox = (VBox)this.getChildren().get(1);
         for (Node branchNode : vBox.getChildren()) {
@@ -92,11 +92,11 @@ public class Branch extends HBox {
         return subBranches;
     }
 
-    public void addSubBranch(SubBranch subBranch) {
+    private void addSubBranch(SubBranch subBranch) {
         this.subBranchesVBox.getChildren().add(subBranch);
     }
 
-    public SubBranch addSubBranch(Fcc fcc) {
+    SubBranch newSubBranch(Fcc fcc) {
         SubBranch subBranch = new SubBranch(this);
         subBranch.loadFruitAndTrunks(fcc);
         addSubBranch(subBranch);
@@ -116,7 +116,7 @@ public class Branch extends HBox {
         this.rightTrunk.addBranch(branch);
     }
 
-    public Trunk getTrunk() {
+    Trunk getTrunk() {
         return this.trunk;
     }
 

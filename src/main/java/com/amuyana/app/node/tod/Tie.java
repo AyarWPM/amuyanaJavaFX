@@ -1,9 +1,11 @@
 package com.amuyana.app.node.tod;
 
+import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,6 +16,7 @@ import java.util.List;
 public class Tie {
     private final Fruit ascendantFruit;
     private final Fruit descendantFruit;
+    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
 
     private BooleanProperty positiveOrientation;
     private BooleanProperty negativeOrientation;
@@ -21,12 +24,21 @@ public class Tie {
 
     private ObservableList<Line> lines;
 
+    // Used when user deploys to a new FCC or Tree, so we create three inclusions
     public Tie(Fruit descendantFruit, Fruit ascendantFruit){
         this.descendantFruit = descendantFruit;
         this.ascendantFruit = ascendantFruit;
-        lines= FXCollections.observableArrayList();
+
+        initialize();
         buildLines();
         manageListeners();
+    }
+
+    private void initialize() {
+        lines= FXCollections.observableArrayList();
+        positiveOrientation = new SimpleBooleanProperty();
+        negativeOrientation = new SimpleBooleanProperty();
+        symmetricOrientation = new SimpleBooleanProperty();
     }
 
     private void buildLines() {
@@ -73,30 +85,9 @@ public class Tie {
     }
 
     public void updateOrientations() {
-        ObservableList<Inclusion> inclusions = MainBorderPane.getDataInterface().getListInclusions();
-        positiveOrientation.set(false);
-        negativeOrientation.set(false);
-        symmetricOrientation.set(false);
-
-        for (Inclusion inclusion : inclusions) {
-            if (inclusion.getParticular().getFcc().equals(descendantFruit.getFcc())) {
-                if (inclusion.getGeneral().getFcc().equals(ascendantFruit.getFcc())) {
-                    Dynamism general = inclusion.getGeneral();
-                    switch (general.getOrientation()) {
-                        case 0:
-                            positiveOrientation.set(true);
-                            break;
-                        case 1:
-                            negativeOrientation.set(true);
-                            break;
-                        case 2:
-                            symmetricOrientation.set(true);
-                            break;
-                    }
-                }
-            }
-        }
-
+        positiveOrientation.set(true);
+        negativeOrientation.set(true);
+        symmetricOrientation.set(true);
     }
 
     public Fruit getAscendantFruit() {

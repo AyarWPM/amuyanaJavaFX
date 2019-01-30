@@ -37,9 +37,10 @@ public class Trunk extends VBox {
         this.trunkType = TrunkType.TREE;
         setStyle();
         Branch branch = new Branch(this);
-        SubBranch subBranch = branch.addSubBranch(fcc); // does nothing with subBranch but addSubBranch does instantiation
+        SubBranch subBranch = branch.newSubBranch(fcc); // does nothing with subBranch but newSubBranch does instantiation
         addBranch(branch);
     }
+
     // Constructor to loadExistingTree an existing Tod
     Trunk(Tree tree, Container0 container0) {
         level = new SimpleDoubleProperty(1);
@@ -49,10 +50,8 @@ public class Trunk extends VBox {
         setStyle();
     }
 
-    // Loading from inside branches
-
     /**
-     *  @param tree
+     * @param tree
      * @param container0
      * @param branch
      * @param side The side with respect to the Fruit for the SubBranch and the SubBranches for the Branch, false
@@ -80,8 +79,8 @@ public class Trunk extends VBox {
         setSide(side);
         setStyle();
     }
-    // called after the above constructor only
-    public void loadBranches() {
+    // called after the (two) above constructor(s) only
+    void loadBranches() {
         for (Container1 container1 : dataInterface.getContainer1s(container0)) {
             Branch branch = new Branch(this, container1);
             addBranch(branch);
@@ -118,15 +117,15 @@ public class Trunk extends VBox {
         this.tree.updateMaxLevel(level.getValue());
     }
 
-    public boolean isSide() {
+    boolean isSide() {
         return this.side;
     }
 
-    public void setSide(boolean side) {
+    private void setSide(boolean side) {
         this.side = side;
     }
 
-    public Tree getTree() {
+    Tree getTree() {
         return this.tree;
     }
 

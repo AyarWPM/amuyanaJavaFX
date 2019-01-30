@@ -33,15 +33,15 @@ public class FccMenu extends Menu {
         this.todController = todController;
 
         if (fccMenuType.equals(FccMenuType.FOR_ASCENDANTS)) {
-            CheckMenuItem toPositiveCheckMenuItem = new CheckMenuItem("From the positive");
-            CheckMenuItem toNegativeCheckMenuItem = new CheckMenuItem("From the negative");
-            CheckMenuItem toSymmetricCheckMenuItem = new CheckMenuItem("From the symmetric");
+            CheckMenuItem fromPositiveCheckMenuItem = new CheckMenuItem("From the positive");
+            CheckMenuItem fromNegativeCheckMenuItem = new CheckMenuItem("From the negative");
+            CheckMenuItem fromSymmetricCheckMenuItem = new CheckMenuItem("From the symmetric");
         } else if (fccMenuType.equals(FccMenuType.FOR_DESCENDANTS)) {
             CheckMenuItem toPositiveCheckMenuItem = new CheckMenuItem("To the positive");
             CheckMenuItem toNegativeCheckMenuItem = new CheckMenuItem("To the negative");
             CheckMenuItem toSymmetricCheckMenuItem = new CheckMenuItem("To the symmetric");
-
-            //toPositiveCheckMenuItem.selectedProperty().bindBidirectional(fruit.getTree().ti);
+// need to get ties from list in tree, maybe.
+            //toPositiveCheckMenuItem.selectedProperty().bindBidirectional(tie.);
 // todo
             getItems().setAll(toPositiveCheckMenuItem,toNegativeCheckMenuItem,toSymmetricCheckMenuItem);
         }

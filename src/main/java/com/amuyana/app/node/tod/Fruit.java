@@ -38,7 +38,6 @@ public class Fruit extends VBox {
         this.setAlignment(Pos.CENTER);
         this.getChildren().add(hBox);
         this.setFillWidth(false);
-
         getTree().addObservableFruit(this);
     }
 
@@ -55,25 +54,8 @@ public class Fruit extends VBox {
         getTree().addObservableFruit(this);
     }
 
-    public void tie() {
-        // for each left and right Trunks check if this Fruit is descendant or ascendant (antecedent) respectively for
-        // their branches' subBranches' Fruits
-        for (Branch branch : getSubBranch().getLeftTrunk().getBranches()) {
-            for (SubBranch subBranch : branch.getSubBranches()) {
-                if (this.descendsFrom(subBranch.getFruit())) {
-                    Tie tie = new Tie(this, subBranch.getFruit());
-
-                    getTree().addTie(tie);
-                }
-            }
-        }
-    }
-
     private boolean descendsFrom(Fruit fruit) {
         boolean descendsFrom=false;
-        // if any dynamism of @code this descends from positive dynamism of fruit -or-
-        // if any dynamism of @code this descends from negative dynamism of fruit -or-
-        // if any dynamism of @code this descends from symmetric dynamism of fruit
         if (dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 0)) ||
                 dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 1)) ||
                 dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 2))) {

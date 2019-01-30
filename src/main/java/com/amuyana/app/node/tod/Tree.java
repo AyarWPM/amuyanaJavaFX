@@ -168,7 +168,7 @@ public class Tree extends Group {
         return this.ties;
     }
 
-    void addTie(Tie tie) {
+    public void addTie(Tie tie) {
         ties.add(tie);
         for (Line line : tie.getLines()) {
             getChildren().add(line);

@@ -5,6 +5,7 @@ import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container1;
 import com.amuyana.app.data.tod.containers.Container2;
+import com.amuyana.app.node.tod.Fruit;
 import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.CClassHasInclusion;
 import com.amuyana.app.data.tod.containers.Tod;
@@ -72,6 +73,8 @@ public interface DataInterface {
     Container0 newContainer0(Container2 container2, boolean side);
 
     void delete(Container0 container0);
+    void delete(Container0 container0, Container1 container1);
+    void delete(Container0 container0, Container2 container2);
 
     // Container1
     void delete(Container1 container1);
@@ -79,7 +82,6 @@ public interface DataInterface {
 
     // Container2
     void delete(Container2 container2);
-
     Container2 newContainer2(Fcc fcc, Container1 container1);
 
     void addContainer0in2(Container0 container0, Container2 container2, boolean side);
@@ -87,6 +89,7 @@ public interface DataInterface {
 
     // Inclusion
     Inclusion newInclusion(Dynamism newSymmetricParticular, Dynamism positiveGeneral);
+    void delete(Inclusion inclusionToRemove);
 
     /**
      *
@@ -97,4 +100,6 @@ public interface DataInterface {
      */
     // complex getter
     boolean descendsFrom(Fcc fcc, Dynamism dynamism);
+    boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism);
+    boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism);
 }

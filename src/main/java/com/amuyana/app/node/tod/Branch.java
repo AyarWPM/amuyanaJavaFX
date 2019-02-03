@@ -14,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.util.Collection;
+import java.util.List;
 
 // container1 equivalent
 public class Branch extends HBox {
@@ -42,6 +43,7 @@ public class Branch extends HBox {
 
         this.leftTrunk = new Trunk(trunk.getTree(), leftContainer0, this, false);
         this.rightTrunk = new Trunk(trunk.getTree(), rightContainer0, this, true);
+        this.getChildren().setAll(leftTrunk, subBranchesVBox,rightTrunk);
 
         this.leftTrunk.loadBranches();
         this.rightTrunk.loadBranches();
@@ -52,7 +54,6 @@ public class Branch extends HBox {
             subBranch.loadFruitAndTrunks();
         }
 
-        this.getChildren().addAll(leftTrunk, subBranchesVBox,rightTrunk);
     }
 
     Branch(Trunk trunk) {
@@ -64,13 +65,13 @@ public class Branch extends HBox {
         this.leftTrunk = new Trunk(trunk.getTree(), this, false);
         this.rightTrunk = new Trunk(trunk.getTree(), this, true);
 
-        this.getChildren().addAll(leftTrunk, subBranchesVBox,rightTrunk);
+        this.getChildren().setAll(leftTrunk, subBranchesVBox,rightTrunk);
 
         makeStyle();
     }
 
     private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(5,trunk.levelProperty()));
+        this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
         if (trunk.isSide()) {
             setId("RightSide");
         } else {
@@ -82,7 +83,7 @@ public class Branch extends HBox {
         return this.container1;
     }
 
-    private ObservableList<SubBranch> getSubBranches() {
+    ObservableList<SubBranch> getSubBranches() {
         ObservableList<SubBranch> subBranches = FXCollections.observableArrayList();
         VBox vBox = (VBox)this.getChildren().get(1);
         for (Node branchNode : vBox.getChildren()) {
@@ -132,7 +133,59 @@ public class Branch extends HBox {
         ObservableList<Fruit> fruits = FXCollections.observableArrayList();
         for (SubBranch subBranch : getSubBranches()) {
             fruits.addAll(subBranch.getFruit());
+            // And then for left and right trunks of subBranch get their Fruits too ;)
+            for (Branch branch : subBranch.getLeftTrunk().getBranches()) {
+                fruits.addAll(branch.getFruits());
+            }
+            for (Branch branch : subBranch.getRightTrunk().getBranches()) {
+                fruits.addAll(branch.getFruits());
+            }
         }
+
+        for (Branch branch : leftTrunk.getBranches()) {
+            fruits.addAll(branch.getFruits());
+        }
+        for (Branch branch : rightTrunk.getBranches()) {
+            fruits.addAll(branch.getFruits());
+        }
+
         return fruits;
+    }
+
+    /*public void remove(Fruit fruit) {
+        SubBranch subBranchToRemove = null;
+        for (SubBranch subBranch : getSubBranches()) {
+            if (subBranch.getFruit().equals(fruit)) {
+                subBranchToRemove=subBranch;
+            }
+        }
+
+        dataInterface.delete(subBranchToRemove.getLeftTrunk().getContainer0(), subBranchToRemove.getContainer2());
+        dataInterface.delete(subBranchToRemove.getRightTrunk().getContainer0(), subBranchToRemove.getContainer2());
+        dataInterface.delete(subBranchToRemove.getLeftTrunk().getContainer0());
+        dataInterface.delete(subBranchToRemove.getRightTrunk().getContainer0());
+        dataInterface.delete(subBranchToRemove.getContainer2());
+
+        subBranchesVBox.getChildren().remove(subBranchToRemove);
+    }*/
+
+    public void remove(SubBranch subBranch) {
+        dataInterface.delete(subBranch.getLeftTrunk().getContainer0(), subBranch.getContainer2());
+        dataInterface.delete(subBranch.getRightTrunk().getContainer0(), subBranch.getContainer2());
+        dataInterface.delete(subBranch.getLeftTrunk().getContainer0());
+        dataInterface.delete(subBranch.getRightTrunk().getContainer0());
+        dataInterface.delete(subBranch.getContainer2());
+
+        subBranchesVBox.getChildren().remove(subBranch);
+    }
+
+    void initRightTrunk() {
+        Container0 rightContainer0 = dataInterface.getSideContainer0(container1,true);
+        this.rightTrunk = new Trunk(getTrunk().getTree(), rightContainer0, this, true);
+    }
+
+    void initLeftTrunk() {
+        Container0 leftContainer0 = dataInterface.getSideContainer0(container1,false);
+        this.leftTrunk = new Trunk(getTrunk().getTree(), leftContainer0, this, false);
     }
 }

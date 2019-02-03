@@ -30,24 +30,19 @@ public class Trunk extends VBox {
     }
     // constructor to loadExistingTree a Tree with only one Fcc on it
     // Container0 is already provided because it was needed to instantiate the Tod, and the Fcc the FccEditor
-    Trunk(Tree tree, Container0 container0, Fcc fcc) {
-        level = new SimpleDoubleProperty(1);
-        this.tree = tree;
-        this.container0 = container0;
-        this.trunkType = TrunkType.TREE;
-        setStyle();
-        Branch branch = new Branch(this);
-        SubBranch subBranch = branch.newSubBranch(fcc); // does nothing with subBranch but newSubBranch does instantiation
-        addBranch(branch);
-    }
-
-    // Constructor to loadExistingTree an existing Tod
     Trunk(Tree tree, Container0 container0) {
         level = new SimpleDoubleProperty(1);
         this.tree = tree;
         this.container0 = container0;
         this.trunkType = TrunkType.TREE;
         setStyle();
+    }
+
+    // Accessed after the constructor above
+    public void loadNewBranch(Fcc fcc) {
+        Branch branch = new Branch(this);
+        SubBranch subBranch = branch.newSubBranch(fcc); // does nothing with subBranch but newSubBranch does instantiation
+        addBranch(branch);
     }
 
     /**
@@ -69,7 +64,6 @@ public class Trunk extends VBox {
     }
 
     // Loading from inside subBranches
-
     Trunk(Tree tree, Container0 container0, SubBranch subBranch, boolean side) {
         level = new SimpleDoubleProperty(subBranch.getBranch().getTrunk().getLevel()+1);
         this.tree = tree;
@@ -131,6 +125,16 @@ public class Trunk extends VBox {
 
     void addBranch(Branch branch) {
         this.getChildren().add(branch);
+    }
+
+    public void remove(Branch branchToRemove) {
+        dataInterface.delete(branchToRemove.getLeftTrunk().getContainer0(), branchToRemove.getContainer1());
+        dataInterface.delete(branchToRemove.getRightTrunk().getContainer0(), branchToRemove.getContainer1());
+        dataInterface.delete(branchToRemove.getLeftTrunk().getContainer0());
+        dataInterface.delete(branchToRemove.getRightTrunk().getContainer0());
+        dataInterface.delete(branchToRemove.getContainer1());
+
+        getChildren().remove(branchToRemove);
     }
 
     public ObservableList<Branch> getBranches() {

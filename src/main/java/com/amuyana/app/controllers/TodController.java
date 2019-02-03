@@ -73,9 +73,10 @@ public class TodController implements Initializable {
                 }
             }
         });
+
         treeScrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
-                manageScrollEvent(event);
-                event.consume();
+            event.consume();
+            manageScrollEvent(event);
         });
 
     }
@@ -228,6 +229,10 @@ public class TodController implements Initializable {
 
     }
 
+    public ScrollPane getTreeScrollPane() {
+        return treeScrollPane;
+    }
+
     public Tod getTod() {
         return this.tod;
     }
@@ -251,8 +256,8 @@ public class TodController implements Initializable {
     void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
-        this.tree.updateFruits();
         canvas.getChildren().setAll(this.tree);
+        this.tree.buildFruitsMenus();
         showScaleSlider();
     }
 
@@ -260,6 +265,7 @@ public class TodController implements Initializable {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
         canvas.getChildren().setAll(this.tree);
+        this.tree.buildFruitsMenus();
         showScaleSlider();
     }
 
@@ -267,21 +273,19 @@ public class TodController implements Initializable {
         this.tree = new Tree(this, fcc);
         this.tree.loadNewTreeFromExistingFcc(fcc);
         canvas.getChildren().setAll(this.tree);
+        this.tree.buildFruitsMenus();
         showScaleSlider();
     }
 
     void showNewTree(Conjunction conjunction) {
-        this.tree = new Tree(this, conjunction);
-        canvas.getChildren().clear();
-        canvas.getChildren().setAll(this.tree);
-        showScaleSlider();
+
     }
 
     void showNewTree(CClass cClass) {
-        this.tree = new Tree(this, cClass);
-        canvas.getChildren().clear();
-        canvas.getChildren().setAll(this.tree);
-        showScaleSlider();
+
     }
 
+    Group getCanvas() {
+        return this.canvas;
+    }
 }

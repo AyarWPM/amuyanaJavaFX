@@ -96,6 +96,7 @@ public class Inclusion{
             ResultSet rs = instruction.getGeneratedKeys();
             if(rs.next()){
                 Inclusion.currentAutoIncrement = rs.getInt(1);
+                setIdInclusion(Inclusion.currentAutoIncrement);
             }
             return returnInt;
             

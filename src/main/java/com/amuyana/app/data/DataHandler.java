@@ -506,7 +506,6 @@ public class DataHandler implements DataInterface {
     public void delete(Tod tod) {
         // First delete container0
         delete(tod.getContainer0());
-
         // delete tod
         DataConnection dataConnection = getDataConnection();
         dataConnection.connect();
@@ -519,17 +518,63 @@ public class DataHandler implements DataInterface {
 
     @Override
     public void delete(Container0 container0) {
-        //
+        dataConnection.connect();
+        if (container0.deleteData(dataConnection.getConnection()) == 1) {
+            listContainer0s.remove(container0);
+        }
+        dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container1 container1) {
-
+        dataConnection.connect();
+        if (container1.deleteData(dataConnection.getConnection()) == 1) {
+            listContainer1s.remove(container1);
+        }
+        dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container2 container2) {
+        dataConnection.connect();
+        if (container2.deleteData(dataConnection.getConnection()) == 1) {
+            listContainer2s.remove(container2);
+        }
+        dataConnection.disconnect();
+    }
 
+    @Override
+    public void delete(Container0 container0, Container1 container1) {
+        dataConnection.connect();
+        Container0In1 container0In1ToRemove=null;
+        for (Container0In1 container0In1 : listContainer0In1s) {
+            if (container0In1.getContainer0().getIdContainer0()==container0.getIdContainer0()) {
+                if (container0In1.getContainer1().getIdContainer1()==container1.getIdContainer1()) {
+                    if (container0In1.deleteData(dataConnection.getConnection()) == 1) {
+                        container0In1ToRemove=container0In1;
+                    }
+                }
+            }
+        }
+        listContainer0In1s.remove(container0In1ToRemove);
+        dataConnection.disconnect();
+    }
+
+    @Override
+    public void delete(Container0 container0, Container2 container2) {
+        dataConnection.connect();
+        Container0In2 container0In2ToRemove = null;
+        for (Container0In2 container0In2 : listContainer0In2s) {
+            if (container0In2.getContainer0().getIdContainer0()==container0.getIdContainer0()) {
+                if (container0In2.getContainer2().getIdContainer2()==container2.getIdContainer2()) {
+                    if (container0In2.deleteData(dataConnection.getConnection()) == 1) {
+                        container0In2ToRemove=container0In2;
+                    }
+                }
+            }
+        }
+        listContainer0In2s.remove(container0In2ToRemove);
+        dataConnection.disconnect();
     }
 
     @Override
@@ -636,6 +681,16 @@ public class DataHandler implements DataInterface {
         return inclusion;
     }
 
+    @Override
+    public void delete(Inclusion inclusion) {
+        DataConnection dataConnection = getDataConnection();
+        dataConnection.connect();
+        int result = inclusion.deleteData(dataConnection.getConnection());
+        if (result == 1) {
+            this.listInclusions.remove(inclusion);
+        }
+        dataConnection.disconnect();
+    }
     /*
              _____                       _                        _   _
             /  __ \                     | |                      | | | |
@@ -714,6 +769,30 @@ public class DataHandler implements DataInterface {
                     i.getParticular().equals(getDynamism(fcc, 1)) ||
                     i.getParticular().equals(getDynamism(fcc, 2))) {
                 if (i.getGeneral().equals(dynamism)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism) {
+        for (Inclusion inclusion : getListInclusions()) {
+            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism) {
+        for (Inclusion inclusion : getListInclusions()) {
+            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                if (inclusion.getParticular().getFcc().getIdFcc()==descendantFcc.getIdFcc()) {
                     return true;
                 }
             }

@@ -70,7 +70,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" text="+" />
+                                    <Label id="Sign" fx:id="knob1Label" text="+" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -86,7 +86,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" alignment="TOP_RIGHT" contentDisplay="TOP" prefWidth="10.0" text="‒" />
+                                    <Label id="Sign" fx:id="knob2Label" alignment="TOP_RIGHT" contentDisplay="TOP" prefWidth="10.0" text="‒" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -102,7 +102,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" text="=" />
+                                    <Label id="Sign" fx:id="knob3Label" text="=" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -123,7 +123,7 @@
                <children>
                   <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0">
                      <children>
-                        <Circle fx:id="leftKnob" centerX="-20.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="leftKnobCircle" centerX="-20.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </Pane>
                   <MenuButton id="BracketMenuButton" fx:id="bracketMenuButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="LEFT" BorderPane.alignment="CENTER">

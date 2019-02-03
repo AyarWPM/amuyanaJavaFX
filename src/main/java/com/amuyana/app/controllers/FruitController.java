@@ -4,25 +4,28 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.LogicSystem;
-import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
 import com.amuyana.app.node.menu.FccMenu;
 import com.amuyana.app.node.tod.Branch;
 import com.amuyana.app.node.tod.Fruit;
-import com.amuyana.app.node.tod.SubBranch;
 import com.amuyana.app.node.tod.Tie;
+import com.amuyana.app.node.tod.Tree;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.FccExp;
 import com.amuyana.app.node.tod.expression.ImplicationExp;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.Point2D;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -31,6 +34,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class FruitController implements Initializable {
@@ -39,7 +43,7 @@ public class FruitController implements Initializable {
 
     @FXML private Group fruitGroup;
     @FXML private ImageView bracketImageView;
-    @FXML private Circle leftKnob;
+    @FXML private Circle leftKnobCircle;
     @FXML private StackPane fccNameStackPane;
     @FXML private VBox expressionsVBox;
     @FXML private MenuButton bracketMenuButton;
@@ -47,7 +51,11 @@ public class FruitController implements Initializable {
     @FXML private MenuButton positiveDescendantsMenuButton;
     @FXML private MenuButton negativeDescendantsMenuButton;
     @FXML private MenuButton symmetricDescendantsMenuButton;
+    @FXML private Label knob1Label;
+    @FXML private Label knob2Label;
+    @FXML private Label knob3Label;
 
+    private Tree tree;
     private Fruit fruit;
     private DoubleProperty fruitScale;
     private DoubleProperty factorScale;
@@ -55,10 +63,12 @@ public class FruitController implements Initializable {
     private StringProperty styleProperty;
     private StringProperty fontSize;
 
-    private DoubleProperty knob0X, knob0Y, knob1X, knob1Y, knob2X, knob2Y, knob3X, knob3Y;
-
     private StringProperty firstPart;
     private StringProperty lastPart;
+    private ObjectBinding<Bounds> knob1BoundsInTreeBinding;
+    private ObjectBinding<Bounds> knob0BoundsInTreeBinding;
+    private ObjectBinding<Bounds> knob2BoundsInTreeBinding;
+    private ObjectBinding<Bounds> knob3BoundsInTreeBinding;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -69,60 +79,69 @@ public class FruitController implements Initializable {
         lastPart = new SimpleStringProperty(";");
         fontSize = new SimpleStringProperty();
 
-        knob0X = new SimpleDoubleProperty();
-        knob0Y = new SimpleDoubleProperty();
-        knob1X = new SimpleDoubleProperty();
-        knob1Y = new SimpleDoubleProperty();
-        knob2X = new SimpleDoubleProperty();
-        knob2Y = new SimpleDoubleProperty();
-        knob3X = new SimpleDoubleProperty();
-        knob3Y = new SimpleDoubleProperty();
     }
 
     public void initialize(Fruit fruit) {
         this.fruit = fruit;
-        manageEvents();
+        this.tree = this.fruit.getTree();
+        manageBindings();
         buildExpressions();
         buildMenus();
     }
 
-    public void buildMenus() {
-        buildFruitMenu();
-        buildPositiveDescendantsMenu();
-        buildNegativeDescendantsMenu();
-        buildSymmetricDescendantsMenu();
-        buildBracketMenu();
-    }
-
-    private void manageEvents() {
+    private void manageBindings() {
+        // Scalings
         fruitScale.bind(Bindings.divide(factorScale,fruit.getTrunk().levelProperty()));
         fruitGroup.scaleXProperty().bind(fruitScale);
         fruitGroup.scaleYProperty().bind(fruitScale);
         bracketImageView.fitHeightProperty().bind(expressionsVBox.heightProperty());
         bracketImageView.setPreserveRatio(true);
-    }
+        fccNameStackPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                for (Tie tie : tree.getTies()) {
+                    //tie.updateOrientations();
+                    //tree.buildFruitsMenus();
 
-    public void updateKnobsPositionProperties() {
-        double pX = positiveDescendantsMenuButton.getWidth()/2;
-        double pY = positiveDescendantsMenuButton.getHeight()/2;
-        double nX = negativeDescendantsMenuButton.getWidth()/2;
-        double nY = negativeDescendantsMenuButton.getHeight()/2;
-        double sX = symmetricDescendantsMenuButton.getWidth()/2;
-        double sY = symmetricDescendantsMenuButton.getHeight()/2;
+                }
+            }
+        });
+        ScrollPane scrollPane = tree.getTodController().getTreeScrollPane();
 
-        Point2D pointKnob0 = getFruit().getTree().sceneToLocal(leftKnob.localToScene(leftKnob.getCenterX(),leftKnob.getCenterY()));
-        Point2D pointKnob1 = getFruit().getTree().sceneToLocal(positiveDescendantsMenuButton.localToScene(pX,pY));
-        Point2D pointKnob2 = getFruit().getTree().sceneToLocal(negativeDescendantsMenuButton.localToScene(nX,nY));
-        Point2D pointKnob3 = getFruit().getTree().sceneToLocal(symmetricDescendantsMenuButton.localToScene(sX,sY));
+        Group canvas = tree.getTodController().getCanvas();
 
-        setKnob0X(pointKnob0.getX());
-        setKnob0Y(pointKnob0.getY());
-        setKnob1X(pointKnob1.getX());
-        setKnob1Y(pointKnob1.getY());
-        setKnob2X(pointKnob2.getX());
-        setKnob2Y(pointKnob2.getY());
-        setKnob3X(pointKnob3.getX());
-        setKnob3Y(pointKnob3.getY());
+        // Lines
+        knob0BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
+                    Bounds nodeLocal = leftKnobCircle.getBoundsInLocal();
+                    Bounds nodeScene = leftKnobCircle.localToScene(nodeLocal);
+                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    return nodeTree;
+                }, leftKnobCircle.boundsInLocalProperty(), leftKnobCircle.localToSceneTransformProperty(),
+                canvas.localToSceneTransformProperty());
+
+        knob1BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
+                    Bounds nodeLocal = knob1Label.getBoundsInLocal();
+                    Bounds nodeScene = knob1Label.localToScene(nodeLocal);
+                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    return nodeTree;
+                }, knob1Label.boundsInLocalProperty(), knob1Label.localToSceneTransformProperty(),
+                canvas.localToSceneTransformProperty());
+
+        knob2BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
+                    Bounds nodeLocal = knob2Label.getBoundsInLocal();
+                    Bounds nodeScene = knob2Label.localToScene(nodeLocal);
+                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    return nodeTree;
+                }, knob2Label.boundsInLocalProperty(), knob2Label.localToSceneTransformProperty(),
+                canvas.localToSceneTransformProperty());
+
+        knob3BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
+                    Bounds nodeLocal = knob3Label.getBoundsInLocal();
+                    Bounds nodeScene = knob3Label.localToScene(nodeLocal);
+                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    return nodeTree;
+                }, knob3Label.boundsInLocalProperty(), knob3Label.localToSceneTransformProperty(),
+                canvas.localToSceneTransformProperty());
     }
 
     private void buildExpressions() {
@@ -139,102 +158,139 @@ public class FruitController implements Initializable {
         fccNameStackPane.getChildren().setAll(fccExp);
     }
 
+    public void buildMenus() {
+        buildFruitMenu();
+        Dynamism positiveAscendant = dataInterface.getDynamism(fruit.getFcc(), 0);
+        Dynamism negativeAscendant = dataInterface.getDynamism(fruit.getFcc(), 1);
+        Dynamism symmetricAscendant = dataInterface.getDynamism(fruit.getFcc(), 2);
+        buildOrientationDescendantsMenu(positiveAscendant);
+        buildOrientationDescendantsMenu(negativeAscendant);
+        buildOrientationDescendantsMenu(symmetricAscendant);
+        // buildPositiveDescendantsMenu();
+        // buildNegativeDescendantsMenu();
+        // buildSymmetricDescendantsMenu();
+        buildAscendantsMenu();
+    }
+
     private void buildFruitMenu() {
         MenuItem editFccMenuItem = new MenuItem("Edit");
-        editFccMenuItem.setOnAction(fruit.getTree().getTodController().openFccEditorEventHandler(fruit.getFcc()));
+        editFccMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
         fccMenuButton.getItems().setAll(editFccMenuItem);
     }
 
-    private void buildPositiveDescendantsMenu() {
-        Menu deployPositiveDescendantMenu = new Menu("Deploy to a FCC");
-
+    private void buildOrientationDescendantsMenu(Dynamism ascendantDynamism) {
+        Menu deployOrientationDescendantMenu = new Menu("Deploy to a FCC");
         MenuItem deployPositiveToNewFccMenuItem = new MenuItem("New FCC");
+
         deployPositiveToNewFccMenuItem.setOnAction(e->{
-            deployNewPositiveDescendant();
-            getFruit().getTree().updateFruits();
+            deployNewOrientationDescendant(ascendantDynamism);
         });
 
-        deployPositiveDescendantMenu.getItems().addAll(deployPositiveToNewFccMenuItem, new SeparatorMenuItem());
+        deployOrientationDescendantMenu.getItems().addAll(deployPositiveToNewFccMenuItem, new SeparatorMenuItem());
 
-        LogicSystem logicSystem = getFruit().getTree().getTodController().getTod().getLogicSystem();
-        for (Fcc fcc : MainBorderPane.getDataInterface().getFccs(logicSystem)){
-            if (fcc.equals(getFruit().getFcc())) continue;
-            FccMenu fccMenu = new FccMenu(
-                    fruit.getTree().getTodController(),
-                    getFruit(),
-                    dataInterface.getDynamism(fcc,0),
-                    FccMenu.FccMenuType.FOR_DESCENDANTS);
-            deployPositiveDescendantMenu.getItems().addAll(fccMenu);
+        List<Fcc> excludeFccs = FXCollections.observableArrayList();
+// If there's a fruit
+        for (Fruit fruit1:tree.getFruits()) {
+            if (fruit.isDescendant(fruit1)) {
+                excludeFccs.add(fruit1.getFcc());
+                FccMenu fccMenu = new FccMenu(this,fruit, ascendantDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS);
+                deployOrientationDescendantMenu.getItems().addAll(fccMenu);
+            }
         }
-        positiveDescendantsMenuButton.getItems().setAll(deployPositiveDescendantMenu);
+
+        deployOrientationDescendantMenu.getItems().addAll(new SeparatorMenuItem());
+
+// If there's not a fruit
+        ObservableList<Fcc> fccs = MainBorderPane.getDataInterface().getFccs(
+                getFruit().getTree().getTodController().getTod().getLogicSystem());
+        for (Fcc fcc : fccs){
+            // Ignore itself in the deployment list
+            if (fcc.equals(getFruit().getFcc())) {
+                continue;
+            }
+            // Ignore fccs already done
+            if (excludeFccs.contains(fcc)){
+                continue;
+            }
+            // For all the rest create a menu
+            FccMenu fccMenu = new FccMenu(this,fruit, ascendantDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
+            deployOrientationDescendantMenu.getItems().addAll(fccMenu);
+        }
+        if (ascendantDynamism.getOrientation() == 0) {
+            positiveDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+        } else if (ascendantDynamism.getOrientation() == 1) {
+            negativeDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+        } else if (ascendantDynamism.getOrientation() == 2) {
+            symmetricDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+        }
     }
 
-    private void deployNewPositiveDescendant() {
-        TodController todController = fruit.getTree().getTodController();
+    private void deployNewOrientationDescendant(Dynamism ascendantDynamism) {
+        TodController todController = this.tree.getTodController();
+
+        // set scale to 1 before continuing, otherwise the binding of knobs does not work
+        resetValueInScaleSlider();
         LogicSystem logicSystem = todController.getTod().getLogicSystem();
         Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
         todController.openFccEditor(newFcc);
-        Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
 
-        // Create dynamisms, inclusions and tie fruits
-        Dynamism dynamismOfAscendant = dataInterface.getDynamism(fruit.getFcc(), 0);
+        // Don't check if there's already a branch in rightTrunk of subBranch
+        Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
+        tie(newFruit);
+
+        // Create inclusions
         Dynamism positiveDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 0);
         Dynamism negativeDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 1);
         Dynamism symmetricDynamismOfDescendant = dataInterface.getDynamism(newFruit.getFcc(), 2);
+        dataInterface.newInclusion(positiveDynamismOfDescendant,ascendantDynamism);
+        dataInterface.newInclusion(negativeDynamismOfDescendant,ascendantDynamism);
+        dataInterface.newInclusion(symmetricDynamismOfDescendant,ascendantDynamism);
 
-        Inclusion inclusion1 = dataInterface.newInclusion(positiveDynamismOfDescendant,dynamismOfAscendant);
-        Inclusion inclusion2 = dataInterface.newInclusion(negativeDynamismOfDescendant,dynamismOfAscendant);
-        Inclusion inclusion3 = dataInterface.newInclusion(symmetricDynamismOfDescendant,dynamismOfAscendant);
-
-        Tie tie = new Tie(newFruit,fruit);
-        fruit.getTree().addTie(tie);
-        tie.updateOrientations();
+        // Update all fruitMenus
+        tree.buildFruitsMenus();
     }
 
-    private void buildNegativeDescendantsMenu() {
-        negativeDescendantsMenuButton.getItems().setAll(new MenuItem("dummy"));
+    public void resetValueInScaleSlider() {
+        this.tree.getTodController().getScaleSlider().setValue(1);
     }
 
-    private void buildSymmetricDescendantsMenu() {
-        symmetricDescendantsMenuButton.getItems().setAll(new MenuItem("dummy"));
+    public void tie(Fruit newFruit) {
+        // Tie fruits: check if there's already a tie before
+        boolean thereIsTie=false;
+        for (Tie tie : tree.getTies()) {
+            if (tie.getAscendantFruit().equals(fruit)) {
+                if (tie.getDescendantFruit().equals(newFruit)) {
+                    thereIsTie=true;
+                }
+            }
+        }
+        if (!thereIsTie) {
+            Tie tie = new Tie(newFruit,fruit);
+            this.tree.addTie(tie);
+        }
     }
 
-    private void buildBracketMenu() {
+    private void buildAscendantsMenu() {
         bracketMenuButton.getItems().setAll(new MenuItem("dummy"));
     }
 
     // Building ties for fruits in children nodes
     public void buildTies() {
-        System.out.println("1 = " + "1");
         // Descendants
         for (Branch branch : this.fruit.getSubBranch().getRightTrunk().getBranches()) {
-
             for (Fruit fruit : branch.getFruits()) {
                 if (isDescendant(fruit)) {
                     Tie tie = new Tie(fruit, this.fruit);
-                    fruit.getTree().addTie(tie);
+                    this.tree.addTie(tie);
                     tie.updateOrientations();
-                    System.out.println("2 = " + 2);
                 }
             }
         }
         // Ascendants
-
     }
 
-    // Is descendant if any dynamism of the fruit's fcc is particular on an
-    // inclusion where the general is any dynamism of this.fruit
-    private boolean isDescendant(Fruit fruit) {
-        for (Inclusion inclusion : dataInterface.getListInclusions()) {
-            Dynamism particlar = inclusion.getParticular();
-            Dynamism general = inclusion.getGeneral();
-            if (fruit.getFcc().equals(particlar.getFcc())) {
-                if (this.fruit.getFcc().equals(general.getFcc())) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    boolean isDescendant(Fruit fruit) {
+        return this.fruit.isDescendant(fruit);
     }
 
     public Fruit getFruit(){
@@ -251,102 +307,6 @@ public class FruitController implements Initializable {
 
     public void setFruitScale(double fruitScale) {
         this.fruitScale.set(fruitScale);
-    }
-
-    public double getKnob0X() {
-        return knob0X.get();
-    }
-
-    public DoubleProperty knob0XProperty() {
-        return knob0X;
-    }
-
-    private void setKnob0X(double knob0X) {
-        this.knob0X.set(knob0X);
-    }
-
-    public double getKnob0Y() {
-        return knob0Y.get();
-    }
-
-    public DoubleProperty knob0YProperty() {
-        return knob0Y;
-    }
-
-    private void setKnob0Y(double knob0Y) {
-        this.knob0Y.set(knob0Y);
-    }
-
-    public double getKnob1X() {
-        return knob1X.get();
-    }
-
-    public DoubleProperty knob1XProperty() {
-        return knob1X;
-    }
-
-    private void setKnob1X(double knob1X) {
-        this.knob1X.set(knob1X);
-    }
-
-    public double getKnob1Y() {
-        return knob1Y.get();
-    }
-
-    public DoubleProperty knob1YProperty() {
-        return knob1Y;
-    }
-
-    private void setKnob1Y(double knob1Y) {
-        this.knob1Y.set(knob1Y);
-    }
-
-    public double getKnob2X() {
-        return knob2X.get();
-    }
-
-    public DoubleProperty knob2XProperty() {
-        return knob2X;
-    }
-
-    private void setKnob2X(double knob2X) {
-        this.knob2X.set(knob2X);
-    }
-
-    public double getKnob2Y() {
-        return knob2Y.get();
-    }
-
-    public DoubleProperty knob2YProperty() {
-        return knob2Y;
-    }
-
-    private void setKnob2Y(double knob2Y) {
-        this.knob2Y.set(knob2Y);
-    }
-
-    public double getKnob3X() {
-        return knob3X.get();
-    }
-
-    public DoubleProperty knob3XProperty() {
-        return knob3X;
-    }
-
-    private void setKnob3X(double knob3X) {
-        this.knob3X.set(knob3X);
-    }
-
-    public double getKnob3Y() {
-        return knob3Y.get();
-    }
-
-    public DoubleProperty knob3YProperty() {
-        return knob3Y;
-    }
-
-    private void setKnob3Y(double knob3Y) {
-        this.knob3Y.set(knob3Y);
     }
 
     public double getFactorScale() {
@@ -411,5 +371,37 @@ public class FruitController implements Initializable {
 
     public void setLastPart(String lastPart) {
         this.lastPart.set(lastPart);
+    }
+
+    public Bounds getKnob1BoundsInTreeBinding() {
+        return knob1BoundsInTreeBinding.get();
+    }
+
+    public ObjectBinding<Bounds> knob1BoundsInTreeBindingProperty() {
+        return knob1BoundsInTreeBinding;
+    }
+
+    public Bounds getKnob0BoundsInTreeBinding() {
+        return knob0BoundsInTreeBinding.get();
+    }
+
+    public ObjectBinding<Bounds> knob0BoundsInTreeBindingProperty() {
+        return knob0BoundsInTreeBinding;
+    }
+
+    public Bounds getKnob2BoundsInTreeBinding() {
+        return knob2BoundsInTreeBinding.get();
+    }
+
+    public ObjectBinding<Bounds> knob2BoundsInTreeBindingProperty() {
+        return knob2BoundsInTreeBinding;
+    }
+
+    public Bounds getKnob3BoundsInTreeBinding() {
+        return knob3BoundsInTreeBinding.get();
+    }
+
+    public ObjectBinding<Bounds> knob3BoundsInTreeBindingProperty() {
+        return knob3BoundsInTreeBinding;
     }
 }

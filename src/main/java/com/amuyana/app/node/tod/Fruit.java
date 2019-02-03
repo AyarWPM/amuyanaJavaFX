@@ -3,15 +3,13 @@ package com.amuyana.app.node.tod;
 import com.amuyana.app.FXMLSource;
 import com.amuyana.app.controllers.FruitController;
 import com.amuyana.app.data.DataInterface;
+import com.amuyana.app.data.Dynamism;
+import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
-import com.sun.tools.javac.Main;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -30,38 +28,37 @@ public class Fruit extends VBox {
     public Fruit(SubBranch subBranch) {
         this.subBranch = subBranch;
         this.fcc = subBranch.getContainer2().getFcc();
-
-        HBox hBox = new HBox(new Group(loadFruit()));
-        hBox.setAlignment(Pos.CENTER);
-        hBox.setFillHeight(false);
-
-        this.setAlignment(Pos.CENTER);
-        this.getChildren().add(hBox);
-        this.setFillWidth(false);
-        getTree().addObservableFruit(this);
     }
 
     // For loading a new Tree
     public Fruit(SubBranch subBranch, Fcc fcc){
         this.subBranch = subBranch;
         this.fcc = fcc;
-
-        HBox hBox = new HBox(new Group(loadFruit()));
-        hBox.setAlignment(Pos.CENTER);
-
-        this.setAlignment(Pos.CENTER);
-        this.getChildren().add(hBox);
-        getTree().addObservableFruit(this);
     }
 
-    private boolean descendsFrom(Fruit fruit) {
-        boolean descendsFrom=false;
-        if (dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 0)) ||
-                dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 1)) ||
-                dataInterface.descendsFrom(this.getFcc(), dataInterface.getDynamism(fruit.getFcc(), 2))) {
-            descendsFrom = true;
+    public void loadFruitSource() {
+        getTree().addFruit(this);
+        HBox hBox = new HBox(new Group(loadFruit()));
+        hBox.setAlignment(Pos.CENTER);
+        this.setAlignment(Pos.CENTER);
+        this.getChildren().add(hBox);
+    }
+    /**
+     *
+     * @param fruit The fruit tested descendant of this.fruit
+     * @return True if fruit in parameter is descendant of fruit calling the method
+     */
+    public boolean isDescendant(Fruit fruit) {
+        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+            Dynamism particular = inclusion.getParticular();
+            Dynamism general = inclusion.getGeneral();
+            if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+                if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                    return true;
+                }
+            }
         }
-        return descendsFrom;
+        return false;
     }
 
     private Fruit getThis() {
@@ -98,7 +95,6 @@ public class Fruit extends VBox {
 
     private Node loadFruit() {
         Node fruit=null;
-
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.FRUIT.getUrl()));
         try {
             fruit = fxmlLoader.load();
@@ -112,9 +108,5 @@ public class Fruit extends VBox {
 
     public FruitController getFruitController() {
         return fruitController;
-    }
-
-    public void updateKnobsPositionProperties() {
-        fruitController.updateKnobsPositionProperties();
     }
 }

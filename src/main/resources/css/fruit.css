@@ -26,12 +26,12 @@
 }
 
 #RightSide{
-    -fx-border-color:green;
+    /*-fx-border-color:green;*/
     -fx-alignment:center-left;
 }
 
 #LeftSide{
-    -fx-border-color:green;
+    /*-fx-border-color:green;*/
     -fx-alignment:center;
 }
 

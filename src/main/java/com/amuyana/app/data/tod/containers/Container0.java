@@ -2,15 +2,8 @@ package com.amuyana.app.data.tod.containers;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
-import javafx.scene.Node;
-
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Container0 {
     private IntegerProperty idContainer0;

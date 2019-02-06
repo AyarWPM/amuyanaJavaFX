@@ -1,6 +1,6 @@
 package com.amuyana.app.node.content;
 
-import com.amuyana.app.FXMLSource;
+import com.amuyana.app.controllers.FXMLSource;
 import com.amuyana.app.controllers.LogicSystemController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;

@@ -19,8 +19,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -86,7 +84,7 @@ public class FruitController implements Initializable {
         this.tree = this.fruit.getTree();
         manageBindings();
         buildExpressions();
-        buildMenus();
+        //buildMenus();
     }
 
     private void manageBindings() {
@@ -96,17 +94,6 @@ public class FruitController implements Initializable {
         fruitGroup.scaleYProperty().bind(fruitScale);
         bracketImageView.fitHeightProperty().bind(expressionsVBox.heightProperty());
         bracketImageView.setPreserveRatio(true);
-        fccNameStackPane.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                for (Tie tie : tree.getTies()) {
-                    //tie.updateOrientations();
-                    //tree.buildFruitsMenus();
-
-                }
-            }
-        });
-        ScrollPane scrollPane = tree.getTodController().getTreeScrollPane();
 
         Group canvas = tree.getTodController().getCanvas();
 
@@ -160,16 +147,51 @@ public class FruitController implements Initializable {
 
     public void buildMenus() {
         buildFruitMenu();
-        Dynamism positiveAscendant = dataInterface.getDynamism(fruit.getFcc(), 0);
-        Dynamism negativeAscendant = dataInterface.getDynamism(fruit.getFcc(), 1);
-        Dynamism symmetricAscendant = dataInterface.getDynamism(fruit.getFcc(), 2);
-        buildOrientationDescendantsMenu(positiveAscendant);
-        buildOrientationDescendantsMenu(negativeAscendant);
-        buildOrientationDescendantsMenu(symmetricAscendant);
-        // buildPositiveDescendantsMenu();
-        // buildNegativeDescendantsMenu();
-        // buildSymmetricDescendantsMenu();
-        buildAscendantsMenu();
+
+        boolean buildAscendant = true;
+        boolean buildDescendant = true;
+        // Ascendant
+        for (Fruit fruit1 : tree.getObservableFruits()) {
+            if(fruit1.equals(getFruit())) continue;
+            if (fruit1.getFcc().getIdFcc() == getFruit().getFcc().getIdFcc()) {
+                if (!fruit1.getAscendantFruits().isEmpty()) {
+                    buildAscendant=false;
+                    bracketMenuButton.getItems().clear();
+                    bracketMenuButton.setTooltip(new Tooltip("This FCC is deployed somewhere else."));
+                    break;
+                }
+            }
+        }
+
+        // Descendant
+        for (Fruit fruit2 : tree.getObservableFruits()) {
+            if(fruit2.equals(getFruit())) continue;
+            if (fruit2.getFcc().getIdFcc() == getFruit().getFcc().getIdFcc()) {
+                if (!fruit2.getDescendantFruits().isEmpty()) {
+                    buildDescendant=false;
+
+                    positiveDescendantsMenuButton.setVisible(false);
+                    positiveDescendantsMenuButton.setManaged(false);
+                    /*
+                    positiveDescendantsMenuButton.setTooltip(new Tooltip("This FCC is deployed somewhere else."));
+                    negativeDescendantsMenuButton.getItems().clear();
+                    negativeDescendantsMenuButton.setTooltip(new Tooltip("This FCC is deployed somewhere else."));
+                    symmetricDescendantsMenuButton.getItems().clear();
+                    symmetricDescendantsMenuButton.setTooltip(new Tooltip("This FCC is deployed somewhere else."));*/
+                    break;
+                }
+            }
+        }
+
+        if (buildAscendant) {
+            buildAscendantsMenu();
+        }
+        if (buildDescendant) {
+            positiveDescendantsMenuButton.setVisible(true);
+            positiveDescendantsMenuButton.setManaged(true);
+            buildOrientationDescendantsMenu();
+
+        }
     }
 
     private void buildFruitMenu() {
@@ -178,50 +200,76 @@ public class FruitController implements Initializable {
         fccMenuButton.getItems().setAll(editFccMenuItem);
     }
 
-    private void buildOrientationDescendantsMenu(Dynamism ascendantDynamism) {
-        Menu deployOrientationDescendantMenu = new Menu("Deploy to a FCC");
-        MenuItem deployPositiveToNewFccMenuItem = new MenuItem("New FCC");
+    private void buildAscendantsMenu() {
+        Menu deployAscendantMenu = new Menu("Ascendant FCC");
 
-        deployPositiveToNewFccMenuItem.setOnAction(e->{
-            deployNewOrientationDescendant(ascendantDynamism);
+        // New fcc
+        MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
+        deployToNewFccMenuItem.setOnAction(e->{
+            deployNewAscendant();
         });
+        deployAscendantMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
 
-        deployOrientationDescendantMenu.getItems().addAll(deployPositiveToNewFccMenuItem, new SeparatorMenuItem());
+        // Load FCCs
+        List<Fcc> fccsInTree = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getAscendantFruits()) {
+            fccsInTree.add(fruit1.getFcc());
+            FccMenu fccMenu = new FccMenu(this,fruit1.getFcc());
+            deployAscendantMenu.getItems().addAll(fccMenu);
+        }
 
-        List<Fcc> excludeFccs = FXCollections.observableArrayList();
-// If there's a fruit
-        for (Fruit fruit1:tree.getFruits()) {
-            if (fruit.isDescendant(fruit1)) {
-                excludeFccs.add(fruit1.getFcc());
-                FccMenu fccMenu = new FccMenu(this,fruit, ascendantDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS);
+        ObservableList<Fcc> fccs = dataInterface.getFccs(
+                tree.getTodController().getTod().getLogicSystem());
+
+// 2.
+        bracketMenuButton.getItems().setAll(deployAscendantMenu);
+    }
+
+    private void buildOrientationDescendantsMenu() {
+        for (int i = 0; i <= 2; i++) {
+            Menu deployOrientationDescendantMenu = new Menu("Deploy to a FCC");
+            // New FCC
+            Dynamism ascendantDynamism = dataInterface.getDynamism(getFruit().getFcc(),i);
+            MenuItem deployPositiveToNewFccMenuItem = new MenuItem("New FCC");
+            deployPositiveToNewFccMenuItem.setOnAction(e->{
+                deployNewOrientationDescendant(ascendantDynamism);
+            });
+            deployOrientationDescendantMenu.getItems().addAll(deployPositiveToNewFccMenuItem, new SeparatorMenuItem());
+
+            // FCCs to deploy
+            List<Fcc> fccsInTree = FXCollections.observableArrayList();
+            for (Fruit fruit1:fruit.getDescendantFruits()) {
+                fccsInTree.add(fruit1.getFcc());
+                FccMenu fccMenu = new FccMenu(this, ascendantDynamism, fruit1.getFcc());
                 deployOrientationDescendantMenu.getItems().addAll(fccMenu);
             }
-        }
 
-        deployOrientationDescendantMenu.getItems().addAll(new SeparatorMenuItem());
+            deployOrientationDescendantMenu.getItems().addAll(new SeparatorMenuItem());
 
-// If there's not a fruit
-        ObservableList<Fcc> fccs = MainBorderPane.getDataInterface().getFccs(
-                getFruit().getTree().getTodController().getTod().getLogicSystem());
-        for (Fcc fcc : fccs){
-            // Ignore itself in the deployment list
-            if (fcc.equals(getFruit().getFcc())) {
-                continue;
+// If there's not a fruit deployed from this.fruit
+            ObservableList<Fcc> fccs = dataInterface.getFccs(
+                    tree.getTodController().getTod().getLogicSystem());
+            for (Fcc fcc : fccs){
+                // Ignore itself in the deployment list
+                if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+                // Ignore fccs already done
+                if (fccsInTree.contains(fcc)) continue;
+                // For all the rest create a menu
+                FccMenu fccMenu = new FccMenu(this, ascendantDynamism, fcc);
+                deployOrientationDescendantMenu.getItems().addAll(fccMenu);
             }
-            // Ignore fccs already done
-            if (excludeFccs.contains(fcc)){
-                continue;
+
+            switch (i) {
+                case 0:
+                    positiveDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+                    break;
+                case 1:
+                    negativeDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+                    break;
+                case 2:
+                    symmetricDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
+                    break;
             }
-            // For all the rest create a menu
-            FccMenu fccMenu = new FccMenu(this,fruit, ascendantDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
-            deployOrientationDescendantMenu.getItems().addAll(fccMenu);
-        }
-        if (ascendantDynamism.getOrientation() == 0) {
-            positiveDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
-        } else if (ascendantDynamism.getOrientation() == 1) {
-            negativeDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
-        } else if (ascendantDynamism.getOrientation() == 2) {
-            symmetricDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
         }
     }
 
@@ -250,36 +298,61 @@ public class FruitController implements Initializable {
         tree.buildFruitsMenus();
     }
 
+    private void deployNewAscendant() {
+        TodController todController = this.tree.getTodController();
+
+        // set scale to 1 before continuing, otherwise the binding of knobs does not work
+        resetValueInScaleSlider();
+        LogicSystem logicSystem = todController.getTod().getLogicSystem();
+        Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
+        todController.openFccEditor(newFcc);
+
+        Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc);
+        tie(newFruit);
+    }
+
     public void resetValueInScaleSlider() {
         this.tree.getTodController().getScaleSlider().setValue(1);
     }
 
     public void tie(Fruit newFruit) {
+        // For descendanats
         // Tie fruits: check if there's already a tie before
-        boolean thereIsTie=false;
+        boolean thereIsDescendantTie=false;
         for (Tie tie : tree.getTies()) {
             if (tie.getAscendantFruit().equals(fruit)) {
                 if (tie.getDescendantFruit().equals(newFruit)) {
-                    thereIsTie=true;
+                    thereIsDescendantTie=true;
                 }
             }
         }
-        if (!thereIsTie) {
+        if (!thereIsDescendantTie) {
             Tie tie = new Tie(newFruit,fruit);
+            this.tree.addTie(tie);
+        }
+
+        // for ascendants
+        boolean thereIsAscendantTie=false;
+        for (Tie tie : tree.getTies()) {
+            if (tie.getAscendantFruit().equals(newFruit)) {
+                if (tie.getDescendantFruit().equals(fruit)) {
+                    thereIsAscendantTie=true;
+                }
+            }
+        }
+        if (!thereIsAscendantTie) {
+            Tie tie = new Tie(fruit,newFruit);
             this.tree.addTie(tie);
         }
     }
 
-    private void buildAscendantsMenu() {
-        bracketMenuButton.getItems().setAll(new MenuItem("dummy"));
-    }
 
     // Building ties for fruits in children nodes
     public void buildTies() {
         // Descendants
         for (Branch branch : this.fruit.getSubBranch().getRightTrunk().getBranches()) {
             for (Fruit fruit : branch.getFruits()) {
-                if (isDescendant(fruit)) {
+                if (this.fruit.isDescendant(fruit.getFcc())) {
                     Tie tie = new Tie(fruit, this.fruit);
                     this.tree.addTie(tie);
                     tie.updateOrientations();
@@ -287,10 +360,28 @@ public class FruitController implements Initializable {
             }
         }
         // Ascendants
-    }
+        for (Branch branch : this.fruit.getSubBranch().getLeftTrunk().getBranches()) {
+            for (Fruit fruit : branch.getFruits()) {
+                if (fruit.isDescendant(getFruit().getFcc())) {
+                    Tie tie = new Tie(this.fruit, fruit);
+                    this.tree.addTie(tie);
+                    tie.updateOrientations();
+                }
+            }
+        }
 
-    boolean isDescendant(Fruit fruit) {
-        return this.fruit.isDescendant(fruit);
+        /*    // Ascendants
+            for (Fruit ascendantFruit : fruit.getAscendantFruits()) {
+                Tie tie = new Tie(this.fruit, ascendantFruit);
+                this.tree.addTie(tie);
+                tie.updateOrientations();
+            }
+        // Descendants
+        for (Fruit descendantFruit : fruit.getDescendantFruits()) {
+            Tie tie = new Tie(descendantFruit, this.fruit);
+            this.tree.addTie(tie);
+            tie.updateOrientations();
+        }*/
     }
 
     public Fruit getFruit(){

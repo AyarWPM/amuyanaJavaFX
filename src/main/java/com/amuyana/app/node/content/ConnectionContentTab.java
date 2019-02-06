@@ -1,8 +1,7 @@
 package com.amuyana.app.node.content;
 
-import com.amuyana.app.FXMLSource;
+import com.amuyana.app.controllers.FXMLSource;
 import com.amuyana.app.controllers.ConnectionController;
-import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.node.MainBorderPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Tab;

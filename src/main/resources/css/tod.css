@@ -12,3 +12,24 @@
     -fx-border-radius:10;
         -fx-padding:5px;
 }
+
+/* Left panel */
+#LeftPanelRoot{
+    -fx-background-image: url("/images/fcc_editor_background.png");
+    -fx-background-color: #f4fcf4;
+}
+
+#LogicSystemName{
+    -fx-text-fill: #280604;
+}
+
+#LeftPanelSectionTitle {
+    -fx-padding:5 10;
+    -fx-background-color: #f5f28b;
+    -fx-background-radius:10;
+}
+
+#LeftPanelSectionTitle .label {
+    -fx-text-fill:#0e2123;
+    -fx-font-size:14px;
+}

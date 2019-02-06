@@ -1,7 +1,6 @@
 package com.amuyana.app.node.content;
 
-import com.amuyana.app.FXMLSource;
-import com.amuyana.app.controllers.LogicSystemController;
+import com.amuyana.app.controllers.FXMLSource;
 import com.amuyana.app.controllers.TodController;
 import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeInterface;

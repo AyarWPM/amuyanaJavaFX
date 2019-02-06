@@ -101,29 +101,11 @@ public class CClassController implements Initializable {
 
     @FXML
     public void close() {
-        if (editMode.get()) {
-            ButtonType saveAndExitButtonType = new ButtonType("Save and exit");
-            ButtonType exitButtonType = new ButtonType("Don't save and exit");
-            ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-            Optional<ButtonType> result = Message.confirmClosing(saveAndExitButtonType, exitButtonType, cancelButtonType);
 
-            if (result.get().equals(saveAndExitButtonType)) {
-                saveAndClose();
-            } else if (result.get().equals(exitButtonType)) {
-                this.todController.closeTab(this.cClassTab);
-            } else if (result.get().equals(cancelButtonType)) {
-                // do nothing, look at the sky
-            }
-        } else {
-            // Close
-            todController.closeTab(cClassTab);
-        }
     }
 
     @FXML
     private void saveAndClose() {
-        editOrSave();
-        todController.closeTab(cClassTab);
     }
 
     @FXML

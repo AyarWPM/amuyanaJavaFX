@@ -36,19 +36,12 @@ public class Tree extends Group {
     // constructor to loadExistingTree an existing Tree
     public Tree(TodController todController) {
         this.todController = todController;
+
         initializeAndBind();
         setId("Tree");
+        bindScale();
     }
 
-    // new Tree from one Fcc which is created beforehand because it is added in FccEditor
-    // normally container0 is instantiated in Trunk, but because it is given already in Tod we call it,
-    // Also instead of creating a new one the user could have selected it from the list
-
-    public Tree(TodController todController, Fcc fcc) {
-        this.todController = todController;
-        initializeAndBind();
-        setId("Tree");
-    }
     public Tree(TodController todController, Conjunction conjunction) {
 
     }
@@ -90,31 +83,24 @@ public class Tree extends Group {
         });
     }
 
-    /**
-     * Called after Tree is initialized with constructor with TodController parameter
-     */
     public void loadExistingTree() {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
-        getChildren().addAll(this.linesGroup, this.mainTrunk);
+        getChildren().setAll(this.linesGroup, this.mainTrunk);
         this.mainTrunk.loadBranches();
-        bindScale();
     }
 
     public void loadNewTree() {
-        Fcc newFcc = MainBorderPane.getDataInterface().newFcc(todController.getTod().getLogicSystem());
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
+        getChildren().setAll(this.linesGroup, this.mainTrunk);
+        Fcc newFcc = MainBorderPane.getDataInterface().newFcc(todController.getTod().getLogicSystem());
         this.mainTrunk.loadNewBranch(newFcc);
-        bindScale();
-        getChildren().addAll(this.linesGroup, this.mainTrunk);
         todController.openFccEditor(newFcc);
     }
 
     public void loadNewTreeFromExistingFcc(Fcc fcc) {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
+        getChildren().setAll(this.linesGroup, this.mainTrunk);
         this.mainTrunk.loadNewBranch(fcc);
-
-        bindScale();
-        getChildren().addAll(this.linesGroup, this.mainTrunk);
         todController.openFccEditor(fcc);
     }
 
@@ -211,6 +197,12 @@ public class Tree extends Group {
         Trunk trunkOfBranch = branchOfSubBranchToRemove.getTrunk();
         if (branchOfSubBranchToRemove.getSubBranches().isEmpty()) {
             trunkOfBranch.remove(branchOfSubBranchToRemove);
+        }
+    }
+
+    public void buildTies() {
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildTies();
         }
     }
 }

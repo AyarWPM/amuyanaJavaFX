@@ -1,11 +1,13 @@
 package com.amuyana.app.node.tod;
 
-import com.amuyana.app.FXMLSource;
+import com.amuyana.app.controllers.FXMLSource;
 import com.amuyana.app.controllers.FruitController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -16,6 +18,7 @@ import javafx.scene.layout.VBox;
 import com.amuyana.app.data.Fcc;
 
 import java.io.IOException;
+import java.util.BitSet;
 
 public class Fruit extends VBox {
     private final DataInterface dataInterface = MainBorderPane.getDataInterface();
@@ -45,14 +48,14 @@ public class Fruit extends VBox {
     }
     /**
      *
-     * @param fruit The fruit tested descendant of this.fruit
+     * @param fcc The fcc tested descendant of this.fruit
      * @return True if fruit in parameter is descendant of fruit calling the method
      */
-    public boolean isDescendant(Fruit fruit) {
+    public boolean isDescendant(Fcc fcc) {
         for (Inclusion inclusion : dataInterface.getListInclusions()) {
             Dynamism particular = inclusion.getParticular();
             Dynamism general = inclusion.getGeneral();
-            if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+            if (fcc.getIdFcc()==particular.getFcc().getIdFcc()) {
                 if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
                     return true;
                 }
@@ -108,5 +111,56 @@ public class Fruit extends VBox {
 
     public FruitController getFruitController() {
         return fruitController;
+    }
+
+    public ObservableList<Fruit> getDescendantFruits() {
+        ObservableList<Fruit> descendantFruits = FXCollections.observableArrayList();
+        // first child nodes of subBranch (and in later versions of branch) where this.fruit is
+        for (Branch rightTrunkBranch: getSubBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                // If that other fruit's fcc is a descendant
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+
+        // second check if it is in a left trunk of another fruit that descends from this.fruit
+        for (Fruit fruit1 : getTree().getObservableFruits()) {
+            for (Branch leftTrunkBranch: fruit1.getSubBranch().getLeftTrunk().getBranches()) {
+                for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                    if(this.equals(fruit1)) continue;
+                    if (isDescendant(subBranch.getFruit().getFcc())) {
+                        descendantFruits.addAll(subBranch.getFruit());
+                    }
+                }
+            }
+        }
+        return descendantFruits;
+    }
+
+    public ObservableList<Fruit> getAscendantFruits() {
+        ObservableList<Fruit> ascendantFruits = FXCollections.observableArrayList();
+        // 1. check left Trunk of subBranch
+        for (Branch leftTrunkBranch : getSubBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+
+        // 2. check if it is in a right Trunk of another fruit and if isDescendant
+        for (Fruit fruit1 : getTree().getObservableFruits()) {
+            for (Branch rightTrunkBranch : fruit1.getSubBranch().getRightTrunk().getBranches()) {
+                for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                    if(this.equals(fruit1)) continue;
+                    if (subBranch.getFruit().isDescendant(getFcc())) {
+                        ascendantFruits.addAll(subBranch.getFruit());
+                    }
+                }
+            }
+        }
+        return ascendantFruits;
     }
 }

@@ -1,4 +1,4 @@
-package com.amuyana.app;
+package com.amuyana.app.controllers;
 
 /**
  *

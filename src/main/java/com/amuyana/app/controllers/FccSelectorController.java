@@ -1,8 +1,6 @@
 package com.amuyana.app.controllers;
 
 import com.amuyana.app.data.Fcc;
-import com.amuyana.app.data.tod.CClass;
-import com.amuyana.app.data.tod.Conjunction;
 import com.amuyana.app.node.MainBorderPane;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.TodContentTab;

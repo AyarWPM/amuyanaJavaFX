@@ -1,4 +1,4 @@
-package com.amuyana.app;
+package com.amuyana.app.main;
 
 import com.amuyana.app.data.DataHandler;
 import com.amuyana.app.data.DataInterface;

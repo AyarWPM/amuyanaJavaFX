@@ -25,29 +25,39 @@ public class FccMenu extends Menu {
     public enum FccMenuType{FOR_ASCENDANTS,FOR_DESCENDANTS}
 
     /**
+     * Constructor for descendants' menu
      * Menu that can be used in any of the two locations (bracketMenuButton or the descendantMenuButton) where
      * user orders deployments of the Table of Deductions
-     * @param fruit
-     * @param dynamism The dynamism of the fruit from which the other dynamisms of the descendant fruit will
+     * @param fruitController the controller of the fruit.fxml instance representing fruit
+     * @param ascendantDynamism The dynamism of the fruit from which the other dynamisms of the descendant fruit will
      *                 be deployed, ie. the other dynamisms will be 'included' (in the sens of the logic) in this one
-     * @param deployFcc The fcc that descends from ascendantDynamism
-     * @param fccMenuType The type of menu depends on its location: the bracket at left hand side of ImplicationExps
+     * @param descendantFcc The fcc that descends from ascendantDynamism
      */
-    public FccMenu(FruitController fruitController, Fruit fruit, Dynamism dynamism, Fcc deployFcc, FccMenuType fccMenuType) {
-        super(deployFcc.toString());
+    public FccMenu(FruitController fruitController, Dynamism ascendantDynamism, Fcc descendantFcc) {
+        super(descendantFcc.toString());
         this.fruitController = fruitController;
-        this.fruit = fruit;
-        this.deployFcc = deployFcc;
+        this.fruit = fruitController.getFruit();
+        this.deployFcc = descendantFcc;
         this.tree = fruit.getTree();
-        this.fccMenuType = fccMenuType;
+        this.fccMenuType = FccMenuType.FOR_DESCENDANTS;
         this.dataInterface = MainBorderPane.getDataInterface();
+        buildForDescendant(ascendantDynamism,descendantFcc);
+    }
 
-        if (fccMenuType.equals(FccMenuType.FOR_DESCENDANTS)) {
-            buildForDescendant(dynamism, deployFcc);
-        } else if (fccMenuType.equals(FccMenuType.FOR_ASCENDANTS)) {
-            buildForAscendant();
-        }
-
+    /**
+     * Constructor for ascendants' menu
+     * @param fruitController Controller
+     * @param ascendantFcc The ascendant Fcc
+     */
+    public FccMenu(FruitController fruitController, Fcc ascendantFcc) {
+        super(ascendantFcc.toString());
+        this.fruitController=fruitController;
+        this.fruit=fruitController.getFruit();
+        this.deployFcc=ascendantFcc;
+        this.tree = fruit.getTree();
+        this.fccMenuType = FccMenuType.FOR_ASCENDANTS;
+        this.dataInterface = MainBorderPane.getDataInterface();
+        buildForAscendant();
     }
 
     private void buildForAscendant() {
@@ -55,6 +65,8 @@ public class FccMenu extends Menu {
     }
 
     private void buildForDescendant(Dynamism ascendantDynamism, Fcc descendantFcc) {
+
+        // If there are no fruits method did not returned
         Dynamism positiveDescendant = dataInterface.getDynamism(descendantFcc,0);
         Dynamism negativeDescendant = dataInterface.getDynamism(descendantFcc,1);
         Dynamism symmetricDescendant = dataInterface.getDynamism(descendantFcc,2);
@@ -97,22 +109,23 @@ public class FccMenu extends Menu {
         return actionEvent -> {
             // if user selects
             if (checkMenuItem.selectedProperty().get()) {
-                // If there's a fruit just add Inclusion and Tie will know what to do when Inclusions updates
-                boolean thereIsFruit = false;
-                for (Fruit fruit : tree.getObservableFruits()) {
-                    if (fruit.getFcc().getIdFcc() == descendantDynamism.getFcc().getIdFcc()) {
-                        thereIsFruit=true;
+                boolean condition = false;
+                // If there's a fruit as descendant with fcc of descendantDynamism don't add a new Fruit
+                for (Fruit fruit1 : fruit.getDescendantFruits()) {
+                    // if(this.equals(fruit1)) continue;
+                    if (fruit1.getFcc().getIdFcc() == descendantDynamism.getFcc().getIdFcc()) {
                         dataInterface.newInclusion(descendantDynamism, ascendantDynamism);
+                        condition=true;
                     }
                 }
-                // If there's not a fruit add one, again don't check if there are branches or not (yet)
-                if (!thereIsFruit) {
+                // If there's not a fruit add one
+                if (!condition) {
                     fruitController.resetValueInScaleSlider();
                     Fruit newFruit = fruit.getSubBranch().addToRightTrunk(deployFcc);
                     fruitController.tie(newFruit);
                     dataInterface.newInclusion(descendantDynamism, ascendantDynamism);
-                    fruitController.buildMenus();
                 }
+                fruitController.buildMenus();
             }
             // if user deselects
             else if (!checkMenuItem.selectedProperty().get()){
@@ -129,5 +142,4 @@ public class FccMenu extends Menu {
             }
         };
     }
-
 }

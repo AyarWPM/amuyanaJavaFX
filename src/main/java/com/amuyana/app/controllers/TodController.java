@@ -1,6 +1,5 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.FXMLSource;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.LogicSystem;
@@ -19,7 +18,12 @@ import com.amuyana.app.node.content.RightPanelTab;
 import com.amuyana.app.node.content.TodContentTab;
 import com.amuyana.app.node.tod.Tree;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ListBinding;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -29,13 +33,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.HBox;
 
 public class TodController implements Initializable {
-    private NodeInterface nodeInterface;
-    private DataInterface dataInterface;
-    private Tod tod;
-
     @FXML private SplitPane splitPane;
     @FXML private Group canvas;
     @FXML private Slider scaleSlider;
@@ -43,21 +42,87 @@ public class TodController implements Initializable {
     @FXML private ScrollPane treeScrollPane;
 
     @FXML private Label todNameLabel;
+    @FXML private Label logicSystemNameLabel;
     @FXML private TextField todNameTextField;
-    @FXML private HBox nameTodHBox;
     @FXML private ListView<Fcc> fccsInTodListView;
+    @FXML private ScrollPane leftPanel;
+    @FXML private Button toggleTodNameButton;
 
+    @FXML private Button toggleLeftPanelButton;
     @FXML private TabPane rightTabPane;
+
+    private NodeInterface nodeInterface;
+    private DataInterface dataInterface;
+    private Tod tod;
 
     private TodContentTab todContentTab;
     private Tree tree;
+    private BooleanProperty editName;
+    private BooleanProperty leftPanelOpen;
+    private BooleanProperty rightPanelOpen;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.dataInterface = MainBorderPane.getDataInterface();
-//        treeScrollPane.setOnScroll(e->{if(e.isShiftDown()) e.consume(); return;});
-        hideRightTabPane();
+        editName = new SimpleBooleanProperty();
+        leftPanelOpen = new SimpleBooleanProperty(true);
+        rightPanelOpen = new SimpleBooleanProperty(true);
+
+        toggleRightTabPane();
         manageEvents();
+    }
+
+    public void setTab(TodContentTab todContentTab) {
+        this.todContentTab = todContentTab;
+    }
+
+    public void setNodeInterface(NodeInterface nodeInterface) {
+        this.nodeInterface=nodeInterface;
+    }
+
+    public void newTod(LogicSystem logicSystem) {
+        // get the maximum id of tables of deductions and add 1
+        int currentValue=0;
+        for (Tod tod : dataInterface.getTods(logicSystem)) {
+            if (currentValue < tod.getIdTod()) {
+                currentValue = tod.getIdTod();
+            }
+        }
+        currentValue+=1;
+
+        this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
+
+        this.canvas.getChildren().setAll(loadFccSelector());
+        bindProperties();
+    }
+
+    public void openTod(Tod tod) {
+        this.tod = tod;
+        bindProperties();
+
+        if (dataInterface.getFccs(tod).isEmpty()) {
+            Node node = loadFccSelector();
+            this.canvas.getChildren().setAll(node);
+        } else if (!dataInterface.getFccs(tod).isEmpty()) {
+            showTree();
+        }
+    }
+
+    private void bindProperties() {
+        todNameLabel.textProperty().bind(todNameTextField.textProperty());
+        todNameLabel.visibleProperty().bind(editName.not());
+        todNameLabel.managedProperty().bind(editName.not());
+
+        todNameTextField.textProperty().bindBidirectional(tod.labelProperty());
+        todNameTextField.visibleProperty().bind(editName);
+        todNameTextField.managedProperty().bind(editName);
+    }
+
+    public void fillData() {
+        logicSystemNameLabel.textProperty().bind(nodeInterface.getLogicSystem().labelProperty());
+        fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
+
     }
 
     private void manageEvents() {
@@ -67,7 +132,7 @@ public class TodController implements Initializable {
                 if (change.next()) {
                     if (change.wasRemoved()) {
                         if (change.getList().size() == 1) {
-                            hideRightTabPane();
+                            setRightPanelOpen(false);
                         }
                     }
                 }
@@ -98,45 +163,56 @@ public class TodController implements Initializable {
         treeScrollPane.setVvalue((treeScrollPane.getVvalue()+1)*0.3+treeScrollPane.getVvalue()*deltaY*40);
     }
 
+    @FXML
+    private void toggleTodName() {
+        if (isEditName()) {
+            // Save
+            setEditName(false);
+            dataInterface.update(tod);
+            toggleTodNameButton.setText("Edit");
+        } else {
+            setEditName(true);
+            toggleTodNameButton.setText("Save");
+
+        }
+    }
+
+    @FXML
+    private void toggleLeftPanel() {
+        if (getLeftPanelOpen()) {
+            setLeftPanelOpen(false);
+            toggleLeftPanelButton.setText("\u2192");
+            splitPane.getItems().remove(leftPanel);
+        } else {
+            setLeftPanelOpen(true);
+            toggleLeftPanelButton.setText("\u2190");
+            splitPane.getItems().add(0, leftPanel);
+        }
+    }
+
+    @FXML
+    private void editTod() {
+
+    }
+
     private TodController getThisTodController() {
         return this;
     }
 
-    public void setNodeInterface(NodeInterface nodeInterface) {
-        this.nodeInterface=nodeInterface;
-    }
-
-    private void hideRightTabPane() {
-        splitPane.getItems().remove(rightTabPane);
-    }
-
-    void showRightTabPane(Tab tab) {
-        if (splitPane.getItems().size() == 2) {
+    private void toggleRightTabPane() {
+        if (getRightPanelOpen()) {
+            setRightPanelOpen(false);
+            splitPane.getItems().remove(rightTabPane);
+        } else {
             splitPane.getItems().add(rightTabPane);
-            rightTabPane.getTabs().add(tab);
-        } else if (splitPane.getItems().size() == 3) {
-            rightTabPane.getTabs().add(tab);
+            setRightPanelOpen(true);
         }
-    }
-
-    public void fillData() {
-        todNameLabel.textProperty().bind(this.tod.labelProperty());
-        // If there's no fcc in the tod, then show the FccSelector.fxml
-        /*if (dataInterface.getFccs(tod).isEmpty()) {
-            loadFccSelector();
-        } else if(!dataInterface.getFccs(tod).isEmpty()){
-            showNewTree();
-        }*/
-    }
-
-    public void setTab(TodContentTab todContentTab) {
-        this.todContentTab = todContentTab;
     }
 
     public void closeTab(RightPanelTab rightPanelTab) {
         rightTabPane.getTabs().remove(rightPanelTab);
         if (rightTabPane.getTabs().isEmpty()) {
-            hideRightTabPane();
+            toggleRightTabPane();
         }
     }
 
@@ -161,42 +237,10 @@ public class TodController implements Initializable {
                 }
             }
         }
+        toggleRightTabPane();
         FccEditorTab fccEditorTab =new FccEditorTab(getThisTodController(),nodeInterface,fcc);
-        showRightTabPane(fccEditorTab);
+        rightTabPane.getTabs().add(fccEditorTab);
         rightTabPane.getSelectionModel().select(fccEditorTab);
-    }
-
-    public void newTod(LogicSystem logicSystem) {
-        // get the maximum id of tables of deductions and add 1
-        int currentValue=0;
-        for (Tod tod : dataInterface.getTods(logicSystem)) {
-            if (currentValue < tod.getIdTod()) {
-                currentValue = tod.getIdTod();
-            }
-        }
-        currentValue+=1;
-
-        this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
-
-        // As we don't know yet if the user starts by creating a new FCC or by loading an existing one (or a
-        // functional o a class), we don't initialize the Tree yet, we loadExistingTree the fcc selector
-
-        this.canvas.getChildren().setAll(loadFccSelector());
-        bindProperties();
-    }
-
-    public void openTod(Tod tod) {
-        this.tod = tod;
-        bindProperties();
-
-        // as we are loading this for an existing Tod, check if there are any FCCs in the tod, then decide
-        // to show or not fccSelector.css
-        if (dataInterface.getFccs(tod).isEmpty()) {
-            Node node = loadFccSelector();
-            this.canvas.getChildren().setAll(node);
-        } else if (!dataInterface.getFccs(tod).isEmpty()) {
-            showTree();
-        }
     }
 
     private void showScaleSlider() {
@@ -218,20 +262,10 @@ public class TodController implements Initializable {
         return node;
     }
 
-    public void bindProperties() {
-        this.todNameLabel.textProperty().bind(this.tod.labelProperty());
-        todNameTextField.textProperty().bind(this.tod.labelProperty());
-        //fccsInTodListView.setItems(dataInterface.getFruit(this.tod));
-    }
-
-    @FXML
-    private void editTod() {
-
-    }
-
     public ScrollPane getTreeScrollPane() {
         return treeScrollPane;
     }
+
 
     public Tod getTod() {
         return this.tod;
@@ -258,6 +292,7 @@ public class TodController implements Initializable {
         this.tree.loadExistingTree();
         canvas.getChildren().setAll(this.tree);
         this.tree.buildFruitsMenus();
+        this.tree.buildTies();
         showScaleSlider();
     }
 
@@ -266,14 +301,16 @@ public class TodController implements Initializable {
         this.tree.loadNewTree();
         canvas.getChildren().setAll(this.tree);
         this.tree.buildFruitsMenus();
+        this.tree.buildTies();
         showScaleSlider();
     }
 
     void showNewTree(Fcc fcc) {
-        this.tree = new Tree(this, fcc);
+        this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
         canvas.getChildren().setAll(this.tree);
         this.tree.buildFruitsMenus();
+        this.tree.buildTies();
         showScaleSlider();
     }
 
@@ -287,5 +324,41 @@ public class TodController implements Initializable {
 
     Group getCanvas() {
         return this.canvas;
+    }
+
+    public boolean isEditName() {
+        return editName.get();
+    }
+
+    public BooleanProperty editNameProperty() {
+        return editName;
+    }
+
+    public void setEditName(boolean editName) {
+        this.editName.set(editName);
+    }
+
+    public boolean getLeftPanelOpen() {
+        return leftPanelOpen.get();
+    }
+
+    public BooleanProperty leftPanelOpenProperty() {
+        return leftPanelOpen;
+    }
+
+    public void setLeftPanelOpen(boolean leftPanelOpen) {
+        this.leftPanelOpen.set(leftPanelOpen);
+    }
+
+    public boolean getRightPanelOpen() {
+        return rightPanelOpen.get();
+    }
+
+    public BooleanProperty rightPanelOpenProperty() {
+        return rightPanelOpen;
+    }
+
+    public void setRightPanelOpen(boolean rightPanelOpen) {
+        this.rightPanelOpen.set(rightPanelOpen);
     }
 }

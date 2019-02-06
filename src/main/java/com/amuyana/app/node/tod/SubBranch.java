@@ -39,7 +39,6 @@ public class SubBranch extends HBox {
 
         this.getChildren().addAll(leftTrunk, fruit,rightTrunk);
         this.fruit.loadFruitSource();
-        this.fruit.getFruitController().buildTies();
     }
 
     // For the creation of the first Fruit
@@ -55,11 +54,10 @@ public class SubBranch extends HBox {
         this.fruit = new Fruit(this, fcc);
         this.getChildren().addAll(leftTrunk, fruit,rightTrunk);
         this.fruit.loadFruitSource();
-        this.fruit.getFruitController().buildTies(); // ?<- should this be here?
     }
 
     private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()));
+        this.spacingProperty().bind(Bindings.divide(30,branch.getTrunk().levelProperty()));
 
         if (branch.getTrunk().isSide()) {
             setId("RightSide");

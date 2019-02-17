@@ -13,12 +13,13 @@ public enum FXMLSource {
     FCCS("/fxml/Fccs.fxml"),
     INCLUSIONS("/fxml/Inclusion.fxml"),
     SYLLOGISM("/fxml/Syllogism.fxml"),
-    CCLASS("/com/amuyana/app/controllers/CClass.fxml"),
-    CONJUNCTION("/com/amuyana/app/controllers/Conjunction.fxml"),
+    CCLASS("/fxml/CClass.fxml"),
+    CONJUNCTION("/fxml/Conjunction.fxml"),
     DIALECTIC("/fxml/Dialectic.fxml"),
     STC("/fxml/Stc.fxml"),
     STATS("/fxml/Stats.fxml"),
-    FRUIT("/fxml/Fruit.fxml");
+    FRUIT("/fxml/Fruit.fxml"),
+    ABOUT("/fxml/About.fxml");
 
     private final String url;
 

@@ -1,5 +1,6 @@
 package com.amuyana.app.node;
 
+import com.amuyana.app.controllers.FXMLSource;
 import com.amuyana.app.controllers.LogicSystemController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;
@@ -10,10 +11,14 @@ import com.amuyana.app.node.content.ContentTabPane;
 import com.amuyana.app.node.content.LogicSystemContentTab;
 import com.amuyana.app.node.content.TodContentTab;
 import com.amuyana.app.node.menu.TopMenuBar;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.Optional;
 
 
@@ -104,7 +109,7 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
         stage.setTitle("Amuyaña - " + logicSystem.getLabel());
         topMenuBar.logicSystemIsLoaded(true);
         topMenuBar.updateTodMenu();
-        //Message.loadedLogicSystem();
+        Message.loadedLogicSystem();
     }
 
     @Override
@@ -221,5 +226,20 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
     @Override
     public void duplicate(Tod tod) {
 
+    }
+
+    @Override
+    public void openAboutWindow() {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.ABOUT.getUrl()));
+        try {
+            System.out.println("fxmlLoader = " + fxmlLoader);
+            Parent parent = (Parent)fxmlLoader.load();
+            Stage stage1 = new Stage();
+            stage1.setTitle("About");
+            stage1.setScene(new Scene(parent));
+            stage1.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

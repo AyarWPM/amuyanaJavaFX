@@ -9,6 +9,7 @@ import com.amuyana.app.data.tod.containers.Tod;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import com.amuyana.app.node.MainBorderPane;
@@ -18,12 +19,9 @@ import com.amuyana.app.node.content.RightPanelTab;
 import com.amuyana.app.node.content.TodContentTab;
 import com.amuyana.app.node.tod.Tree;
 
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ListBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -126,14 +124,11 @@ public class TodController implements Initializable {
     }
 
     private void manageEvents() {
-        rightTabPane.getTabs().addListener(new ListChangeListener<Tab>() {
-            @Override
-            public void onChanged(Change<? extends Tab> change) {
-                if (change.next()) {
-                    if (change.wasRemoved()) {
-                        if (change.getList().size() == 1) {
-                            setRightPanelOpen(false);
-                        }
+        rightTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
+            if (change.next()) {
+                if (change.wasRemoved()) {
+                    if (change.getList().size() == 1) {
+                        setRightPanelOpen(false);
                     }
                 }
             }
@@ -209,7 +204,7 @@ public class TodController implements Initializable {
         }
     }
 
-    public void closeTab(RightPanelTab rightPanelTab) {
+    void closeTab(RightPanelTab rightPanelTab) {
         rightTabPane.getTabs().remove(rightPanelTab);
         if (rightTabPane.getTabs().isEmpty()) {
             toggleRightTabPane();
@@ -217,14 +212,8 @@ public class TodController implements Initializable {
     }
 
 
-    public EventHandler<ActionEvent> openFccEditorEventHandler(Fcc fcc) {
-        EventHandler<ActionEvent> eventEventHandler = new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent actionEvent) {
-                openFccEditor(fcc);
-            }
-        };
-        return eventEventHandler;
+    EventHandler<ActionEvent> openFccEditorEventHandler(Fcc fcc) {
+        return actionEvent -> openFccEditor(fcc);
     }
 
     public void openFccEditor(Fcc fcc) {
@@ -258,7 +247,7 @@ public class TodController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        fccSelectorController.initialize(this.nodeInterface,this.todContentTab);
+        Objects.requireNonNull(fccSelectorController).initialize(this.nodeInterface,this.todContentTab);
         return node;
     }
 
@@ -287,29 +276,31 @@ public class TodController implements Initializable {
                    |_||_|  \___|\___|
 
          */
-    void showTree() {
+    private void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
         canvas.getChildren().setAll(this.tree);
-        this.tree.buildFruitsMenus();
+        this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
     }
+
 
     void showNewTree() {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
         canvas.getChildren().setAll(this.tree);
-        this.tree.buildFruitsMenus();
+        this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
     }
+
 
     void showNewTree(Fcc fcc) {
         this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
         canvas.getChildren().setAll(this.tree);
-        this.tree.buildFruitsMenus();
+        this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
     }
@@ -326,7 +317,7 @@ public class TodController implements Initializable {
         return this.canvas;
     }
 
-    public boolean isEditName() {
+    private boolean isEditName() {
         return editName.get();
     }
 
@@ -334,11 +325,11 @@ public class TodController implements Initializable {
         return editName;
     }
 
-    public void setEditName(boolean editName) {
+    private void setEditName(boolean editName) {
         this.editName.set(editName);
     }
 
-    public boolean getLeftPanelOpen() {
+    private boolean getLeftPanelOpen() {
         return leftPanelOpen.get();
     }
 
@@ -346,11 +337,11 @@ public class TodController implements Initializable {
         return leftPanelOpen;
     }
 
-    public void setLeftPanelOpen(boolean leftPanelOpen) {
+    private void setLeftPanelOpen(boolean leftPanelOpen) {
         this.leftPanelOpen.set(leftPanelOpen);
     }
 
-    public boolean getRightPanelOpen() {
+    private boolean getRightPanelOpen() {
         return rightPanelOpen.get();
     }
 
@@ -358,7 +349,7 @@ public class TodController implements Initializable {
         return rightPanelOpen;
     }
 
-    public void setRightPanelOpen(boolean rightPanelOpen) {
+    private void setRightPanelOpen(boolean rightPanelOpen) {
         this.rightPanelOpen.set(rightPanelOpen);
     }
 }

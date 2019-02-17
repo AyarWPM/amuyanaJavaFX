@@ -39,8 +39,8 @@ public class Fruit extends VBox {
         this.fcc = fcc;
     }
 
-    public void loadFruitSource() {
-        getTree().addFruit(this);
+    void loadFruitSource() {
+        //getTree().addFruit(this);
         HBox hBox = new HBox(new Group(loadFruit()));
         hBox.setAlignment(Pos.CENTER);
         this.setAlignment(Pos.CENTER);
@@ -51,13 +51,52 @@ public class Fruit extends VBox {
      * @param fcc The fcc tested descendant of this.fruit
      * @return True if fruit in parameter is descendant of fruit calling the method
      */
-    public boolean isDescendant(Fcc fcc) {
+    private boolean isDescendant(Fcc fcc) {
         for (Inclusion inclusion : dataInterface.getListInclusions()) {
             Dynamism particular = inclusion.getParticular();
             Dynamism general = inclusion.getGeneral();
             if (fcc.getIdFcc()==particular.getFcc().getIdFcc()) {
                 if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
                     return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Checks 1) if the fruit and fruit in parameter are one on the left or right container of the other and
+     * 2) if there's an inclusion between them
+     * @param fruit The descendant, ie situated at the right hand side of this.fruit
+     * @return true if both conditions are true, false if either is false
+     */
+    public boolean isDescendant(Fruit fruit) {
+        ObservableList<Fruit> leftFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : fruit.getSubBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                leftFruits.addAll(subBranch1.getFruit());
+            }
+        }
+        ObservableList<Fruit> rightFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : this.getSubBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                rightFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+            Dynamism particular = inclusion.getParticular();
+            Dynamism general = inclusion.getGeneral();
+            if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+                if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                    // fruit is in right trunk of fruit
+                    if (rightFruits.contains(fruit)) {
+                        return true;
+                    }
+                    // this.fruit is in left trunk of fruit
+                    if (leftFruits.contains(this)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -88,11 +127,7 @@ public class Fruit extends VBox {
         return this.subBranch;
     }
 
-    /**
-     * Get the Branch this Fruit is in, ie where the this.subBranch is
-     * @return
-     */
-    Branch getBranch() {
+    private Branch getBranch() {
         return subBranch.getBranch();
     }
 
@@ -109,7 +144,7 @@ public class Fruit extends VBox {
         return fruit;
     }
 
-    public FruitController getFruitController() {
+    FruitController getFruitController() {
         return fruitController;
     }
 
@@ -124,16 +159,12 @@ public class Fruit extends VBox {
                 }
             }
         }
-
-        // second check if it is in a left trunk of another fruit that descends from this.fruit
-        for (Fruit fruit1 : getTree().getObservableFruits()) {
-            for (Branch leftTrunkBranch: fruit1.getSubBranch().getLeftTrunk().getBranches()) {
-                for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
-                    if(this.equals(fruit1)) continue;
-                    if (isDescendant(subBranch.getFruit().getFcc())) {
-                        descendantFruits.addAll(subBranch.getFruit());
-                    }
-                }
+        // second consider this fruit is inside a leftTrunk of a subBranch that has
+        // deployed this fruit as ascendant
+        if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            if (!getTrunk().isSide()) {
+                // for now we only consider subBranches' trunks
+                descendantFruits.addAll(getTrunk().getSubBranch().getFruit());
             }
         }
         return descendantFruits;
@@ -149,18 +180,34 @@ public class Fruit extends VBox {
                 }
             }
         }
-
-        // 2. check if it is in a right Trunk of another fruit and if isDescendant
-        for (Fruit fruit1 : getTree().getObservableFruits()) {
-            for (Branch rightTrunkBranch : fruit1.getSubBranch().getRightTrunk().getBranches()) {
-                for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
-                    if(this.equals(fruit1)) continue;
-                    if (subBranch.getFruit().isDescendant(getFcc())) {
-                        ascendantFruits.addAll(subBranch.getFruit());
-                    }
-                }
+        // 2. consider this fruit is inside a rightTrunk of another fruit's subBranch that has deployed
+        // this fruit as descendant
+        if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            if (getTrunk().isSide()) {
+                // for now we only consider subBranches' trunks
+                ascendantFruits.addAll(getTrunk().getSubBranch().getFruit());
             }
         }
         return ascendantFruits;
     }
+    // Here I'm checking for trunks of subBranch only, not branch because I'm not considering conjunctions nor classes yet
+    boolean isChild(Fruit fruit) {
+        for (Branch branch : subBranch.getLeftTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (fruit1.equals(fruit)) {
+                    return true;
+                }
+            }
+        }
+        for (Branch branch : subBranch.getRightTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (fruit1.equals(fruit)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
 }

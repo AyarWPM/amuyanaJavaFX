@@ -4,10 +4,8 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.canvas.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.shape.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
 <Group fx:id="fruitGroup" stylesheets="@../css/fruit.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FruitController">
@@ -65,7 +63,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="positiveDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="positiveDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -81,7 +79,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="negativeDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="negativeDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -97,7 +95,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="symmetricDescendantsMenuButton" layoutX="10.0" layoutY="-21.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="symmetricDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>

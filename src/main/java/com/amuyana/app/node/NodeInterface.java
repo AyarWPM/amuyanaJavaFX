@@ -30,4 +30,5 @@ public interface NodeInterface {
     void delete(Tod tod);
     void duplicate(Tod tod);
 
+    void openAboutWindow();
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox alignment="CENTER" spacing="10.0">
+         <children>
+            <Label text="Amuyaña">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Label layoutX="10.0" layoutY="10.0" text="(Prototype)" />
+         </children>
+      </HBox>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña allows the creation of Table of deductions from the Dynamic logic of the contradictory." wrappingWidth="350.0" />
+      <Text layoutX="35.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Future version could include the capacity to register statistical events and compute descriptive and inferential statistics." wrappingWidth="350.0" />
+      <Text layoutX="10.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña is developed by Ayar Portugal (ayarportugal@gmail.com)" wrappingWidth="350.0" />
+      <Text layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña is free and open source software." />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</VBox>

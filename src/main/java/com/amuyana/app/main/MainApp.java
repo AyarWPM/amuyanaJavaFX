@@ -11,13 +11,13 @@ import javafx.stage.Stage;
 
 public class MainApp extends Application {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         launch(args);
         System.exit(0);
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         DataInterface dataInterface = new DataHandler();
         dataInterface.setDataConnectionValues("localhost", "amuyana", "");
         dataInterface.loadData();
@@ -32,5 +32,16 @@ public class MainApp extends Application {
         stage.setTitle("Amuyaña");
         stage.setScene(scene);
         stage.show();
+
+        /*boolean condition1 = false;
+        boolean condition2 = false;
+        boolean condition3 = false;
+
+        if (condition1 || condition2 || condition3) {
+            System.out.println("1");
+        } else if (!condition1 && !condition2 && !condition3) {
+            System.out.println("2");
+        }*/
+
     }
 }

@@ -1,7 +1,9 @@
 package com.amuyana.app.node.tod;
 
 import com.amuyana.app.data.DataInterface;
+import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
+import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container1;
 import com.amuyana.app.node.MainBorderPane;
@@ -26,10 +28,11 @@ public class Trunk extends VBox {
     private boolean side;
 
     public enum TrunkType {
-        TREE,BRANCH,SUBBRANCH;
+        TREE,BRANCH,SUBBRANCH
     }
     // constructor to loadExistingTree a Tree with only one Fcc on it
     // Container0 is already provided because it was needed to instantiate the Tod, and the Fcc the FccEditor
+
     Trunk(Tree tree, Container0 container0) {
         level = new SimpleDoubleProperty(1);
         this.tree = tree;
@@ -37,19 +40,17 @@ public class Trunk extends VBox {
         this.trunkType = TrunkType.TREE;
         setStyle();
     }
-
     // Accessed after the constructor above
-    public void loadNewBranch(Fcc fcc) {
+    void loadNewBranch(Fcc fcc) {
         Branch branch = new Branch(this);
         SubBranch subBranch = branch.newSubBranch(fcc); // does nothing with subBranch but newSubBranch does instantiation
         addBranch(branch);
     }
-
     /**
-     * @param tree
-     * @param container0
-     * @param branch
-     * @param side The side with respect to the Fruit for the SubBranch and the SubBranches for the Branch, false
+     * @param tree Tree of the TOD
+     * @param container0 The container0 of this.trunk
+     * @param branch The Branch where this trunk is
+     * @param side The side trunk is wrt the Branch's sides. False is left True is right.
      */
     Trunk(Tree tree, Container0 container0, Branch branch, boolean side) {
         level = new SimpleDoubleProperty(branch.getTrunk().getLevel()+1);
@@ -64,6 +65,7 @@ public class Trunk extends VBox {
     }
 
     // Loading from inside subBranches
+
     Trunk(Tree tree, Container0 container0, SubBranch subBranch, boolean side) {
         level = new SimpleDoubleProperty(subBranch.getBranch().getTrunk().getLevel()+1);
         this.tree = tree;
@@ -74,6 +76,7 @@ public class Trunk extends VBox {
         setStyle();
     }
     // called after the (two) above constructor(s) only
+
     void loadBranches() {
         for (Container1 container1 : dataInterface.getContainer1s(container0)) {
             Branch branch = new Branch(this, container1);
@@ -81,7 +84,6 @@ public class Trunk extends VBox {
             branch.loadSubBranchesAndTrunks();
         }
     }
-
     // Will create new Container0, when loading a Tree
     Trunk(Tree tree, Branch branch, boolean side) {
         level = new SimpleDoubleProperty(branch.getTrunk().getLevel()+1);
@@ -92,7 +94,6 @@ public class Trunk extends VBox {
         setSide(side);
         setStyle();
     }
-
     Trunk(Tree tree, SubBranch subBranch, boolean side) {
         level = new SimpleDoubleProperty(subBranch.getBranch().getTrunk().getLevel()+1);
         this.tree = tree;
@@ -110,7 +111,6 @@ public class Trunk extends VBox {
         this.spacingProperty().bind(Bindings.divide(10,levelProperty()));
         this.tree.updateMaxLevel(level.getValue());
     }
-
     boolean isSide() {
         return this.side;
     }
@@ -133,8 +133,19 @@ public class Trunk extends VBox {
         dataInterface.delete(branchToRemove.getLeftTrunk().getContainer0());
         dataInterface.delete(branchToRemove.getRightTrunk().getContainer0());
         dataInterface.delete(branchToRemove.getContainer1());
-
+        System.out.println("branchToRemove = " + branchToRemove);
+        System.out.println("getBranches() = " + getBranches());
         getChildren().remove(branchToRemove);
+        System.out.println("getBranches() = " + getBranches());
+    }
+
+    public void remove(SubBranch subBranch) {
+        Branch branch = subBranch.getBranch();
+        branch.remove(subBranch);
+        // If branch is empty remove the branch
+        if (branch.getSubBranches().isEmpty()) {
+            remove(branch);
+        }
     }
 
     public ObservableList<Branch> getBranches() {
@@ -150,7 +161,11 @@ public class Trunk extends VBox {
         return this.container0;
     }
 
-    public TrunkType getTrunkType() {
+    public void deleteContainer0() {
+
+    }
+
+    TrunkType getTrunkType() {
         return this.trunkType;
     }
 
@@ -181,7 +196,7 @@ public class Trunk extends VBox {
         return branch;
     }
 
-    public SubBranch getSubBranch() {
+    SubBranch getSubBranch() {
         return subBranch;
     }
 }

@@ -19,7 +19,6 @@ import java.util.List;
 public class Tie {
     private final Fruit ascendantFruit;
     private final Fruit descendantFruit;
-    private final Tree tree;
     private final DataInterface dataInterface = MainBorderPane.getDataInterface();
 
     private BooleanProperty positiveOrientation;
@@ -27,18 +26,15 @@ public class Tie {
     private BooleanProperty symmetricOrientation;
 
     private ObservableList<Line> lines;
-    private Line line1;
-    private Line line2;
-    private Line line3;
 
     // Used when user deploys to a new FCC or Tree, so we create three inclusions
     public Tie(Fruit descendantFruit, Fruit ascendantFruit){
         this.descendantFruit = descendantFruit;
         this.ascendantFruit = ascendantFruit;
-        this.tree = descendantFruit.getTree();
         initialize();
         buildLines();
-        manageListeners();
+        setOrientations();
+        //manageListeners();
     }
 
     private void initialize() {
@@ -48,10 +44,10 @@ public class Tie {
         symmetricOrientation = new SimpleBooleanProperty();
     }
 
-    public void buildLines() {
-        this.line1 = new Line();
-        this.line2 = new Line();
-        this.line3 = new Line();
+    private void buildLines() {
+        Line line1 = new Line();
+        Line line2 = new Line();
+        Line line3 = new Line();
 
         line1.visibleProperty().bind(positiveOrientation);
         line2.visibleProperty().bind(negativeOrientation);
@@ -111,48 +107,48 @@ public class Tie {
                 knob0Bind));
 
 
-        lines.addAll(line1,line2,line3);
+        lines.addAll(line1, line2, line3);
     }
 
-    private void manageListeners() {
+    /*private void manageListeners() {
         ObservableList<Inclusion> inclusions = MainBorderPane.getDataInterface().getListInclusions();
-        inclusions.addListener(listenInclusions());
-    }
+        inclusions.addListener(updateOrientationsListener());
+    }*/
 
-
-    private ListChangeListener<Inclusion> listenInclusions() {
-        return new ListChangeListener<Inclusion>() {
-            @Override
-            public void onChanged(Change<? extends Inclusion> change) {
-                updateOrientations();
-            }
-        };
-    }
-
-    public void updateOrientations() {
-        positiveOrientation.set(false);
-        negativeOrientation.set(false);
-        symmetricOrientation.set(false);
-
+    public void setOrientations() {
+        Dynamism positiveDescendantDynamism = dataInterface.getDynamism(descendantFruit.getFcc(),0);
+        Dynamism negativeDescendantDynamism = dataInterface.getDynamism(descendantFruit.getFcc(),1);
+        Dynamism symmetricDescendantDynamism = dataInterface.getDynamism(descendantFruit.getFcc(),2);
         Dynamism positiveAscendantDynamism = dataInterface.getDynamism(ascendantFruit.getFcc(),0);
         Dynamism negativeAscendantDynamism = dataInterface.getDynamism(ascendantFruit.getFcc(),1);
         Dynamism symmetricAscendantDynamism = dataInterface.getDynamism(ascendantFruit.getFcc(),2);
 
-        if (dataInterface.isInclusion(descendantFruit.getFcc(), positiveAscendantDynamism)) {
+        boolean pp = dataInterface.isInclusion(positiveDescendantDynamism, positiveAscendantDynamism);
+        boolean pn = dataInterface.isInclusion(negativeDescendantDynamism, positiveAscendantDynamism);
+        boolean ps = dataInterface.isInclusion(symmetricDescendantDynamism, positiveAscendantDynamism);
+        boolean np = dataInterface.isInclusion(positiveDescendantDynamism, negativeAscendantDynamism);
+        boolean nn = dataInterface.isInclusion(negativeDescendantDynamism, negativeAscendantDynamism);
+        boolean ns = dataInterface.isInclusion(symmetricDescendantDynamism, negativeAscendantDynamism);
+        boolean sp = dataInterface.isInclusion(positiveDescendantDynamism, symmetricAscendantDynamism);
+        boolean sn = dataInterface.isInclusion(negativeDescendantDynamism, symmetricAscendantDynamism);
+        boolean ss = dataInterface.isInclusion(symmetricDescendantDynamism, symmetricAscendantDynamism);
+
+        if (pp || pn || ps) {
             positiveOrientation.set(true);
-        }
-        if (dataInterface.isInclusion(descendantFruit.getFcc(), negativeAscendantDynamism)) {
-            negativeOrientation.set(true);
-        }
-        if (dataInterface.isInclusion(descendantFruit.getFcc(), symmetricAscendantDynamism)) {
-            symmetricOrientation.set(true);
+        } else if (!pp && !pn && !ps) {
+            positiveOrientation.set(false);
         }
 
-        // If all 3 are false then we remove the descendantFruit... except if that one has descendants or ascendants
-        // on its own child.
-        if (!positiveOrientation.get() & !negativeOrientation.get() & !symmetricOrientation.get()) {
-            tree.remove(descendantFruit);  // removes from both fruits and observableFruits lists
-            tree.buildFruitsMenus();
+        if (np || nn || ns) {
+            negativeOrientation.set(true);
+        } else if (!np && !nn && !ns) {
+            negativeOrientation.set(false);
+        }
+
+        if (sp || sn || ss) {
+            symmetricOrientation.set(true);
+        } else if (!sp && !sn && !ss) {
+            symmetricOrientation.set(false);
         }
     }
 
@@ -164,11 +160,11 @@ public class Tie {
         return descendantFruit;
     }
 
-    public List<Line> getLines() {
+    List<Line> getLines() {
         return this.lines;
     }
 
-    public boolean getPositiveOrientation() {
+    boolean getPositiveOrientation() {
         return positiveOrientation.get();
     }
 
@@ -180,7 +176,7 @@ public class Tie {
         this.positiveOrientation.set(positiveOrientation);
     }
 
-    public boolean getNegativeOrientation() {
+    boolean getNegativeOrientation() {
         return negativeOrientation.get();
     }
 
@@ -192,7 +188,7 @@ public class Tie {
         this.negativeOrientation.set(negativeOrientation);
     }
 
-    public boolean getSymmetricOrientation() {
+    boolean getSymmetricOrientation() {
         return symmetricOrientation.get();
     }
 

@@ -19,7 +19,7 @@ public class FccEditorTab extends RightPanelTab {
     public FccEditorTab(TodController todController, NodeInterface nodeInterface, Fcc fcc) {
         loadSource();
 
-        this.fccEditorController.setInterfaces(todController, nodeInterface);
+        this.fccEditorController.setInterfaces(todController);
         this.fccEditorController.setValues(this, fcc);
 
         this.fccEditorController.fillData();
@@ -28,7 +28,7 @@ public class FccEditorTab extends RightPanelTab {
         bindProperties();
     }
 
-    void loadSource() {
+    private void loadSource() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.FCCEDITOR.getUrl()));
             Node node = fxmlLoader.load();
@@ -42,12 +42,9 @@ public class FccEditorTab extends RightPanelTab {
     private void bindProperties() {
         textProperty().bind(this.getFccEditorController().getFcc().nameProperty());
         //setText(this.getFccController().getFruit().getName());
-        setOnCloseRequest(new EventHandler<Event>() {
-            @Override
-            public void handle(Event event) {
-                event.consume();
-                fccEditorController.close();
-            }
+        setOnCloseRequest(event -> {
+            event.consume();
+            fccEditorController.close();
         });
     }
 

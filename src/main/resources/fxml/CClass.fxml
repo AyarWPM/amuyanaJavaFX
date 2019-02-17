@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox id="CClassRoot" spacing="10.0" stylesheets="@../../../../../resources/css/cClass.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.ConjunctionController">
+<VBox id="CClassRoot" spacing="10.0" stylesheets="@../css/cClass.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.CClassController">
    <children>
       <FlowPane alignment="CENTER" columnHalignment="CENTER" hgap="5.0" vgap="5.0">
          <children>
@@ -20,12 +20,12 @@
          <children>
             <HBox id="SectionTitle" alignment="CENTER_LEFT">
                <children>
-                  <Label minHeight="-Infinity" text="Contradictional Conjunction" wrapText="true" />
+                  <Label minHeight="-Infinity" text="Contradictional Class" wrapText="true" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT">
                <children>
-                  <Label fx:id="cClassNameLabel" minWidth="-Infinity" text="Name of Conjunction" />
+                  <Label fx:id="cClassNameLabel" minWidth="-Infinity" text="Name of CClass" />
                   <TextField fx:id="cClassNameTextField" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
@@ -44,7 +44,7 @@
                      </font>
                   </Label>
                   <VBox fx:id="fccExpressionVBox" alignment="CENTER" prefWidth="100.0" />
-                  <Label layoutX="20.0" layoutY="15.0" text=" to which the terms of the conjunction descend" wrapText="true">
+                  <Label layoutX="20.0" layoutY="15.0" text=" from which the terms of the class are originated " wrapText="true">
                      <font>
                         <Font size="15.0" />
                      </font>
@@ -54,66 +54,6 @@
                   </Label>
                </children>
             </HBox>
-         </children>
-      </VBox>
-      <HBox alignment="CENTER">
-         <children>
-            <VBox alignment="CENTER_LEFT" spacing="5.0">
-               <children>
-                  <CheckBox fx:id="positiveParticularCheckBox" mnemonicParsing="false">
-                     <graphic>
-                        <VBox fx:id="positiveParticularExpressionVBox" alignment="CENTER">
-                           <children>
-                              <Label text="Positive dynamism of particular" />
-                           </children>
-                        </VBox>
-                     </graphic>
-                  </CheckBox>
-                  <CheckBox fx:id="negativeParticularCheckBox" layoutX="184.0" layoutY="10.0" mnemonicParsing="false">
-                     <graphic>
-                        <VBox fx:id="negativeParticularExpressionVBox" alignment="CENTER">
-                           <children>
-                              <Label text="Negative dynamism of particular" />
-                           </children>
-                        </VBox>
-                     </graphic>
-                  </CheckBox>
-                  <CheckBox fx:id="symmetricParticularCheckBox" layoutX="184.0" layoutY="10.0" mnemonicParsing="false">
-                     <graphic>
-                        <VBox fx:id="symmetricParticularExpressionVBox" alignment="CENTER">
-                           <children>
-                              <Label text="Symmetric dynamism of particular" />
-                           </children>
-                        </VBox>
-                     </graphic>
-                  </CheckBox>
-               </children>
-            </VBox>
-         </children>
-      </HBox>
-      <VBox alignment="CENTER" spacing="5.0">
-         <children>
-            <HBox id="SectionTitle">
-               <children>
-                  <Label text="Orientations of the general terms of the conjunction">
-                     <font>
-                        <Font size="15.0" />
-                     </font>
-                     <tooltip>
-                        <Tooltip text="The FCC origin or antecedent of the FCCs of this class" />
-                     </tooltip>
-                  </Label>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER_LEFT" spacing="5.0">
-               <children>
-                  <Label text="Add FCC: " />
-                  <ComboBox fx:id="fccComboBox" prefWidth="150.0" />
-                  <Button id="NormalButton" fx:id="addFccButton" mnemonicParsing="false" onAction="#addFcc" text="Add a new FCC" />
-                  <Button id="NormalButton" fx:id="RemoveFccButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeFcc" text="Remove" />
-               </children>
-            </HBox>
-            <ListView fx:id="fccListView" prefHeight="100.0" />
             <HBox alignment="CENTER">
                <children>
                   <VBox alignment="CENTER_LEFT" spacing="5.0">
@@ -141,6 +81,66 @@
                               <VBox fx:id="symmetricGeneralExpressionVBox" alignment="CENTER">
                                  <children>
                                     <Label text="Symmetric dynamism of general" />
+                                 </children>
+                              </VBox>
+                           </graphic>
+                        </CheckBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+      <VBox alignment="CENTER" spacing="5.0">
+         <children>
+            <HBox id="SectionTitle">
+               <children>
+                  <Label text="Orientations of the particular terms of the inclusions">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <tooltip>
+                        <Tooltip text="The FCC origin or antecedent of the FCCs of this class" />
+                     </tooltip>
+                  </Label>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" spacing="5.0">
+               <children>
+                  <Label text="Add FCC: " />
+                  <ComboBox fx:id="fccComboBox" prefWidth="150.0" />
+                  <Button id="NormalButton" fx:id="addFccButton" mnemonicParsing="false" onAction="#addFcc" text="Add a new FCC" />
+                  <Button id="NormalButton" fx:id="RemoveFccButton" layoutX="234.0" layoutY="10.0" mnemonicParsing="false" onAction="#removeFcc" text="Remove" />
+               </children>
+            </HBox>
+            <ListView fx:id="fccListView" prefHeight="100.0" />
+            <HBox alignment="CENTER">
+               <children>
+                  <VBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <CheckBox fx:id="positiveParticularCheckBox" mnemonicParsing="false">
+                           <graphic>
+                              <VBox fx:id="positiveParticularExpressionVBox" alignment="CENTER">
+                                 <children>
+                                    <Label text="Positive dynamism of particular" />
+                                 </children>
+                              </VBox>
+                           </graphic>
+                        </CheckBox>
+                        <CheckBox fx:id="negativeParticularCheckBox" layoutX="184.0" layoutY="10.0" mnemonicParsing="false">
+                           <graphic>
+                              <VBox fx:id="negativeParticularExpressionVBox" alignment="CENTER">
+                                 <children>
+                                    <Label text="Negative dynamism of particular" />
+                                 </children>
+                              </VBox>
+                           </graphic>
+                        </CheckBox>
+                        <CheckBox fx:id="symmetricParticularCheckBox" layoutX="184.0" layoutY="10.0" mnemonicParsing="false">
+                           <graphic>
+                              <VBox fx:id="symmetricParticularExpressionVBox" alignment="CENTER">
+                                 <children>
+                                    <Label text="Symmetric dynamism of particular" />
                                  </children>
                               </VBox>
                            </graphic>

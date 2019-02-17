@@ -57,7 +57,7 @@ public class SubBranch extends HBox {
     }
 
     private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(30,branch.getTrunk().levelProperty()));
+        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
 
         if (branch.getTrunk().isSide()) {
             setId("RightSide");

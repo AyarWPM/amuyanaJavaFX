@@ -3,7 +3,6 @@ package com.amuyana.app.controllers;
 import com.amuyana.app.data.*;
 import com.amuyana.app.node.MainBorderPane;
 import com.amuyana.app.node.Message;
-import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.FccEditorTab;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.ElementExp;
@@ -26,7 +25,6 @@ import java.util.ResourceBundle;
 public class FccEditorController implements Initializable {
     private TodController todController;
 
-    private NodeInterface nodeInterface;
     private DataInterface dataInterface;
 
     private Fcc fcc;
@@ -34,7 +32,6 @@ public class FccEditorController implements Initializable {
     @FXML private Button closeButton;
     @FXML private Button saveAndCloseButton;
     @FXML private Button editOrSaveButton;
-    @FXML private Button removeButton;
 
     @FXML private VBox fccExpressionVBox;
     @FXML private Label idFccLabel;
@@ -49,19 +46,16 @@ public class FccEditorController implements Initializable {
     @FXML private TextField antiElementTextField;
     @FXML private CheckBox defaultSymbolCheckBox;
 
-    @FXML private VBox positiveFormulaVBox; // new
     @FXML private Label positivePropositionLabel;
     @FXML private TextField positivePropositionTextField;
     @FXML private TextArea positiveDescriptionTextArea;
     @FXML private Text positiveDescriptionText;
 
-    @FXML private VBox negativeFormulaVBox; // new
     @FXML private Label negativePropositionLabel;
     @FXML private TextField negativePropositionTextField;
     @FXML private TextArea negativeDescriptionTextArea;
     @FXML private Text negativeDescriptionText;
 
-    @FXML private VBox symmetricFormulaVBox; // new
     @FXML private Label symmetricPropositionLabel;
     @FXML private TextField symmetricPropositionTextField;
     @FXML private TextArea symmetricDescriptionTextArea;
@@ -81,28 +75,24 @@ public class FccEditorController implements Initializable {
     }
 
     private void manageEvents() {
-        defaultSymbolCheckBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-                Element element = dataInterface.getElement(fcc,0);
-                Element antiElement = dataInterface.getElement(fcc,1);
-                if (observableValue.getValue()) {
-                    antiElementTextField.textProperty().unbindBidirectional(antiElement.symbolProperty());
-                    antiElementTextField.textProperty().bind(elementTextField.textProperty());
-                    antiElement.symbolProperty().bind(element.symbolProperty());
+        defaultSymbolCheckBox.selectedProperty().addListener((observableValue, aBoolean, t1) -> {
+            Element element = dataInterface.getElement(fcc,0);
+            Element antiElement = dataInterface.getElement(fcc,1);
+            if (observableValue.getValue()) {
+                antiElementTextField.textProperty().unbindBidirectional(antiElement.symbolProperty());
+                antiElementTextField.textProperty().bind(elementTextField.textProperty());
+                antiElement.symbolProperty().bind(element.symbolProperty());
 
-                } else {
-                    antiElementTextField.textProperty().unbind();
-                    antiElementTextField.textProperty().bindBidirectional(antiElement.symbolProperty());
-                    antiElement.symbolProperty().unbind();
-                }
+            } else {
+                antiElementTextField.textProperty().unbind();
+                antiElementTextField.textProperty().bindBidirectional(antiElement.symbolProperty());
+                antiElement.symbolProperty().unbind();
             }
         });
     }
 
-    public void setInterfaces(TodController todController, NodeInterface nodeInterface) {
+    public void setInterfaces(TodController todController) {
         this.todController = todController;
-        this.nodeInterface = nodeInterface;
     }
 
     public void setValues(FccEditorTab fccEditorTab, Fcc fcc) {
@@ -133,7 +123,7 @@ public class FccEditorController implements Initializable {
 
         // i have to save it with unselected settings
         this.editMode.setValue(editMode);
-        if (editMode) {
+        if (isEditMode()) {
 
             // Buttons
             editOrSaveButton.setText("Save");
@@ -149,7 +139,7 @@ public class FccEditorController implements Initializable {
             negativePropositionTextField.setText(dataInterface.getDynamism(fcc, 1).getProposition());
             symmetricPropositionTextField.setText(dataInterface.getDynamism(fcc, 2).getProposition());
         }
-        if(!editMode) {
+        if(!isEditMode()) {
 
             // SAVING
             editOrSaveButton.setText("Edit");
@@ -279,13 +269,14 @@ public class FccEditorController implements Initializable {
             ButtonType exitButtonType = new ButtonType("Don't save and exit");
             ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
             Optional<ButtonType> result = Message.confirmClosing(saveAndExitButtonType, exitButtonType, cancelButtonType);
-
-            if (result.get().equals(saveAndExitButtonType)) {
-                saveAndClose();
-            } else if (result.get().equals(exitButtonType)) {
-                this.todController.closeTab(this.fccEditorTab);
-            } else if (result.get().equals(cancelButtonType)) {
-                // do nothing, look at the sky
+            if (result.isPresent()) {
+                if (result.get().equals(saveAndExitButtonType)) {
+                    saveAndClose();
+                } else if (result.get().equals(exitButtonType)) {
+                    this.todController.closeTab(this.fccEditorTab);
+                } else if (result.get().equals(cancelButtonType)) {
+                    // do nothing, look at the sky
+                }
             }
         } else {
             // Close
@@ -304,31 +295,14 @@ public class FccEditorController implements Initializable {
         setEditMode(!editMode.get());
     }
 
-    @FXML
-    private void remove() {
-        // To remove a FCC means deleting all the container2s where it is in, and deleting also recursively its parents
-        // if by doing so they become empty.
-        // So. First remove all Branches where there is a SubBranch with the fcc, therefore removing a lot!:
-        // As each SubBranch has a Fruit for the corresponding Fcc, delete that. //Fruit
-        // Left and Right Trunks from the SubBranch
-        // All the Branches, therefore going back to the iteration. (each Fruit of each SubBranch...)
-        // Left and Right Trunks from the Branch
-        // All the Branches, therefore going back to the iteration.
-
-        // The removing of each Node should call a remove method from DataInterface
-        //this.todController.remove(this.fcc);
-    }
-    
     public void fillData() {
         elementTextField.setText(dataInterface.getElement(fcc,0).getSymbol());
         antiElementTextField.setText(dataInterface.getElement(fcc,1).getSymbol());
         manageEvents();
         defaultSymbolCheckBox.setSelected(true);
-
     }
 
-
-    public boolean isEditMode() {
+    private boolean isEditMode() {
         return editMode.get();
     }
 

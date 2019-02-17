@@ -100,6 +100,7 @@ public class DataHandler implements DataInterface {
         return connection;
     }
 
+    @Deprecated
     @Override
     public void reinitializeDatabase() {
         this.dataConnection.connect();
@@ -107,8 +108,8 @@ public class DataHandler implements DataInterface {
         Path path = Paths.get("./src/main/resources/mysql/reinitializeScript.txt");
         File file = new File(path.toUri());
 
-        FileInputStream fileInputStream = null;
-        String str = "";
+        FileInputStream fileInputStream;
+        StringBuilder str = new StringBuilder();
 
         try {
             fileInputStream = new FileInputStream(file);
@@ -116,16 +117,12 @@ public class DataHandler implements DataInterface {
             int content;
             while ((content = fileInputStream.read()) != -1) {
                 // convert to char and display it
-                str += (char) content;
+                str.append((char) content);
             }
 
             Statement statement = this.dataConnection.getConnection().createStatement();
-            statement.executeUpdate(str);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            statement.executeUpdate(str.toString());
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
         this.dataConnection.disconnect();
@@ -174,7 +171,8 @@ public class DataHandler implements DataInterface {
 
         Inclusion.loadList(this.dataConnection.getConnection(),
                 this.listInclusions,
-                this.listDynamisms);
+                this.listDynamisms,
+                this.listTod);
 
         CClass.loadList(this.dataConnection.getConnection(),
                 this.listCClass);
@@ -442,8 +440,8 @@ public class DataHandler implements DataInterface {
         }
 
         // Elements
-        Element e0 = new Element(0, "e" + String.valueOf(fcc.getIdFcc()), 0, fcc);
-        Element e1 = new Element(0, "e" + String.valueOf(fcc.getIdFcc()), 1, fcc);
+        Element e0 = new Element(0, "e" + fcc.getIdFcc(), 0, fcc);
+        Element e1 = new Element(0, "e" + fcc.getIdFcc(), 1, fcc);
 
         int resultE0 = e0.saveData(dataConnection.getConnection());
         e0.setIdElement(Element.currentAutoIncrement);
@@ -671,9 +669,9 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
-    public Inclusion newInclusion(Dynamism particular, Dynamism general) {
+    public Inclusion newInclusion(Dynamism particularDynamism, Dynamism generalDynamism, Tod tod) {
         dataConnection.connect();
-        Inclusion inclusion = new Inclusion(0,particular,general);
+        Inclusion inclusion = new Inclusion(0, particularDynamism, generalDynamism, tod);
         if (inclusion.saveData(dataConnection.getConnection()) == 1) {
             listInclusions.add(inclusion);
         }
@@ -749,7 +747,7 @@ public class DataHandler implements DataInterface {
 
     /**
      * Get the list of FCCs that belong to a logic system
-     * @param ls
+     * @param ls the Logic System
      * @return List of fcc
      */
     public ArrayList<Fcc> fccOf(LogicSystem ls){
@@ -763,6 +761,7 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
+    @Deprecated
     public boolean descendsFrom(Fcc fcc, Dynamism dynamism) {
         for(Inclusion i:this.listInclusions){
             if (i.getParticular().equals(getDynamism(fcc, 0)) ||
@@ -792,7 +791,7 @@ public class DataHandler implements DataInterface {
     public boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism) {
         for (Inclusion inclusion : getListInclusions()) {
             if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                if (inclusion.getParticular().getFcc().getIdFcc()==descendantFcc.getIdFcc()) {
+                if (descendantFcc.getIdFcc()==inclusion.getParticular().getFcc().getIdFcc()) {
                     return true;
                 }
             }

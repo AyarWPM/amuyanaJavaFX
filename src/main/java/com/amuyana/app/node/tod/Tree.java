@@ -1,14 +1,16 @@
 package com.amuyana.app.node.tod;
 
 import com.amuyana.app.controllers.TodController;
+import com.amuyana.app.data.DataInterface;
+import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
+import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.MainBorderPane;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.Slider;
@@ -20,7 +22,8 @@ import java.util.List;
  * Equivalent to tod in data package: this.todController.getTod();
  */
 public class Tree extends Group {
-    public DoubleProperty viewScale;
+    private DataInterface dataInterface;
+    private DoubleProperty viewScale;
     // General
     private TodController todController;
 
@@ -28,7 +31,7 @@ public class Tree extends Group {
     private Trunk mainTrunk; //Container0
     private DoubleProperty maxLevel;
 
-    private ObservableList<Fruit> fruits;
+    //private ObservableList<Fruit> fruits;
     private ObservableList<Tie> ties;
 
     private Group linesGroup;
@@ -36,7 +39,6 @@ public class Tree extends Group {
     // constructor to loadExistingTree an existing Tree
     public Tree(TodController todController) {
         this.todController = todController;
-
         initializeAndBind();
         setId("Tree");
         bindScale();
@@ -50,8 +52,9 @@ public class Tree extends Group {
     }
 
     private void initializeAndBind() {
+        this.dataInterface = MainBorderPane.getDataInterface();
         linesGroup = new Group();
-        fruits = FXCollections.observableArrayList();
+        //fruits = FXCollections.observableArrayList();
         ties = FXCollections.observableArrayList();
 
         viewScale = new SimpleDoubleProperty();
@@ -59,28 +62,7 @@ public class Tree extends Group {
 
         Slider slider = todController.getScaleSlider();
         viewScale.bind(slider.valueProperty());
-        fruits.addListener(new ListChangeListener<Fruit>() {
-            @Override
-            public void onChanged(Change<? extends Fruit> change) {
-                if (change.next()) {
-                    if (change.wasRemoved()) {
-                        for (Fruit fruit : change.getList()) {
-                            Tie tieToRemove=null;
-                            for (Tie tie : ties) {
-                                if (tie.getDescendantFruit().equals(fruit)) {
-                                    tieToRemove=tie;
-                                }
-                                if (tie.getAscendantFruit().equals(fruit)) {
-                                    tieToRemove=tie;
-                                }
-                            }
-                            ties.remove(tieToRemove);
-                            linesGroup.getChildren().removeAll(tieToRemove.getLines());
-                        }
-                    }
-                }
-            }
-        });
+
     }
 
     public void loadExistingTree() {
@@ -118,17 +100,18 @@ public class Tree extends Group {
     public void addTie(Tie tie) {
         ties.add(tie);
         for (Line line : tie.getLines()) {
-            linesGroup.getChildren().add(line);
+            linesGroup.getChildren().addAll(line);
         }
     }
 
     public void remove(Tie tie) {
-        linesGroup.getChildren().remove(tie);
+        ties.remove(tie);
+        linesGroup.getChildren().removeAll(tie.getLines());
     }
 
-    public List<Fruit> getFruits() {
+    /*public List<Fruit> getFruits() {
         return fruits;
-    }
+    }*/
 
     public ObservableList<Fruit> getObservableFruits() {
         ObservableList<Fruit> fruits = FXCollections.observableArrayList();
@@ -166,16 +149,12 @@ public class Tree extends Group {
         return maxLevel;
     }
 
-    public void setMaxLevel(double maxLevel) {
+    private void setMaxLevel(double maxLevel) {
         this.maxLevel.set(maxLevel);
     }
 
-    public void addFruit(Fruit fruit) {
-        fruits.add(fruit);
-    }
-
-    public void buildFruitsMenus() {
-        for (Fruit fruit : fruits) {
+    public void updateFruitsMenus() {
+        for (Fruit fruit : getObservableFruits()) {
             fruit.getFruitController().buildMenus();
         }
     }
@@ -185,24 +164,149 @@ public class Tree extends Group {
     }
 
     // removes the fruit in both the fruits field and observableList of fruits in tree nodes
-    public void remove(Fruit fruit) {
-        fruits.remove(fruit);
-        SubBranch subBranchToRemove = fruit.getSubBranch();
-        Branch branchOfSubBranchToRemove = subBranchToRemove.getBranch();
+    // this is activated by an inclusions listener in Tie, we can invoke it again by removing all inclusions to child nodes
+    public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
+        System.out.println("removing fruit = " + fruit.getFcc() + "@"+this);
+        fruitsToRemove.addAll(fruit);
+        // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
+        ObservableList<Branch> leftBranches  = fruit.getSubBranch().getLeftTrunk().getBranches();
+        ObservableList<Branch> rightBranches  = fruit.getSubBranch().getRightTrunk().getBranches();
 
-        // remove its subBranch and the left and right Trunks and container2 and container0In2
-        branchOfSubBranchToRemove.remove(subBranchToRemove);
+        Dynamism thisPositiveDynamism = dataInterface.getDynamism(fruit.getFcc(),0);
+        Dynamism thisNegativeDynamism = dataInterface.getDynamism(fruit.getFcc(),1);
+        Dynamism thisSymmetricDynamism = dataInterface.getDynamism(fruit.getFcc(),2);
 
-        // If branch is left alone remove it as well and its left right and containers1 and c0IN1
-        Trunk trunkOfBranch = branchOfSubBranchToRemove.getTrunk();
-        if (branchOfSubBranchToRemove.getSubBranches().isEmpty()) {
-            trunkOfBranch.remove(branchOfSubBranchToRemove);
+        // Branches in leftTrunk
+        if (!leftBranches.isEmpty()) {
+            for (Branch branch1 : leftBranches) {
+                for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                    remove(fruitsToRemove,subBranch1.getFruit());
+
+                    // Delete inclusions
+                    ObservableList<Inclusion> inclusionsToRemove = FXCollections.observableArrayList();
+                    for (Inclusion inclusion : dataInterface.getListInclusions()) {
+                        Dynamism particular = inclusion.getParticular();
+                        Dynamism general = inclusion.getGeneral();
+
+                        Dynamism positiveAscendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),0);
+                        Dynamism negativeAscendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),1);
+                        Dynamism symmetricAscendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),2);
+
+                        if (particular.getIdDynamism() == thisPositiveDynamism.getIdDynamism()||
+                                particular.getIdDynamism() == thisNegativeDynamism.getIdDynamism()||
+                                particular.getIdDynamism() == thisSymmetricDynamism.getIdDynamism()) {
+                            if (general.getIdDynamism() == positiveAscendant.getIdDynamism() ||
+                                    general.getIdDynamism() == negativeAscendant.getIdDynamism() ||
+                                    general.getIdDynamism() == symmetricAscendant.getIdDynamism()) {
+                                inclusionsToRemove.addAll(inclusion);
+                            }
+                        }
+                    }
+                    for (Inclusion inclusion1 : inclusionsToRemove) {
+                        dataInterface.delete(inclusion1);
+                    }
+
+                    // Remove tie
+                    Tie tieToRemove=null;
+                    boolean tieBoolean = false;
+                    for (Tie tie : getTies()) {
+                        if (tie.getAscendantFruit().equals(subBranch1.getFruit()) &&
+                                tie.getDescendantFruit().equals(fruit)) {
+                            tieToRemove=tie;
+                            tieBoolean = true;
+                        }
+                    }
+                    if(tieBoolean) remove(tieToRemove);
+                }
+            }
         }
+        // Branches in rightTrunk : fruit (in param) is ascendant and subBranch1.getFruit() is descendant
+        if (!rightBranches.isEmpty()) {
+            for (Branch branch1 : rightBranches) {
+                for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                    remove(fruitsToRemove,subBranch1.getFruit());
+
+                    // Delete inclusions
+                    ObservableList<Inclusion> inclusionsToRemove = FXCollections.observableArrayList();
+                    for (Inclusion inclusion : dataInterface.getListInclusions()) {
+                        Dynamism particular = inclusion.getParticular();
+                        Dynamism general = inclusion.getGeneral();
+
+                        Dynamism positiveDescendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),0);
+                        Dynamism negativeDescendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),1);
+                        Dynamism symmetricDescendant = dataInterface.getDynamism(subBranch1.getFruit().getFcc(),2);
+
+                        if (general.getIdDynamism() == thisPositiveDynamism.getIdDynamism()||
+                                general.getIdDynamism() == thisNegativeDynamism.getIdDynamism()||
+                                general.getIdDynamism() == thisSymmetricDynamism.getIdDynamism()) {
+                            if (particular.getIdDynamism() == positiveDescendant.getIdDynamism() ||
+                                    particular.getIdDynamism() == negativeDescendant.getIdDynamism() ||
+                                    particular.getIdDynamism() == symmetricDescendant.getIdDynamism()) {
+                                inclusionsToRemove.addAll(inclusion);
+                            }
+                        }
+                    }
+                    for (Inclusion inclusion1 : inclusionsToRemove) {
+                        dataInterface.delete(inclusion1);
+                    }
+
+                    // Remove tie
+                    Tie tieToRemove=null;
+                    boolean tieBoolean = false;
+                    for (Tie tie : getTies()) {
+                        if (tie.getAscendantFruit().equals(fruit) &&
+                                tie.getDescendantFruit().equals(subBranch1.getFruit())) {
+                            tieToRemove=tie;
+                            tieBoolean = true;
+                        }
+                    }
+                    if(tieBoolean) remove(tieToRemove);
+                }
+            }
+        }
+        fruit.getTrunk().remove(fruit.getSubBranch());
+        return fruitsToRemove;
     }
 
     public void buildTies() {
         for (Fruit fruit : getObservableFruits()) {
             fruit.getFruitController().buildTies();
         }
+    }
+    public void updateOrientationTies() {
+        for (Tie tie : getTies()) {
+            tie.setOrientations();
+        }
+    }
+
+    public void update() {
+        updateOrientationTies();
+        checkFruitsRemoval();
+        updateFruitsMenus();
+    }
+
+    private void checkFruitsRemoval() {
+    // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
+        Tie tieToRemove = null;
+        boolean tieBoolean = false;
+        Fruit fruitToRemove = null;
+        for (Tie tie : getTies()) {
+            if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
+                tieToRemove=tie;
+                tieBoolean = true;
+                if (tie.getAscendantFruit().isChild(tie.getDescendantFruit())) {
+                    //Remove descendantFruit as it is child
+                    fruitToRemove=tie.getDescendantFruit();
+                } else if (tie.getDescendantFruit().isChild(tie.getAscendantFruit())) {
+                    //Remove ascendantFruit as it is child
+                    fruitToRemove=tie.getAscendantFruit();
+                }
+            }
+        }
+        if (tieBoolean) {
+            remove(FXCollections.observableArrayList(),fruitToRemove);
+            remove(tieToRemove);
+        }
+
     }
 }

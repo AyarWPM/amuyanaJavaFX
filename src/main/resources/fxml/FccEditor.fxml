@@ -1,28 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.paint.*?>
-<?import javafx.geometry.*?>
 <?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.web.*?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToolBar?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.web.HTMLEditor?>
 
 <VBox id="FccEditorRoot" alignment="CENTER" spacing="10.0" stylesheets="@../css/fccEditor.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FccEditorController">
    <children>
@@ -31,7 +13,6 @@
             <Button id="NormalButton" fx:id="closeButton" cancelButton="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#close" text="Close" />
             <Button id="NormalButton" fx:id="saveAndCloseButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveAndClose" text="Save and close" />
             <Button id="NormalButton" fx:id="editOrSaveButton" defaultButton="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#editOrSave" text="Edit" />
-            <Button id="ImportantButton" fx:id="removeButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#remove" text="Remove" />
          </children>
       </FlowPane>
       <VBox spacing="5.0">
@@ -136,7 +117,6 @@
                   <Label minWidth="-Infinity" styleClass="darkH2" text="Positive orientation" wrapText="true" />
                </children>
             </HBox>
-            <VBox fx:id="positiveFormulaVBox" alignment="CENTER" fillWidth="false" minWidth="-Infinity" />
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
                   <Label fx:id="positivePropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
@@ -162,7 +142,6 @@
                   <Label minWidth="-Infinity" text="Negative orientation" wrapText="true" />
                </children>
             </HBox>
-            <VBox fx:id="negativeFormulaVBox" alignment="CENTER" fillWidth="false" minWidth="-Infinity" />
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
                   <Label fx:id="negativePropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
@@ -188,7 +167,6 @@
                   <Label minWidth="-Infinity" text="Symmetric orientation" wrapText="true" />
                </children>
             </HBox>
-            <VBox fx:id="symmetricFormulaVBox" alignment="CENTER" fillWidth="false" minWidth="-Infinity" />
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
                   <Label fx:id="symmetricPropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />

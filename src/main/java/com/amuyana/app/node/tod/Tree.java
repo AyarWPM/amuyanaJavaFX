@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.control.Slider;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
 import java.util.List;
@@ -53,16 +54,15 @@ public class Tree extends Group {
 
     private void initializeAndBind() {
         this.dataInterface = MainBorderPane.getDataInterface();
-        linesGroup = new Group();
-        //fruits = FXCollections.observableArrayList();
-        ties = FXCollections.observableArrayList();
+        this.linesGroup = new Group();
 
-        viewScale = new SimpleDoubleProperty();
-        maxLevel = new SimpleDoubleProperty();
+        this.ties = FXCollections.observableArrayList();
+
+        this.viewScale = new SimpleDoubleProperty();
+        this.maxLevel = new SimpleDoubleProperty();
 
         Slider slider = todController.getScaleSlider();
         viewScale.bind(slider.valueProperty());
-
     }
 
     public void loadExistingTree() {
@@ -97,6 +97,12 @@ public class Tree extends Group {
         }
     }
 
+    public void clearTies() {
+        ties.clear();
+        linesGroup.getChildren().clear();
+        getChildren().setAll(linesGroup,mainTrunk);
+    }
+
     public void addTie(Tie tie) {
         ties.add(tie);
         for (Line line : tie.getLines()) {
@@ -107,6 +113,14 @@ public class Tree extends Group {
     public void remove(Tie tie) {
         ties.remove(tie);
         linesGroup.getChildren().removeAll(tie.getLines());
+    }
+
+    public void buildTies() {
+        ties.clear();
+        linesGroup.getChildren().clear();
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildTies();
+        }
     }
 
     /*public List<Fruit> getFruits() {
@@ -153,12 +167,6 @@ public class Tree extends Group {
         this.maxLevel.set(maxLevel);
     }
 
-    public void updateFruitsMenus() {
-        for (Fruit fruit : getObservableFruits()) {
-            fruit.getFruitController().buildMenus();
-        }
-    }
-
     public ObservableList<Tie> getTies() {
         return this.ties;
     }
@@ -166,7 +174,6 @@ public class Tree extends Group {
     // removes the fruit in both the fruits field and observableList of fruits in tree nodes
     // this is activated by an inclusions listener in Tie, we can invoke it again by removing all inclusions to child nodes
     public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
-        System.out.println("removing fruit = " + fruit.getFcc() + "@"+this);
         fruitsToRemove.addAll(fruit);
         // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
         ObservableList<Branch> leftBranches  = fruit.getSubBranch().getLeftTrunk().getBranches();
@@ -268,21 +275,27 @@ public class Tree extends Group {
         return fruitsToRemove;
     }
 
-    public void buildTies() {
-        for (Fruit fruit : getObservableFruits()) {
-            fruit.getFruitController().buildTies();
+    @Deprecated
+    public void buildLines() {
+        for (Tie tie : getTies()) {
+                tie.buildLines();
         }
+        getChildren().setAll(this.linesGroup, this.mainTrunk);
     }
+
+    public void update() {
+        clearTies();
+        updateOrientationTies();
+        checkFruitsRemoval();
+        updateFruitsMenus();
+        buildTies();
+        //todController.getScaleSlider().setValue(1);
+    }
+
     public void updateOrientationTies() {
         for (Tie tie : getTies()) {
             tie.setOrientations();
         }
-    }
-
-    public void update() {
-        updateOrientationTies();
-        checkFruitsRemoval();
-        updateFruitsMenus();
     }
 
     private void checkFruitsRemoval() {
@@ -307,6 +320,11 @@ public class Tree extends Group {
             remove(FXCollections.observableArrayList(),fruitToRemove);
             remove(tieToRemove);
         }
+    }
 
+    public void updateFruitsMenus() {
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildMenus();
+        }
     }
 }

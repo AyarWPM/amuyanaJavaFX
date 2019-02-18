@@ -7,7 +7,7 @@ import javafx.scene.control.Label;
 public abstract class Sign {
 
     public static void StyleFccProposition(Label fccPropositionLabel) {
-        fccPropositionLabel.setStyle("-fx-font-size:150%; " +
+        fccPropositionLabel.setStyle("-fx-font-size:130%; " +
                 "-fx-font-style:italic;");
     }
 

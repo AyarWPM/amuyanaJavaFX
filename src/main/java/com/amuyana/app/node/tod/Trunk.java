@@ -133,10 +133,7 @@ public class Trunk extends VBox {
         dataInterface.delete(branchToRemove.getLeftTrunk().getContainer0());
         dataInterface.delete(branchToRemove.getRightTrunk().getContainer0());
         dataInterface.delete(branchToRemove.getContainer1());
-        System.out.println("branchToRemove = " + branchToRemove);
-        System.out.println("getBranches() = " + getBranches());
         getChildren().remove(branchToRemove);
-        System.out.println("getBranches() = " + getBranches());
     }
 
     public void remove(SubBranch subBranch) {

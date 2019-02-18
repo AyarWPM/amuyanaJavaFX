@@ -102,7 +102,7 @@ public class FccEditorController implements Initializable {
 
         this.elementExpression = new ElementExp(dataInterface.getElement(fcc,0));
         this.antiElementExpression = new ElementExp(dataInterface.getElement(fcc,1));
-        this.fccExpression = new FccExp(fcc, Expression.ExpressionType.ALGEBRA);
+        this.fccExpression = new FccExp(fcc, Expression.ExpressionType.ALGEBRA, 100, 50);
 
 // Add to children
         this.elementHBox.getChildren().setAll(this.elementExpression);
@@ -140,7 +140,6 @@ public class FccEditorController implements Initializable {
             symmetricPropositionTextField.setText(dataInterface.getDynamism(fcc, 2).getProposition());
         }
         if(!isEditMode()) {
-
             // SAVING
             editOrSaveButton.setText("Edit");
             //fcc.setName(nameFccTextField.getText());
@@ -159,6 +158,10 @@ public class FccEditorController implements Initializable {
             antiElementTextField.textProperty().unbindBidirectional(elementTextField.textProperty());
             antiElementTextField.textProperty().unbindBidirectional(antiElement.symbolProperty());
 
+            // Redraw the tree to make ties be adjusted again
+            //todController.showTree();
+            //todController.showTree();
+            todController.getTree().update();
         }
     }
 

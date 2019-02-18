@@ -28,7 +28,7 @@
             <Button fx:id="closeButton" disable="true" layoutX="67.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#close" styleClass="green_button" text="Close" />
             <Button fx:id="saveAndCloseButton" disable="true" layoutX="187.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#saveAndClose" styleClass="green_button" text="Save and close" />
             <Button fx:id="editOrSaveButton" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#editOrSave" styleClass="green_button" text="Edit" />
-            <Button fx:id="removeButton" disable="true" minWidth="-Infinity" mnemonicParsing="false" onAction="#remove" styleClass="red_button" text="Delete" />
+            <Button fx:id="removeButton" disable="true" minWidth="-Infinity" mnemonicParsing="false" styleClass="red_button" text="Delete" />
          </children>
       </HBox>
       <Label minHeight="-Infinity" styleClass="darkH2" text="Fundamental conjunction of contradiction (FCC)" wrapText="true" />

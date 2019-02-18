@@ -2,6 +2,7 @@ package com.amuyana.app.node.menu;
 
 import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeInterface;
+import com.amuyana.app.node.tod.Fruit;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 

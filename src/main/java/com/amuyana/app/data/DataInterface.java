@@ -32,6 +32,7 @@ public interface DataInterface {
     ObservableList<CClass> getListCClass();
     ObservableList<CClassHasInclusion> getListCClassHasInclusion();
     ObservableList<Inclusion> getListInclusions();
+    ObservableList<Inclusion> getInclusions(Tod tod);
     ObservableList<Syllogism> getListSyllogisms();
     ObservableList<InclusionHasSyllogism> getListIHS();
 

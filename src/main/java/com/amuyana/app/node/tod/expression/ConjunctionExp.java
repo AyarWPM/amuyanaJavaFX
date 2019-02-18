@@ -8,11 +8,6 @@ public class ConjunctionExp extends Expression {
     Dynamism dynamism;
 
     private void buildConjunction0() {
-        // todo
-        // As you try to build this one, you realize this Entity you are going to create, BaseConjunction probably,
-        // will need to be on a list in case it needs to be accessed for updates.
-        // Maybe Expression needs to be added to a list itself, but that Class is the one that contains any
-        // algebraic representation whatsoever.
 
         this.getChildren().clear();
         this.getChildren().addAll(

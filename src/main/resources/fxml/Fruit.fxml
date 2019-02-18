@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
@@ -10,13 +11,13 @@
 
 <Group fx:id="fruitGroup" stylesheets="@../css/fruit.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FruitController">
    <children>
-      <BorderPane id="Fruit" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+      <BorderPane id="Fruit" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="320.0">
          <top>
             <VBox fillWidth="false">
                <children>
                   <HBox>
                      <children>
-                        <MenuButton id="FruitMenuButton" fx:id="fccMenuButton" mnemonicParsing="false" popupSide="TOP">
+                        <MenuButton id="FruitMenuButton" fx:id="fruitMenuButton" mnemonicParsing="false" popupSide="TOP">
                            <graphic>
                               <ImageView>
                                  <image>
@@ -27,11 +28,11 @@
                         </MenuButton>
                         <VBox alignment="CENTER">
                            <children>
-                              <StackPane id="Test1" fx:id="fccNameStackPane">
+                              <StackPane id="Test1" fx:id="fccNameStackPane" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <HBox id="Test2" maxWidth="299.0">
+                                    <HBox StackPane.alignment="CENTER">
                                        <children>
-                                          <Label id="TestExpression" text="maxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidthmaxsetMaxWidth" wrapText="true" HBox.hgrow="NEVER" />
+                                          <Label id="TestExpression" text="label" wrapText="true" HBox.hgrow="NEVER" />
                                        </children>
                                     </HBox>
                                  </children>
@@ -63,7 +64,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="positiveDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="positiveDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -79,7 +80,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="negativeDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="negativeDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -95,7 +96,7 @@
                      <children>
                         <Pane maxHeight="0.0" maxWidth="0.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton id="KnobMenuButton" fx:id="symmetricDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="32.0" textAlignment="CENTER">
+                              <MenuButton id="KnobMenuButton" fx:id="symmetricDescendantsMenuButton" layoutX="10.0" layoutY="-15.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefHeight="32.0" prefWidth="32.0" textAlignment="CENTER">
                                  <font>
                                     <Font size="16.0" />
                                  </font>
@@ -121,7 +122,7 @@
                <children>
                   <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0">
                      <children>
-                        <Circle fx:id="leftKnobCircle" centerX="-20.0" radius="3.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="leftKnobCircle" centerX="-20.0" fill="#444444" radius="5.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </Pane>
                   <MenuButton id="BracketMenuButton" fx:id="bracketMenuButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="LEFT" BorderPane.alignment="CENTER">

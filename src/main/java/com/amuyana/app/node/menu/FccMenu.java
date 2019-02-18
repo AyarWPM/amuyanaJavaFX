@@ -141,6 +141,8 @@ public class FccMenu extends Menu {
                 dataInterface.delete(inclusionToRemove);
             }
             tree.update();
+            //fruitController.getFruit().getTree().getTodController().showTree();
+
         };
     }
 
@@ -182,6 +184,7 @@ public class FccMenu extends Menu {
                 dataInterface.delete(inclusionToRemove);
             }
             tree.update();
+            //fruitController.getFruit().getTree().getTodController().showTree();
         };
     }
 }

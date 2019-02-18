@@ -202,7 +202,7 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.OK) {
             // delete in database
-            dataInterface.delete(tod);
+                dataInterface.delete(tod);
 
             // close tab if it is open
             TodContentTab todContentTabToRemove = null;
@@ -232,7 +232,6 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
     public void openAboutWindow() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.ABOUT.getUrl()));
         try {
-            System.out.println("fxmlLoader = " + fxmlLoader);
             Parent parent = (Parent)fxmlLoader.load();
             Stage stage1 = new Stage();
             stage1.setTitle("About");

@@ -119,7 +119,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="positivePropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <Label fx:id="positivePropositionLabel" maxWidth="-Infinity" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
                   <TextField fx:id="positivePropositionTextField" promptText="Please provide a propositional formulation" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
@@ -144,7 +144,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="negativePropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <Label fx:id="negativePropositionLabel" maxWidth="-Infinity" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
                   <TextField fx:id="negativePropositionTextField" promptText="Please provide a propositional formulation" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
@@ -169,7 +169,7 @@
             </HBox>
             <HBox alignment="CENTER" layoutX="10.0" layoutY="25.0" prefWidth="200.0">
                <children>
-                  <Label fx:id="symmetricPropositionLabel" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
+                  <Label fx:id="symmetricPropositionLabel" maxWidth="-Infinity" minWidth="-Infinity" text="Propositional formulation" wrapText="true" />
                   <TextField fx:id="symmetricPropositionTextField" promptText="Please provide a propositional formulation" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>

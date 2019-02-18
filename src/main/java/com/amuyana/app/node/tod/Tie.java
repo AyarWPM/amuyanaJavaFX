@@ -7,7 +7,9 @@ import com.amuyana.app.node.MainBorderPane;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -26,6 +28,10 @@ public class Tie {
     private BooleanProperty symmetricOrientation;
 
     private ObservableList<Line> lines;
+    private Line line1;
+    private Line line2;
+    private Line line3;
+
 
     // Used when user deploys to a new FCC or Tree, so we create three inclusions
     public Tie(Fruit descendantFruit, Fruit ascendantFruit){
@@ -42,12 +48,23 @@ public class Tie {
         positiveOrientation = new SimpleBooleanProperty();
         negativeOrientation = new SimpleBooleanProperty();
         symmetricOrientation = new SimpleBooleanProperty();
+        line1 = new Line();
+        line2 = new Line();
+        line3 = new Line();
+        lines.addAll(line1, line2, line3);
     }
 
-    private void buildLines() {
-        Line line1 = new Line();
-        Line line2 = new Line();
-        Line line3 = new Line();
+    public void buildLines() {
+        getAscendantFruit().getTrunk().levelProperty();
+
+        DoubleProperty two = new SimpleDoubleProperty(2);
+        line1.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
+        line2.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
+        line3.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
+
+        line1.setStyle("-fx-stroke:#222222;");
+        line2.setStyle("-fx-stroke:#222222;");
+        line3.setStyle("-fx-stroke:#222222;");
 
         line1.visibleProperty().bind(positiveOrientation);
         line2.visibleProperty().bind(negativeOrientation);
@@ -105,9 +122,6 @@ public class Tie {
         line3.endYProperty().bind(Bindings.createDoubleBinding(
                 () -> knob0Bind.get().getCenterY(),
                 knob0Bind));
-
-
-        lines.addAll(line1, line2, line3);
     }
 
     /*private void manageListeners() {

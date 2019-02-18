@@ -1,15 +1,21 @@
 package com.amuyana.app.node.tod.expression;
 
 import com.amuyana.app.data.Fcc;
+import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 
 public class FccExp extends Expression {
+    private final double height;
+    private final double width;
     private Fcc fcc;
     private ExpressionType notationExpressionType;
     private Label fccPropositionLabel;
 
-    public FccExp(Fcc fcc, ExpressionType expressionType) {
+    public FccExp(Fcc fcc, ExpressionType expressionType, double width, double height) {
         this.fcc = fcc;
+        this.width = width;
+        this.height = height;
+
         build(expressionType);
     }
 
@@ -26,8 +32,11 @@ public class FccExp extends Expression {
             );
         } else if (expressionType.equals(ExpressionType.PROPOSITION)){
             this.fccPropositionLabel = new Label();
-            fccPropositionLabel.setWrapText(true);
             fccPropositionLabel.textProperty().bind(fcc.nameProperty());
+            fccPropositionLabel.setAlignment(Pos.CENTER);
+            fccPropositionLabel.setMaxWidth(width);
+            fccPropositionLabel.setMaxHeight(height);
+            fccPropositionLabel.setWrapText(true);
             Sign.StyleFccProposition(fccPropositionLabel);
             getChildren().setAll(fccPropositionLabel);
         }
@@ -38,7 +47,4 @@ public class FccExp extends Expression {
         build(notationExpressionType);
     }
 
-    public void setTheMaxWidth(double maxWidth) {
-        fccPropositionLabel.setMaxWidth(maxWidth);
-    }
 }

@@ -139,6 +139,6 @@ public class Inclusion{
     
     @Override
     public String toString(){
-        return "Inclusion: " + this.getIdInclusion();
+        return this.getParticular() + " ( " + this.getGeneral();
     }
 }

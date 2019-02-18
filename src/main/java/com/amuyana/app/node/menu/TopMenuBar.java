@@ -114,7 +114,6 @@ public class TopMenuBar extends MenuBar {
         this.helpMenu = new Menu("Help");
         MenuItem aboutMenuItem = new MenuItem("About");
         aboutMenuItem.setOnAction(actionEvent -> {
-            System.out.println("actionEvent = " + actionEvent);
             nodeInterface.openAboutWindow();
         });
         this.helpMenu.getItems().add(aboutMenuItem);

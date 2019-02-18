@@ -26,6 +26,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -47,7 +48,7 @@ public class FruitController implements Initializable {
     @FXML private StackPane fccNameStackPane;
     @FXML private VBox expressionsVBox;
     @FXML private MenuButton bracketMenuButton;
-    @FXML private MenuButton fccMenuButton;
+    @FXML private MenuButton fruitMenuButton;
     @FXML private MenuButton positiveDescendantsMenuButton;
     @FXML private MenuButton negativeDescendantsMenuButton;
     @FXML private MenuButton symmetricDescendantsMenuButton;
@@ -134,32 +135,35 @@ public class FruitController implements Initializable {
     }
 
     private void buildExpressions() {
-        FccExp fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION);
-        fccExp.setTheMaxWidth(300);
+        FccExp fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION, 250, 30);
 
         ImplicationExp positiveImplicationExp =
-                new ImplicationExp(dataInterface.getDynamism(fruit.getFcc(),0));
+                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),0),
+                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
         ImplicationExp negativeImplicationExp =
-                new ImplicationExp(dataInterface.getDynamism(fruit.getFcc(),1));
+                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),1),
+                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
         ImplicationExp symmetricImplicationExp =
-                new ImplicationExp(dataInterface.getDynamism(fruit.getFcc(),2));
+                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),2),
+                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
         expressionsVBox.getChildren().setAll(positiveImplicationExp,negativeImplicationExp,symmetricImplicationExp);
+        expressionsVBox.setAlignment(Pos.CENTER);
+        expressionsVBox.setFillWidth(true);
+        fccNameStackPane.setAlignment(Pos.CENTER);
+        //fccNameStackPane.setMinHeight(40);
         fccNameStackPane.getChildren().setAll(fccExp);
     }
 
     public void buildMenus() {
-        System.out.println("building menu for" + this.fruit.getFcc());
-
         buildFruitMenu();
         buildAscendantsMenu();
         buildDescendantsMenu();
     }
 
     private void buildFruitMenu() {
-        MenuItem editFccMenuItem = new MenuItem("Edit");
-        editFccMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
-        fccMenuButton.getItems().setAll(editFccMenuItem);
-        //fccMenuButton.setOnMouseClicked(e-> System.out.println("e = " + e));
+        MenuItem viewDefinitionsMenuItem = new MenuItem("Open definitions");
+        viewDefinitionsMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
+        fruitMenuButton.getItems().setAll(viewDefinitionsMenuItem);
     }
 
     private void buildAscendantsMenu() {
@@ -305,9 +309,12 @@ public class FruitController implements Initializable {
             dataInterface.newInclusion(symmetricDynamismOfDescendant,ascendantDynamism, todController.getTod());
 
             tieDescendant(newFruit);
-            tree.updateFruitsMenus();
+            tree.update();
+            //todController.showTree();
+            //tree.updateFruitsMenus();
             // Update orientation of all ties as well
-            tree.updateOrientationTies();
+            //tree.updateOrientationTies();
+            //todController.method1();
         };
     }
 
@@ -330,9 +337,12 @@ public class FruitController implements Initializable {
             dataInterface.newInclusion(descendantDynamism,symmetricDynamismOfAscendant, todController.getTod());
 
             tieAscendant(newFruit);
-            tree.updateFruitsMenus();
+            tree.update();
+            //todController.showTree();
+
+            //tree.updateFruitsMenus();
             // Update orientation of all ties as well
-            tree.updateOrientationTies();
+            //tree.updateOrientationTies();
         };
     }
 

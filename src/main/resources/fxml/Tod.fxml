@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import jfxtras.scene.layout.*?>
-<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
@@ -19,9 +17,10 @@
                         <Group />
                      </children>
                   </Pane>
-                  <HBox id="LeftPanelSectionTitle">
+                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label text="Table of deductions" />
+                        <Button fx:id="toggleTodNameButton" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
@@ -45,9 +44,18 @@
                        <TextField fx:id="todNameTextField" HBox.hgrow="ALWAYS" />
                     </children>
                  </HBox>
-                  <Button fx:id="toggleTodNameButton" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
+                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="20.0" spacing="5.0">
+                     <children>
+                        <Label text="Fundamental Conjunctions of Contradiction" wrapText="true" />
+                     </children>
+                  </HBox>
                   <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                  <Slider fx:id="scaleSlider" blockIncrement="1.0" majorTickUnit="1.0" max="1.0" maxWidth="-Infinity" min="1.0" minWidth="-Infinity" minorTickCount="0" prefWidth="200.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="110.0" spacing="5.0">
+                     <children>
+                        <Label text="Inclusions" wrapText="true" />
+                     </children>
+                  </HBox>
+                  <ListView fx:id="inclusionsInTodListView" layoutX="15.0" layoutY="161.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
                </children>
                <padding>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -57,10 +65,16 @@
       </ScrollPane>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
          <left>
-            <VBox BorderPane.alignment="TOP_LEFT">
+            <VBox spacing="5.0" BorderPane.alignment="TOP_LEFT">
                <children>
                   <Button fx:id="toggleLeftPanelButton" mnemonicParsing="false" onAction="#toggleLeftPanel" text="←" />
+                  <Separator />
+                  <Slider fx:id="scaleSlider" blockIncrement="1.0" majorTickUnit="1.0" max="1.0" min="1.0" minWidth="-Infinity" minorTickCount="0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+                  <Label text="Scale" />
                </children>
+               <BorderPane.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </BorderPane.margin>
             </VBox>
          </left>
          <center>

@@ -5,6 +5,7 @@ import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
+import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 
 import java.io.IOException;
@@ -21,7 +22,6 @@ import com.amuyana.app.node.tod.Tree;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -43,6 +43,7 @@ public class TodController implements Initializable {
     @FXML private Label logicSystemNameLabel;
     @FXML private TextField todNameTextField;
     @FXML private ListView<Fcc> fccsInTodListView;
+    @FXML private ListView<Inclusion> inclusionsInTodListView;
     @FXML private ScrollPane leftPanel;
     @FXML private Button toggleTodNameButton;
 
@@ -120,11 +121,11 @@ public class TodController implements Initializable {
     public void fillData() {
         logicSystemNameLabel.textProperty().bind(nodeInterface.getLogicSystem().labelProperty());
         fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
-
+        inclusionsInTodListView.setItems(dataInterface.getInclusions(tod));
     }
 
     private void manageEvents() {
-        rightTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
+        /*rightTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
             if (change.next()) {
                 if (change.wasRemoved()) {
                     if (change.getList().size() == 1) {
@@ -132,7 +133,7 @@ public class TodController implements Initializable {
                     }
                 }
             }
-        });
+        });*/
 
         treeScrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
             event.consume();
@@ -198,9 +199,9 @@ public class TodController implements Initializable {
         if (getRightPanelOpen()) {
             setRightPanelOpen(false);
             splitPane.getItems().remove(rightTabPane);
-        } else {
-            splitPane.getItems().add(rightTabPane);
+        } else if (!getRightPanelOpen()){
             setRightPanelOpen(true);
+            splitPane.getItems().add(rightTabPane);
         }
     }
 
@@ -226,8 +227,11 @@ public class TodController implements Initializable {
                 }
             }
         }
-        toggleRightTabPane();
+        if (rightTabPane.getTabs().isEmpty()) {
+            toggleRightTabPane();
+        }
         FccEditorTab fccEditorTab =new FccEditorTab(getThisTodController(),nodeInterface,fcc);
+        fccEditorTab.getFccEditorController().setEditMode(false);
         rightTabPane.getTabs().add(fccEditorTab);
         rightTabPane.getSelectionModel().select(fccEditorTab);
     }
@@ -272,11 +276,16 @@ public class TodController implements Initializable {
                   _____
                  |_   _| __ ___  ___
                    | || '__/ _ \/ _ \
-                   | || | |  __/  __/
+                   | || | |  __/  __/    = TABLE OF DEDUCTIONS
                    |_||_|  \___|\___|
 
-         */
-    private void showTree() {
+     */
+
+    /**
+     * It instantiates this.tree and loads an existing tree, i.e. it seeks for containers in the database from which
+     * we create the Table of Deductions (Tree) just like the user crated it in the first place
+      */
+    public void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
         canvas.getChildren().setAll(this.tree);
@@ -285,7 +294,9 @@ public class TodController implements Initializable {
         showScaleSlider();
     }
 
-
+    /**
+     * It instantiates this.tree and loads a new tree, that is it will create a new FCC
+     */
     void showNewTree() {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
@@ -295,7 +306,11 @@ public class TodController implements Initializable {
         showScaleSlider();
     }
 
-
+    /**
+     * It instantiates this.tree and loads a Tree departing from one FCC which is provided by the user from the
+     * drop-down menu
+     * @param fcc
+     */
     void showNewTree(Fcc fcc) {
         this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
@@ -352,4 +367,5 @@ public class TodController implements Initializable {
     private void setRightPanelOpen(boolean rightPanelOpen) {
         this.rightPanelOpen.set(rightPanelOpen);
     }
+
 }

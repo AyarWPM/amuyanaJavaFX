@@ -18,7 +18,7 @@ public class FccEditorTab extends RightPanelTab {
 
     public FccEditorTab(TodController todController, NodeInterface nodeInterface, Fcc fcc) {
         loadSource();
-
+        this.setClosable(false);
         this.fccEditorController.setInterfaces(todController);
         this.fccEditorController.setValues(this, fcc);
 
@@ -42,10 +42,10 @@ public class FccEditorTab extends RightPanelTab {
     private void bindProperties() {
         textProperty().bind(this.getFccEditorController().getFcc().nameProperty());
         //setText(this.getFccController().getFruit().getName());
-        setOnCloseRequest(event -> {
-            event.consume();
+        /*setOnCloseRequest(event -> {
+
             fccEditorController.close();
-        });
+        });*/
     }
 
     public FccEditorController getFccEditorController() {

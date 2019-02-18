@@ -2,8 +2,10 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
+import com.amuyana.app.node.tod.Fruit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -201,26 +203,32 @@ public class DataHandler implements DataInterface {
 
     // GETTERS OF LISTVIEWS
 
+    @Override
     public ObservableList<LogicSystem> getListLogicSystem() {
         return listLogicSystem;
     }
 
+    @Override
     public ObservableList<Fcc> getListFcc() {
         return listFcc;
     }
 
+    @Override
     public ObservableList<FccHasLogicSystem> getListFccHasLogicSystem() {
         return listFccHasLogicSystem;
     }
 
+    @Override
     public ObservableList<Tod> getListTod() {
         return listTod;
     }
 
+    @Override
     public ObservableList<Element> getListElements() {
         return listElements;
     }
 
+    @Override
     public ObservableList<Dynamism> getListDynamisms() {
         return listDynamisms;
     }
@@ -229,16 +237,30 @@ public class DataHandler implements DataInterface {
         return listUser;
     }
 
+    @Override
     public ObservableList<CClass> getListCClass() {
         return listCClass;
     }
 
+    @Override
     public ObservableList<CClassHasInclusion> getListCClassHasInclusion() {
         return listCClassHasInclusion;
     }
 
+    @Override
     public ObservableList<Inclusion> getListInclusions() {
         return listInclusions;
+    }
+
+    @Override
+    public ObservableList<Inclusion> getInclusions(Tod tod) {
+        ObservableList<Inclusion> inclusions = FXCollections.observableArrayList();
+        for (Inclusion inclusion : getListInclusions()) {
+            if (inclusion.getTod().getIdTod() == tod.getIdTod()) {
+                inclusions.addAll(inclusion);
+            }
+        }
+        return inclusions;
     }
 
     public ObservableList<Syllogism> getListSyllogisms() {
@@ -502,14 +524,101 @@ public class DataHandler implements DataInterface {
 
     @Override
     public void delete(Tod tod) {
-        // First delete container0
-        delete(tod.getContainer0());
-        // delete tod
+
+
+        // delete Inclusions
+        ObservableList<Inclusion> inclusionsToDelete = FXCollections.observableArrayList();
+        for (Inclusion inclusion : listInclusions) {
+            if (inclusion.getTod().getIdTod() == tod.getIdTod()) {
+                inclusionsToDelete.addAll(inclusion);
+            }
+        }
+        for (Inclusion inclusion : inclusionsToDelete) {
+            delete(inclusion);
+        }
         DataConnection dataConnection = getDataConnection();
         dataConnection.connect();
+        // delete tod
         int result = tod.deleteData(dataConnection.getConnection());
         if (result == 1) {
             this.listTod.remove(tod);
+        }
+
+        // main container0 and all containers inside
+        deleteAll(tod.getContainer0());
+
+        // delete container0
+        /*deleteAll(tod.getContainer0(),FXCollections.observableArrayList(),
+                FXCollections.observableArrayList(),
+                FXCollections.observableArrayList(),
+                FXCollections.observableArrayList(),
+                FXCollections.observableArrayList());*/
+        dataConnection.disconnect();
+
+    }
+
+    private void deleteAll(Container0 container0) {
+        ObservableList<Container0In1> container0In1sToDelete = FXCollections.observableArrayList();
+        ObservableList<Container0In2> container0In2sToDelete = FXCollections.observableArrayList();
+        ObservableList<Container1> container1sToDelete = FXCollections.observableArrayList();
+        ObservableList<Container2> container2sToDelete = FXCollections.observableArrayList();
+        ObservableList<Container0> container0sToDeleteAll = FXCollections.observableArrayList();
+
+        for (Container1 container1 : listContainer1s) {
+            if (container1.getContainer0().getIdContainer0() == container0.getIdContainer0()) {
+
+                // left right of each subbranch
+                for (Container0In2 container0In2 : listContainer0In2s) {
+                    if (container0In2.getContainer2().getContainer1().getIdContainer1() == container1.getIdContainer1()) {
+                        container2sToDelete.addAll(container0In2.getContainer2());
+                        container0In2sToDelete.addAll(container0In2);
+                        container0sToDeleteAll.addAll(container0In2.getContainer0());
+                    }
+                }
+
+                for (Container0In2 container0In2 : container0In2sToDelete) {
+                    delete(container0In2);
+                }
+
+                for (Container2 container2 : container2sToDelete) {
+                    delete(container2);
+                }
+
+                // remove left right container0s, then left right container0s of each subbranch
+                for (Container0In1 container0In1 : listContainer0In1s) {
+                    if (container0In1.getContainer1().getIdContainer1() == container1.getIdContainer1()) {
+                        container1sToDelete.addAll(container1);
+                        container0In1sToDelete.addAll(container0In1);
+                        container0sToDeleteAll.addAll(container0In1.getContainer0());
+                    }
+                }
+            }
+        }
+
+        for (Container0In1 container0In1 : container0In1sToDelete) {
+            delete(container0In1);
+        }
+        for (Container0 container01 : container0sToDeleteAll) {
+            deleteAll(container01);
+        }
+        for (Container1 container1 : container1sToDelete) {
+            delete(container1);
+        }
+        delete(container0);
+    }
+
+    private void delete(Container0In2 container0In2) {
+        dataConnection.connect();
+        if (container0In2.deleteData(dataConnection.getConnection()) == 1) {
+            listContainer0In2s.remove(container0In2);
+        }
+        dataConnection.disconnect();
+    }
+
+    private void delete(Container0In1 container0In1) {
+        dataConnection.connect();
+        if (container0In1.deleteData(dataConnection.getConnection()) == 1) {
+            listContainer0In2s.remove(container0In1);
         }
         dataConnection.disconnect();
     }

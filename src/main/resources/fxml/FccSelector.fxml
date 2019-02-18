@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<VBox id="FccSelector" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="150.0" prefWidth="300.0" spacing="10.0" styleClass="FccSelector" stylesheets="@../css/mainApp.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FccSelectorController">
+<VBox id="Root" alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="300.0" spacing="10.0" stylesheets="@../css/fccSelector.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.FccSelectorController">
    <children>
-      <Label id="FccSelectorTitle" minHeight="-Infinity" minWidth="-Infinity" prefWidth="260.0" text="Set initial FCC for the Table of deductions" textAlignment="CENTER" wrapText="true" />
-      <Button id="NormalButton" fx:id="newFccButton" defaultButton="true" mnemonicParsing="false" onAction="#newFcc" prefHeight="100.0" prefWidth="500.0" text="Create new" VBox.vgrow="ALWAYS">
+      <Label id="TitleLabel" minHeight="-Infinity" minWidth="-Infinity" prefWidth="260.0" text="Set the initial Fundamental Conjunction of Contradiction (FCC) of this Table of deductions" textAlignment="CENTER" wrapText="true" />
+      <Separator prefWidth="200.0" />
+      <Button fx:id="newFccButton" defaultButton="true" minHeight="-Infinity" mnemonicParsing="false" onAction="#newFcc" prefWidth="500.0" text="Create a new FCC" textAlignment="CENTER" wrapText="true" VBox.vgrow="ALWAYS">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Separator prefWidth="200.0" />
-      <MenuButton id="NormalButton" fx:id="fccsMenuButton" alignment="CENTER" mnemonicParsing="false" popupSide="RIGHT" prefHeight="100.0" prefWidth="500.0" text="From Logic system">
+      <MenuButton id="NormalButton" fx:id="fccsMenuButton" alignment="CENTER" minHeight="-Infinity" mnemonicParsing="false" popupSide="RIGHT" prefWidth="500.0" text="Start with an existing FCC (in this Logic System)" textAlignment="CENTER" wrapText="true">
          <font>
             <Font size="16.0" />
          </font>

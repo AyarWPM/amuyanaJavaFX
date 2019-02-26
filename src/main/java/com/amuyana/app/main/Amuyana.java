@@ -9,12 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
-public class AmuyanaLauncher extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-        System.exit(0);
-    }
+public class Amuyana extends Application {
 
     @Override
     public void start(Stage stage) {
@@ -27,21 +22,15 @@ public class AmuyanaLauncher extends Application {
 
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
         scene.getStylesheets().addAll("/css/mainApp.css");
-        //"/css/expressionNOT.css" taken out
 
         stage.setTitle("Amuyaña");
         stage.setScene(scene);
         stage.show();
 
-        /*boolean condition1 = false;
-        boolean condition2 = false;
-        boolean condition3 = false;
+    }
 
-        if (condition1 || condition2 || condition3) {
-            System.out.println("1");
-        } else if (!condition1 && !condition2 && !condition3) {
-            System.out.println("2");
-        }*/
-
+    public static void main(String[] args) {
+        launch(args);
+        System.exit(0);
     }
 }

@@ -290,6 +290,10 @@ public class FruitController implements Initializable {
         }
     }
 
+    public void resetValueInScaleSlider() {
+        this.tree.getTodController().getScaleSlider().setValue(1);
+    }
+
     private EventHandler<ActionEvent>  deployNewOrientationDescendantAction(Dynamism ascendantDynamism) {
         return actionEvent -> {
             TodController todController = this.tree.getTodController();
@@ -299,7 +303,9 @@ public class FruitController implements Initializable {
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
-            Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
+
+            Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc); // we do nothing with newFruit
+
             // Create inclusions
             Dynamism positiveDynamismOfDescendant = dataInterface.getDynamism(newFcc, 0);
             Dynamism negativeDynamismOfDescendant = dataInterface.getDynamism(newFcc, 1);
@@ -309,62 +315,9 @@ public class FruitController implements Initializable {
             dataInterface.newInclusion(symmetricDynamismOfDescendant,ascendantDynamism, todController.getTod());
 
             tieDescendant(newFruit);
-            tree.update();
-            //todController.showTree();
-            //tree.updateFruitsMenus();
-            // Update orientation of all ties as well
-            //tree.updateOrientationTies();
-            //todController.method1();
+            tree.updateFruitsMenus();
+            //tree.update();
         };
-    }
-
-    private EventHandler<ActionEvent> deployNewAscendantAction(Dynamism descendantDynamism) {
-        return actionEvent -> {
-            TodController todController = this.tree.getTodController();
-            // set scale to 1 before continuing, otherwise the binding of knobs does not work
-            resetValueInScaleSlider();
-            LogicSystem logicSystem = todController.getTod().getLogicSystem();
-            Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
-            todController.openFccEditor(newFcc);
-            Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc);
-
-            // Create inclusions
-            Dynamism positiveDynamismOfAscendant = dataInterface.getDynamism(newFcc, 0);
-            Dynamism negativeDynamismOfAscendant = dataInterface.getDynamism(newFcc, 1);
-            Dynamism symmetricDynamismOfAscendant = dataInterface.getDynamism(newFcc, 2);
-            dataInterface.newInclusion(descendantDynamism,positiveDynamismOfAscendant, todController.getTod());
-            dataInterface.newInclusion(descendantDynamism,negativeDynamismOfAscendant, todController.getTod());
-            dataInterface.newInclusion(descendantDynamism,symmetricDynamismOfAscendant, todController.getTod());
-
-            tieAscendant(newFruit);
-            tree.update();
-            //todController.showTree();
-
-            //tree.updateFruitsMenus();
-            // Update orientation of all ties as well
-            //tree.updateOrientationTies();
-        };
-    }
-
-    public void resetValueInScaleSlider() {
-        this.tree.getTodController().getScaleSlider().setValue(1);
-    }
-
-    public void tieAscendant(Fruit newFruit) {
-        // for ascendants
-        boolean thereIsAscendantTie=false;
-        for (Tie tie : tree.getTies()) {
-            if (tie.getAscendantFruit().equals(newFruit)) {
-                if (tie.getDescendantFruit().equals(fruit)) {
-                    thereIsAscendantTie=true;
-                    break;
-                }
-            }
-        }
-        if (!thereIsAscendantTie) {
-            Tie tie = new Tie(fruit,newFruit);
-            this.tree.addTie(tie);
-        }
     }
 
     public void tieDescendant(Fruit newFruit) {
@@ -381,11 +334,53 @@ public class FruitController implements Initializable {
         if (!thereIsDescendantTie) {
             Tie tie = new Tie(newFruit,fruit);
             this.tree.addTie(tie);
+            System.out.println("FruitController.tieDescendant (tie="+tie+")");
         }
     }
 
+    private EventHandler<ActionEvent> deployNewAscendantAction(Dynamism descendantDynamism) {
+        return actionEvent -> {
+            TodController todController = this.tree.getTodController();
+            // set scale to 1 before continuing, otherwise the binding of knobs does not work
+            resetValueInScaleSlider();
+            LogicSystem logicSystem = todController.getTod().getLogicSystem();
+            Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
+            todController.openFccEditor(newFcc);
+            Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc); // we do nothing with newFruit
 
-    // Building ties for fruits in children nodes
+            // Create inclusions
+            Dynamism positiveDynamismOfAscendant = dataInterface.getDynamism(newFcc, 0);
+            Dynamism negativeDynamismOfAscendant = dataInterface.getDynamism(newFcc, 1);
+            Dynamism symmetricDynamismOfAscendant = dataInterface.getDynamism(newFcc, 2);
+            dataInterface.newInclusion(descendantDynamism,positiveDynamismOfAscendant, todController.getTod());
+            dataInterface.newInclusion(descendantDynamism,negativeDynamismOfAscendant, todController.getTod());
+            dataInterface.newInclusion(descendantDynamism,symmetricDynamismOfAscendant, todController.getTod());
+
+            tieAscendant(newFruit);
+            tree.updateFruitsMenus();
+            //tree.update();
+        };
+    }
+
+    public void tieAscendant(Fruit newFruit) {
+        // for ascendants
+        boolean thereIsAscendantTie=false;
+        for (Tie tie : tree.getTies()) {
+            if (tie.getAscendantFruit().equals(newFruit)) {
+                if (tie.getDescendantFruit().equals(fruit)) {
+                    thereIsAscendantTie=true;
+                    break;
+                }
+            }
+        }
+        if (!thereIsAscendantTie) {
+            Tie tie = new Tie(fruit,newFruit);
+            this.tree.addTie(tie);
+            System.out.println("FruitController.tieAscendant (tie="+tie+")");
+        }
+    }
+
+    // This should be called only when opening a new TOD
     public void buildTies() {
         // Descendants
         for (Branch branch : this.fruit.getSubBranch().getRightTrunk().getBranches()) {
@@ -393,16 +388,19 @@ public class FruitController implements Initializable {
                 if (this.fruit.isDescendant(fruit1)) {
                     Tie tie = new Tie(fruit1, this.fruit);
                     this.tree.addTie(tie);
+                    System.out.println("FruitController.buildTies -descendant- (tie="+tie+")");
                     tie.setOrientations();
                 }
             }
         }
+
         // Ascendants
         for (Branch branch : this.fruit.getSubBranch().getLeftTrunk().getBranches()) {
             for (Fruit fruit1 : branch.getFruits()) {
                 if (fruit1.isDescendant(this.fruit)) {
                     Tie tie = new Tie(this.fruit, fruit1);
                     this.tree.addTie(tie);
+                    System.out.println("FruitController.buildTies -ascendant- (tie="+tie+")");
                     tie.setOrientations();
                 }
             }

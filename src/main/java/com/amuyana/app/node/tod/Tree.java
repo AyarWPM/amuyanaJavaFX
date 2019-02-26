@@ -104,6 +104,7 @@ public class Tree extends Group {
     }
 
     public void addTie(Tie tie) {
+        System.out.println("Tree.addTie ("+tie+")");
         ties.add(tie);
         for (Line line : tie.getLines()) {
             linesGroup.getChildren().addAll(line);
@@ -114,18 +115,6 @@ public class Tree extends Group {
         ties.remove(tie);
         linesGroup.getChildren().removeAll(tie.getLines());
     }
-
-    public void buildTies() {
-        ties.clear();
-        linesGroup.getChildren().clear();
-        for (Fruit fruit : getObservableFruits()) {
-            fruit.getFruitController().buildTies();
-        }
-    }
-
-    /*public List<Fruit> getFruits() {
-        return fruits;
-    }*/
 
     public ObservableList<Fruit> getObservableFruits() {
         ObservableList<Fruit> fruits = FXCollections.observableArrayList();
@@ -173,6 +162,7 @@ public class Tree extends Group {
 
     // removes the fruit in both the fruits field and observableList of fruits in tree nodes
     // this is activated by an inclusions listener in Tie, we can invoke it again by removing all inclusions to child nodes
+
     public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
         fruitsToRemove.addAll(fruit);
         // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
@@ -298,12 +288,12 @@ public class Tree extends Group {
         }
     }
 
-    private void checkFruitsRemoval() {
+    public void checkFruitsRemoval() {
     // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
         Tie tieToRemove = null;
         boolean tieBoolean = false;
         Fruit fruitToRemove = null;
-        for (Tie tie : getTies()) {
+        for (Tie tie : ties) {
             if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
                 tieToRemove=tie;
                 tieBoolean = true;
@@ -325,6 +315,14 @@ public class Tree extends Group {
     public void updateFruitsMenus() {
         for (Fruit fruit : getObservableFruits()) {
             fruit.getFruitController().buildMenus();
+        }
+    }
+
+    public void buildTies() {
+        ties.clear();
+        linesGroup.getChildren().clear();
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildTies();
         }
     }
 }

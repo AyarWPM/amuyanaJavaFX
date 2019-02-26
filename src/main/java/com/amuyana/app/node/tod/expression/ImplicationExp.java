@@ -38,12 +38,12 @@ public class ImplicationExp extends Expression {
         showAlgebraicRadioMenuItem.setOnAction(e -> {
             buildAlgebraic();
             //todController.getTree().buildLines();
-            todController.getTree().buildTies();
+            //todController.getTree().buildTies();
         });
         showPropositionalRadioMenuItem.setOnAction(e -> {
             buildPropositional();
             //todController.getTree().buildLines();
-            todController.getTree().buildTies();
+            //todController.getTree().buildTies();
         });
         showAlgebraicRadioMenuItem.setStyle("-fx-font-family: sans;");
         showPropositionalRadioMenuItem.setStyle("-fx-font-family: sans;");

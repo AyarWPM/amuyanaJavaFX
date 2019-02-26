@@ -140,16 +140,16 @@ public class FccMenu extends Menu {
                 }
                 dataInterface.delete(inclusionToRemove);
             }
-            tree.update();
-            //fruitController.getFruit().getTree().getTodController().showTree();
-
+            tree.updateOrientationTies();
+            tree.checkFruitsRemoval();
+            tree.updateFruitsMenus();
+            //tree.update();
         };
     }
 
     private EventHandler<ActionEvent> toOrientationCheckMenuAction(Dynamism ascendantDynamism,
                                                                    Dynamism descendantDynamism,
                                                                    CheckMenuItem checkMenuItem) {
-        // We need to update all menus
         return actionEvent -> {
             // if user selects
             if (checkMenuItem.selectedProperty().get()) {
@@ -183,8 +183,11 @@ public class FccMenu extends Menu {
                 }
                 dataInterface.delete(inclusionToRemove);
             }
-            tree.update();
-            //fruitController.getFruit().getTree().getTodController().showTree();
+            tree.updateOrientationTies();
+            tree.checkFruitsRemoval();
+            tree.updateFruitsMenus();
+
+            //tree.update();
         };
     }
 }

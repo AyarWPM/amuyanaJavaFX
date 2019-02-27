@@ -61,6 +61,7 @@ public class TodController implements Initializable {
     private BooleanProperty rightPanelOpen;
 
 
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.dataInterface = MainBorderPane.getDataInterface();

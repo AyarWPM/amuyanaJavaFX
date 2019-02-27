@@ -13,6 +13,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
@@ -55,6 +56,13 @@ public class Tree extends Group {
     private void initializeAndBind() {
         this.dataInterface = MainBorderPane.getDataInterface();
         this.linesGroup = new Group();
+        /*Line a = new Line();
+        Line b = new Line();
+        Line c = new Line();
+        Line d = new Line();
+        linesGroup.getChildren().addAll(a,b,c,d);
+        a.setStartX(0);a.setStartY(0);a.setEndX(linesGroup.prefWidth(-1));a.setEndY(linesGroup.prefHeight(-1));*/
+
 
         this.ties = FXCollections.observableArrayList();
 
@@ -104,7 +112,6 @@ public class Tree extends Group {
     }
 
     public void addTie(Tie tie) {
-        System.out.println("Tree.addTie ("+tie+")");
         ties.add(tie);
         for (Line line : tie.getLines()) {
             linesGroup.getChildren().addAll(line);
@@ -324,5 +331,16 @@ public class Tree extends Group {
         for (Fruit fruit : getObservableFruits()) {
             fruit.getFruitController().buildTies();
         }
+    }
+
+    public void cheapAdjustment() {
+        ScrollPane scrollPane = getTodController().getTreeScrollPane();
+        if (scrollPane.getHvalue() < 1) {
+            scrollPane.setHvalue(scrollPane.getHvalue()+0.01);
+        }
+        if (scrollPane.getHvalue() > 0) {
+            scrollPane.setHvalue(scrollPane.getHvalue()-0.01);
+        }
+
     }
 }

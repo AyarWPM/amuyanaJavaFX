@@ -19,7 +19,6 @@ public class ConnectionController implements Initializable {
     @FXML private TextField userTextField;
     @FXML private TextField passwordTextField;
     @FXML private CheckBox useDefaultCheckBox;
-    @FXML private Button testConnexionButton;
 
     private NodeInterface nodeInterface;
 
@@ -33,7 +32,7 @@ public class ConnectionController implements Initializable {
         if (useDefaultCheckBox.isSelected()) {
             hostTextField.setText("160.153.71.97:3306");
             userTextField.setText("anonymous");
-            passwordTextField.setText("");
+            passwordTextField.setText("anonymous");
             hostTextField.setDisable(true);
             userTextField.setDisable(true);
             passwordTextField.setDisable(true);
@@ -49,9 +48,17 @@ public class ConnectionController implements Initializable {
     }
 
     @FXML
-    private void testConnexion() {
+    private void connect() {
         MainBorderPane.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
-        Message.testConnection(MainBorderPane.getDataInterface().testConnection());
+        if (Message.testConnection(MainBorderPane.getDataInterface().testConnection())) {
+            // load data
+            MainBorderPane.getDataInterface().loadData();
+        // enable button in topMenuBar
+            nodeInterface.getTopMenuBar().enableLogicSystemButton();
+        } else {
+
+        }
+
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {
@@ -61,4 +68,19 @@ public class ConnectionController implements Initializable {
     private void setDataConnectionValues() {
         MainBorderPane.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
     }
+
+    public TextField getHostTextField() {
+        return hostTextField;
+    }
+
+
+    public TextField getUserTextField() {
+        return userTextField;
+    }
+
+
+    public TextField getPasswordTextField() {
+        return passwordTextField;
+    }
+
 }

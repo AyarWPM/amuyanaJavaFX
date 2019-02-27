@@ -11,8 +11,8 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 
 public interface NodeInterface {
-
     TopMenuBar getTopMenuBar();
+
     void setStage(Stage stage);
     Node getRootNode();
     LogicSystem getLogicSystem();

@@ -32,6 +32,7 @@ public class TopMenuBar extends MenuBar {
     }
 
     private void setInitialValues() {
+        this.logicSystemMenu.setDisable(true);
         this.todMenu.setDisable(true);
         //this.dialecticsMenu.setDisable(true);
         //this.statisticsMenu.setDisable(true);
@@ -68,12 +69,9 @@ public class TopMenuBar extends MenuBar {
         MenuItem connexionMenuItem = new MenuItem("Connexion");
         connexionMenuItem.setOnAction(actionEvent -> openConnectionTab());
 
-        MenuItem reinitializeDatabase = new MenuItem("Reinitialize database");
-        reinitializeDatabase.setOnAction(e-> dataInterface.reinitializeDatabase());
-
         MenuItem exitMenuItem = new MenuItem("Exit");
         exitMenuItem.setOnAction(actionEvent -> nodeInterface.exitAmuyana());
-        fileMenu.getItems().addAll(connexionMenuItem,reinitializeDatabase,exitMenuItem);
+        fileMenu.getItems().addAll(connexionMenuItem,exitMenuItem);
     }
 
     private void initializeLogicSystemMenu() {
@@ -176,5 +174,9 @@ public class TopMenuBar extends MenuBar {
         for (TodMenu todMenu : todMenus) {
             this.todMenu.getItems().add(todMenu);
         }
+    }
+
+    public void enableLogicSystemButton() {
+        this.logicSystemMenu.setDisable(false);
     }
 }

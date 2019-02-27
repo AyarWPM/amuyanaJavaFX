@@ -14,16 +14,12 @@ public class Amuyana extends Application {
     @Override
     public void start(Stage stage) {
         DataInterface dataInterface = new DataHandler();
-        dataInterface.setDataConnectionValues("localhost", "amuyana", "");
-        dataInterface.loadData();
-
         NodeInterface nodeInterface = new MainBorderPane(dataInterface);
         nodeInterface.setStage(stage);
 
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
-        scene.getStylesheets().addAll("/css/mainApp.css");
 
-        stage.setTitle("Amuyaña");
+        stage.setTitle("Amuyaña prototype");
         stage.setScene(scene);
         stage.show();
 

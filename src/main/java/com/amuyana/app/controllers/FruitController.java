@@ -316,7 +316,8 @@ public class FruitController implements Initializable {
 
             tieDescendant(newFruit);
             tree.updateFruitsMenus();
-            //tree.update();
+            // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
+            tree.cheapAdjustment();
         };
     }
 
@@ -334,7 +335,6 @@ public class FruitController implements Initializable {
         if (!thereIsDescendantTie) {
             Tie tie = new Tie(newFruit,fruit);
             this.tree.addTie(tie);
-            System.out.println("FruitController.tieDescendant (tie="+tie+")");
         }
     }
 
@@ -358,7 +358,8 @@ public class FruitController implements Initializable {
 
             tieAscendant(newFruit);
             tree.updateFruitsMenus();
-            //tree.update();
+            // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
+            tree.cheapAdjustment();
         };
     }
 
@@ -376,7 +377,6 @@ public class FruitController implements Initializable {
         if (!thereIsAscendantTie) {
             Tie tie = new Tie(fruit,newFruit);
             this.tree.addTie(tie);
-            System.out.println("FruitController.tieAscendant (tie="+tie+")");
         }
     }
 
@@ -388,7 +388,6 @@ public class FruitController implements Initializable {
                 if (this.fruit.isDescendant(fruit1)) {
                     Tie tie = new Tie(fruit1, this.fruit);
                     this.tree.addTie(tie);
-                    System.out.println("FruitController.buildTies -descendant- (tie="+tie+")");
                     tie.setOrientations();
                 }
             }
@@ -400,7 +399,6 @@ public class FruitController implements Initializable {
                 if (fruit1.isDescendant(this.fruit)) {
                     Tie tie = new Tie(this.fruit, fruit1);
                     this.tree.addTie(tie);
-                    System.out.println("FruitController.buildTies -ascendant- (tie="+tie+")");
                     tie.setOrientations();
                 }
             }

@@ -41,13 +41,13 @@
                               <HBox alignment="CENTER_LEFT" fillHeight="false" layoutX="10.0" layoutY="84.0" spacing="5.0">
                                  <children>
                                     <Label minWidth="-Infinity" text="Password:" />
-                                    <TextField fx:id="passwordTextField" disable="true" HBox.hgrow="ALWAYS" />
+                                    <TextField fx:id="passwordTextField" disable="true" text="anonymous" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                               <HBox spacing="10.0">
                                  <children>
                                     <CheckBox fx:id="useDefaultCheckBox" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#setDefaultValues" selected="true" text="Use default values" wrapText="true" />
-                                    <Button fx:id="testConnexionButton" mnemonicParsing="false" onAction="#testConnexion" text="Set connexion" />
+                                    <Button mnemonicParsing="false" onAction="#connect" text="Connect" />
                                  </children>
                               </HBox>
                            </children>

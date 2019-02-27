@@ -85,7 +85,6 @@ public class DataHandler implements DataInterface {
      */
     public void setDataConnectionValues(String url, String username, String password) {
         DataConnection.setValues(url,username,password);
-
     }
 
     @Override

@@ -35,11 +35,8 @@ public class DataConnection {
     public boolean connect(){
         boolean response = false;
         try {
-            //Cargar driver
-            //Class.forName("com.mysql.cj.jdbc.Driver");
-
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + this.URL + "?autoReconnect=true&useSSL=false&connectTimeout=3", this.USERNAME, this.PASSWORD);
+                    "jdbc:mysql://" + DataConnection.URL + "/amuyana", DataConnection.USERNAME, DataConnection.PASSWORD);
             response = true;
         } catch (SQLException ex) {
             System.err.println("SQLException");

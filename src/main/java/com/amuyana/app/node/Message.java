@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public abstract class Message {
 
-    public static void testConnection(boolean result) {
+    public static boolean testConnection(boolean result) {
+        boolean connected;
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.setResizable(true);
@@ -19,17 +20,20 @@ public abstract class Message {
         alert.setHeaderText("Result");
         if (result) {
             alert.setContentText("The connection was successful");
+            connected = true;
         } else {
-            alert.setContentText("The connection was unsuccessful.");
+            alert.setContentText("The connection was unsuccessful. Please check your connection to the Internet.");
+            connected = false;
         }
         alert.showAndWait();
+        return connected;
     }
 
     public static void completeAllFieldsAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         alert.setResizable(true);
-        alert.setTitle("Unable to newLogicSystem");
+        alert.setTitle("Unable to proceed");
         alert.setHeaderText(null);
         alert.setContentText("Please complete all fields.");
         alert.showAndWait();

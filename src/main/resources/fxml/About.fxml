@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox alignment="TOP_CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="20.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
@@ -20,10 +20,23 @@
             <Label layoutX="10.0" layoutY="10.0" text="(Prototype)" />
          </children>
       </HBox>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña allows the creation of Table of deductions from the Dynamic logic of the contradictory." wrappingWidth="350.0" />
-      <Text layoutX="35.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Future version could include the capacity to register statistical events and compute descriptive and inferential statistics." wrappingWidth="350.0" />
-      <Text layoutX="10.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña is developed by Ayar Portugal (ayarportugal@gmail.com)" wrappingWidth="350.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña allows the creation of Table of deductions from the Dynamic logic of the contradictory." wrappingWidth="400.0" />
+      <Text layoutX="35.0" layoutY="62.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Future version could include the capacity to register statistical events and compute descriptive and inferential statistics." wrappingWidth="400.0" />
+      <Text layoutX="10.0" layoutY="52.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña is developed by Ayar Portugal (ayarportugal@gmail.com)" wrappingWidth="400.0" />
       <Text layoutX="10.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña is free and open source software." />
+      <Separator prefWidth="200.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="How to use">
+         <font>
+            <Font name="System Bold" size="14.0" />
+         </font>
+      </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="1. Click on &quot;File -&gt; Connexion&quot;" />
+      <Text layoutX="96.0" layoutY="326.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Click the button &quot;Connect&quot; once you decided on the connexion parameters (the default parameters are those of amuyana.com). If you want to create your own database contact Ayar." wrappingWidth="400.0" />
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="3. Now you can either create your own Logic System or load an existing one." wrappingWidth="400.0" />
+      <Text layoutX="15.0" layoutY="442.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.A. To create a new Logic System click on the menu &quot;Logic System -&gt; New&quot;" wrappingWidth="400.0" />
+      <Text layoutX="15.0" layoutY="493.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3.B. To load an existing Logic System click on the menu &quot;Logic System -&gt; name_of_logic_system -&gt; Load&quot;" wrappingWidth="400.0" />
+      <Text layoutX="15.0" layoutY="550.0" strokeType="OUTSIDE" strokeWidth="0.0" text="4. After you have loaded a Logic System you can create a new Table of Deductions or create a new one." wrappingWidth="400.0" />
+      <Text layoutX="15.0" layoutY="593.0" strokeType="OUTSIDE" strokeWidth="0.0" text="5. To open a Table of Deductions select it from the menu." wrappingWidth="400.0" />
    </children>
    <padding>
       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

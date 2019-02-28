@@ -1,7 +1,7 @@
 # Amuyaña
 ![Amuyaña](http://i64.tinypic.com/24g3loz.png)
 
-Amuyaña is a prototype software that creates visual representations of Systems with the formal logic axioms of the Dynamic Logic of the Contradictory. The word *amuyaña* is a term in Aymara that means "thinking", "reasoning" or "understanding".
+[Amuyaña](http://amuyaña.com) is a prototype software that creates visual representations of Systems with the formal logic axioms of the Dynamic Logic of the Contradictory. The word *amuyaña* is a term in Aymara that means "thinking", "reasoning" or "understanding".
 
 It has two main purposes: Generate visual representations of the main concepts of the Logic of the Contradictory and maintain the statistical data and its analysis.
 
@@ -27,130 +27,44 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-* one
-* two
-
-```
-Give examples
-```
+* JDK11
+* JavaFX11
+* Maven 3.5.2 (maybe older versions work, I don't know)
+* Only dependency of the project is MySQL connector
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Clone the project.
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
+### Compilation and execution
 
 ```
-until finished
+mvn compile exec:java
 ```
 
-End with an example of getting some data out of the system or using it for a little demo
-
-## Running the tests
-
-Explain how to run the automated tests for this system
-
-### Break down into end to end tests
-
-Explain what these tests test and why
+### Package
 
 ```
-Give an example
-```
-
-### And coding style tests
-
-Explain what these tests test and why
-
-```
-Give an example
+mvn package
 ```
 
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
-
-## Built With
-
-* [Dropwizard](http://www.dropwizard.io/1.0.2/docs/) - The web framework used
-* [Maven](https://maven.apache.org/) - Dependency Management
-* [ROME](https://rometools.github.io/rome/) - Used to generate RSS Feeds
+The pom.xml maven file will package Amuyaña for Linux, Windows and Macintosh computers. The users must have installed JDK11 though.
 
 ## Contributing
 
-Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c63ec426) for details on our code of conduct, and the process for submitting pull requests to us.
+Any contribution is welcome, please write info@amuyaña.com to know how.
 
-## Versioning
+## Author
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
-
-## Authors
-
-* **Billie Thompson** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
-
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+**Ayar Waman Portugal Michaux** - *Initial work* - [PurpleBooth](https://independent.academia.edu/AyarPortugal)
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+Amuyaña is distributed under the General Public Licence version 3.
 
 ## Acknowledgments
 
-* Hat tip to anyone whose code was used
-* Inspiration
-* etc
-
-
-//
-
-
-
-(Last update: 30/08/2018)
-
-
-
-## Introduction
-
-## History
-
-
-## Current version
-1.3
-
-## Development version
-2
-
-## Instructions for developpers
-Amuyaña has been written in Java 1.8.0_161 and JavaFX for the graphical user interface.
-
-The simplest way to get the source code is to pull the repository, for example:
-
-	git clone https://github.com/CREAR-ASBL/amuyana.git
-
-You will find a NetBeans project (the version I used was v. 8.2 - build 201609300101).
-
-Visit the [wiki section](https://github.com/CREAR-ASBL/amuyana/wiki) for more information about the source code and how it runs step by step to create the main graphs. A more detailed overview of the classes, methods, variables, etc. is available in the docs.
-
-## Links
-
-The [project's website](http://amuyaña.com).
-
-The [github wiki](https://github.com/CREAR-ASBL/amuyana/wiki) has information about the  structure of the (java) source code.
-
-## Abbreviations
-Contradictional Logic System or logic system of the Dynamic Logic of the Contradictory = CLS
-
-Table of Deductions = ToD
-
-FCC = Fundamental Conjunction of contradiction
-
-## Licence
-
-Amuyaña is distributed under the  General Public Licence version 3.
-
+* Thanks to my mother
+* To all the contributors to the StackOverflow network, for their free codes (too many to count)

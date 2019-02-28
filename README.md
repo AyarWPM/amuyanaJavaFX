@@ -58,7 +58,7 @@ Any contribution is welcome, please write info@amuyaña.com to know how.
 
 ## Author
 
-**Ayar Waman Portugal Michaux** - *Initial work* - [PurpleBooth](https://independent.academia.edu/AyarPortugal)
+**Ayar Waman Portugal Michaux** - *Initial work* - [Academia.edu website](https://independent.academia.edu/AyarPortugal)
 
 ## License
 

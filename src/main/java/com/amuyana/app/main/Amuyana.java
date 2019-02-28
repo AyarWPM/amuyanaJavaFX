@@ -22,7 +22,6 @@ public class Amuyana extends Application {
         stage.setTitle("Amuyaña prototype");
         stage.setScene(scene);
         stage.show();
-
     }
 
     public static void main(String[] args) {

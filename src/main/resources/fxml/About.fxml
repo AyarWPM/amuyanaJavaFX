@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.*?>
@@ -8,16 +9,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" style="-fx-background-color: fbfad8; -fx-border-color: black; -fx-border-insets: 5;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER" spacing="10.0">
          <children>
-            <Label text="Amuyaña">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <Label layoutX="10.0" layoutY="10.0" text="(Prototype)" />
+            <ImageView fitHeight="95.0" fitWidth="200.0">
+               <image>
+                  <Image url="@../images/logo.png" />
+               </image>
+            </ImageView>
          </children>
       </HBox>
       <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Amuyaña allows the creation of Table of deductions from the Dynamic logic of the contradictory." wrappingWidth="400.0" />

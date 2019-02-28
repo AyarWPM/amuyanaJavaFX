@@ -164,7 +164,7 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
                     // Menus
                     topMenuBar.removeLogicSystemMenu(logicSystem);
                     topMenuBar.logicSystemIsLoaded(false);
-                    topMenuBar.clearTodMenu();
+                    topMenuBar.updateTodMenu();
                 }
             }
         } else if (result.get() == ButtonType.CANCEL) {

@@ -51,6 +51,10 @@ public class DataHandler implements DataInterface {
     private DataConnection dataConnection;
 
     public DataHandler() {
+        this.dataConnection = new DataConnection();
+    }
+
+    private void initLists() {
         this.listContainer1s = FXCollections.observableArrayList();
         this.listContainer2s = FXCollections.observableArrayList();
         this.listContainer0In1s = FXCollections.observableArrayList();
@@ -59,9 +63,6 @@ public class DataHandler implements DataInterface {
         this.listcClassHasContainer1s = FXCollections.observableArrayList();
         this.listConjunction = FXCollections.observableArrayList();
         this.listConjunctionHasInclusions = FXCollections.observableArrayList();
-
-        this.dataConnection = new DataConnection();
-
         this.listLogicSystem = FXCollections.observableArrayList();
         this.listFcc = FXCollections.observableArrayList();
         this.listFccHasLogicSystem = FXCollections.observableArrayList();
@@ -131,65 +132,28 @@ public class DataHandler implements DataInterface {
 
     public void loadData() {
         this.dataConnection.connect();
-
+        initLists();
         LogicSystem.loadList(dataConnection.getConnection(), this.listLogicSystem);
-
         Fcc.loadList(dataConnection.getConnection(), this.listFcc);
-
-        FccHasLogicSystem.loadList(this.dataConnection.getConnection(),
-                this.listFccHasLogicSystem,
-                this.listFcc,
-                this.listLogicSystem);
-
+        FccHasLogicSystem.loadList(this.dataConnection.getConnection(),this.listFccHasLogicSystem,this.listFcc,this.listLogicSystem);
         Container0.loadList(this.dataConnection.getConnection(),this.listContainer0s);
-
         Container1.loadList(this.dataConnection.getConnection(), this.listContainer1s,this.listContainer0s);
-
-        Container2.loadList(this.dataConnection.getConnection(),listContainer2s,listFcc,listContainer1s);
-
+        Container2.loadList(this.dataConnection.getConnection(),this.listContainer2s,this.listFcc,listContainer1s);
         Container0In1.loadList(this.dataConnection.getConnection(),this.listContainer0In1s,this.listContainer0s,this.listContainer1s);
-
-        Container0In2.loadList(this.dataConnection.getConnection(),listContainer0In2s,listContainer0s,listContainer2s);
-
-        ConjunctionHasContainer1.loadList(this.dataConnection.getConnection(),listConjunctionHasContainer1s,listConjunction,listContainer1s);
-
-        CClassHasContainer1.loadList(this.dataConnection.getConnection(),listcClassHasContainer1s,listCClass,listContainer1s);
-
+        Container0In2.loadList(this.dataConnection.getConnection(),this.listContainer0In2s,this.listContainer0s,this.listContainer2s);
+        ConjunctionHasContainer1.loadList(this.dataConnection.getConnection(),this.listConjunctionHasContainer1s,
+                this.listConjunction,this.listContainer1s);
+        CClassHasContainer1.loadList(this.dataConnection.getConnection(),this.listcClassHasContainer1s,this.listCClass,this.listContainer1s);
         Conjunction.loadList(this.dataConnection.getConnection(),this.listConjunction);
-
-        ConjunctionHasInclusion.loadList(this.dataConnection.getConnection(),listConjunctionHasInclusions,listConjunction,listInclusions);
-
-        Tod.loadList(this.dataConnection.getConnection(),
-                this.listTod,this.listLogicSystem,this.listContainer0s);
-
-        Element.loadList(this.dataConnection.getConnection(),
-                this.listElements,
-                this.listFcc);
-
-        Dynamism.loadList(this.dataConnection.getConnection(),
-                this.listDynamisms,
-                this.listFcc);
-
-        Inclusion.loadList(this.dataConnection.getConnection(),
-                this.listInclusions,
-                this.listDynamisms,
-                this.listTod);
-
-        CClass.loadList(this.dataConnection.getConnection(),
-                this.listCClass);
-
-        CClassHasInclusion.loadList(this.dataConnection.getConnection(),
-                this.listCClassHasInclusion,
-                this.listCClass,
-                this.listInclusions);
-
-        Syllogism.loadList(this.dataConnection.getConnection(),
-                this.listSyllogisms);
-
-        InclusionHasSyllogism.loadList(this.dataConnection.getConnection(),
-                this.listIHS,
-                this.listInclusions,
-                this.listSyllogisms);
+        ConjunctionHasInclusion.loadList(this.dataConnection.getConnection(),this.listConjunctionHasInclusions,this.listConjunction,this.listInclusions);
+        Tod.loadList(this.dataConnection.getConnection(),this.listTod,this.listLogicSystem,this.listContainer0s);
+        Element.loadList(this.dataConnection.getConnection(),this.listElements,this.listFcc);
+        Dynamism.loadList(this.dataConnection.getConnection(),this.listDynamisms,this.listFcc);
+        Inclusion.loadList(this.dataConnection.getConnection(),this.listInclusions,this.listDynamisms,this.listTod);
+        CClass.loadList(this.dataConnection.getConnection(),this.listCClass);
+        CClassHasInclusion.loadList(this.dataConnection.getConnection(),this.listCClassHasInclusion,this.listCClass,this.listInclusions);
+        Syllogism.loadList(this.dataConnection.getConnection(),this.listSyllogisms);
+        InclusionHasSyllogism.loadList(this.dataConnection.getConnection(),this.listIHS,this.listInclusions,this.listSyllogisms);
 
 //        Dialectic.loadList(this.dataConnection.getConnection(), listDialectic);
 //        Register.loadList(this.dataConnection.getConnection(), listRegister);

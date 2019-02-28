@@ -78,15 +78,7 @@ public class TopMenuBar extends MenuBar {
         logicSystemMenus = FXCollections.observableArrayList();
         MenuItem newLogicSystemMenuItem = new MenuItem("New");
         newLogicSystemMenuItem.setOnAction(actionEvent -> nodeInterface.openLogicSystemTab());
-
         logicSystemMenu.getItems().addAll(newLogicSystemMenuItem,new SeparatorMenuItem());
-
-        for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
-            LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
-            logicSystemMenu.textProperty().bind(logicSystem.labelProperty());
-            this.logicSystemMenu.getItems().add(logicSystemMenu);
-            this.logicSystemMenus.add(logicSystemMenu);
-        }
     }
 
     private void initializeTodMenu() {
@@ -140,7 +132,6 @@ public class TopMenuBar extends MenuBar {
         this.logicSystemMenus.add(logicSystemMenu);
     }
 
-    // TOD
     public void addMenu(Tod tod) {
         TodMenu todMenu = new TodMenu(tod, nodeInterface);
         todMenu.textProperty().bind(tod.labelProperty());
@@ -153,10 +144,9 @@ public class TopMenuBar extends MenuBar {
         fillTodMenu();
     }
 
-    public void clearTodMenu() {
+    private void clearTodMenu() {
         this.todMenus = FXCollections.observableArrayList();
         ObservableList<TodMenu> tempToRemove = FXCollections.observableArrayList();
-
         for (MenuItem menuItem : this.todMenu.getItems()) {
             if (menuItem.getClass().equals(TodMenu.class)) {
                 tempToRemove.add((TodMenu)menuItem);
@@ -178,5 +168,29 @@ public class TopMenuBar extends MenuBar {
 
     public void enableLogicSystemButton() {
         this.logicSystemMenu.setDisable(false);
+    }
+
+    public void updateLogicSystemMenu() {
+        clearLogicSystemMenu();
+        fillLogicSystemMenu();
+    }
+
+    private void clearLogicSystemMenu() {
+        this.logicSystemMenus = FXCollections.observableArrayList();
+        ObservableList<LogicSystemMenu> tempToRemove = FXCollections.observableArrayList();
+        for (MenuItem menuItem : this.logicSystemMenu.getItems()) {
+            if (menuItem.getClass().equals(LogicSystemMenu.class)) {
+                tempToRemove.add((LogicSystemMenu) menuItem);
+            }
+        }
+        this.logicSystemMenu.getItems().removeAll(tempToRemove);
+    }
+
+    private void fillLogicSystemMenu() {
+        for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
+            LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
+            this.logicSystemMenu.getItems().add(logicSystemMenu);
+            this.logicSystemMenu.textProperty().bind(logicSystem.labelProperty());
+        }
     }
 }

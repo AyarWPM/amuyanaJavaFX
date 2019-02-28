@@ -1,20 +1,16 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.node.MainBorderPane;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.Message;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ConnectionController implements Initializable {
-
     @FXML private TextField hostTextField;
     @FXML private TextField userTextField;
     @FXML private TextField passwordTextField;
@@ -50,15 +46,18 @@ public class ConnectionController implements Initializable {
     @FXML
     private void connect() {
         MainBorderPane.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
-        if (Message.testConnection(MainBorderPane.getDataInterface().testConnection())) {
+        boolean testConnection = MainBorderPane.getDataInterface().testConnection();
+        boolean connected = Message.testConnection(testConnection);
+
+        if (connected) {
             // load data
             MainBorderPane.getDataInterface().loadData();
-        // enable button in topMenuBar
+            // logic system in top menu bar
             nodeInterface.getTopMenuBar().enableLogicSystemButton();
+            nodeInterface.getTopMenuBar().updateLogicSystemMenu();
         } else {
-
+            // Look at the sky
         }
-
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {
@@ -73,11 +72,9 @@ public class ConnectionController implements Initializable {
         return hostTextField;
     }
 
-
     public TextField getUserTextField() {
         return userTextField;
     }
-
 
     public TextField getPasswordTextField() {
         return passwordTextField;

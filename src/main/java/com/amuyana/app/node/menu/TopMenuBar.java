@@ -3,7 +3,7 @@ package com.amuyana.app.node.menu;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.containers.Tod;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -26,7 +26,7 @@ public class TopMenuBar extends MenuBar {
 
     public TopMenuBar(NodeInterface nodeInterface) {
         this.nodeInterface = nodeInterface;
-        this.dataInterface = MainBorderPane.getDataInterface();
+        this.dataInterface = NodeHandler.getDataInterface();
         initialize();
         setInitialValues();
     }
@@ -39,7 +39,7 @@ public class TopMenuBar extends MenuBar {
     }
 
     private void initialize() {
-        this.fileMenu = new Menu("File");
+        this.fileMenu = new Menu("Amuyaña");
         this.logicSystemMenu = new Menu("Logic System");
         this.todMenu = new Menu("Table of Deductions");
         initializeFileMenu();
@@ -106,7 +106,7 @@ public class TopMenuBar extends MenuBar {
         aboutMenuItem.setOnAction(actionEvent -> {
             nodeInterface.openAboutWindow();
         });
-        this.helpMenu.getItems().add(aboutMenuItem);
+        this.helpMenu.getItems().addAll(aboutMenuItem);
     }
 
     private void openConnectionTab() {
@@ -190,7 +190,6 @@ public class TopMenuBar extends MenuBar {
         for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
             LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
             this.logicSystemMenu.getItems().add(logicSystemMenu);
-            this.logicSystemMenu.textProperty().bind(logicSystem.labelProperty());
         }
     }
 }

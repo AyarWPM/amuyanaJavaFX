@@ -1,6 +1,6 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.Message;
 import javafx.fxml.FXML;
@@ -20,15 +20,21 @@ public class ConnectionController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        //Empty
+        hostTextField.setText("localhost");
+        userTextField.setText("amuyana");
+        passwordTextField.setText("");
     }
 
     @FXML
     private void setDefaultValues() {
         if (useDefaultCheckBox.isSelected()) {
-            hostTextField.setText("160.153.71.97:3306");
+            /*hostTextField.setText("160.153.71.97:3306");
             userTextField.setText("anonymous");
-            passwordTextField.setText("anonymous");
+            passwordTextField.setText("anonymous");*/
+            hostTextField.setText("localhost");
+            userTextField.setText("amuyana");
+            passwordTextField.setText("");
             hostTextField.setDisable(true);
             userTextField.setDisable(true);
             passwordTextField.setDisable(true);
@@ -45,19 +51,22 @@ public class ConnectionController implements Initializable {
 
     @FXML
     private void connect() {
-        MainBorderPane.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
-        boolean testConnection = MainBorderPane.getDataInterface().testConnection();
-        boolean connected = Message.testConnection(testConnection);
+        NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
+        //todo if connection is not succesful setDataConnectionValues(null, null,null)
+        boolean testConnection = NodeHandler.getDataInterface().testConnection();
 
-        if (connected) {
+        if (testConnection) {
             // load data
-            MainBorderPane.getDataInterface().loadData();
+            NodeHandler.getDataInterface().loadData();
             // logic system in top menu bar
             nodeInterface.getTopMenuBar().enableLogicSystemButton();
             nodeInterface.getTopMenuBar().updateLogicSystemMenu();
+            //todo save and close all tabs except connectionTab
         } else {
             // Look at the sky
+
         }
+        Message.testConnection(testConnection);
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {
@@ -65,7 +74,7 @@ public class ConnectionController implements Initializable {
     }
 
     private void setDataConnectionValues() {
-        MainBorderPane.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
+        NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
     }
 
     public TextField getHostTextField() {

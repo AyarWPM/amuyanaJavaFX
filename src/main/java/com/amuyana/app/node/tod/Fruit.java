@@ -5,7 +5,8 @@ import com.amuyana.app.controllers.FruitController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.tod.Inclusion;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
+import com.amuyana.app.node.tod.expression.Expression;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
@@ -18,10 +19,9 @@ import javafx.scene.layout.VBox;
 import com.amuyana.app.data.Fcc;
 
 import java.io.IOException;
-import java.util.BitSet;
 
-public class Fruit extends VBox {
-    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
+public class Fruit {
+    private final DataInterface dataInterface = NodeHandler.getDataInterface();
     private final Fcc fcc;
     private SubBranch subBranch;
     private FruitController fruitController;
@@ -39,13 +39,13 @@ public class Fruit extends VBox {
         this.fcc = fcc;
     }
 
-    void loadFruitSource() {
+/*    void loadFruitSource() {
         //getTree().addFruit(this);
         HBox hBox = new HBox(new Group(loadFruit()));
         hBox.setAlignment(Pos.CENTER);
         this.setAlignment(Pos.CENTER);
         this.getChildren().add(hBox);
-    }
+    }*/
     /**
      *
      * @param fcc The fcc tested descendant of this.fruit
@@ -127,11 +127,11 @@ public class Fruit extends VBox {
         return this.subBranch;
     }
 
-    private Branch getBranch() {
+    public  Branch getBranch() {
         return subBranch.getBranch();
     }
 
-    private Node loadFruit() {
+    Node loadFruit() {
         Node fruit=null;
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.FRUIT.getUrl()));
         try {
@@ -208,6 +208,16 @@ public class Fruit extends VBox {
         }
         return false;
     }
+
+    // For changing notation type of expressions
+    public void changeFCCsNotationType(Expression.ExpressionType expressionType) {
+        fruitController.setFccExpressionType(expressionType);
+    }
+
+    public void changeDynamismsNotationType(Expression.ExpressionType expressionType) {
+        fruitController.setDynamismsExpressionType(expressionType);
+    }
+
 
 
 }

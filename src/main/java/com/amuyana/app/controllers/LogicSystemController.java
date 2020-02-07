@@ -1,6 +1,6 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.Message;
 import com.amuyana.app.node.content.LogicSystemContentTab;
@@ -8,15 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import com.amuyana.app.data.*;
-import com.amuyana.app.data.tod.containers.Container0;
-import com.amuyana.app.data.tod.containers.Container1;
-import com.amuyana.app.data.tod.containers.Container2;
-import com.amuyana.app.data.tod.containers.Tod;
 
 import java.net.URL;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ResourceBundle;
 
 public class LogicSystemController implements Initializable {
@@ -104,7 +97,7 @@ public class LogicSystemController implements Initializable {
 
     private void saveData() {
         // LogicSystem
-        this.logicSystem = MainBorderPane.getDataInterface().newLogicSystem(labelTextField.getText(),descriptionTextArea.getText());
+        this.logicSystem = NodeHandler.getDataInterface().newLogicSystem(labelTextField.getText(),descriptionTextArea.getText());
 
         logicSystemTab.textProperty().bind(logicSystem.labelProperty());
         idLabel.setText(String.valueOf(logicSystem.getIdLogicSystem()));
@@ -113,7 +106,7 @@ public class LogicSystemController implements Initializable {
         this.isLogicSystemNew=false;
         loadButton.setDisable(false);
         deleteButton.setDisable(false);
-        nodeInterface.addToLogicSystemMenu(logicSystem);
+        nodeInterface.addToLogicSystemMenu(logicSystem); // todo add a listener in menu, replacing this line
 
         Message.createdLogicSystemAlert();
     }
@@ -122,7 +115,7 @@ public class LogicSystemController implements Initializable {
         logicSystem.labelProperty().setValue(labelTextField.getText());
         logicSystem.descriptionProperty().setValue(descriptionTextArea.getText());
         logicSystemTab.textProperty().bind(logicSystem.labelProperty());
-        MainBorderPane.getDataInterface().update(logicSystem);
+        NodeHandler.getDataInterface().update(logicSystem);
         Message.updatedLogicSystemAlert();
     }
 

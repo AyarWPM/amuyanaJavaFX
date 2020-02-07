@@ -12,10 +12,10 @@ import javafx.scene.control.Tab;
 
 import java.io.IOException;
 
-public class TodContentTab extends Tab {
+public class TodTab extends Tab {
     private TodController controller;
 
-    public TodContentTab(NodeInterface nodeInterface) {
+    public TodTab(NodeInterface nodeInterface) {
         loadSource();
         this.controller.setTab(this);
         this.controller.setNodeInterface(nodeInterface);
@@ -24,7 +24,7 @@ public class TodContentTab extends Tab {
         bindProperties();
     }
 
-    public TodContentTab(NodeInterface nodeInterface, Tod tod) {
+    public TodTab(NodeInterface nodeInterface, Tod tod) {
         loadSource();
         this.controller.setTab(this);
         this.controller.setNodeInterface(nodeInterface);

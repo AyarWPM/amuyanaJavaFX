@@ -5,20 +5,16 @@ import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container1;
 import com.amuyana.app.data.tod.containers.Container2;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-
-import java.util.Collection;
-import java.util.List;
+import javafx.scene.layout.*;
 
 // container1 equivalent
 public class Branch extends HBox {
-    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
+    private final DataInterface dataInterface = NodeHandler.getDataInterface();
     private Container1 container1;
 
     private Trunk trunk; // trunk the branch is in
@@ -28,10 +24,11 @@ public class Branch extends HBox {
     private VBox subBranchesVBox;
 
     // For loading an existing tree
-    Branch(Trunk trunk, Container1 container1) {
+    public Branch(Trunk trunk, Container1 container1) {
         this.trunk = trunk;
         this.container1 = container1;
         makeStyle();
+        setOnMouseClicked(mouseEvent -> System.out.println("getAlignment() = " + getAlignment()));
     }
 
     void loadSubBranchesAndTrunks() {
@@ -58,7 +55,7 @@ public class Branch extends HBox {
 
     Branch(Trunk trunk) {
         this.trunk = trunk;
-        this.container1 = MainBorderPane.getDataInterface().newContainer1(this.trunk.getContainer0());
+        this.container1 = NodeHandler.getDataInterface().newContainer1(this.trunk.getContainer0());
         this.subBranchesVBox = new VBox();
         this.subBranchesVBox.setId("BranchVBox");
 
@@ -72,6 +69,7 @@ public class Branch extends HBox {
 
     private void makeStyle() {
         this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
+        //setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
         if (trunk.isSide()) {
             setId("RightSide");
         } else {
@@ -79,7 +77,7 @@ public class Branch extends HBox {
         }
     }
 
-    Container1 getContainer1() {
+    public Container1 getContainer1() {
         return this.container1;
     }
 
@@ -117,7 +115,7 @@ public class Branch extends HBox {
         this.rightTrunk.addBranch(branch);
     }
 
-    Trunk getTrunk() {
+    public Trunk getTrunk() {
         return this.trunk;
     }
 
@@ -187,5 +185,14 @@ public class Branch extends HBox {
     void initLeftTrunk() {
         Container0 leftContainer0 = dataInterface.getSideContainer0(container1,false);
         this.leftTrunk = new Trunk(getTrunk().getTree(), leftContainer0, this, false);
+    }
+
+    public int getBranchOrder() {
+        return container1.getBranchOrder();
+    }
+
+    public void setBranchOrder(int order) {
+        container1.setBranchOrder(order);
+        dataInterface.update(container1);
     }
 }

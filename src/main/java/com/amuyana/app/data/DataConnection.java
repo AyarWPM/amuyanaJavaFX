@@ -7,9 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DataConnection {
-
     private Connection connection;
-    
     private static String URL;
     private static String USERNAME;
     private static String PASSWORD;
@@ -37,6 +35,7 @@ public class DataConnection {
         try {
             connection = DriverManager.getConnection(
                     "jdbc:mysql://" + DataConnection.URL + "/amuyana", DataConnection.USERNAME, DataConnection.PASSWORD);
+
             response = true;
         } catch (SQLException ex) {
             System.err.println("SQLException");
@@ -48,6 +47,7 @@ public class DataConnection {
     
     // metodo para cerrar conexión
     public void disconnect(){
+
         try {
             connection.close();
         } catch (SQLException ex) {

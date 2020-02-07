@@ -1,15 +1,10 @@
 package com.amuyana.app.node.tod.expression;
 
 import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 
@@ -48,7 +43,7 @@ public class Expression extends HBox {
 
     // Others
 
-    public static final DataInterface dataInterface = MainBorderPane.getDataInterface();
+    public static final DataInterface dataInterface = NodeHandler.getDataInterface();
 
     private String algebraCssStyle; // todo associate a css style for all Control (themes)
 
@@ -62,6 +57,7 @@ public class Expression extends HBox {
         expressions.add(this);
         setMinWidth(this.getPrefWidth());
         setMinWidth(Region.USE_PREF_SIZE);
+        //setAlignment(Pos.CENTER);
         setStyle("-fx-font-family:monospace; -fx-alignment:bottom-left;");
     }
 
@@ -74,7 +70,6 @@ public class Expression extends HBox {
             expression.setId("SubExpression");
         }
     }
-
 
 /*
          __  ___      ___

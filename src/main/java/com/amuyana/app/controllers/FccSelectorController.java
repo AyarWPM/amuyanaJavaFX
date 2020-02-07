@@ -1,9 +1,9 @@
 package com.amuyana.app.controllers;
 
 import com.amuyana.app.data.Fcc;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
-import com.amuyana.app.node.content.TodContentTab;
+import com.amuyana.app.node.content.TodTab;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -16,17 +16,17 @@ import java.util.ResourceBundle;
 public class FccSelectorController implements Initializable {
     @FXML private MenuButton fccsMenuButton;
     @FXML private Button newFccButton;
-    private TodContentTab todContentTab;
+    private TodTab todTab;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
     }
 
-    void initialize(NodeInterface nodeInterface, TodContentTab todContentTab) {
-        this.todContentTab = todContentTab;
+    void initialize(NodeInterface nodeInterface, TodTab todTab) {
+        this.todTab = todTab;
+        for (Fcc fcc : NodeHandler.getDataInterface().getFccs(nodeInterface.getLogicSystem())) {
 
-        for (Fcc fcc : MainBorderPane.getDataInterface().getFccs(nodeInterface.getLogicSystem())) {
             MenuItem menuItem = new MenuItem(fcc.getName());
             menuItem.setOnAction(actionEvent -> open(fcc));
             fccsMenuButton.getItems().add(menuItem);
@@ -35,10 +35,10 @@ public class FccSelectorController implements Initializable {
 
     @FXML
     private void newFcc() {
-        todContentTab.getTodController().showNewTree();
+        todTab.getTodController().showNewTree();
     }
 
     private void open(Fcc fcc) {
-        todContentTab.getTodController().showNewTree(fcc);
+        todTab.getTodController().showNewTree(fcc);
     }
 }

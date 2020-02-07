@@ -32,6 +32,7 @@ public class FccEditorTab extends RightPanelTab {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.FCCEDITOR.getUrl()));
             Node node = fxmlLoader.load();
+            //Node node = fxmlLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(FXMLSource.FCCEDITOR.getUrl())));
             setSource(node);
             this.fccEditorController = fxmlLoader.getController();
         } catch (IOException e) {

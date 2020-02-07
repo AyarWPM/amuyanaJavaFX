@@ -3,8 +3,7 @@ package com.amuyana.app.controllers;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.CClass;
-import com.amuyana.app.node.MainBorderPane;
-import com.amuyana.app.node.Message;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.CClassTab;
 import javafx.beans.property.BooleanProperty;
@@ -15,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class ConjunctionController implements Initializable {
@@ -62,7 +60,7 @@ public class ConjunctionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         editMode = new SimpleBooleanProperty(true);
-        this.dataInterface = MainBorderPane.getDataInterface();
+        this.dataInterface = NodeHandler.getDataInterface();
     }
 
     public void setInterfaces(TodController todController, NodeInterface nodeInterface) {

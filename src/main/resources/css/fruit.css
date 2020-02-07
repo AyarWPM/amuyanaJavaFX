@@ -50,11 +50,11 @@
 }
 
 #KnobMenuButton:hover{
-    -fx-background-color:#cd9490;
+    /*-fx-background-color:#cd9490;*/
 }
 
 #BracketMenuButton:hover{
-    -fx-background-radius: 20 0 0 20;
+    /*-fx-background-radius: 20 0 0 20;*/
 }
 
 #FruitMenuButton{
@@ -80,7 +80,7 @@
 
 .menu-button:hover {
     /*-fx-effect: dropshadow( three-pass-box , #b96964 , 3, 0.0 , 0 , 1 );*/
-    -fx-background-color:#cd9490;
+    /*-fx-background-color:#cd9490;*/
 }
 
 .menu-button, .menu-item{

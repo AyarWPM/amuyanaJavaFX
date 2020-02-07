@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.Group?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
 
 <SplitPane fx:id="splitPane" dividerPositions="0.4, 0.9" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
    <items>
@@ -68,37 +64,28 @@
          </content>
       </ScrollPane>
       <BorderPane prefHeight="200.0" prefWidth="200.0">
-         <left>
-            <VBox spacing="5.0" BorderPane.alignment="TOP_LEFT">
-               <children>
-                  <Button fx:id="toggleLeftPanelButton" mnemonicParsing="false" onAction="#toggleLeftPanel" text="←" />
-                  <Separator />
-                  <Slider fx:id="scaleSlider" blockIncrement="1.0" majorTickUnit="1.0" max="1.0" min="1.0" minWidth="-Infinity" minorTickCount="0" orientation="VERTICAL" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
-                  <Label text="Scale" />
-               </children>
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
-            </VBox>
-         </left>
          <center>
-            <ScrollPane id="TodContent" fx:id="treeScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefViewportWidth="535.0" BorderPane.alignment="CENTER">
+            <ScrollPane id="TodContent" fx:id="treeScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefViewportWidth="535.0" style="-: ;" BorderPane.alignment="CENTER">
                <content>
-                  <VBox id="TodContent">
+                  <HBox fx:id="canvas" alignment="CENTER" fillHeight="false">
                      <children>
-                        <HBox id="TodContent" alignment="CENTER" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
-                           <children>
-                              <Group fx:id="canvas" />
-                           </children>
-                           <padding>
-                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-                           </padding>
-                        </HBox>
+                        <VBox alignment="CENTER" HBox.hgrow="ALWAYS" />
                      </children>
-                  </VBox>
+                  </HBox>
                </content>
             </ScrollPane>
          </center>
+         <top>
+            <HBox alignment="CENTER_LEFT">
+               <children>
+                  <Button fx:id="toggleLeftPanelButton" mnemonicParsing="false" onAction="#toggleLeftPanel" text="←" />
+                  <Separator orientation="VERTICAL" />
+                  <Slider fx:id="scaleSlider" blockIncrement="1.0" majorTickUnit="0.1" max="1.0" min="1.0" minWidth="-Infinity" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
+                  <Button fx:id="changeFCCsNotationButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeFCCsNotation" prefWidth="130.0" text="Show algebraic notation for all FCCs" wrapText="true" />
+                  <Button fx:id="changeDynamismsNotationButton" layoutX="185.0" layoutY="17.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeDynamismsNotation" prefWidth="130.0" text="Show algebraic notation for all dynamisms" wrapText="true" />
+               </children>
+            </HBox>
+         </top>
       </BorderPane>
       <TabPane fx:id="rightTabPane" maxWidth="350.0" minWidth="300.0" side="RIGHT" tabClosingPolicy="ALL_TABS" SplitPane.resizableWithParent="false" />
    </items>

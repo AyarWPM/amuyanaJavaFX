@@ -4,7 +4,7 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.Inclusion;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 import javafx.event.ActionEvent;
@@ -40,7 +40,7 @@ public class FccMenu extends Menu {
         this.fccMenuType=fccMenuType;
         this.tree = fruit.getTree();
         this.fccMenuType = FccMenuType.FOR_DESCENDANTS;
-        this.dataInterface = MainBorderPane.getDataInterface();
+        this.dataInterface = NodeHandler.getDataInterface();
 
         if (fccMenuType.equals(FccMenuType.FOR_ASCENDANTS)) {
             buildForAscendant(thisDynamism);

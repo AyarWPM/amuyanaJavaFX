@@ -42,6 +42,8 @@ public interface DataInterface {
 
     ObservableList<Container2> getContainer2s(Container1 container1);
     ObservableList<Container1> getContainer1s(Container0 container0);
+    ObservableList<Container1> getListContainer1s();
+
     Container0 getSideContainer0(Container2 container2, boolean side); // 0 is left, 1 is right
     Container0 getSideContainer0(Container1 container1, boolean side); // 0 is left, 1 is right
 
@@ -79,6 +81,7 @@ public interface DataInterface {
     // Container1
     void delete(Container1 container1);
     Container1 newContainer1(Container0 container0);
+    void update(Container1 container1);
 
     // Container2
     void delete(Container2 container2);

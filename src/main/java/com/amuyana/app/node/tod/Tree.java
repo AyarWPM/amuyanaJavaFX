@@ -7,18 +7,18 @@ import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
 import com.amuyana.app.data.tod.Inclusion;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.Node;
 import javafx.scene.control.Slider;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
-
-import java.util.List;
 
 /**
  * Equivalent to tod in data package: this.todController.getTod();
@@ -36,7 +36,7 @@ public class Tree extends Group {
     //private ObservableList<Fruit> fruits;
     private ObservableList<Tie> ties;
 
-    private Group linesGroup;
+//    private Group linesGroup;
 
     // constructor to loadExistingTree an existing Tree
     public Tree(TodController todController) {
@@ -44,59 +44,99 @@ public class Tree extends Group {
         initializeAndBind();
         setId("Tree");
         bindScale();
+
+/*
+        Circle circle1 = new Circle(5, Paint.valueOf("RED"));
+
+        circle1.layoutXProperty();
+        circle1.setLayoutX(1562);
+        Circle circle2 = new Circle(5);
+        Circle circle3 = new Circle(5);
+        Circle circle4 = new Circle(5);
+*/
+
+
+    }
+
+    // constructor for debug1 - lines
+    public Tree() {
+//        this.linesGroup = new Group();
+        this.ties = FXCollections.observableArrayList();
+
+        this.viewScale = new SimpleDoubleProperty();
+        this.maxLevel = new SimpleDoubleProperty();
+        Slider slider = todController.getScaleSlider();
+        viewScale.bind(slider.valueProperty());
+
+        setId("Tree");
+        bindScale();
     }
 
     public Tree(TodController todController, Conjunction conjunction) {
 
     }
+
     public Tree(TodController todController, CClass cClass) {
 
     }
 
-    private void initializeAndBind() {
-        this.dataInterface = MainBorderPane.getDataInterface();
-        this.linesGroup = new Group();
-        /*Line a = new Line();
-        Line b = new Line();
-        Line c = new Line();
-        Line d = new Line();
-        linesGroup.getChildren().addAll(a,b,c,d);
-        a.setStartX(0);a.setStartY(0);a.setEndX(linesGroup.prefWidth(-1));a.setEndY(linesGroup.prefHeight(-1));*/
-
-
-        this.ties = FXCollections.observableArrayList();
-
-        this.viewScale = new SimpleDoubleProperty();
-        this.maxLevel = new SimpleDoubleProperty();
-
-        Slider slider = todController.getScaleSlider();
-        viewScale.bind(slider.valueProperty());
+    public void loadNewTree() {
+        Fcc newFcc = NodeHandler.getDataInterface().newFcc(todController.getTod().getLogicSystem());
+        this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
+        this.mainTrunk.loadNewBranch(newFcc);
+        todController.openFccEditor(newFcc);
+//        getChildren().setAll(this.linesGroup, this.mainTrunk);
+        getChildren().add(this.mainTrunk);
+        // for debug
+        /*this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
+        getChildren().setAll(this.linesGroup, this.mainTrunk);
+        Fcc newFcc = NodeHandler.getDataInterface().newFcc(todController.getTod().getLogicSystem());
+        this.mainTrunk.loadNewBranch(newFcc);
+        todController.openFccEditor(newFcc);*/
     }
 
     public void loadExistingTree() {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
-        getChildren().setAll(this.linesGroup, this.mainTrunk);
+        getChildren().add(this.mainTrunk); //todo move one line below
         this.mainTrunk.loadBranches();
-    }
-
-    public void loadNewTree() {
-        this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
-        getChildren().setAll(this.linesGroup, this.mainTrunk);
-        Fcc newFcc = MainBorderPane.getDataInterface().newFcc(todController.getTod().getLogicSystem());
-        this.mainTrunk.loadNewBranch(newFcc);
-        todController.openFccEditor(newFcc);
     }
 
     public void loadNewTreeFromExistingFcc(Fcc fcc) {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
-        getChildren().setAll(this.linesGroup, this.mainTrunk);
+        getChildren().add(this.mainTrunk);
         this.mainTrunk.loadNewBranch(fcc);
         todController.openFccEditor(fcc);
+    }
+
+    private void initializeAndBind() {
+        this.dataInterface = NodeHandler.getDataInterface();
+//        this.linesGroup = new Group();
+        this.ties = FXCollections.observableArrayList();
+        this.maxLevel = new SimpleDoubleProperty();
+        this.viewScale = new SimpleDoubleProperty();
+        Slider slider = todController.getScaleSlider();
+        viewScale.bind(slider.valueProperty());
     }
 
     private void bindScale() {
         scaleXProperty().bind(viewScale);
         scaleYProperty().bind(viewScale);
+
+    }
+
+    public void buildTies() {
+        ties.clear();
+
+//        linesGroup.getChildren().clear();
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildTies();
+        }
+    }
+
+    public void updateFruitsMenus() {
+        for (Fruit fruit : getObservableFruits()) {
+            fruit.getFruitController().buildMenus();
+        }
     }
 
     void updateMaxLevel(double level) {
@@ -105,22 +145,13 @@ public class Tree extends Group {
         }
     }
 
-    public void clearTies() {
-        ties.clear();
-        linesGroup.getChildren().clear();
-        getChildren().setAll(linesGroup,mainTrunk);
-    }
-
     public void addTie(Tie tie) {
         ties.add(tie);
         for (Line line : tie.getLines()) {
-            linesGroup.getChildren().addAll(line);
-        }
-    }
+            int position = getChildren().size()-1;
 
-    public void remove(Tie tie) {
-        ties.remove(tie);
-        linesGroup.getChildren().removeAll(tie.getLines());
+            getChildren().add(position,line);
+        }
     }
 
     public ObservableList<Fruit> getObservableFruits() {
@@ -272,22 +303,36 @@ public class Tree extends Group {
         return fruitsToRemove;
     }
 
-    @Deprecated
-    public void buildLines() {
-        for (Tie tie : getTies()) {
-                tie.buildLines();
-        }
-        getChildren().setAll(this.linesGroup, this.mainTrunk);
-    }
-
     public void update() {
         clearTies();
         updateOrientationTies();
         checkFruitsRemoval();
         updateFruitsMenus();
         buildTies();
-        //todController.getScaleSlider().setValue(1);
+        todController.getScaleSlider().setValue(1);
     }
+
+    public void clearTies() {
+        for (Tie tie : ties) {
+            remove(tie);
+        }
+        ties.clear();
+    }
+
+    public void remove(Tie tie) {
+        ties.remove(tie);
+        ObservableList<Line> lines = FXCollections.observableArrayList();
+        for (Node node : getChildren()) {
+            if (node.getClass().equals(Line.class)) {
+                Line line = (Line)node;
+                if (tie.getLines().contains(line)) {
+                    lines.add((Line)node);
+                }
+            }
+        }
+        getChildren().removeAll(lines);
+    }
+
 
     public void updateOrientationTies() {
         for (Tie tie : getTies()) {
@@ -319,28 +364,23 @@ public class Tree extends Group {
         }
     }
 
-    public void updateFruitsMenus() {
-        for (Fruit fruit : getObservableFruits()) {
-            fruit.getFruitController().buildMenus();
-        }
-    }
-
-    public void buildTies() {
-        ties.clear();
-        linesGroup.getChildren().clear();
-        for (Fruit fruit : getObservableFruits()) {
-            fruit.getFruitController().buildTies();
-        }
-    }
-
     public void cheapAdjustment() {
-        ScrollPane scrollPane = getTodController().getTreeScrollPane();
+        /*ScrollPane scrollPane = getTodController().getTreeScrollPane();
         if (scrollPane.getHvalue() < 1) {
             scrollPane.setHvalue(scrollPane.getHvalue()+0.01);
         }
         if (scrollPane.getHvalue() > 0) {
             scrollPane.setHvalue(scrollPane.getHvalue()-0.01);
-        }
+        }*/
 
+    }
+
+    public void updateKnobsBounds() {
+        for (Fruit fruit : getObservableFruits()) {
+            if(fruit.getFruitController().isUpdateKnobs())
+                fruit.getFruitController().updateKnobsProperty().setValue(false);
+            else
+                fruit.getFruitController().updateKnobsProperty().setValue(true);
+        }
     }
 }

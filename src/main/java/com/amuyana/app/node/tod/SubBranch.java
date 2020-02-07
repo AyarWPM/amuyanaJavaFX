@@ -4,12 +4,13 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container2;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class SubBranch extends HBox {
-    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
+    private final DataInterface dataInterface = NodeHandler.getDataInterface();
     private Fruit fruit;
 
     private Container2 container2;
@@ -23,6 +24,40 @@ public class SubBranch extends HBox {
         this.container2 = container2;
         this.branch = branch;
         makeStyle();
+        listenerForKnobs();
+    }
+
+    // For the creation of the first Fruit
+
+    SubBranch(Branch branch) {
+        this.branch = branch;
+        makeStyle();
+        listenerForKnobs();
+    }
+
+    private void listenerForKnobs() {
+        widthProperty().addListener(observable -> {
+            getTrunk().getTree().updateKnobsBounds();
+        });
+        heightProperty().addListener(observable -> {
+            getTrunk().getTree().updateKnobsBounds();
+        });
+        getBranch().widthProperty().addListener(observable -> {
+            getTrunk().getTree().updateKnobsBounds();
+        });
+        getBranch().heightProperty().addListener(observable -> {
+            getTrunk().getTree().updateKnobsBounds();
+        });
+    }
+
+    private void makeStyle() {
+        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
+        //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(3))));
+        if (branch.getTrunk().isSide()) {
+            setId("RightSide");
+        } else {
+            setId("LeftSide");
+        }
     }
 
     void loadFruitAndTrunks() {
@@ -37,33 +72,17 @@ public class SubBranch extends HBox {
 
         this.fruit = new Fruit(this);
 
-        this.getChildren().addAll(leftTrunk, fruit,rightTrunk);
-        this.fruit.loadFruitSource();
-    }
-
-    // For the creation of the first Fruit
-    SubBranch(Branch branch) {
-        this.branch = branch;
-        makeStyle();
+        this.getChildren().addAll(leftTrunk, fruit.loadFruit(),rightTrunk);
+        //this.fruit.loadFruit();
     }
 
     void loadFruitAndTrunks(Fcc fcc) {
-        this.container2 = MainBorderPane.getDataInterface().newContainer2(fcc, branch.getContainer1());
+        this.container2 = NodeHandler.getDataInterface().newContainer2(fcc, branch.getContainer1());
         this.leftTrunk = new Trunk(getTrunk().getTree(), this, false);
         this.rightTrunk = new Trunk(getTrunk().getTree(), this, true);
         this.fruit = new Fruit(this, fcc);
-        this.getChildren().addAll(leftTrunk, fruit,rightTrunk);
-        this.fruit.loadFruitSource();
-    }
-
-    private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
-
-        if (branch.getTrunk().isSide()) {
-            setId("RightSide");
-        } else {
-            setId("LeftSide");
-        }
+        this.getChildren().addAll(leftTrunk, this.fruit.loadFruit(),rightTrunk);
+        //this.fruit.loadFruitSource();
     }
 
     private Trunk getTrunk() {
@@ -78,7 +97,7 @@ public class SubBranch extends HBox {
      *
      * @return The branch (container1) this subBranch is in
      */
-    Branch getBranch() {
+    public Branch getBranch() {
         return this.branch;
     }
 
@@ -118,4 +137,5 @@ public class SubBranch extends HBox {
         Container0 leftContainer0 = dataInterface.getSideContainer0(container2,false);
         this.leftTrunk = new Trunk(getTrunk().getTree(), leftContainer0, this, false);
     }
+
 }

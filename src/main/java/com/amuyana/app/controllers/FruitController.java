@@ -4,21 +4,17 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.LogicSystem;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.menu.FccMenu;
-import com.amuyana.app.node.tod.Branch;
-import com.amuyana.app.node.tod.Fruit;
-import com.amuyana.app.node.tod.Tie;
-import com.amuyana.app.node.tod.Tree;
+import com.amuyana.app.node.tod.*;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.FccExp;
 import com.amuyana.app.node.tod.expression.ImplicationExp;
+import javafx.application.Platform;
+import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,27 +23,32 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.control.*;
+import javafx.scene.effect.Effect;
+import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class FruitController implements Initializable {
-    private static DataInterface dataInterface = MainBorderPane.getDataInterface();
+    private static DataInterface dataInterface = NodeHandler.getDataInterface();
     private static final double FONT_SIZE_BASE = 13;
 
-    @FXML private Group fruitGroup;
+    //@FXML private Group fruitGroup;
+    @FXML private BorderPane fruitBorderPane;
     @FXML private ImageView bracketImageView;
     @FXML private Circle leftKnobCircle;
     @FXML private StackPane fccNameStackPane;
     @FXML private VBox expressionsVBox;
-    @FXML private MenuButton bracketMenuButton;
+    //@FXML private MenuButton bracketMenuButton;
     @FXML private MenuButton fruitMenuButton;
     @FXML private MenuButton positiveDescendantsMenuButton;
     @FXML private MenuButton negativeDescendantsMenuButton;
@@ -55,6 +56,30 @@ public class FruitController implements Initializable {
     @FXML private Label knob1Label;
     @FXML private Label knob2Label;
     @FXML private Label knob3Label;
+
+    private SimpleBooleanProperty updateKnobs;
+
+    private ContextMenu mainContextMenu;
+    private FccExp fccExp;
+    private ImplicationExp positiveImplicationExp;
+    private ImplicationExp negativeImplicationExp;
+    private ImplicationExp symmetricImplicationExp;
+
+    public boolean isUpdateKnobs() {
+        return updateKnobs.get();
+    }
+
+    public SimpleBooleanProperty updateKnobsProperty() {
+        return updateKnobs;
+    }
+
+    public boolean getUpdateKnobs() {
+        return updateKnobs.get();
+    }
+
+    public void setUpdateKnobs(boolean updateKnobs) {
+        updateKnobsProperty().set(updateKnobs);
+    }
 
     private Tree tree;
     private Fruit fruit;
@@ -66,20 +91,20 @@ public class FruitController implements Initializable {
 
     private StringProperty firstPart;
     private StringProperty lastPart;
-    private ObjectBinding<Bounds> knob1BoundsInTreeBinding;
     private ObjectBinding<Bounds> knob0BoundsInTreeBinding;
+    private ObjectBinding<Bounds> knob1BoundsInTreeBinding;
     private ObjectBinding<Bounds> knob2BoundsInTreeBinding;
     private ObjectBinding<Bounds> knob3BoundsInTreeBinding;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         fruitScale = new SimpleDoubleProperty();
-        factorScale = new SimpleDoubleProperty(0.85); // Could be set by user
+        factorScale = new SimpleDoubleProperty(1); // Could be set by user
         styleProperty = new SimpleStringProperty();
         firstPart = new SimpleStringProperty("-fx-font-size: ");
         lastPart = new SimpleStringProperty(";");
         fontSize = new SimpleStringProperty();
-
+        updateKnobs = new SimpleBooleanProperty();
     }
 
     public void initialize(Fruit fruit) {
@@ -87,65 +112,84 @@ public class FruitController implements Initializable {
         this.tree = this.fruit.getTree();
         manageBindings();
         buildExpressions();
-        //buildMenus();
+
+        fruitBorderPane.setOnMousePressed(event -> {
+            if (event.isSecondaryButtonDown()) {
+                mainContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+            }
+            if (event.isPrimaryButtonDown()) {
+                mainContextMenu.hide();
+            }
+
+        });
     }
 
     private void manageBindings() {
         // Scalings
-        fruitScale.bind(Bindings.divide(factorScale,fruit.getTrunk().levelProperty()));
-        fruitGroup.scaleXProperty().bind(fruitScale);
-        fruitGroup.scaleYProperty().bind(fruitScale);
+        //fruitScale.bind(Bindings.divide(factorScale,fruit.getTrunk().levelProperty()));
+        //fruitGroup.scaleXProperty().bind(fruitScale);
+        //fruitGroup.scaleYProperty().bind(fruitScale);
         bracketImageView.fitHeightProperty().bind(expressionsVBox.heightProperty());
         bracketImageView.setPreserveRatio(true);
 
-        Group canvas = tree.getTodController().getCanvas();
-
         // Lines
-        knob0BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
+        knob0BoundsInTreeBinding = Bindings.createObjectBinding(
+                () -> {
                     Bounds nodeLocal = leftKnobCircle.getBoundsInLocal();
                     Bounds nodeScene = leftKnobCircle.localToScene(nodeLocal);
-                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
                     return nodeTree;
-                }, leftKnobCircle.boundsInLocalProperty(), leftKnobCircle.localToSceneTransformProperty(),
-                canvas.localToSceneTransformProperty());
+                },
+                updateKnobsProperty());
 
         knob1BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob1Label.getBoundsInLocal();
                     Bounds nodeScene = knob1Label.localToScene(nodeLocal);
-                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
                     return nodeTree;
-                }, knob1Label.boundsInLocalProperty(), knob1Label.localToSceneTransformProperty(),
-                canvas.localToSceneTransformProperty());
+                },
+                updateKnobsProperty());
 
         knob2BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob2Label.getBoundsInLocal();
                     Bounds nodeScene = knob2Label.localToScene(nodeLocal);
-                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
                     return nodeTree;
-                }, knob2Label.boundsInLocalProperty(), knob2Label.localToSceneTransformProperty(),
-                canvas.localToSceneTransformProperty());
+                },
+                updateKnobsProperty());
 
         knob3BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob3Label.getBoundsInLocal();
                     Bounds nodeScene = knob3Label.localToScene(nodeLocal);
-                    Bounds nodeTree = canvas.sceneToLocal(nodeScene);
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
                     return nodeTree;
-                }, knob3Label.boundsInLocalProperty(), knob3Label.localToSceneTransformProperty(),
-                canvas.localToSceneTransformProperty());
+                },
+                updateKnobsProperty());
+
     }
 
     private void buildExpressions() {
-        FccExp fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION, 250, 30);
-
-        ImplicationExp positiveImplicationExp =
+        this.fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION);
+        this.positiveImplicationExp =
                 new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),0),
-                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
-        ImplicationExp negativeImplicationExp =
+                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+        this.negativeImplicationExp =
                 new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),1),
-                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
-        ImplicationExp symmetricImplicationExp =
+                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+        this.symmetricImplicationExp =
                 new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),2),
-                        Expression.ExpressionType.ALGEBRA, 280, 50, Pos.CENTER);
+                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+        //this.positiveImplicationExp.effectProperty().bind(this.positiveImplicationExp.onMouseEnteredProperty());
+
+        //Binding<Effect> binding = Bindings.createObjectBinding(() -> {return new Glow();},this.positiveImplicationExp.onMouseEnteredProperty());
+        //System.out.println("binding.getValue() = " + binding.getValue());
+
+        // GLOW EFFECT
+        /*this.positiveImplicationExp.setOnMouseEntered(mouseEvent -> this.positiveImplicationExp.setEffect(new Glow(3)));
+        this.positiveImplicationExp.setOnMouseExited(mouseEvent -> this.positiveImplicationExp.setEffect(null));*/
+
+
+
         expressionsVBox.getChildren().setAll(positiveImplicationExp,negativeImplicationExp,symmetricImplicationExp);
         expressionsVBox.setAlignment(Pos.CENTER);
         expressionsVBox.setFillWidth(true);
@@ -155,24 +199,200 @@ public class FruitController implements Initializable {
     }
 
     public void buildMenus() {
-        buildFruitMenu();
-        buildAscendantsMenu();
-        buildDescendantsMenu();
+        this.mainContextMenu = new ContextMenu();
+
+        //EDIT
+        MenuItem editMenuItem = new MenuItem("Edit");
+        editMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
+        mainContextMenu.getItems().addAll(editMenuItem, new SeparatorMenuItem());
+
+        // MOVE UP / DOWN (the subbranches the fruits are in)
+        MenuItem moveUpMenuItem = new MenuItem("Move up");
+        moveUpMenuItem.setOnAction(moveUp());
+        MenuItem moveDownMenuItem = new MenuItem("Move Down");
+        moveDownMenuItem.setOnAction(moveDown());
+        mainContextMenu.getItems().addAll(moveUpMenuItem,moveDownMenuItem, new SeparatorMenuItem());
+
+        // SHOW PROPOSITIONAL / ALGEBRAIC FORMULATIONS
+        mainContextMenu.getItems().addAll(changeFccExpressionTypeMenuItem(), changeDynamismsExpressionTypeMenuItem(),new SeparatorMenuItem());
+
+        // DEPLOY
+        //Menu deployMenu = new Menu("Deploy");
+        //deployMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
+        mainContextMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
     }
 
-    private void buildFruitMenu() {
-        MenuItem viewDefinitionsMenuItem = new MenuItem("Open definitions");
-        viewDefinitionsMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
-        fruitMenuButton.getItems().setAll(viewDefinitionsMenuItem);
+
+    private EventHandler<ActionEvent> moveUp() {
+        return actionEvent -> {
+            Branch branch= getFruit().getBranch();
+            ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
+            // Check it is not in position 0
+            if (!(branches.indexOf(branch) ==0)) {
+                Branch upperBranch = branches.get(branches.indexOf(branch)-1);
+                // Changes in FX
+                int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
+                int upperBranchIndex = fruit.getTrunk().getChildren().indexOf(upperBranch);
+
+                ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
+                Collections.swap(workingCollection, thisBranchIndex, upperBranchIndex);
+                fruit.getTrunk().getChildren().setAll(workingCollection);
+
+                // Change in MYSQL
+                int orderOfThisBranch = branch.getBranchOrder();
+                int orderOfUpperBranch = upperBranch.getBranchOrder();
+                branch.setBranchOrder(orderOfUpperBranch);
+                upperBranch.setBranchOrder(orderOfThisBranch);
+
+                // Changes in ObservableList of Container1
+                int upperContainer1Index = dataInterface.getListContainer1s().indexOf(upperBranch.getContainer1());
+                int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
+                Collections.swap(dataInterface.getListContainer1s(),upperContainer1Index,thisContainer1Index);
+            }
+            Platform.runLater(() -> tree.updateKnobsBounds());
+        };
     }
 
-    private void buildAscendantsMenu() {
-        Menu deployAscendantMenu = new Menu("Deploy an ascendant FCC");
+    private EventHandler<ActionEvent> moveDown() {
+        return actionEvent -> {
+            Branch branch= getFruit().getBranch();
+            ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
+            // Check it is not in last position
+            int lastPosition = branches.size()-1;
+            if (!(branches.indexOf(branch) ==lastPosition)) {
+                Branch lowerBranch = branches.get(branches.indexOf(branch)+1);
+                //changes in FX
+                int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
+                int lowerBranchIndex = fruit.getTrunk().getChildren().indexOf(lowerBranch);
+
+                ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
+                Collections.swap(workingCollection, thisBranchIndex, lowerBranchIndex);
+                fruit.getTrunk().getChildren().setAll(workingCollection);
+
+                //Change in MYSQL
+                int orderOfThisBranch = branch.getBranchOrder();
+                int orderOfLowerBranch = lowerBranch.getBranchOrder();
+                branch.setBranchOrder(orderOfLowerBranch);
+                lowerBranch.setBranchOrder(orderOfThisBranch);
+
+                // Changes in ObservableList
+                int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
+                int lowerContainer1Index = dataInterface.getListContainer1s().indexOf(lowerBranch.getContainer1());
+                Collections.swap(dataInterface.getListContainer1s(),lowerContainer1Index,thisContainer1Index);
+            }
+            Platform.runLater(() -> tree.updateKnobsBounds());
+        };
+    }
+
+    private MenuItem changeFccExpressionTypeMenuItem() {
+        MenuItem changeFccExpressionTypeMenuItem = new MenuItem("Show algebraic FCC");
+        changeFccExpressionTypeMenuItem.setOnAction(actionEvent -> {
+            if (fccExp.getExpressionType().equals(Expression.ExpressionType.PROPOSITION)) {
+                setFccExpressionType(Expression.ExpressionType.ALGEBRA);
+                changeFccExpressionTypeMenuItem.setText("Show propositional FCC");
+            }
+            else if (fccExp.getExpressionType().equals(Expression.ExpressionType.ALGEBRA)){
+                setFccExpressionType(Expression.ExpressionType.PROPOSITION);
+                changeFccExpressionTypeMenuItem.setText("Show algebraic FCC");
+            }
+        });
+        return changeFccExpressionTypeMenuItem;
+    }
+
+    public void setFccExpressionType(Expression.ExpressionType expressionType) {
+        fccExp.changeExpressionType(expressionType);
+    }
+
+    public void setDynamismsExpressionType(Expression.ExpressionType expressionType) {
+        positiveImplicationExp.changeExpressionType(expressionType);
+        negativeImplicationExp.changeExpressionType(expressionType);
+        symmetricImplicationExp.changeExpressionType(expressionType);
+    }
+
+    private MenuItem changeDynamismsExpressionTypeMenuItem() {
+        MenuItem changeDynamismExpressionTypeMenuItem = new MenuItem("Show algebraic Dynamisms");
+        changeDynamismExpressionTypeMenuItem.setOnAction(actionEvent -> {
+            // I'm evaluating condition in only one of the three dynamisms, cause that's enough (for now), maybe
+            // user will want specific conversions
+            if (positiveImplicationExp.getExpressionType().equals(Expression.ExpressionType.PROPOSITION)) {
+                setDynamismsExpressionType(Expression.ExpressionType.ALGEBRA);
+                changeDynamismExpressionTypeMenuItem.setText("Show propositional Dynamisms");
+            }
+            else if (positiveImplicationExp.getExpressionType().equals(Expression.ExpressionType.ALGEBRA)) {
+                setDynamismsExpressionType(Expression.ExpressionType.PROPOSITION);
+                changeDynamismExpressionTypeMenuItem.setText("Show algebraic Dynamisms");
+            }
+        });
+        return changeDynamismExpressionTypeMenuItem;
+    }
+
+    private Menu descendantsMenu() {
+        Menu descendantsMenu = new Menu("Deploy descendants (effects)");
+        for (int i = 0; i <= 2; i++) {
+            Dynamism thisDynamism = dataInterface.getDynamism(getFruit().getFcc(),i);
+            Menu aFromOrientationMenu = new Menu();
+            aFromOrientationMenu.textProperty().bind(Bindings.concat("From ",thisDynamism.propositionProperty()));
+
+            // New FCC
+            MenuItem toNewFccMenuItem = new MenuItem("To a new FCC");
+            toNewFccMenuItem.setOnAction(deployNewOrientationDescendantAction(thisDynamism));
+            aFromOrientationMenu.getItems().addAll(toNewFccMenuItem, new SeparatorMenuItem());
+
+            // Descendant Fruits
+            ObservableList<Fcc> descendantFccs = FXCollections.observableArrayList();
+            for (Fruit fruit1:fruit.getDescendantFruits()) {
+                descendantFccs.add(fruit1.getFcc());
+                FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS);
+                aFromOrientationMenu.getItems().addAll(fccMenu);
+            }
+
+            aFromOrientationMenu.getItems().addAll(new SeparatorMenuItem());
+
+            // Descendant fruits elsewhere
+            ObservableList<Integer> isDescendantFccIds = FXCollections.observableArrayList();
+            for (Fcc fcc : descendantFccs) {
+                isDescendantFccIds.addAll(fcc.getIdFcc());
+            }
+            // If there's not a fruit deployed from this.fruit
+            ObservableList<Integer> isDescendantFccIdsElsewhere = FXCollections.observableArrayList();
+            for (Fruit fruit1 : tree.getObservableFruits()) {
+                if(fruit1.equals(this.fruit)) continue;
+                if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
+                    for (Fruit fruit2 : fruit1.getDescendantFruits()) {
+                        isDescendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
+                    }
+                }
+            }
+
+            // Add the rest of menus
+            ObservableList<Fcc> fccs = dataInterface.getFccs(
+                    tree.getTodController().getTod().getLogicSystem());
+            for (Fcc fcc : fccs){
+                // Ignore itself in the deployment list
+                if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+                // Ignore fccs already done
+                if (isDescendantFccIds.contains(fcc.getIdFcc())) continue;
+                // Ignore descendant fccs elsewhere
+                if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
+                // For all the rest create a menu
+                FccMenu fccMenu = new FccMenu(this, thisDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
+                aFromOrientationMenu.getItems().addAll(fccMenu);
+            }
+
+            descendantsMenu.getItems().add(aFromOrientationMenu);
+        }
+        return descendantsMenu;
+    }
+
+    private Menu ascendantsMenu() {
+        Menu ascendantsMenu = new Menu("Deploy ascendants (causes)");
         for (int i=0; i <= 2; i++) {
             Dynamism thisDynamism = dataInterface.getDynamism(fruit.getFcc(),i);
-            Menu thisDynamismMenu = new Menu(thisDynamism.toString());
+            Menu thisDynamismMenu = new Menu();
+            thisDynamismMenu.textProperty().bind(Bindings.concat("To ",thisDynamism.propositionProperty()));
 
-            deployAscendantMenu.getItems().addAll(thisDynamismMenu);
+            ascendantsMenu.getItems().add(thisDynamismMenu);
+
             // Add MenuItem: New fcc
             MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
             deployToNewFccMenuItem.setOnAction(deployNewAscendantAction(thisDynamism));
@@ -223,72 +443,9 @@ public class FruitController implements Initializable {
                 thisDynamismMenu.getItems().addAll(fccMenu);
             }
         }
-        bracketMenuButton.getItems().setAll(deployAscendantMenu);
+        return ascendantsMenu;
     }
 
-    private void buildDescendantsMenu() {
-        for (int i = 0; i <= 2; i++) {
-            Menu deployOrientationDescendantMenu = new Menu("Deploy a descendant FCC");
-            // New FCC
-            Dynamism ascendantDynamism = dataInterface.getDynamism(getFruit().getFcc(),i);
-            MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
-            deployToNewFccMenuItem.setOnAction(deployNewOrientationDescendantAction(ascendantDynamism));
-            deployOrientationDescendantMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
-
-            // Descendant Fruits
-            ObservableList<Fcc> descendantFccs = FXCollections.observableArrayList();
-            for (Fruit fruit1:fruit.getDescendantFruits()) {
-                descendantFccs.add(fruit1.getFcc());
-                FccMenu fccMenu = new FccMenu(this, ascendantDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS);
-                deployOrientationDescendantMenu.getItems().addAll(fccMenu);
-            }
-
-            deployOrientationDescendantMenu.getItems().addAll(new SeparatorMenuItem());
-
-            // Descendant fruits elsewhere
-            ObservableList<Integer> isDescendantFccIds = FXCollections.observableArrayList();
-            for (Fcc fcc : descendantFccs) {
-                isDescendantFccIds.addAll(fcc.getIdFcc());
-            }
-            // If there's not a fruit deployed from this.fruit
-            ObservableList<Integer> isDescendantFccIdsElsewhere = FXCollections.observableArrayList();
-            for (Fruit fruit1 : tree.getObservableFruits()) {
-                if(fruit1.equals(this.fruit)) continue;
-                if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
-                    for (Fruit fruit2 : fruit1.getDescendantFruits()) {
-                        isDescendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
-                    }
-                }
-            }
-
-            // Add the rest of menus
-            ObservableList<Fcc> fccs = dataInterface.getFccs(
-                    tree.getTodController().getTod().getLogicSystem());
-            for (Fcc fcc : fccs){
-                // Ignore itself in the deployment list
-                if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
-                // Ignore fccs already done
-                if (isDescendantFccIds.contains(fcc.getIdFcc())) continue;
-                // Ignore descendant fccs elsewhere
-                if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
-                // For all the rest create a menu
-                FccMenu fccMenu = new FccMenu(this, ascendantDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
-                deployOrientationDescendantMenu.getItems().addAll(fccMenu);
-            }
-
-            switch (i) {
-                case 0:
-                    positiveDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
-                    break;
-                case 1:
-                    negativeDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
-                    break;
-                case 2:
-                    symmetricDescendantsMenuButton.getItems().setAll(deployOrientationDescendantMenu);
-                    break;
-            }
-        }
-    }
 
     public void resetValueInScaleSlider() {
         this.tree.getTodController().getScaleSlider().setValue(1);
@@ -301,7 +458,7 @@ public class FruitController implements Initializable {
             // set scale to 1 before continuing, otherwise the binding of knobs does not work
             resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
-            Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
+            Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
 
             Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc); // we do nothing with newFruit
@@ -344,7 +501,7 @@ public class FruitController implements Initializable {
             // set scale to 1 before continuing, otherwise the binding of knobs does not work
             resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
-            Fcc newFcc = MainBorderPane.getDataInterface().newFcc(logicSystem);
+            Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
             Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc); // we do nothing with newFruit
 

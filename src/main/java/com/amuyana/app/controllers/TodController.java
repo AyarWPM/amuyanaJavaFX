@@ -13,29 +13,36 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.FccEditorTab;
 import com.amuyana.app.node.content.RightPanelTab;
-import com.amuyana.app.node.content.TodContentTab;
+import com.amuyana.app.node.content.TodTab;
+import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 
+import com.amuyana.app.node.tod.expression.Expression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.*;
 
 public class TodController implements Initializable {
     @FXML private SplitPane splitPane;
-    @FXML private Group canvas;
+    @FXML private HBox canvas;
     @FXML private Slider scaleSlider;
+    @FXML private Button changeFCCsNotationButton;
+    @FXML private Button changeDynamismsNotationButton;
 
     @FXML private ScrollPane treeScrollPane;
 
@@ -54,59 +61,31 @@ public class TodController implements Initializable {
     private DataInterface dataInterface;
     private Tod tod;
 
-    private TodContentTab todContentTab;
+    private TodTab todTab;
     private Tree tree;
     private BooleanProperty editName;
     private BooleanProperty leftPanelOpen;
     private BooleanProperty rightPanelOpen;
 
-
-
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.dataInterface = MainBorderPane.getDataInterface();
+        this.dataInterface = NodeHandler.getDataInterface();
         editName = new SimpleBooleanProperty();
         leftPanelOpen = new SimpleBooleanProperty(true);
         rightPanelOpen = new SimpleBooleanProperty(true);
-
+        //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(2))));
         toggleRightTabPane();
         manageEvents();
+        //todo : zoom
+        scaleSlider.setManaged(false);
     }
 
-    public void setTab(TodContentTab todContentTab) {
-        this.todContentTab = todContentTab;
+    public void setTab(TodTab todTab) {
+        this.todTab = todTab;
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {
         this.nodeInterface=nodeInterface;
-    }
-
-    public void newTod(LogicSystem logicSystem) {
-        // get the maximum id of tables of deductions and add 1
-        int currentValue=0;
-        for (Tod tod : dataInterface.getTods(logicSystem)) {
-            if (currentValue < tod.getIdTod()) {
-                currentValue = tod.getIdTod();
-            }
-        }
-        currentValue+=1;
-
-        this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
-
-        this.canvas.getChildren().setAll(loadFccSelector());
-        bindProperties();
-    }
-
-    public void openTod(Tod tod) {
-        this.tod = tod;
-        bindProperties();
-
-        if (dataInterface.getFccs(tod).isEmpty()) {
-            Node node = loadFccSelector();
-            this.canvas.getChildren().setAll(node);
-        } else if (!dataInterface.getFccs(tod).isEmpty()) {
-            showTree();
-        }
     }
 
     private void bindProperties() {
@@ -126,6 +105,20 @@ public class TodController implements Initializable {
     }
 
     private void manageEvents() {
+        // Part of zoom
+        /*treeScrollPane.viewportBoundsProperty().addListener(
+                new ChangeListener<Bounds>() {
+                    @Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
+                        System.out.println("newBounds = " + newBounds);
+
+                        canvas.setPrefSize(
+                                Math.max(tree.getBoundsInParent().getMaxX(), newBounds.getWidth()),
+                                Math.max(tree.getBoundsInParent().getMaxY(), newBounds.getHeight())
+                        );
+
+                    }
+                });*/
+
         /*rightTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
             if (change.next()) {
                 if (change.wasRemoved()) {
@@ -136,10 +129,13 @@ public class TodController implements Initializable {
             }
         });*/
 
-        treeScrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
+
+
+        // old zoom stuff
+        /*treeScrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
             event.consume();
             manageScrollEvent(event);
-        });
+        });*/
 
     }
 
@@ -153,6 +149,7 @@ public class TodController implements Initializable {
         } else if (factor == -1) {
             scaleSlider.setValue(scaleSlider.getValue()-1);
         }
+
         double deltaX = scrollEvent.getX()/treeScrollPane.getWidth()-0.5;
         double deltaY = scrollEvent.getY()/treeScrollPane.getHeight()-0.5;
 
@@ -170,7 +167,6 @@ public class TodController implements Initializable {
         } else {
             setEditName(true);
             toggleTodNameButton.setText("Save");
-
         }
     }
 
@@ -188,8 +184,48 @@ public class TodController implements Initializable {
     }
 
     @FXML
-    private void editTod() {
+    private void changeFCCsNotation() {
+        String m1="Show propositional notation for all FCCs";
+        String m2="Show algebraic notation for all FCCs";
+        if (changeFCCsNotationButton.getText().equals(m1)) {
+            for (Fruit fruit : getTree().getObservableFruits()) {
+                fruit.changeFCCsNotationType(Expression.ExpressionType.PROPOSITION);
+            }
+            changeFCCsNotationButton.setText(m2);
+        } else if (changeFCCsNotationButton.getText().equals(m2)) {
+            for (Fruit fruit : getTree().getObservableFruits()) {
+                fruit.changeFCCsNotationType(Expression.ExpressionType.ALGEBRA);
+            }
+            changeFCCsNotationButton.setText(m1);
+        }
+    }
 
+    @FXML
+    private void changeDynamismsNotation() {
+        String m1="Show propositional notation for all dynamisms";
+        String m2="Show algebraic notation for all dynamisms";
+
+        if (changeDynamismsNotationButton.getText().equals(m1)) {
+            System.out.println("1");
+            for (Fruit fruit : getTree().getObservableFruits()) {
+                fruit.changeDynamismsNotationType(Expression.ExpressionType.PROPOSITION);
+            }
+            changeDynamismsNotationButton.setText(m2);
+        }
+
+        else if (changeDynamismsNotationButton.getText().equals(m2)) {
+            System.out.println("2");
+            for (Fruit fruit : getTree().getObservableFruits()) {
+                fruit.changeDynamismsNotationType(Expression.ExpressionType.ALGEBRA);
+            }
+            changeDynamismsNotationButton.setText(m1);
+        }
+    }
+
+
+    @FXML
+    private void editTod() {
+        //todo
     }
 
     private TodController getThisTodController() {
@@ -240,6 +276,41 @@ public class TodController implements Initializable {
     private void showScaleSlider() {
         scaleSlider.setMin(1);
         scaleSlider.maxProperty().bind(tree.maxLevelProperty());
+// part of zoom
+        /*tree.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
+            @Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
+                canvas.setPrefSize(
+                        Math.max(newBounds.getMaxX(), treeScrollPane.getViewportBounds().getWidth()),
+                        Math.max(newBounds.getMaxY(), treeScrollPane.getViewportBounds().getHeight())
+                );
+            }
+        });*/
+
+    }
+
+    public void newTod(LogicSystem logicSystem) {
+        // get the maximum id of tables of deductions and add 1
+        int currentValue=0;
+        for (Tod tod : dataInterface.getTods(logicSystem)) {
+            if (currentValue < tod.getIdTod()) {
+                currentValue = tod.getIdTod();
+            }
+        }
+        currentValue+=1;
+        this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
+        this.canvas.getChildren().setAll(loadFccSelector());
+        bindProperties();
+    }
+
+    public void openTod(Tod tod) {
+        this.tod = tod;
+        bindProperties();
+        if (dataInterface.getFccs(tod).isEmpty()) {
+            Node node = loadFccSelector();
+            this.canvas.getChildren().setAll(node);
+        } else if (!dataInterface.getFccs(tod).isEmpty()) {
+            showTree();
+        }
     }
 
     private Node loadFccSelector() {
@@ -252,7 +323,7 @@ public class TodController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Objects.requireNonNull(fccSelectorController).initialize(this.nodeInterface,this.todContentTab);
+        Objects.requireNonNull(fccSelectorController).initialize(this.nodeInterface,this.todTab);
         return node;
     }
 
@@ -283,6 +354,18 @@ public class TodController implements Initializable {
      */
 
     /**
+     * It instantiates this.tree and loads a new tree, that is it will create a new FCC
+     */
+    void showNewTree() {
+        this.tree = new Tree(this);
+        this.tree.loadNewTree();
+        canvas.getChildren().setAll(this.tree);
+        this.tree.updateFruitsMenus();
+        this.tree.buildTies();
+        showScaleSlider();
+    }
+
+    /**
      * It instantiates this.tree and loads an existing tree, i.e. it seeks for containers in the database from which
      * we create the Table of Deductions (Tree) just like the user crated it in the first place
       */
@@ -296,21 +379,9 @@ public class TodController implements Initializable {
     }
 
     /**
-     * It instantiates this.tree and loads a new tree, that is it will create a new FCC
-     */
-    void showNewTree() {
-        this.tree = new Tree(this);
-        this.tree.loadNewTree();
-        canvas.getChildren().setAll(this.tree);
-        this.tree.updateFruitsMenus();
-        this.tree.buildTies();
-        showScaleSlider();
-    }
-
-    /**
      * It instantiates this.tree and loads a Tree departing from one FCC which is provided by the user from the
      * drop-down menu
-     * @param fcc
+     * @param fcc Fundamental Conjunction of Contradiction
      */
     void showNewTree(Fcc fcc) {
         this.tree = new Tree(this);
@@ -329,7 +400,7 @@ public class TodController implements Initializable {
 
     }
 
-    Group getCanvas() {
+    public HBox getCanvas() {
         return this.canvas;
     }
 
@@ -368,5 +439,6 @@ public class TodController implements Initializable {
     private void setRightPanelOpen(boolean rightPanelOpen) {
         this.rightPanelOpen.set(rightPanelOpen);
     }
+
 
 }

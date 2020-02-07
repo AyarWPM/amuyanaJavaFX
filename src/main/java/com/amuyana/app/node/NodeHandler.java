@@ -5,11 +5,9 @@ import com.amuyana.app.controllers.LogicSystemController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.containers.Tod;
+import com.amuyana.app.node.content.*;
+import com.amuyana.app.node.content.debug1.Debug1Tab;
 import com.amuyana.app.node.tod.expression.Expression;
-import com.amuyana.app.node.content.ConnectionContentTab;
-import com.amuyana.app.node.content.ContentTabPane;
-import com.amuyana.app.node.content.LogicSystemContentTab;
-import com.amuyana.app.node.content.TodContentTab;
 import com.amuyana.app.node.menu.TopMenuBar;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,18 +19,20 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Optional;
 
-
-public class MainBorderPane extends BorderPane implements NodeInterface {
+public class NodeHandler extends BorderPane implements NodeInterface {
     private Stage stage;
     private TopMenuBar topMenuBar;
     private TabPane contentTabPane;
     private static DataInterface dataInterface;
     private LogicSystem logicSystem;
+    ConnectionTab connectionTab;
 
-    public MainBorderPane(DataInterface dataInterface) {
-        this.dataInterface = dataInterface;
-        Expression.initializeLists();
+    public NodeHandler(DataInterface dataInterface, Stage stage) {
+        NodeHandler.dataInterface = dataInterface;
+        this.stage = stage;
+        Expression.initializeLists(); //todo move
         this.topMenuBar = new TopMenuBar(this);
+        this.connectionTab = new ConnectionTab(this);
         this.contentTabPane = new ContentTabPane();
 
         setTop(this.topMenuBar);
@@ -43,22 +43,13 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
         return dataInterface;
     }
 
-    /**
-     * Added for debug purposes
-     * @return
-     */
     @Override
     public TopMenuBar getTopMenuBar() {
         return topMenuBar;
     }
 
-    private void setLogicSystem(LogicSystem logicSystem) {
+    public void setLogicSystem(LogicSystem logicSystem) {
         this.logicSystem = logicSystem;
-    }
-
-    @Override
-    public void setStage(Stage stage) {
-        this.stage = stage;
     }
 
     @Override
@@ -79,15 +70,13 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
     @Override
     public void openConnectionTab() {
         for (Tab tab : contentTabPane.getTabs()) {
-            if (tab.getClass().equals(ConnectionContentTab.class)) {
+            if (tab.getClass().equals(ConnectionTab.class)) {
                 contentTabPane.getSelectionModel().select(tab);
                 return;
             }
         }
-
-        ConnectionContentTab connectionContentTab = new ConnectionContentTab(this);
-        contentTabPane.getTabs().add(connectionContentTab);
-        contentTabPane.getSelectionModel().select(connectionContentTab);
+        contentTabPane.getTabs().add(connectionTab);
+        contentTabPane.getSelectionModel().select(connectionTab);
     }
 
     @Override
@@ -137,90 +126,97 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
         Alert alert = Message.confirmDeletionLogicSystem();
 
         Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get() == ButtonType.OK) {
+                // First delete dependencies: tod
+                // FCCs are not deleted, they are kept...
+                for (Tod tod : dataInterface.getTods(logicSystem)) {
+                    deleteConfirmed(tod);
+                }
 
-        if (result.get() == ButtonType.OK) {
-            dataInterface.delete(logicSystem);
+                dataInterface.delete(logicSystem);
 
-            LogicSystemContentTab tabToRemove = null;
-            for (Tab tab : contentTabPane.getTabs()) {
-                if (tab.getClass().equals(LogicSystemContentTab.class)) {
-                    LogicSystemContentTab logicSystemContentTab = (LogicSystemContentTab) tab;
-                    LogicSystemController logicSystemController = logicSystemContentTab.getController();
-                    if (!logicSystemController.isLogicSystemNew()) {
-                        if (logicSystemController.getLogicSystem().equals(logicSystem)) {
-                            tabToRemove = (LogicSystemContentTab) tab;
+                LogicSystemContentTab tabToRemove = null;
+                for (Tab tab : contentTabPane.getTabs()) {
+                    if (tab.getClass().equals(LogicSystemContentTab.class)) {
+                        LogicSystemContentTab logicSystemContentTab = (LogicSystemContentTab) tab;
+                        LogicSystemController logicSystemController = logicSystemContentTab.getController();
+                        if (!logicSystemController.isLogicSystemNew()) {
+                            if (logicSystemController.getLogicSystem().equals(logicSystem)) {
+                                tabToRemove = (LogicSystemContentTab) tab;
+                            }
                         }
                     }
                 }
-            }
+                contentTabPane.getTabs().remove(tabToRemove);
+                topMenuBar.removeLogicSystemMenu(logicSystem);
 
-            contentTabPane.getTabs().remove(tabToRemove);
-            topMenuBar.removeLogicSystemMenu(logicSystem);
-            //
-            if (this.logicSystem != null) {
-                if (this.logicSystem.equals(logicSystem)) {
-                    setLogicSystem(null);
-                    stage.setTitle("Amuyaña");
-                    // Menus
-                    topMenuBar.removeLogicSystemMenu(logicSystem);
-                    topMenuBar.logicSystemIsLoaded(false);
-                    topMenuBar.updateTodMenu();
+                if (this.logicSystem != null) {
+                    if (this.logicSystem.equals(logicSystem)) {
+                        setLogicSystem(null);
+                        stage.setTitle("Amuyaña");
+                        // Menus
+                        topMenuBar.logicSystemIsLoaded(false);
+                        topMenuBar.updateTodMenu();
+                    }
                 }
+            } else if (result.get() == ButtonType.CANCEL) {
             }
-        } else if (result.get() == ButtonType.CANCEL) {
-            return;
         }
     }
 
     @Override
     public void newTodTab() {
-        TodContentTab todContentTab = new TodContentTab(this);
-        contentTabPane.getTabs().add(todContentTab);
-        contentTabPane.getSelectionModel().select(todContentTab);
-        topMenuBar.addMenu(todContentTab.getTodController().getTod());
+        TodTab todTab = new TodTab(this);
+        contentTabPane.getTabs().add(todTab);
+        contentTabPane.getSelectionModel().select(todTab);
+        topMenuBar.addMenu(todTab.getTodController().getTod());
     }
 
     @Override
     public void open(Tod tod) {
         for (Tab tab : contentTabPane.getTabs()) {
-            if (tab.getClass().equals(TodContentTab.class)) {
-                TodContentTab todContentTab = (TodContentTab)tab;
-                if (todContentTab.getController().getTod().equals(tod)) {
+            if (tab.getClass().equals(TodTab.class)) {
+                TodTab todTab = (TodTab)tab;
+                if (todTab.getController().getTod().equals(tod)) {
                     contentTabPane.getSelectionModel().select(tab);
                     return;
                 }
             }
         }
-        TodContentTab todContentTab = new TodContentTab(this, tod);
-        contentTabPane.getTabs().add(todContentTab);
-        contentTabPane.getSelectionModel().select(todContentTab);
+        TodTab todTab = new TodTab(this, tod);
+        contentTabPane.getTabs().add(todTab);
+        contentTabPane.getSelectionModel().select(todTab);
     }
 
     @Override
     public void delete(Tod tod) {
         Alert alert = Message.confirmDeletionTod();
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            // delete in database
-                dataInterface.delete(tod);
+        if (result.isPresent())
+            if (result.get() == ButtonType.OK) {
 
-            // close tab if it is open
-            TodContentTab todContentTabToRemove = null;
-            for (Tab tab : contentTabPane.getTabs()) {
-                if (tab.getClass().equals(TodContentTab.class)) {
-                    TodContentTab todContentTab = (TodContentTab)tab;
-                    if (todContentTab.getTodController().getTod().equals(tod)) {
-                        todContentTabToRemove =todContentTab;
-                    }
+                deleteConfirmed(tod);
+            } else if (result.get() == ButtonType.CANCEL) {
+            }
+    }
+
+    private void deleteConfirmed(Tod tod) {
+        // delete in database
+        dataInterface.delete(tod);
+        // close tab if it is open
+        TodTab todTabToRemove = null;
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (tab.getClass().equals(TodTab.class)) {
+                TodTab todTab = (TodTab)tab;
+                if (todTab.getTodController().getTod().equals(tod)) {
+                    todTabToRemove = todTab;
                 }
             }
-            this.contentTabPane.getTabs().remove(todContentTabToRemove);
-
-            // update list of Tod in menu
-            this.topMenuBar.updateTodMenu();
-        } else if (result.get() == ButtonType.CANCEL) {
-            return;
         }
+        this.contentTabPane.getTabs().remove(todTabToRemove);
+        // update list of Tod in menu
+        this.topMenuBar.updateTodMenu();
     }
 
     @Override
@@ -232,7 +228,7 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
     public void openAboutWindow() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(FXMLSource.ABOUT.getUrl()));
         try {
-            Parent parent = (Parent)fxmlLoader.load();
+            Parent parent = fxmlLoader.load();
             Stage stage1 = new Stage();
             stage1.setTitle("About");
             stage1.setScene(new Scene(parent));
@@ -240,5 +236,19 @@ public class MainBorderPane extends BorderPane implements NodeInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Special class for debugging
+     */
+    @Override
+    public void openDebug1() {
+        Debug1Tab debug1Tab = new Debug1Tab();
+        Stage stage1 = new Stage();
+        stage1.setWidth(800);
+        stage1.setHeight(600);
+        stage1.setTitle("Debug1");
+        stage1.setScene(new Scene(new TabPane(debug1Tab)));
+        stage1.show();
     }
 }

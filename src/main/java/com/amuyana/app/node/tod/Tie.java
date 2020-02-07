@@ -2,8 +2,7 @@ package com.amuyana.app.node.tod;
 
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
-import com.amuyana.app.data.tod.Inclusion;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
@@ -11,7 +10,6 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.shape.Line;
@@ -21,7 +19,7 @@ import java.util.List;
 public class Tie {
     private final Fruit ascendantFruit;
     private final Fruit descendantFruit;
-    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
+    private final DataInterface dataInterface = NodeHandler.getDataInterface();
 
     private BooleanProperty positiveOrientation;
     private BooleanProperty negativeOrientation;
@@ -59,12 +57,12 @@ public class Tie {
      * and I don't know how to catch it...
      */
     public void buildLines() {
-        getAscendantFruit().getTrunk().levelProperty();
+        //getAscendantFruit().getTrunk().levelProperty();
 
-        DoubleProperty two = new SimpleDoubleProperty(2);
+        /*DoubleProperty two = new SimpleDoubleProperty(2);
         line1.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
         line2.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
-        line3.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
+        line3.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));*/
 
         line1.setStyle("-fx-stroke:#222222;");
         line2.setStyle("-fx-stroke:#222222;");

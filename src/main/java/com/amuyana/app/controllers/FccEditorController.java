@@ -1,7 +1,7 @@
 package com.amuyana.app.controllers;
 
 import com.amuyana.app.data.*;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.Message;
 import com.amuyana.app.node.content.FccEditorTab;
 import com.amuyana.app.node.tod.expression.Expression;
@@ -9,8 +9,6 @@ import com.amuyana.app.node.tod.expression.ElementExp;
 import com.amuyana.app.node.tod.expression.FccExp;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -24,9 +22,7 @@ import java.util.ResourceBundle;
 
 public class FccEditorController implements Initializable {
     private TodController todController;
-
     private DataInterface dataInterface;
-
     private Fcc fcc;
 
     @FXML private Button closeButton;
@@ -71,7 +67,8 @@ public class FccEditorController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         editMode = new SimpleBooleanProperty(true);
-        this.dataInterface =MainBorderPane.getDataInterface();
+        //setEditMode(editMode.getValue());
+        this.dataInterface = NodeHandler.getDataInterface();
     }
 
     private void manageEvents() {
@@ -120,11 +117,9 @@ public class FccEditorController implements Initializable {
 
     // editOrSaveButton activated
     public void setEditMode(boolean editMode) {
-
         // i have to save it with unselected settings
         this.editMode.setValue(editMode);
         if (isEditMode()) {
-
             // Buttons
             editOrSaveButton.setText("Save");
             // Fcc
@@ -158,10 +153,12 @@ public class FccEditorController implements Initializable {
             antiElementTextField.textProperty().unbindBidirectional(elementTextField.textProperty());
             antiElementTextField.textProperty().unbindBidirectional(antiElement.symbolProperty());
 
+            // update menus?
+            todController.getTree().updateFruitsMenus();
             // Redraw the tree to make ties be adjusted again
             //todController.showTree();
             //todController.showTree();
-            todController.getTree().update();
+            //todController.getTree().update();
         }
     }
 
@@ -268,8 +265,8 @@ public class FccEditorController implements Initializable {
     @FXML
     public void close() {
         if (editMode.get()) {
-            ButtonType saveAndExitButtonType = new ButtonType("Save and exit");
-            ButtonType exitButtonType = new ButtonType("Don't save and exit");
+            ButtonType saveAndExitButtonType = new ButtonType("Save and close");
+            ButtonType exitButtonType = new ButtonType("Don't save and close");
             ButtonType cancelButtonType = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
             Optional<ButtonType> result = Message.confirmClosing(saveAndExitButtonType, exitButtonType, cancelButtonType);
             if (result.isPresent()) {
@@ -277,9 +274,9 @@ public class FccEditorController implements Initializable {
                     saveAndClose();
                 } else if (result.get().equals(exitButtonType)) {
                     this.todController.closeTab(this.fccEditorTab);
-                } else if (result.get().equals(cancelButtonType)) {
+                } /*else if (result.get().equals(cancelButtonType)) {
                     // do nothing, look at the sky
-                }
+                }*/
             }
         } else {
             // Close
@@ -316,6 +313,4 @@ public class FccEditorController implements Initializable {
     public Fcc getFcc() {
         return this.fcc;
     }
-
-
 }

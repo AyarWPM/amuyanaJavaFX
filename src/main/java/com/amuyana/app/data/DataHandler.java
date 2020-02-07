@@ -2,14 +2,11 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
-import com.amuyana.app.node.tod.Fruit;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -46,7 +43,6 @@ public class DataHandler implements DataInterface {
     private ObservableList<Inclusion> listInclusions; //
     private ObservableList<Syllogism> listSyllogisms;
     private ObservableList<InclusionHasSyllogism> listIHS;
-
 
     private DataConnection dataConnection;
 
@@ -93,12 +89,13 @@ public class DataHandler implements DataInterface {
         return dataConnection;
     }
 
+    @Override
     public boolean testConnection() {
         boolean connection = false;
         if (this.dataConnection.connect()) {
             connection = true;
-            this.dataConnection.disconnect();
         }
+        this.dataConnection.disconnect();
         return connection;
     }
 
@@ -161,7 +158,7 @@ public class DataHandler implements DataInterface {
 //        Time.loadList(this.dataConnection.getConnection(), listTime);
 //        Quantum.loadList(this.dataConnection.getConnection(), listQuantum);
 
-        dataConnection.disconnect();
+        this.dataConnection.disconnect();
     }
 
     // GETTERS OF LISTVIEWS
@@ -249,9 +246,11 @@ public class DataHandler implements DataInterface {
         ObservableList<Fcc> fccs = FXCollections.observableArrayList();
         for (Fcc fcc : getListFcc()) {
             for (FccHasLogicSystem fccHasLogicSystem : getListFccHasLogicSystem()) {
-                if (fccHasLogicSystem.getLogicSystem().equals(logicSystem)) {
-                    if (!fccs.contains(fcc)) {
-                        fccs.add(fcc);
+                if (fcc.equals(fccHasLogicSystem.getFcc())) {
+                    if (logicSystem.equals(fccHasLogicSystem.getLogicSystem())) {
+                        if (!fccs.contains(fcc)) {
+                            fccs.add(fcc);
+                        }
                     }
                 }
             }
@@ -267,7 +266,13 @@ public class DataHandler implements DataInterface {
                 container1s.addAll(container1);
             }
         }
+
         return container1s;
+    }
+
+    @Override
+    public ObservableList<Container1> getListContainer1s() {
+        return listContainer1s;
     }
 
     @Override
@@ -699,13 +704,22 @@ public class DataHandler implements DataInterface {
     @Override
     public Container1 newContainer1(Container0 container0) {
         dataConnection.connect();
-        Container1 container1 = new Container1(0,container0);
+        Container1 container1 = new Container1(0,container0,0);
         if (container1.saveData(dataConnection.getConnection()) == 1) {
             container1.setIdContainer1(Container1.currentAutoIncrement);
+            container1.setBranchOrder(Container1.currentAutoIncrement);
             listContainer1s.add(container1);
         }
+        container1.updateData(dataConnection.getConnection());
         dataConnection.disconnect();
         return container1;
+    }
+
+    @Override
+    public void update(Container1 container1) {
+        dataConnection.connect();
+        container1.updateData(dataConnection.getConnection());
+        dataConnection.disconnect();
     }
 
     @Override

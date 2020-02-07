@@ -1,8 +1,13 @@
 #TodContent {
+
     -fx-background-color:#f4fcf4;
     -fx-background-image: url("/images/tod_background.png");
     -fx-background-position:left top;
     -fx-background-repeat:repeat;
+}
+
+.scroll-pane > .viewport {
+   -fx-background-color: transparent;
 }
 
 #SliderVBox .slider{

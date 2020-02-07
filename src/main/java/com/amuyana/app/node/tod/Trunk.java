@@ -1,22 +1,21 @@
 package com.amuyana.app.node.tod;
 
 import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
-import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container1;
-import com.amuyana.app.node.MainBorderPane;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 public class Trunk extends VBox {
-    private final DataInterface dataInterface = MainBorderPane.getDataInterface();
+    private final DataInterface dataInterface = NodeHandler.getDataInterface();
     private Container0 container0;
 
     private Tree tree;
@@ -30,16 +29,16 @@ public class Trunk extends VBox {
     public enum TrunkType {
         TREE,BRANCH,SUBBRANCH
     }
-    // constructor to loadExistingTree a Tree with only one Fcc on it
+    // constructor to new tree and loadExistingTree a Tree with only one Fcc on it
     // Container0 is already provided because it was needed to instantiate the Tod, and the Fcc the FccEditor
-
-    Trunk(Tree tree, Container0 container0) {
+    public Trunk(Tree tree, Container0 container0) {
         level = new SimpleDoubleProperty(1);
         this.tree = tree;
         this.container0 = container0;
         this.trunkType = TrunkType.TREE;
         setStyle();
     }
+
     // Accessed after the constructor above
     void loadNewBranch(Fcc fcc) {
         Branch branch = new Branch(this);
@@ -65,7 +64,6 @@ public class Trunk extends VBox {
     }
 
     // Loading from inside subBranches
-
     Trunk(Tree tree, Container0 container0, SubBranch subBranch, boolean side) {
         level = new SimpleDoubleProperty(subBranch.getBranch().getTrunk().getLevel()+1);
         this.tree = tree;
@@ -75,8 +73,8 @@ public class Trunk extends VBox {
         setSide(side);
         setStyle();
     }
-    // called after the (two) above constructor(s) only
 
+    // called after the (two) above constructor(s) only
     void loadBranches() {
         for (Container1 container1 : dataInterface.getContainer1s(container0)) {
             Branch branch = new Branch(this, container1);
@@ -109,7 +107,9 @@ public class Trunk extends VBox {
         getStylesheets().add("/css/fruit.css");
         setId("Trunk");
         this.spacingProperty().bind(Bindings.divide(10,levelProperty()));
+        //setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(1))));
         this.tree.updateMaxLevel(level.getValue());
+
     }
     boolean isSide() {
         return this.side;

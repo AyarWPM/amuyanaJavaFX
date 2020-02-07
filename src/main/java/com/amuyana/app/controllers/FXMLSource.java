@@ -5,21 +5,21 @@ package com.amuyana.app.controllers;
  * @author Ayar Portugal <ayar.portugal@amuyaña.com>
  */
 public enum FXMLSource {
-    CONNEXION("/fxml/Connection.fxml"),
-    LOGIC_SYSTEM("/fxml/LogicSystem.fxml"),
-    TOD("/fxml/Tod.fxml"),
-    FCCSELECTOR("/fxml/FccSelector.fxml"),
-    FCCEDITOR("/fxml/FccEditor.fxml"),
-    FCCS("/fxml/Fccs.fxml"),
-    INCLUSIONS("/fxml/Inclusion.fxml"),
-    SYLLOGISM("/fxml/Syllogism.fxml"),
-    CCLASS("/fxml/CClass.fxml"),
-    CONJUNCTION("/fxml/Conjunction.fxml"),
-    DIALECTIC("/fxml/Dialectic.fxml"),
-    STC("/fxml/Stc.fxml"),
-    STATS("/fxml/Stats.fxml"),
-    FRUIT("/fxml/Fruit.fxml"),
-    ABOUT("/fxml/About.fxml");
+    CONNEXION("/view/Connection.fxml"),
+    LOGIC_SYSTEM("/view/LogicSystem.fxml"),
+    TOD("/view/Tod.fxml"),
+    FCCSELECTOR("/view/FccSelector.fxml"),
+    FCCEDITOR("/view/FccEditor.fxml"),
+    FCCS("/view/Fccs.fxml"),
+    INCLUSIONS("/view/Inclusion.fxml"),
+    SYLLOGISM("/view/Syllogism.fxml"),
+    CCLASS("/view/CClass.fxml"),
+    CONJUNCTION("/view/Conjunction.fxml"),
+    DIALECTIC("/view/Dialectic.fxml"),
+    STC("/view/Stc.fxml"),
+    STATS("/view/Stats.fxml"),
+    FRUIT("/view/Fruit.fxml"),
+    ABOUT("/view/About.fxml");
 
     private final String url;
 

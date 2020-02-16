@@ -21,7 +21,7 @@ public class Amuyana extends Application {
         NodeInterface nodeInterface = new NodeHandler(dataInterface, stage);
 
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
-        stage.setTitle("Amuyaña v.1");
+        stage.setTitle("Amuyaña v.3");
         stage.setScene(scene);
         stage.show();
 

@@ -10,7 +10,11 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 public class ImplicationExp extends Expression {
     private static DataInterface dataInterface = NodeHandler.getDataInterface();
@@ -23,7 +27,8 @@ public class ImplicationExp extends Expression {
         this.todController = todController;
         this.dynamism = dynamism;
         this.expressionType = expressionType;
-        this.label =new Label();
+        this.label = new Label();
+        this.label.setFont(Font.font("Monospaced"));
         this.label.textProperty().bind(dynamism.propositionProperty());
         //buildContextMenu();
         buildExpression(expressionType);
@@ -44,7 +49,7 @@ public class ImplicationExp extends Expression {
                 break;
             }
             case PROPOSITION:{
-                buildPropositional();
+                this.getChildren().setAll(this.label);
                 break;
             }
         }
@@ -98,9 +103,6 @@ public class ImplicationExp extends Expression {
         }
     }
 
-    private void buildPropositional() {
-        this.getChildren().setAll(this.label);
-    }
     public void changeExpressionType(ExpressionType notationExpressionType) {
         this.expressionType = notationExpressionType;
         buildExpression(notationExpressionType);
@@ -109,4 +111,22 @@ public class ImplicationExp extends Expression {
     public ExpressionType getExpressionType() {
         return expressionType;
     }
+
+    public void setHoverStyle() {
+        setEffect(new DropShadow(4,Color.rgb(204, 0,0)));
+        /*label.setTextFill(Color.rgb(99,00,00));
+        */
+        /*label.setFont(Font.font("Monospaced", FontWeight.BOLD,13));*/
+        /*DropShadow dropShadow = new DropShadow(1, Color.rgb(99,00,00));
+        setEffect(dropShadow);*/
+    }
+
+    public void setNormalStyle() {
+        /*label.setTextFill(Color.rgb(0,0,0));*/
+        /*label.setFont(Font.font("Monospaced",13));*/
+
+        setEffect(null);
+    }
+
+
 }

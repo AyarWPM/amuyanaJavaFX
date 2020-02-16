@@ -21,20 +21,19 @@ public class ConnectionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         //Empty
-        hostTextField.setText("localhost");
+/*        hostTextField.setText("localhost");
         userTextField.setText("amuyana");
-        passwordTextField.setText("");
+        passwordTextField.setText("");*/
     }
 
     @FXML
     private void setDefaultValues() {
         if (useDefaultCheckBox.isSelected()) {
-            /*hostTextField.setText("160.153.71.97:3306");
+            hostTextField.setText("160.153.71.97:3306");
             userTextField.setText("anonymous");
-            passwordTextField.setText("anonymous");*/
-            hostTextField.setText("localhost");
-            userTextField.setText("amuyana");
-            passwordTextField.setText("");
+            passwordTextField.setText("anonymous");
+            /*hostTextField.setText("localhost");
+            userTextField.setText("amuyana");*/
             hostTextField.setDisable(true);
             userTextField.setDisable(true);
             passwordTextField.setDisable(true);
@@ -53,18 +52,17 @@ public class ConnectionController implements Initializable {
     private void connect() {
         NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
         //todo if connection is not succesful setDataConnectionValues(null, null,null)
-        boolean testConnection = NodeHandler.getDataInterface().testConnection();
 
+        boolean testConnection = NodeHandler.getDataInterface().testConnection();
         if (testConnection) {
             // load data
             NodeHandler.getDataInterface().loadData();
             // logic system in top menu bar
-            nodeInterface.getTopMenuBar().enableLogicSystemButton();
-            nodeInterface.getTopMenuBar().updateLogicSystemMenu();
-            //todo save and close all tabs except connectionTab
+            nodeInterface.resetMenus();
+            nodeInterface.closeTabsExceptConnection();
+            NodeHandler.getDataInterface().disconnect();
         } else {
             // Look at the sky
-
         }
         Message.testConnection(testConnection);
     }

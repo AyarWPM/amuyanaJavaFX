@@ -57,8 +57,9 @@ public class Expression extends HBox {
         expressions.add(this);
         setMinWidth(this.getPrefWidth());
         setMinWidth(Region.USE_PREF_SIZE);
-        //setAlignment(Pos.CENTER);
-        setStyle("-fx-font-family:monospace; -fx-alignment:bottom-left;");
+        setAlignment(Pos.BOTTOM_LEFT);
+
+        //setStyle("-fx-font-family:monospace; -fx-alignment:bottom-left;");
     }
 
     void setExpressionHolderStyle(Expression expressionHolder) {

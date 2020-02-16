@@ -35,6 +35,16 @@ public class SubBranch extends HBox {
         listenerForKnobs();
     }
 
+    private void makeStyle() {
+        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
+        //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(3))));
+        if (branch.getTrunk().isSide()) {
+            setId("RightSide");
+        } else {
+            setId("LeftSide");
+        }
+    }
+
     private void listenerForKnobs() {
         widthProperty().addListener(observable -> {
             getTrunk().getTree().updateKnobsBounds();
@@ -48,16 +58,6 @@ public class SubBranch extends HBox {
         getBranch().heightProperty().addListener(observable -> {
             getTrunk().getTree().updateKnobsBounds();
         });
-    }
-
-    private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
-        //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(3))));
-        if (branch.getTrunk().isSide()) {
-            setId("RightSide");
-        } else {
-            setId("LeftSide");
-        }
     }
 
     void loadFruitAndTrunks() {

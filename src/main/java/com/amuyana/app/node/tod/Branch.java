@@ -28,7 +28,6 @@ public class Branch extends HBox {
         this.trunk = trunk;
         this.container1 = container1;
         makeStyle();
-        setOnMouseClicked(mouseEvent -> System.out.println("getAlignment() = " + getAlignment()));
     }
 
     void loadSubBranchesAndTrunks() {

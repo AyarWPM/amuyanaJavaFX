@@ -11,7 +11,6 @@ import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.FccExp;
 import com.amuyana.app.node.tod.expression.ImplicationExp;
 import javafx.application.Platform;
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
@@ -24,10 +23,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.effect.Effect;
-import javafx.scene.effect.Glow;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -89,8 +85,8 @@ public class FruitController implements Initializable {
     private StringProperty styleProperty;
     private StringProperty fontSize;
 
-    private StringProperty firstPart;
-    private StringProperty lastPart;
+    //private StringProperty firstPart;
+    //private StringProperty lastPart;
     private ObjectBinding<Bounds> knob0BoundsInTreeBinding;
     private ObjectBinding<Bounds> knob1BoundsInTreeBinding;
     private ObjectBinding<Bounds> knob2BoundsInTreeBinding;
@@ -101,8 +97,8 @@ public class FruitController implements Initializable {
         fruitScale = new SimpleDoubleProperty();
         factorScale = new SimpleDoubleProperty(1); // Could be set by user
         styleProperty = new SimpleStringProperty();
-        firstPart = new SimpleStringProperty("-fx-font-size: ");
-        lastPart = new SimpleStringProperty(";");
+        //firstPart = new SimpleStringProperty("-fx-font-size: ");
+        //lastPart = new SimpleStringProperty(";");
         fontSize = new SimpleStringProperty();
         updateKnobs = new SimpleBooleanProperty();
     }
@@ -137,7 +133,7 @@ public class FruitController implements Initializable {
                 () -> {
                     Bounds nodeLocal = leftKnobCircle.getBoundsInLocal();
                     Bounds nodeScene = leftKnobCircle.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
                     return nodeTree;
                 },
                 updateKnobsProperty());
@@ -145,7 +141,7 @@ public class FruitController implements Initializable {
         knob1BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob1Label.getBoundsInLocal();
                     Bounds nodeScene = knob1Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
                     return nodeTree;
                 },
                 updateKnobsProperty());
@@ -153,7 +149,7 @@ public class FruitController implements Initializable {
         knob2BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob2Label.getBoundsInLocal();
                     Bounds nodeScene = knob2Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
                     return nodeTree;
                 },
                 updateKnobsProperty());
@@ -161,7 +157,7 @@ public class FruitController implements Initializable {
         knob3BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob3Label.getBoundsInLocal();
                     Bounds nodeScene = knob3Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);//debug changed canvas by tree
+                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
                     return nodeTree;
                 },
                 updateKnobsProperty());
@@ -184,11 +180,13 @@ public class FruitController implements Initializable {
         //Binding<Effect> binding = Bindings.createObjectBinding(() -> {return new Glow();},this.positiveImplicationExp.onMouseEnteredProperty());
         //System.out.println("binding.getValue() = " + binding.getValue());
 
-        // GLOW EFFECT
-        /*this.positiveImplicationExp.setOnMouseEntered(mouseEvent -> this.positiveImplicationExp.setEffect(new Glow(3)));
-        this.positiveImplicationExp.setOnMouseExited(mouseEvent -> this.positiveImplicationExp.setEffect(null));*/
-
-
+        // ON HOVER EFFECT
+        this.positiveImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),0)));
+        this.positiveImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
+        this.negativeImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),1)));
+        this.negativeImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
+        this.symmetricImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),2)));
+        this.symmetricImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
 
         expressionsVBox.getChildren().setAll(positiveImplicationExp,negativeImplicationExp,symmetricImplicationExp);
         expressionsVBox.setAlignment(Pos.CENTER);
@@ -196,6 +194,108 @@ public class FruitController implements Initializable {
         fccNameStackPane.setAlignment(Pos.CENTER);
         //fccNameStackPane.setMinHeight(40);
         fccNameStackPane.getChildren().setAll(fccExp);
+    }
+
+    private void addHoverEffect(Fruit fruit, Dynamism dynamism) {
+        // If algebraic
+
+        // If Propositional
+        // The implication itself
+        switch (dynamism.getOrientation()) {
+            case 0: {
+                this.positiveImplicationExp.setHoverStyle();
+
+            } break;
+            case 1: this.negativeImplicationExp.setHoverStyle(); break;
+            case 2: this.symmetricImplicationExp.setHoverStyle(); break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + dynamism.getOrientation());
+        }
+        // In the rest of the TOD
+        for (Tie tie : tree.getTies()) {
+            // For descendants
+            if (tie.getAscendantFruit().equals(fruit)) {
+                switch (dynamism.getOrientation()) {
+                    case 0: tie.setHoverStyleLine1(); break;
+                    case 1: tie.setHoverStyleLine2(); break;
+                    case 2: tie.setHoverStyleLine3(); break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + dynamism.getOrientation());
+                }
+                Fruit descendantFruit = tie.getDescendantFruit();
+                Dynamism positiveDescendant = dataInterface.getDynamism(descendantFruit.getFcc(), 0);
+                Dynamism negativeDescendant = dataInterface.getDynamism(descendantFruit.getFcc(), 1);
+                Dynamism symmetricDescendant = dataInterface.getDynamism(descendantFruit.getFcc(), 2);
+
+                if (dataInterface.isInclusion(positiveDescendant, dynamism)) {
+                    descendantFruit.setHoverStylePositiveImplication();
+                }
+                if (dataInterface.isInclusion(negativeDescendant, dynamism)) {
+                    descendantFruit.setHoverStyleNegativeImplication();
+                }
+                if (dataInterface.isInclusion(symmetricDescendant, dynamism)) {
+                    descendantFruit.setHoverStyleSymmetricImplication();
+                }
+            }
+            // For ascendants
+            if (tie.getDescendantFruit().equals(fruit)) {
+                Fruit ascendantFruit = tie.getAscendantFruit();
+                Dynamism positiveAscendant = dataInterface.getDynamism(ascendantFruit.getFcc(), 0);
+                Dynamism negativeAscendant = dataInterface.getDynamism(ascendantFruit.getFcc(), 1);
+                Dynamism symmetricAscendant = dataInterface.getDynamism(ascendantFruit.getFcc(), 2);
+
+                if (dataInterface.isInclusion(dynamism, positiveAscendant)) {
+                    ascendantFruit.setHoverStylePositiveImplication();
+                    tie.setHoverStyleLine1();
+                }
+                if (dataInterface.isInclusion(dynamism,negativeAscendant)) {
+                    ascendantFruit.setHoverStyleNegativeImplication();
+                    tie.setHoverStyleLine2();
+                }
+                if (dataInterface.isInclusion(dynamism,symmetricAscendant)) {
+                    ascendantFruit.setHoverStyleSymmetricImplication();
+                    tie.setHoverStyleLine3();
+                }
+            }
+
+        }
+    }
+
+    private void removeHoverEffect() {
+        for (Fruit fruit : tree.getObservableFruits()) {
+            fruit.setNormalStylePositiveImplication();
+            fruit.setNormalStyleNegativeImplication();
+            fruit.setNormalStyleSymmetricImplication();
+        }
+        for (Tie tie : fruit.getTree().getTies()) {
+            tie.setNormalStyleLine1();
+            tie.setNormalStyleLine2();
+            tie.setNormalStyleLine3();
+        }
+    }
+
+    public void setHoverStylePositiveImplication() {
+        positiveImplicationExp.setHoverStyle();
+    }
+
+    public void setHoverStyleNegativeImplication() {
+        negativeImplicationExp.setHoverStyle();
+    }
+
+    public void setHoverStyleSymmetricImplication() {
+        symmetricImplicationExp.setHoverStyle();
+    }
+
+    public void setNormalStylePositiveImplication() {
+        positiveImplicationExp.setNormalStyle();
+    }
+
+    public void setNormalStyleNegativeImplication() {
+        negativeImplicationExp.setNormalStyle();
+    }
+
+    public void setNormalStyleSymmetricImplication() {
+        symmetricImplicationExp.setNormalStyle();
     }
 
     public void buildMenus() {
@@ -221,7 +321,6 @@ public class FruitController implements Initializable {
         //deployMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
         mainContextMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
     }
-
 
     private EventHandler<ActionEvent> moveUp() {
         return actionEvent -> {
@@ -453,8 +552,8 @@ public class FruitController implements Initializable {
 
     private EventHandler<ActionEvent>  deployNewOrientationDescendantAction(Dynamism ascendantDynamism) {
         return actionEvent -> {
+            NodeHandler.getDataInterface().connect();
             TodController todController = this.tree.getTodController();
-
             // set scale to 1 before continuing, otherwise the binding of knobs does not work
             resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
@@ -473,8 +572,7 @@ public class FruitController implements Initializable {
 
             tieDescendant(newFruit);
             tree.updateFruitsMenus();
-            // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
-            tree.cheapAdjustment();
+            NodeHandler.getDataInterface().disconnect();
         };
     }
 
@@ -497,6 +595,7 @@ public class FruitController implements Initializable {
 
     private EventHandler<ActionEvent> deployNewAscendantAction(Dynamism descendantDynamism) {
         return actionEvent -> {
+            NodeHandler.getDataInterface().connect();
             TodController todController = this.tree.getTodController();
             // set scale to 1 before continuing, otherwise the binding of knobs does not work
             resetValueInScaleSlider();
@@ -515,8 +614,7 @@ public class FruitController implements Initializable {
 
             tieAscendant(newFruit);
             tree.updateFruitsMenus();
-            // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
-            tree.cheapAdjustment();
+            NodeHandler.getDataInterface().disconnect();
         };
     }
 
@@ -617,6 +715,7 @@ public class FruitController implements Initializable {
     public void setFontSize(String fontSize) {
         this.fontSize.set(fontSize);
     }
+/*
 
     public String getFirstPart() {
         return firstPart.get();
@@ -629,7 +728,8 @@ public class FruitController implements Initializable {
     public void setFirstPart(String firstPart) {
         this.firstPart.set(firstPart);
     }
-
+*/
+/*
     public String getLastPart() {
         return lastPart.get();
     }
@@ -640,7 +740,7 @@ public class FruitController implements Initializable {
 
     public void setLastPart(String lastPart) {
         this.lastPart.set(lastPart);
-    }
+    }*/
 
     public Bounds getKnob1BoundsInTreeBinding() {
         return knob1BoundsInTreeBinding.get();

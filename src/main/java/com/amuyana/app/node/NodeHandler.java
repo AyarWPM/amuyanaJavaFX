@@ -6,14 +6,17 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.content.*;
-import com.amuyana.app.node.content.debug1.Debug1Tab;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.menu.TopMenuBar;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -58,6 +61,23 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     }
 
     @Override
+    public void closeTabsExceptConnection() {
+        ObservableList<Tab> tabsToClose = FXCollections.observableArrayList();
+
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (!tab.getClass().equals(ConnectionTab.class)) {
+                tabsToClose.add(tab);
+            }
+        }
+        contentTabPane.getTabs().removeAll(tabsToClose);
+    }
+
+    @Override
+    public void resetMenus() {
+        getTopMenuBar().resetMenus();
+    }
+
+    @Override
     public LogicSystem getLogicSystem() {
         return this.logicSystem;
     }
@@ -81,10 +101,12 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
     @Override
     public void openLogicSystemTab() {
+        dataInterface.connect();
         // opening a new ContentTab...
         LogicSystemContentTab logicSystemContentTab = new LogicSystemContentTab(this);
         contentTabPane.getTabs().add(logicSystemContentTab);
         contentTabPane.getSelectionModel().select(logicSystemContentTab);
+        dataInterface.disconnect();
     }
 
     @Override
@@ -167,10 +189,12 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
     @Override
     public void newTodTab() {
+        dataInterface.getDataConnection().connect();
         TodTab todTab = new TodTab(this);
         contentTabPane.getTabs().add(todTab);
         contentTabPane.getSelectionModel().select(todTab);
         topMenuBar.addMenu(todTab.getTodController().getTod());
+        dataInterface.getDataConnection().disconnect();
     }
 
     @Override
@@ -195,7 +219,6 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent())
             if (result.get() == ButtonType.OK) {
-
                 deleteConfirmed(tod);
             } else if (result.get() == ButtonType.CANCEL) {
             }
@@ -243,12 +266,19 @@ public class NodeHandler extends BorderPane implements NodeInterface {
      */
     @Override
     public void openDebug1() {
-        Debug1Tab debug1Tab = new Debug1Tab();
+
+        Circle circle = new Circle(20);
+        TodScrollPane todScrollPane = new TodScrollPane(circle);
+
         Stage stage1 = new Stage();
-        stage1.setWidth(800);
-        stage1.setHeight(600);
         stage1.setTitle("Debug1");
-        stage1.setScene(new Scene(new TabPane(debug1Tab)));
+        stage1.setScene(new Scene(todScrollPane));
+
         stage1.show();
+    }
+
+    @Override
+    public Node getStyleableNode() {
+        return null;
     }
 }

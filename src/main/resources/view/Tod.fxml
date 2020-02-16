@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <SplitPane fx:id="splitPane" dividerPositions="0.4, 0.9" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
    <items>
-      <ScrollPane fx:id="leftPanel" fitToWidth="true" maxWidth="350.0" minWidth="-Infinity" prefViewportHeight="598.0" prefViewportWidth="291.0">
+      <ScrollPane fx:id="leftPanel" fitToWidth="true" maxWidth="350.0" minWidth="-Infinity" prefViewportHeight="598.0" prefViewportWidth="291.0" SplitPane.resizableWithParent="false">
          <content>
             <VBox id="LeftPanelRoot" alignment="CENTER_LEFT" spacing="5.0" SplitPane.resizableWithParent="false">
                <children>
-                  <Pane>
-                     <children>
-                        <Group />
-                     </children>
-                  </Pane>
                   <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label text="Table of deductions" />
@@ -26,17 +20,17 @@
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label minWidth="-Infinity" text="In: " />
-                        <Label id="LogicSystemName" fx:id="logicSystemNameLabel" layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="Logic system (LS1)" />
+                        <Label id="LogicSystemName" fx:id="logicSystemNameLabel" layoutX="10.0" layoutY="10.0" maxWidth="250.0" text="Logic system (LS1)" wrapText="true" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                 <HBox alignment="CENTER_LEFT" prefWidth="25.0" spacing="5.0">
+                 <HBox alignment="CENTER_LEFT" minWidth="-Infinity" prefWidth="25.0" spacing="5.0">
                     <children>
                        <Label minHeight="-Infinity" minWidth="-Infinity" text="Name:" HBox.hgrow="ALWAYS">
                           <font>
                              <Font size="15.0" />
                           </font>
                        </Label>
-                        <Label id="todName" fx:id="todNameLabel" layoutX="10.0" layoutY="13.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" text="name">
+                        <Label id="todName" fx:id="todNameLabel" layoutX="10.0" layoutY="13.0" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" text="name" wrapText="true" HBox.hgrow="NEVER">
                            <font>
                               <Font size="15.0" />
                            </font>
@@ -63,11 +57,11 @@
             </VBox>
          </content>
       </ScrollPane>
-      <BorderPane prefHeight="200.0" prefWidth="200.0">
+      <BorderPane fx:id="todBorderPane" prefHeight="200.0" prefWidth="200.0">
          <center>
-            <ScrollPane id="TodContent" fx:id="treeScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefViewportWidth="535.0" style="-: ;" BorderPane.alignment="CENTER">
+            <ScrollPane id="TodContent" fx:id="treeScrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefViewportWidth="535.0" BorderPane.alignment="CENTER">
                <content>
-                  <HBox fx:id="canvas" alignment="CENTER" fillHeight="false">
+                  <HBox alignment="CENTER" fillHeight="false">
                      <children>
                         <VBox alignment="CENTER" HBox.hgrow="ALWAYS" />
                      </children>

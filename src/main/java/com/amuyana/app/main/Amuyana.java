@@ -26,15 +26,17 @@ public class Amuyana extends Application {
         stage.show();
 
         // Debug lines
-        // nodeInterface.openDebug1();
+        //nodeInterface.openDebug1();
 
         //for debug
-        /*dataInterface.setDataConnectionValues("localhost","amuyana","");
+/*
+        dataInterface.setDataConnectionValues("localhost","amuyana","");
         dataInterface.loadData();
         LogicSystem logicSystem = dataInterface.getListLogicSystem().get(0);
         Tod tod = dataInterface.getTods(logicSystem).get(0);
         nodeInterface.load(logicSystem);
-        nodeInterface.open(tod);*/
+        nodeInterface.open(tod);
+*/
 
 
         /*String lsName = "Personal";

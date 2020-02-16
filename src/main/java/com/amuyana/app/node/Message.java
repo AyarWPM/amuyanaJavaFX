@@ -20,7 +20,7 @@ public abstract class Message {
         if (result) {
             alert.setContentText("The connection was successful");
         } else {
-            alert.setContentText("The connection was unsuccessful. Please check your connection to the Internet.");
+            alert.setContentText("The connection was unsuccessful. Possible problems are wrong data or no connection to the Internet.");
         }
         alert.showAndWait();
         return result;

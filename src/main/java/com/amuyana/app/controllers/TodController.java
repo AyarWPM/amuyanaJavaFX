@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
+import com.amuyana.app.node.content.TodScrollPane;
 import com.amuyana.app.node.content.FccEditorTab;
 import com.amuyana.app.node.content.RightPanelTab;
 import com.amuyana.app.node.content.TodTab;
@@ -24,14 +25,11 @@ import com.amuyana.app.node.tod.Tree;
 import com.amuyana.app.node.tod.expression.Expression;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
@@ -39,13 +37,13 @@ import javafx.scene.layout.*;
 
 public class TodController implements Initializable {
     @FXML private SplitPane splitPane;
-    @FXML private HBox canvas;
+    //@FXML private HBox canvas;
     @FXML private Slider scaleSlider;
     @FXML private Button changeFCCsNotationButton;
     @FXML private Button changeDynamismsNotationButton;
 
     @FXML private ScrollPane treeScrollPane;
-
+    @FXML private BorderPane todBorderPane;
     @FXML private Label todNameLabel;
     @FXML private Label logicSystemNameLabel;
     @FXML private TextField todNameTextField;
@@ -100,6 +98,10 @@ public class TodController implements Initializable {
 
     public void fillData() {
         logicSystemNameLabel.textProperty().bind(nodeInterface.getLogicSystem().labelProperty());
+        updateListViews();
+    }
+
+    public void updateListViews() {
         fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
         inclusionsInTodListView.setItems(dataInterface.getInclusions(tod));
     }
@@ -162,7 +164,10 @@ public class TodController implements Initializable {
         if (isEditName()) {
             // Save
             setEditName(false);
+            dataInterface.connect();
             dataInterface.update(tod);
+            dataInterface.disconnect();
+
             toggleTodNameButton.setText("Edit");
         } else {
             setEditName(true);
@@ -206,7 +211,6 @@ public class TodController implements Initializable {
         String m2="Show algebraic notation for all dynamisms";
 
         if (changeDynamismsNotationButton.getText().equals(m1)) {
-            System.out.println("1");
             for (Fruit fruit : getTree().getObservableFruits()) {
                 fruit.changeDynamismsNotationType(Expression.ExpressionType.PROPOSITION);
             }
@@ -214,7 +218,6 @@ public class TodController implements Initializable {
         }
 
         else if (changeDynamismsNotationButton.getText().equals(m2)) {
-            System.out.println("2");
             for (Fruit fruit : getTree().getObservableFruits()) {
                 fruit.changeDynamismsNotationType(Expression.ExpressionType.ALGEBRA);
             }
@@ -268,7 +271,7 @@ public class TodController implements Initializable {
             toggleRightTabPane();
         }
         FccEditorTab fccEditorTab =new FccEditorTab(getThisTodController(),nodeInterface,fcc);
-        fccEditorTab.getFccEditorController().setEditMode(false);
+        fccEditorTab.getFccEditorController().setEditMode(true);
         rightTabPane.getTabs().add(fccEditorTab);
         rightTabPane.getSelectionModel().select(fccEditorTab);
     }
@@ -298,7 +301,8 @@ public class TodController implements Initializable {
         }
         currentValue+=1;
         this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
-        this.canvas.getChildren().setAll(loadFccSelector());
+        todBorderPane.setCenter(new TodScrollPane(loadFccSelector()));
+        //this.canvas.getChildren().setAll(loadFccSelector());
         bindProperties();
     }
 
@@ -306,8 +310,8 @@ public class TodController implements Initializable {
         this.tod = tod;
         bindProperties();
         if (dataInterface.getFccs(tod).isEmpty()) {
-            Node node = loadFccSelector();
-            this.canvas.getChildren().setAll(node);
+            todBorderPane.setCenter(new TodScrollPane(loadFccSelector()));
+            //this.canvas.getChildren().setAll(node);
         } else if (!dataInterface.getFccs(tod).isEmpty()) {
             showTree();
         }
@@ -359,7 +363,8 @@ public class TodController implements Initializable {
     void showNewTree() {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
-        canvas.getChildren().setAll(this.tree);
+        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
+        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
@@ -372,9 +377,10 @@ public class TodController implements Initializable {
     public void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
-        canvas.getChildren().setAll(this.tree);
+        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
+        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
         showScaleSlider();
     }
 
@@ -386,7 +392,8 @@ public class TodController implements Initializable {
     void showNewTree(Fcc fcc) {
         this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
-        canvas.getChildren().setAll(this.tree);
+        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
+        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
@@ -398,10 +405,6 @@ public class TodController implements Initializable {
 
     void showNewTree(CClass cClass) {
 
-    }
-
-    public HBox getCanvas() {
-        return this.canvas;
     }
 
     private boolean isEditName() {

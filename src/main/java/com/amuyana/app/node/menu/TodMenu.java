@@ -1,6 +1,7 @@
 package com.amuyana.app.node.menu;
 
 import com.amuyana.app.data.tod.containers.Tod;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.tod.Fruit;
 import javafx.scene.control.Menu;
@@ -31,12 +32,14 @@ public class TodMenu extends Menu {
         });
 
         deleteMenuItem.setOnAction(event -> {
+            NodeHandler.getDataInterface().connect();
             nodeInterface.delete(tod);
+            NodeHandler.getDataInterface().disconnect();
         });
 
         duplicateMenuItem.setOnAction(event -> {
             nodeInterface.duplicate(tod);
         });
-        getItems().addAll(openMenuItem,deleteMenuItem,duplicateMenuItem);
+        getItems().addAll(openMenuItem,deleteMenuItem);
     }
 }

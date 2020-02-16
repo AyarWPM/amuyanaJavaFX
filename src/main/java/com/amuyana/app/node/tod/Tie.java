@@ -12,6 +12,11 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
+import javafx.scene.effect.Bloom;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 import java.util.List;
@@ -64,9 +69,7 @@ public class Tie {
         line2.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));
         line3.strokeWidthProperty().bind(two.divide(getAscendantFruit().getTrunk().levelProperty()));*/
 
-        line1.setStyle("-fx-stroke:#222222;");
-        line2.setStyle("-fx-stroke:#222222;");
-        line3.setStyle("-fx-stroke:#222222;");
+        setNormalStyle(line1, line2, line3);
 
         line1.visibleProperty().bind(positiveOrientation);
         line2.visibleProperty().bind(negativeOrientation);
@@ -124,6 +127,23 @@ public class Tie {
         line3.endYProperty().bind(Bindings.createDoubleBinding(
                 () -> knob0Bind.get().getCenterY(),
                 knob0Bind));
+    }
+
+    private void setNormalStyle(Line ... lines) {
+        for (Line line : lines) {
+            line.setStrokeWidth(3);
+            line.setStroke(Color.rgb(22,22,22));
+            line.setEffect(null);
+        }
+    }
+
+    private void setHoverStyle(Line ... lines) {
+        for (Line line : lines) {
+            line.setStrokeWidth(3);
+            line.setStroke(Color.rgb(150,00,00));
+            /*DropShadow dropShadow = new DropShadow(2,Color.rgb(99,00,00));
+            line.setEffect(dropShadow);*/
+        }
     }
 
     /*private void manageListeners() {
@@ -215,4 +235,32 @@ public class Tie {
     public void setSymmetricOrientation(boolean symmetricOrientation) {
         this.symmetricOrientation.set(symmetricOrientation);
     }
+
+
+    public void setHoverStyleLine1() {
+        setHoverStyle(line1);
+    }
+
+    public void setHoverStyleLine2() {
+        setHoverStyle(line2);
+    }
+
+    public void setHoverStyleLine3() {
+        setHoverStyle(line3);
+    }
+
+    public void setNormalStyleLine1() {
+        setNormalStyle(line1);
+    }
+
+    public void setNormalStyleLine2() {
+        setNormalStyle(line2);
+    }
+
+    public void setNormalStyleLine3() {
+        setNormalStyle(line3);
+    }
+
+
+
 }

@@ -1,6 +1,7 @@
 package com.amuyana.app.node.tod;
 
 import com.amuyana.app.controllers.TodController;
+import com.amuyana.app.data.DataConnection;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
@@ -8,6 +9,7 @@ import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.NodeHandler;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -19,6 +21,8 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.shape.Line;
+
+import java.sql.SQLException;
 
 /**
  * Equivalent to tod in data package: this.todController.getTod();
@@ -85,8 +89,8 @@ public class Tree extends Group {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
         this.mainTrunk.loadNewBranch(newFcc);
         todController.openFccEditor(newFcc);
-//        getChildren().setAll(this.linesGroup, this.mainTrunk);
         getChildren().add(this.mainTrunk);
+
         // for debug
         /*this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
         getChildren().setAll(this.linesGroup, this.mainTrunk);
@@ -362,17 +366,6 @@ public class Tree extends Group {
             remove(FXCollections.observableArrayList(),fruitToRemove);
             remove(tieToRemove);
         }
-    }
-
-    public void cheapAdjustment() {
-        /*ScrollPane scrollPane = getTodController().getTreeScrollPane();
-        if (scrollPane.getHvalue() < 1) {
-            scrollPane.setHvalue(scrollPane.getHvalue()+0.01);
-        }
-        if (scrollPane.getHvalue() > 0) {
-            scrollPane.setHvalue(scrollPane.getHvalue()-0.01);
-        }*/
-
     }
 
     public void updateKnobsBounds() {

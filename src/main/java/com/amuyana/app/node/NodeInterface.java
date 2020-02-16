@@ -14,22 +14,27 @@ public interface NodeInterface {
     TopMenuBar getTopMenuBar();
 
     Node getRootNode();
+    void closeTabsExceptConnection();
+    void resetMenus();
     LogicSystem getLogicSystem();
+
     void exitAmuyana();
     void openConnectionTab();
-
     void openLogicSystemTab();
     void addToLogicSystemMenu(LogicSystem logicSystem);
     void load(LogicSystem logicSystem);
+
     void edit(LogicSystem logicSystem);
     void delete(LogicSystem logicSystem);
-
     void newTodTab();
     void open(Tod tod);
+
     void delete(Tod tod);
+
     void duplicate(Tod tod);
 
     void openAboutWindow();
 
     void openDebug1();
+
 }

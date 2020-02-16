@@ -95,14 +95,14 @@ public class DataHandler implements DataInterface {
         if (this.dataConnection.connect()) {
             connection = true;
         }
-        this.dataConnection.disconnect();
+        //dataConnection.disconnect();
         return connection;
     }
 
     @Deprecated
     @Override
     public void reinitializeDatabase() {
-        this.dataConnection.connect();
+        //dataConnection.connect();
 
         Path path = Paths.get("./src/main/resources/mysql/reinitializeScript.txt");
         File file = new File(path.toUri());
@@ -124,11 +124,11 @@ public class DataHandler implements DataInterface {
         } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
-        this.dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     public void loadData() {
-        this.dataConnection.connect();
+        //dataConnection.connect();
         initLists();
         LogicSystem.loadList(dataConnection.getConnection(), this.listLogicSystem);
         Fcc.loadList(dataConnection.getConnection(), this.listFcc);
@@ -158,7 +158,7 @@ public class DataHandler implements DataInterface {
 //        Time.loadList(this.dataConnection.getConnection(), listTime);
 //        Quantum.loadList(this.dataConnection.getConnection(), listQuantum);
 
-        this.dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     // GETTERS OF LISTVIEWS
@@ -351,8 +351,7 @@ public class DataHandler implements DataInterface {
     //
     @Override
     public LogicSystem newLogicSystem(String label, String description) {
-        dataConnection.connect();
-
+        //dataConnection.connect();
         LogicSystem logicSystem = new LogicSystem(0,label,description,Timestamp.valueOf(LocalDateTime.now()));
         int resultLS = logicSystem.saveData(dataConnection.getConnection());
         logicSystem.setIdLogicSystem(LogicSystem.currentAutoIncrement);
@@ -360,15 +359,14 @@ public class DataHandler implements DataInterface {
         if (resultLS == 1){
             listLogicSystem.add(logicSystem);
         }
-
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return logicSystem;
     }
 
     @Override
     public void delete(LogicSystem logicSystem) {
         DataConnection dataConnection = getDataConnection();
-        dataConnection.connect();
+        //dataConnection.connect();
 
         // First delete fccHasLogicSystem
         ObservableList<FccHasLogicSystem> tempFccHasLogicSystemToDelete = FXCollections.observableArrayList();
@@ -381,8 +379,10 @@ public class DataHandler implements DataInterface {
 
         ObservableList<Tod> tempTodToRemove = FXCollections.observableArrayList();
         for (Tod tod : getListTod()) {
-            if (tod.deleteData(dataConnection.getConnection()) == 1) {
-                tempTodToRemove.add(tod);
+            if (tod.getLogicSystem().equals(logicSystem)) {
+                if (tod.deleteData(dataConnection.getConnection()) == 1) {
+                    tempTodToRemove.add(tod);
+                }
             }
         }
         listTod.removeAll(tempTodToRemove);
@@ -390,29 +390,45 @@ public class DataHandler implements DataInterface {
         if (logicSystem.deleteData(dataConnection.getConnection()) == 1){
             getListLogicSystem().remove(logicSystem);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void update(LogicSystem logicSystem) {
-        DataConnection dataConnection = getDataConnection();
-        dataConnection.connect();
+        //connect();
+        //dataConnection.connect();
         logicSystem.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
+        //disconnect();
     }
 
     @Override
     public void update(Tod tod) {
-        DataConnection dataConnection = getDataConnection();
-        dataConnection.connect();
+        //connect();
+        //dataConnection.connect();
         tod.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
+        //disconnect();
+    }
+
+    @Override
+    public void connect() {
+        dataConnection.connect();
+    }
+
+    @Override
+    public void disconnect() {
+        try {
+            dataConnection.getConnection().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     // FCC
     @Override
     public Fcc newFcc(LogicSystem logicSystem) {
-        dataConnection.connect();
+        //dataConnection.connect();
 
         // first fcc
         Fcc fcc = new Fcc(0, "","");
@@ -457,34 +473,34 @@ public class DataHandler implements DataInterface {
             getListDynamisms().addAll(dynamism0,dynamism1,dynamism2);
         }
 
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return fcc;
     }
 
     @Override
     public void update(Fcc fcc) {
-        dataConnection.connect();
+        //dataConnection.connect();
         fcc.updateData(dataConnection.getConnection());
         getElement(fcc,0).updateData(dataConnection.getConnection());
         getElement(fcc,1).updateData(dataConnection.getConnection());
         getDynamism(fcc,0).updateData(dataConnection.getConnection());
         getDynamism(fcc,1).updateData(dataConnection.getConnection());
         getDynamism(fcc,2).updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void update(Element element) {
-        dataConnection.connect();
+        //dataConnection.connect();
         element.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void update(Dynamism dynamism) {
-        dataConnection.connect();
+        //dataConnection.connect();
         dynamism.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
 
@@ -505,7 +521,7 @@ public class DataHandler implements DataInterface {
             delete(inclusion);
         }
         DataConnection dataConnection = getDataConnection();
-        dataConnection.connect();
+        //dataConnection.connect();
         // delete tod
         int result = tod.deleteData(dataConnection.getConnection());
         if (result == 1) {
@@ -521,7 +537,7 @@ public class DataHandler implements DataInterface {
                 FXCollections.observableArrayList(),
                 FXCollections.observableArrayList(),
                 FXCollections.observableArrayList());*/
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
 
     }
 
@@ -576,51 +592,51 @@ public class DataHandler implements DataInterface {
     }
 
     private void delete(Container0In2 container0In2) {
-        dataConnection.connect();
+        //dataConnection.connect();
         if (container0In2.deleteData(dataConnection.getConnection()) == 1) {
             listContainer0In2s.remove(container0In2);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     private void delete(Container0In1 container0In1) {
-        dataConnection.connect();
+        //dataConnection.connect();
         if (container0In1.deleteData(dataConnection.getConnection()) == 1) {
             listContainer0In2s.remove(container0In1);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container0 container0) {
-        dataConnection.connect();
+        //dataConnection.connect();
         if (container0.deleteData(dataConnection.getConnection()) == 1) {
             listContainer0s.remove(container0);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container1 container1) {
-        dataConnection.connect();
+        //dataConnection.connect();
         if (container1.deleteData(dataConnection.getConnection()) == 1) {
             listContainer1s.remove(container1);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container2 container2) {
-        dataConnection.connect();
+        //dataConnection.connect();
         if (container2.deleteData(dataConnection.getConnection()) == 1) {
             listContainer2s.remove(container2);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container0 container0, Container1 container1) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container0In1 container0In1ToRemove=null;
         for (Container0In1 container0In1 : listContainer0In1s) {
             if (container0In1.getContainer0().getIdContainer0()==container0.getIdContainer0()) {
@@ -632,12 +648,12 @@ public class DataHandler implements DataInterface {
             }
         }
         listContainer0In1s.remove(container0In1ToRemove);
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void delete(Container0 container0, Container2 container2) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container0In2 container0In2ToRemove = null;
         for (Container0In2 container0In2 : listContainer0In2s) {
             if (container0In2.getContainer0().getIdContainer0()==container0.getIdContainer0()) {
@@ -649,12 +665,12 @@ public class DataHandler implements DataInterface {
             }
         }
         listContainer0In2s.remove(container0In2ToRemove);
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public Tod newTod(String label, LogicSystem logicSystem) {
-        dataConnection.connect();
+        //dataConnection.connect();
         // Container0
         Container0 container0 = new Container0(0);
         if (container0.saveData(dataConnection.getConnection()) == 1) {
@@ -666,14 +682,13 @@ public class DataHandler implements DataInterface {
             tod.setIdTod(Tod.currentAutoIncrement);
             getListTod().add(tod);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return tod;
     }
 
     @Override
     public Container0 newContainer0(Container1 container1, boolean side) {
-
-        dataConnection.connect();
+//        //dataConnection.connect();
         Container0 container0 = new Container0(0);
         if (container0.saveData(dataConnection.getConnection()) == 1) {
             container0.setIdContainer0(Container0.currentAutoIncrement);
@@ -682,13 +697,13 @@ public class DataHandler implements DataInterface {
         Container0In1 container0In1 = new Container0In1(container0, container1, side);
         listContainer0In1s.add(container0In1);
         container0In1.saveData(dataConnection.getConnection());
-        dataConnection.disconnect();
+//        //dataConnection.disconnect();
         return container0;
     }
 
     @Override
     public Container0 newContainer0(Container2 container2, boolean side) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container0 container0 = new Container0(0);
         if (container0.saveData(dataConnection.getConnection()) == 1) {
             container0.setIdContainer0(Container0.currentAutoIncrement);
@@ -696,14 +711,14 @@ public class DataHandler implements DataInterface {
         Container0In2 container0In2 = new Container0In2(container0, container2, side);
         listContainer0In2s.add(container0In2);
         container0In2.saveData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return container0;
     }
 
     // Fcc... fcc is using varargs, there can be zero or any positive amount of fccs
     @Override
     public Container1 newContainer1(Container0 container0) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container1 container1 = new Container1(0,container0,0);
         if (container1.saveData(dataConnection.getConnection()) == 1) {
             container1.setIdContainer1(Container1.currentAutoIncrement);
@@ -711,69 +726,69 @@ public class DataHandler implements DataInterface {
             listContainer1s.add(container1);
         }
         container1.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return container1;
     }
 
     @Override
     public void update(Container1 container1) {
-        dataConnection.connect();
+        //dataConnection.connect();
         container1.updateData(dataConnection.getConnection());
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public Container2 newContainer2(Fcc fcc, Container1 container1) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container2 container2 = new Container2(0,fcc,container1);
         if (container2.saveData(dataConnection.getConnection()) == 1) {
             container2.setIdContainer2(Container2.currentAutoIncrement);
             listContainer2s.add(container2);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return container2;
     }
 
     @Override
     public void addContainer0in2(Container0 container0, Container2 container2, boolean side) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container0In2 container0In2 = new Container0In2(container0,container2,side);
         if (container0In2.saveData(dataConnection.getConnection()) == 1) {
             listContainer0In2s.add(container0In2);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public void addContainer0in1(Container0 container0, Container1 container1, boolean side) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Container0In1 container0In1 = new Container0In1(container0,container1,side);
         if (container0In1.saveData(dataConnection.getConnection()) == 1) {
             listContainer0In1s.add(container0In1);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
 
     @Override
     public Inclusion newInclusion(Dynamism particularDynamism, Dynamism generalDynamism, Tod tod) {
-        dataConnection.connect();
+        //dataConnection.connect();
         Inclusion inclusion = new Inclusion(0, particularDynamism, generalDynamism, tod);
         if (inclusion.saveData(dataConnection.getConnection()) == 1) {
             listInclusions.add(inclusion);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
         return inclusion;
     }
 
     @Override
     public void delete(Inclusion inclusion) {
         DataConnection dataConnection = getDataConnection();
-        dataConnection.connect();
+        //dataConnection.connect();
         int result = inclusion.deleteData(dataConnection.getConnection());
         if (result == 1) {
             this.listInclusions.remove(inclusion);
         }
-        dataConnection.disconnect();
+        //dataConnection.disconnect();
     }
     /*
              _____                       _                        _   _

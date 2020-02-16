@@ -117,7 +117,7 @@ public class TopMenuBar extends MenuBar {
     public void removeLogicSystemMenu(LogicSystem logicSystem) {
         LogicSystemMenu toRemove = null;
         for (LogicSystemMenu logicSystemMenu : this.logicSystemMenus) {
-            if (logicSystemMenu.getLogicSystem().equals(logicSystem)) {
+            if (logicSystem.equals(logicSystemMenu.getLogicSystem())) {
                 toRemove=logicSystemMenu;
             }
         }
@@ -166,15 +166,6 @@ public class TopMenuBar extends MenuBar {
         }
     }
 
-    public void enableLogicSystemButton() {
-        this.logicSystemMenu.setDisable(false);
-    }
-
-    public void updateLogicSystemMenu() {
-        clearLogicSystemMenu();
-        fillLogicSystemMenu();
-    }
-
     private void clearLogicSystemMenu() {
         this.logicSystemMenus = FXCollections.observableArrayList();
         ObservableList<LogicSystemMenu> tempToRemove = FXCollections.observableArrayList();
@@ -191,5 +182,14 @@ public class TopMenuBar extends MenuBar {
             LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
             this.logicSystemMenu.getItems().add(logicSystemMenu);
         }
+    }
+
+    public void resetMenus() {
+        // Logic System
+        this.logicSystemMenu.setDisable(false);
+        clearLogicSystemMenu();
+        fillLogicSystemMenu();
+        // Tod
+        todMenu.setDisable(true);
     }
 }

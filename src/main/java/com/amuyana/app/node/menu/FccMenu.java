@@ -111,6 +111,7 @@ public class FccMenu extends Menu {
                                                                    Dynamism ascendantDynamism,
                                                                    CheckMenuItem checkMenuItem) {
         return actionEvent -> {
+            dataInterface.connect();
             // If user selects
             if (checkMenuItem.selectedProperty().get()) {
                 dataInterface.newInclusion(descendantDynamism,ascendantDynamism, tree.getTodController().getTod());
@@ -126,8 +127,6 @@ public class FccMenu extends Menu {
                     fruitController.resetValueInScaleSlider();
                     Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(deployFcc);
                     fruitController.tieAscendant(newFruit);
-                    // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
-                    tree.cheapAdjustment();
                 }
             }
             // If user deselects
@@ -145,7 +144,9 @@ public class FccMenu extends Menu {
             tree.updateOrientationTies();
             tree.checkFruitsRemoval();
             tree.updateFruitsMenus();
+            tree.getTodController().updateListViews();
             //tree.update();
+            dataInterface.disconnect();
         };
     }
 
@@ -153,6 +154,7 @@ public class FccMenu extends Menu {
                                                                    Dynamism descendantDynamism,
                                                                    CheckMenuItem checkMenuItem) {
         return actionEvent -> {
+            dataInterface.connect();
             // if user selects
             if (checkMenuItem.selectedProperty().get()) {
                 boolean thereIsAFruit = false;
@@ -171,8 +173,7 @@ public class FccMenu extends Menu {
                     fruitController.resetValueInScaleSlider();
                     Fruit newFruit = fruit.getSubBranch().addToRightTrunk(deployFcc);
                     fruitController.tieDescendant(newFruit);
-                    // this is needed for some reason, otherwise at the moment of scrolling an error/exception happens
-                    tree.cheapAdjustment();
+
                 }
             }
             // if user deselects
@@ -190,7 +191,8 @@ public class FccMenu extends Menu {
             tree.updateOrientationTies();
             tree.checkFruitsRemoval();
             tree.updateFruitsMenus();
-
+            tree.getTodController().updateListViews();
+            dataInterface.disconnect();
             //tree.update();
         };
     }

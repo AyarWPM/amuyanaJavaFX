@@ -106,4 +106,6 @@ public interface DataInterface {
     boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism);
     boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism);
 
+    void connect();
+    void disconnect();
 }

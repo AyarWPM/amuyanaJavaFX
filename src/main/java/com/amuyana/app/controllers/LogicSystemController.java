@@ -87,11 +87,15 @@ public class LogicSystemController implements Initializable {
         // Second, Is new logic system or not?
         // If the logic system is new
         if (this.isLogicSystemNew) {
+            NodeHandler.getDataInterface().connect();
             saveData();
+            NodeHandler.getDataInterface().disconnect();
         }
         // If the logic system exists already
         else {
+            NodeHandler.getDataInterface().connect();
             updateData();
+            NodeHandler.getDataInterface().disconnect();
         }
     }
 
@@ -126,7 +130,9 @@ public class LogicSystemController implements Initializable {
     
     @FXML
     public void delete(){
+        NodeHandler.getDataInterface().connect();
         nodeInterface.delete(logicSystem);
+        NodeHandler.getDataInterface().disconnect();
     }
 
     private void showCompleteFieldsAlert() {

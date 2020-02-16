@@ -144,7 +144,9 @@ public class FccEditorController implements Initializable {
             dataInterface.getDynamism(fcc,1).setProposition(negativePropositionTextField.getText());
             dataInterface.getDynamism(fcc,2).setProposition(symmetricPropositionTextField.getText());
 
+            dataInterface.connect();
             dataInterface.update(fcc);
+            dataInterface.disconnect();
 
             // Unbind!
             Element element = dataInterface.getElement(fcc,0);

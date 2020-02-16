@@ -26,7 +26,6 @@ public class FccSelectorController implements Initializable {
     void initialize(NodeInterface nodeInterface, TodTab todTab) {
         this.todTab = todTab;
         for (Fcc fcc : NodeHandler.getDataInterface().getFccs(nodeInterface.getLogicSystem())) {
-
             MenuItem menuItem = new MenuItem(fcc.getName());
             menuItem.setOnAction(actionEvent -> open(fcc));
             fccsMenuButton.getItems().add(menuItem);
@@ -35,10 +34,14 @@ public class FccSelectorController implements Initializable {
 
     @FXML
     private void newFcc() {
+        NodeHandler.getDataInterface().connect();
         todTab.getTodController().showNewTree();
+        NodeHandler.getDataInterface().disconnect();
     }
 
     private void open(Fcc fcc) {
+        NodeHandler.getDataInterface().connect();
         todTab.getTodController().showNewTree(fcc);
+        NodeHandler.getDataInterface().disconnect();
     }
 }

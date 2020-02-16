@@ -10,11 +10,7 @@ import com.amuyana.app.node.tod.expression.Expression;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 import com.amuyana.app.data.Fcc;
 
@@ -219,5 +215,28 @@ public class Fruit {
     }
 
 
+    public void setHoverStylePositiveImplication() {
+        fruitController.setHoverStylePositiveImplication();
+    }
+
+    public void setHoverStyleNegativeImplication() {
+        fruitController.setHoverStyleNegativeImplication();
+    }
+
+    public void setHoverStyleSymmetricImplication() {
+        fruitController.setHoverStyleSymmetricImplication();
+    }
+
+    public void setNormalStylePositiveImplication() {
+        fruitController.setNormalStylePositiveImplication();
+    }
+
+    public void setNormalStyleNegativeImplication() {
+        fruitController.setNormalStyleNegativeImplication();
+    }
+
+    public void setNormalStyleSymmetricImplication() {
+        fruitController.setNormalStyleSymmetricImplication();
+    }
 
 }

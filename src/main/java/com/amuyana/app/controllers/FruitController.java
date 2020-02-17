@@ -338,10 +338,12 @@ public class FruitController implements Initializable {
                 fruit.getTrunk().getChildren().setAll(workingCollection);
 
                 // Change in MYSQL
+                dataInterface.connect();
                 int orderOfThisBranch = branch.getBranchOrder();
                 int orderOfUpperBranch = upperBranch.getBranchOrder();
                 branch.setBranchOrder(orderOfUpperBranch);
                 upperBranch.setBranchOrder(orderOfThisBranch);
+                dataInterface.disconnect();
 
                 // Changes in ObservableList of Container1
                 int upperContainer1Index = dataInterface.getListContainer1s().indexOf(upperBranch.getContainer1());
@@ -369,10 +371,12 @@ public class FruitController implements Initializable {
                 fruit.getTrunk().getChildren().setAll(workingCollection);
 
                 //Change in MYSQL
+                dataInterface.connect();
                 int orderOfThisBranch = branch.getBranchOrder();
                 int orderOfLowerBranch = lowerBranch.getBranchOrder();
                 branch.setBranchOrder(orderOfLowerBranch);
                 lowerBranch.setBranchOrder(orderOfThisBranch);
+                dataInterface.disconnect();
 
                 // Changes in ObservableList
                 int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());

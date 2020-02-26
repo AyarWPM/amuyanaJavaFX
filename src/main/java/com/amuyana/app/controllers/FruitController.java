@@ -107,6 +107,9 @@ public class FruitController implements Initializable {
     public void initialize(Fruit fruit) {
         this.fruit = fruit;
         this.tree = this.fruit.getTree();
+        if (fruit.getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            fruitBorderPane.setStyle("-fx-border-width:2.5;");
+        }
         manageBindings();
         buildExpressions();
 

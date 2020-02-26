@@ -162,7 +162,7 @@ public class Trunk extends VBox {
 
     }
 
-    TrunkType getTrunkType() {
+    public TrunkType getTrunkType() {
         return this.trunkType;
     }
 

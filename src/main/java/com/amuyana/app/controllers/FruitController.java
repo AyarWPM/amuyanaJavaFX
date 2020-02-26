@@ -4,6 +4,7 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.LogicSystem;
+import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.menu.FccMenu;
 import com.amuyana.app.node.tod.*;
@@ -197,6 +198,7 @@ public class FruitController implements Initializable {
     }
 
     private void addHoverEffect(Fruit fruit, Dynamism dynamism) {
+        Tod tod  =tree.getTodController().getTod();
         // If algebraic
 
         // If Propositional
@@ -227,13 +229,13 @@ public class FruitController implements Initializable {
                 Dynamism negativeDescendant = dataInterface.getDynamism(descendantFruit.getFcc(), 1);
                 Dynamism symmetricDescendant = dataInterface.getDynamism(descendantFruit.getFcc(), 2);
 
-                if (dataInterface.isInclusion(positiveDescendant, dynamism)) {
+                if (dataInterface.isInclusion(positiveDescendant, dynamism, tod)) {
                     descendantFruit.setHoverStylePositiveImplication();
                 }
-                if (dataInterface.isInclusion(negativeDescendant, dynamism)) {
+                if (dataInterface.isInclusion(negativeDescendant, dynamism, tod)) {
                     descendantFruit.setHoverStyleNegativeImplication();
                 }
-                if (dataInterface.isInclusion(symmetricDescendant, dynamism)) {
+                if (dataInterface.isInclusion(symmetricDescendant, dynamism, tod)) {
                     descendantFruit.setHoverStyleSymmetricImplication();
                 }
             }
@@ -244,15 +246,15 @@ public class FruitController implements Initializable {
                 Dynamism negativeAscendant = dataInterface.getDynamism(ascendantFruit.getFcc(), 1);
                 Dynamism symmetricAscendant = dataInterface.getDynamism(ascendantFruit.getFcc(), 2);
 
-                if (dataInterface.isInclusion(dynamism, positiveAscendant)) {
+                if (dataInterface.isInclusion(dynamism, positiveAscendant, tod)) {
                     ascendantFruit.setHoverStylePositiveImplication();
                     tie.setHoverStyleLine1();
                 }
-                if (dataInterface.isInclusion(dynamism,negativeAscendant)) {
+                if (dataInterface.isInclusion(dynamism,negativeAscendant, tod)) {
                     ascendantFruit.setHoverStyleNegativeImplication();
                     tie.setHoverStyleLine2();
                 }
-                if (dataInterface.isInclusion(dynamism,symmetricAscendant)) {
+                if (dataInterface.isInclusion(dynamism,symmetricAscendant, tod)) {
                     ascendantFruit.setHoverStyleSymmetricImplication();
                     tie.setHoverStyleLine3();
                 }

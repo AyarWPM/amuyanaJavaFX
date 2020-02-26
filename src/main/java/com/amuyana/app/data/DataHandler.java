@@ -877,11 +877,13 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
-    public boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism) {
+    public boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism, Tod tod) {
         for (Inclusion inclusion : getListInclusions()) {
-            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
-                    return true;
+            if (inclusion.getTod().equals(tod)) {
+                if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                    if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                        return true;
+                    }
                 }
             }
         }

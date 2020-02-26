@@ -4,6 +4,7 @@ import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.Inclusion;
+import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
@@ -19,7 +20,7 @@ public class FccMenu extends Menu {
     private final Fruit fruit;
     private final Fcc deployFcc;
     private final FruitController fruitController;
-
+    Tod tod;
     private FccMenuType fccMenuType;
 
     public enum FccMenuType{FOR_ASCENDANTS,FOR_DESCENDANTS}
@@ -39,6 +40,7 @@ public class FccMenu extends Menu {
         this.deployFcc = deployFcc;
         this.fccMenuType=fccMenuType;
         this.tree = fruit.getTree();
+        this.tod = tree.getTodController().getTod();
         this.fccMenuType = FccMenuType.FOR_DESCENDANTS;
         this.dataInterface = NodeHandler.getDataInterface();
 
@@ -61,13 +63,13 @@ public class FccMenu extends Menu {
         fromNegativeCheckMenuItem.textProperty().bind(negativeAscendant.propositionProperty());
         fromSymmetricCheckMenuItem.textProperty().bind(symmetricAscendant.propositionProperty());
 
-        if (dataInterface.isInclusion(descendantDynamism,positiveAscendant)) {
+        if (dataInterface.isInclusion(descendantDynamism,positiveAscendant,tod)) {
             fromPositiveCheckMenuItem.setSelected(true);
         }
-        if (dataInterface.isInclusion(descendantDynamism,negativeAscendant)) {
+        if (dataInterface.isInclusion(descendantDynamism,negativeAscendant,tod)) {
             fromNegativeCheckMenuItem.setSelected(true);
         }
-        if (dataInterface.isInclusion(descendantDynamism,symmetricAscendant)) {
+        if (dataInterface.isInclusion(descendantDynamism,symmetricAscendant,tod)) {
             fromSymmetricCheckMenuItem.setSelected(true);
         }
 
@@ -90,13 +92,13 @@ public class FccMenu extends Menu {
         toNegativeCheckMenuItem.textProperty().bind(negativeDescendant.propositionProperty());
         toSymmetricCheckMenuItem.textProperty().bind(symmetricDescendant.propositionProperty());
 
-        if (dataInterface.isInclusion(positiveDescendant,ascendantDynamism)) {
+        if (dataInterface.isInclusion(positiveDescendant,ascendantDynamism,tod)) {
             toPositiveCheckMenuItem.setSelected(true);
         }
-        if (dataInterface.isInclusion(negativeDescendant,ascendantDynamism)) {
+        if (dataInterface.isInclusion(negativeDescendant,ascendantDynamism,tod)) {
             toNegativeCheckMenuItem.setSelected(true);
         }
-        if (dataInterface.isInclusion(symmetricDescendant,ascendantDynamism)) {
+        if (dataInterface.isInclusion(symmetricDescendant,ascendantDynamism,tod)) {
             toSymmetricCheckMenuItem.setSelected(true);
         }
 

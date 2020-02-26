@@ -2,6 +2,7 @@ package com.amuyana.app.node.tod;
 
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Dynamism;
+import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
@@ -159,15 +160,16 @@ public class Tie {
         Dynamism negativeAscendantDynamism = dataInterface.getDynamism(ascendantFruit.getFcc(),1);
         Dynamism symmetricAscendantDynamism = dataInterface.getDynamism(ascendantFruit.getFcc(),2);
 
-        boolean pp = dataInterface.isInclusion(positiveDescendantDynamism, positiveAscendantDynamism);
-        boolean pn = dataInterface.isInclusion(negativeDescendantDynamism, positiveAscendantDynamism);
-        boolean ps = dataInterface.isInclusion(symmetricDescendantDynamism, positiveAscendantDynamism);
-        boolean np = dataInterface.isInclusion(positiveDescendantDynamism, negativeAscendantDynamism);
-        boolean nn = dataInterface.isInclusion(negativeDescendantDynamism, negativeAscendantDynamism);
-        boolean ns = dataInterface.isInclusion(symmetricDescendantDynamism, negativeAscendantDynamism);
-        boolean sp = dataInterface.isInclusion(positiveDescendantDynamism, symmetricAscendantDynamism);
-        boolean sn = dataInterface.isInclusion(negativeDescendantDynamism, symmetricAscendantDynamism);
-        boolean ss = dataInterface.isInclusion(symmetricDescendantDynamism, symmetricAscendantDynamism);
+        Tod tod = ascendantFruit.getTree().getTodController().getTod();
+        boolean pp = dataInterface.isInclusion(positiveDescendantDynamism, positiveAscendantDynamism, tod);
+        boolean pn = dataInterface.isInclusion(negativeDescendantDynamism, positiveAscendantDynamism, tod);
+        boolean ps = dataInterface.isInclusion(symmetricDescendantDynamism, positiveAscendantDynamism, tod);
+        boolean np = dataInterface.isInclusion(positiveDescendantDynamism, negativeAscendantDynamism, tod);
+        boolean nn = dataInterface.isInclusion(negativeDescendantDynamism, negativeAscendantDynamism, tod);
+        boolean ns = dataInterface.isInclusion(symmetricDescendantDynamism, negativeAscendantDynamism, tod);
+        boolean sp = dataInterface.isInclusion(positiveDescendantDynamism, symmetricAscendantDynamism, tod);
+        boolean sn = dataInterface.isInclusion(negativeDescendantDynamism, symmetricAscendantDynamism, tod);
+        boolean ss = dataInterface.isInclusion(symmetricDescendantDynamism, symmetricAscendantDynamism, tod);
 
         if (pp || pn || ps) {
             positiveOrientation.set(true);

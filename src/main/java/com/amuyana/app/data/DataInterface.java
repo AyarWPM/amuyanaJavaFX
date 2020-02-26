@@ -103,7 +103,7 @@ public interface DataInterface {
      */
     // complex getter
     boolean descendsFrom(Fcc fcc, Dynamism dynamism);
-    boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism);
+    boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism, Tod tod);
     boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism);
 
     void connect();

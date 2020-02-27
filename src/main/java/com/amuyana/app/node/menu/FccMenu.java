@@ -18,7 +18,7 @@ public class FccMenu extends Menu {
     private final DataInterface dataInterface;
     private final Tree tree;
     private final Fruit fruit;
-    private final Fcc deployFcc;
+    private final Fcc fcc;
     private final FruitController fruitController;
     Tod tod;
     private FccMenuType fccMenuType;
@@ -31,13 +31,13 @@ public class FccMenu extends Menu {
      * user orders deployments of the Table of Deductions
      * @param fruitController the controller of the fruit.fxml instance representing fruit
      * @param thisDynamism The dynamism of the fruit from which the other dynamisms of the deployFcc fruit will be deployed
-     * @param deployFcc The fcc that descends from ascendantDynamism
+     * @param fcc The fcc that descends from ascendantDynamism
      */
-    public FccMenu(FruitController fruitController, Dynamism thisDynamism, Fcc deployFcc, FccMenuType fccMenuType) {
-        super(deployFcc.toString());
+    public FccMenu(FruitController fruitController, Dynamism thisDynamism, Fcc fcc, FccMenuType fccMenuType) {
+        super(fcc.toString());
         this.fruitController = fruitController;
         this.fruit = fruitController.getFruit();
-        this.deployFcc = deployFcc;
+        this.fcc = fcc;
         this.fccMenuType=fccMenuType;
         this.tree = fruit.getTree();
         this.tod = tree.getTodController().getTod();
@@ -51,10 +51,14 @@ public class FccMenu extends Menu {
         }
     }
 
+    public String getFccName() {
+        return fcc.getName();
+    }
+
     private void buildForAscendant(Dynamism descendantDynamism) {
-        Dynamism positiveAscendant = dataInterface.getDynamism(deployFcc,0);
-        Dynamism negativeAscendant = dataInterface.getDynamism(deployFcc,1);
-        Dynamism symmetricAscendant = dataInterface.getDynamism(deployFcc,2);
+        Dynamism positiveAscendant = dataInterface.getDynamism(fcc,0);
+        Dynamism negativeAscendant = dataInterface.getDynamism(fcc,1);
+        Dynamism symmetricAscendant = dataInterface.getDynamism(fcc,2);
 
         CheckMenuItem fromPositiveCheckMenuItem = new CheckMenuItem();
         CheckMenuItem fromNegativeCheckMenuItem = new CheckMenuItem();
@@ -81,9 +85,9 @@ public class FccMenu extends Menu {
     }
 
     private void buildForDescendant(Dynamism ascendantDynamism) {
-        Dynamism positiveDescendant = dataInterface.getDynamism(deployFcc,0);
-        Dynamism negativeDescendant = dataInterface.getDynamism(deployFcc,1);
-        Dynamism symmetricDescendant = dataInterface.getDynamism(deployFcc,2);
+        Dynamism positiveDescendant = dataInterface.getDynamism(fcc,0);
+        Dynamism negativeDescendant = dataInterface.getDynamism(fcc,1);
+        Dynamism symmetricDescendant = dataInterface.getDynamism(fcc,2);
 
         CheckMenuItem toPositiveCheckMenuItem = new CheckMenuItem();
         CheckMenuItem toNegativeCheckMenuItem = new CheckMenuItem();
@@ -127,7 +131,7 @@ public class FccMenu extends Menu {
                 }
                 if (!thereIsAFruit) {
                     fruitController.resetValueInScaleSlider();
-                    Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(deployFcc);
+                    Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(fcc);
                     fruitController.tieAscendant(newFruit);
                 }
             }
@@ -175,7 +179,7 @@ public class FccMenu extends Menu {
                 // If there's not a fruit add one
                 if (!thereIsAFruit) {
                     fruitController.resetValueInScaleSlider();
-                    Fruit newFruit = fruit.getSubBranch().addToRightTrunk(deployFcc);
+                    Fruit newFruit = fruit.getSubBranch().addToRightTrunk(fcc);
                     fruitController.tieDescendant(newFruit);
 
                 }

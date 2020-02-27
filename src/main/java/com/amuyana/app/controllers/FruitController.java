@@ -32,6 +32,7 @@ import javafx.scene.shape.Circle;
 
 import java.net.URL;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -443,6 +444,7 @@ public class FruitController implements Initializable {
 
     private Menu descendantsMenu() {
         Menu descendantsMenu = new Menu("Deploy descendants (effects)");
+
         for (int i = 0; i <= 2; i++) {
             Dynamism thisDynamism = dataInterface.getDynamism(getFruit().getFcc(),i);
             Menu aFromOrientationMenu = new Menu();
@@ -482,6 +484,8 @@ public class FruitController implements Initializable {
             // Add the rest of menus
             ObservableList<Fcc> fccs = dataInterface.getFccs(
                     tree.getTodController().getTod().getLogicSystem());
+            ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+
             for (Fcc fcc : fccs){
                 // Ignore itself in the deployment list
                 if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
@@ -491,8 +495,13 @@ public class FruitController implements Initializable {
                 if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
                 // For all the rest create a menu
                 FccMenu fccMenu = new FccMenu(this, thisDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
-                aFromOrientationMenu.getItems().addAll(fccMenu);
+                fccSortedMenus.add(fccMenu);
+                //aFromOrientationMenu.getItems().addAll(fccMenu);
             }
+            // Sort remaining FccMenus alphabetically before adding them
+            Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+            FXCollections.sort(fccSortedMenus,comparator);
+            aFromOrientationMenu.getItems().addAll(fccSortedMenus);//
 
             descendantsMenu.getItems().add(aFromOrientationMenu);
         }
@@ -546,6 +555,8 @@ public class FruitController implements Initializable {
             }
 
             // Add MenuItems : for all fccs in LS except those in 1 and 2
+            ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+
             for (Fcc fcc : fccs){
                 // Ignore itself in the deployment list
                 if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
@@ -555,8 +566,14 @@ public class FruitController implements Initializable {
                 if(isAscendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
                 // For all the rest create a menu
                 FccMenu fccMenu = new FccMenu(this, thisDynamism,fcc, FccMenu.FccMenuType.FOR_ASCENDANTS);
-                thisDynamismMenu.getItems().addAll(fccMenu);
+                fccSortedMenus.add(fccMenu);
+                //thisDynamismMenu.getItems().addAll(fccMenu);
             }
+
+            // Sort remaining FccMenus alphabetically before adding them
+            Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+            FXCollections.sort(fccSortedMenus,comparator);
+            thisDynamismMenu.getItems().addAll(fccSortedMenus);//
         }
         return ascendantsMenu;
     }

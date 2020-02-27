@@ -1,8 +1,6 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.data.Fcc;
-import com.amuyana.app.data.LogicSystem;
+import com.amuyana.app.data.*;
 import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
 import com.amuyana.app.data.tod.Inclusion;
@@ -13,6 +11,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
+import com.amuyana.app.node.Message;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.TodScrollPane;
@@ -38,6 +37,7 @@ import javafx.scene.layout.*;
 public class TodController implements Initializable {
     @FXML private SplitPane splitPane;
     //@FXML private HBox canvas;
+
     @FXML private Slider scaleSlider;
     @FXML private Button changeFCCsNotationButton;
     @FXML private Button changeDynamismsNotationButton;
@@ -157,6 +157,18 @@ public class TodController implements Initializable {
 
         treeScrollPane.setHvalue((treeScrollPane.getHvalue()+1)*0.3+treeScrollPane.getHvalue()*deltaX*50);
         treeScrollPane.setVvalue((treeScrollPane.getVvalue()+1)*0.3+treeScrollPane.getVvalue()*deltaY*40);
+    }
+
+    @FXML
+    void duplicateFcc() {
+        dataInterface.connect();
+        if (!fccsInTodListView.getSelectionModel().isEmpty()) {
+            Fcc oldFcc = fccsInTodListView.getSelectionModel().getSelectedItem();
+            Fcc newFcc = dataInterface.duplicateFcc(oldFcc,tod.getLogicSystem());
+            Message.confirmDuplicateFcc();
+            tree.updateFruitsMenus();
+        }
+        dataInterface.disconnect();
     }
 
     @FXML

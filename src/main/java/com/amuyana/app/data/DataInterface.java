@@ -66,6 +66,7 @@ public interface DataInterface {
     // Fcc
 
     Fcc newFcc(LogicSystem logicSystem);
+    Fcc duplicateFcc(Fcc fcc, LogicSystem logicSystem);
     void update(Fcc fcc);
     void update(Element element);
     void update(Dynamism dynamism);

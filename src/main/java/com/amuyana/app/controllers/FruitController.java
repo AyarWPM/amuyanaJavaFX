@@ -309,6 +309,13 @@ public class FruitController implements Initializable {
         //EDIT
         MenuItem editMenuItem = new MenuItem("Edit");
         editMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
+        // todo
+        
+        //  get parent fruit: if its descendant add an ascendant to parent with same attributes, if parent is ascendant
+        // then create descendant fruit in that parent,
+        // first if its in a branch of subbranch environement
+
+
         mainContextMenu.getItems().addAll(editMenuItem, new SeparatorMenuItem());
 
         // MOVE UP / DOWN (the subbranches the fruits are in)

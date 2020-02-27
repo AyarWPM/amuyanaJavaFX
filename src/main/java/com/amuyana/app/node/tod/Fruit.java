@@ -49,11 +49,13 @@ public class Fruit {
      */
     private boolean isDescendant(Fcc fcc) {
         for (Inclusion inclusion : dataInterface.getListInclusions()) {
-            Dynamism particular = inclusion.getParticular();
-            Dynamism general = inclusion.getGeneral();
-            if (fcc.getIdFcc()==particular.getFcc().getIdFcc()) {
-                if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
-                    return true;
+            if (inclusion.getTod().equals(getTree().getTodController().getTod())) {
+                Dynamism particular = inclusion.getParticular();
+                Dynamism general = inclusion.getGeneral();
+                if (fcc.getIdFcc()==particular.getFcc().getIdFcc()) {
+                    if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -81,17 +83,19 @@ public class Fruit {
         }
 
         for (Inclusion inclusion : dataInterface.getListInclusions()) {
-            Dynamism particular = inclusion.getParticular();
-            Dynamism general = inclusion.getGeneral();
-            if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
-                if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
-                    // fruit is in right trunk of fruit
-                    if (rightFruits.contains(fruit)) {
-                        return true;
-                    }
-                    // this.fruit is in left trunk of fruit
-                    if (leftFruits.contains(this)) {
-                        return true;
+            if (inclusion.getTod().equals(getTree().getTodController().getTod())) {
+                Dynamism particular = inclusion.getParticular();
+                Dynamism general = inclusion.getGeneral();
+                if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+                    if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                        // fruit is in right trunk of fruit
+                        if (rightFruits.contains(fruit)) {
+                            return true;
+                        }
+                        // this.fruit is in left trunk of fruit
+                        if (leftFruits.contains(this)) {
+                            return true;
+                        }
                     }
                 }
             }

@@ -148,4 +148,15 @@ public abstract class Message {
                 "\"Logic System\"");
         return alert;
     }
+
+    public static void confirmDuplicateFcc() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setWidth(400);
+        alert.setHeight(250);
+        alert.setResizable(true);
+        alert.setTitle("Result");
+        alert.setHeaderText("Fcc duplicated");
+        alert.setContentText("The duplicate will not appear in the list unless it is used in the Table of deductions.");
+        alert.showAndWait();
+    }
 }

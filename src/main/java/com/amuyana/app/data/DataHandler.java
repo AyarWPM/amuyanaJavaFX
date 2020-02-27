@@ -478,6 +478,56 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
+    public Fcc duplicateFcc(Fcc fcc, LogicSystem logicSystem) {
+        //dataConnection.connect();
+
+        // first fcc
+        Fcc newFcc = new Fcc(0, fcc.getName() + " (duplicate)",fcc.getDescription());
+        int resultFcc = newFcc.saveData(dataConnection.getConnection());
+        newFcc.setIdFcc(Fcc.currentAutoIncrement);
+        if (resultFcc==1) {
+            listFcc.add(newFcc);
+        }
+
+        // second FccHasLogicSystem
+        FccHasLogicSystem fccHasLogicSystem = new FccHasLogicSystem(newFcc,logicSystem);
+        if (fccHasLogicSystem.saveData(dataConnection.getConnection()) == 1){
+            getListFccHasLogicSystem().add(fccHasLogicSystem);
+        }
+
+        // Elements
+        Element e0 = new Element(0, getElement(fcc,0).getSymbol(), 0, newFcc);
+        Element e1 = new Element(0, getElement(fcc,1).getSymbol(), 1, newFcc);
+
+        int resultE0 = e0.saveData(dataConnection.getConnection());
+        e0.setIdElement(Element.currentAutoIncrement);
+        int resultE1 = e1.saveData(dataConnection.getConnection());
+        e1.setIdElement(Element.currentAutoIncrement);
+
+        if (resultE0 == 1 && resultE1 == 1){
+            getListElements().addAll(e0,e1);
+        }
+
+        // Dynamisms
+        Dynamism dynamism0 = new Dynamism(0, 0, getDynamism(fcc,0).getProposition(),getDynamism(fcc,0).getDescription(),newFcc);
+        int resultC0 = dynamism0.saveData(dataConnection.getConnection());
+        dynamism0.setIdDynamism(Dynamism.currentAutoIncrement);
+        Dynamism dynamism1 = new Dynamism(0, 1, getDynamism(fcc,1).getProposition(),getDynamism(fcc,1).getDescription(),newFcc);
+        int resultC1 = dynamism1.saveData(dataConnection.getConnection());
+        dynamism1.setIdDynamism(Dynamism.currentAutoIncrement);
+        Dynamism dynamism2 = new Dynamism(0, 2, getDynamism(fcc,2).getProposition(),getDynamism(fcc,2).getDescription(),newFcc);
+        int resultC2 = dynamism2.saveData(dataConnection.getConnection());
+        dynamism2.setIdDynamism(Dynamism.currentAutoIncrement);
+
+        if(resultC0==1 && resultC1 == 1 && resultC2 == 1){
+            getListDynamisms().addAll(dynamism0,dynamism1,dynamism2);
+        }
+
+        //dataConnection.disconnect();
+        return newFcc;
+    }
+
+    @Override
     public void update(Fcc fcc) {
         //dataConnection.connect();
         fcc.updateData(dataConnection.getConnection());

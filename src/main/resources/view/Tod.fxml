@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -44,6 +45,7 @@
                      </children>
                   </HBox>
                   <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                  <Button mnemonicParsing="false" onAction="#duplicateFcc" text="Duplicate" />
                   <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="110.0" spacing="5.0">
                      <children>
                         <Label text="Inclusions" wrapText="true" />

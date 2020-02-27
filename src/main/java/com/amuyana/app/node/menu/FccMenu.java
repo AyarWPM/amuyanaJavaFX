@@ -135,9 +135,11 @@ public class FccMenu extends Menu {
             else if (!checkMenuItem.selectedProperty().get()) {
                 Inclusion inclusionToRemove = null;
                 for (Inclusion inclusion : dataInterface.getListInclusions()) {
-                    if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
-                        if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                            inclusionToRemove=inclusion;
+                    if (inclusion.getTod().equals(tod)) {
+                        if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                                inclusionToRemove=inclusion;
+                            }
                         }
                     }
                 }
@@ -182,9 +184,11 @@ public class FccMenu extends Menu {
             else if (!checkMenuItem.selectedProperty().get()){
                 Inclusion inclusionToRemove = null;
                 for (Inclusion inclusion : dataInterface.getListInclusions()) {
-                    if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
-                        if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                            inclusionToRemove=inclusion;
+                    if (inclusion.getTod().equals(tod)) {
+                        if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                                inclusionToRemove=inclusion;
+                            }
                         }
                     }
                 }

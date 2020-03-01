@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 public class Amuyana extends Application {
 
+    // 2248
     @Override
     public void start(Stage stage) {
         DataInterface dataInterface = new DataHandler();

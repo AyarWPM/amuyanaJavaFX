@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -35,7 +36,7 @@
                               <HBox alignment="CENTER" spacing="10.0">
                                  <children>
                                     <CheckBox fx:id="useDefaultCheckBox" maxHeight="1.7976931348623157E308" maxWidth="-Infinity" mnemonicParsing="false" onAction="#setDefaultValues" selected="true" text="Use Amuyaña server" wrapText="true" />
-                                    <Button maxWidth="100.0" mnemonicParsing="false" onAction="#connect" prefWidth="100.0" text="Test and set parameters" textAlignment="CENTER" wrapText="true" />
+                                    <Button maxWidth="100.0" mnemonicParsing="false" onAction="#connect" prefWidth="100.0" text="Connect" textAlignment="CENTER" wrapText="true" />
                                  </children>
                               </HBox>
                            </children>

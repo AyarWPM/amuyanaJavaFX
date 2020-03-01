@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
@@ -16,15 +17,6 @@
                <children>
                   <HBox>
                      <children>
-                        <MenuButton id="FruitMenuButton" fx:id="fruitMenuButton" mnemonicParsing="false" popupSide="TOP" visible="false">
-                           <graphic>
-                              <ImageView>
-                                 <image>
-                                    <Image url="@../images/icons/fruit/fcc.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </MenuButton>
                         <VBox alignment="CENTER">
                            <children>
                               <StackPane id="Test1" fx:id="fccNameStackPane" VBox.vgrow="ALWAYS">
@@ -35,6 +27,9 @@
                                        </children>
                                     </HBox>
                                  </children>
+                                 <VBox.margin>
+                                    <Insets left="10.0" />
+                                 </VBox.margin>
                               </StackPane>
                            </children>
                         </VBox>

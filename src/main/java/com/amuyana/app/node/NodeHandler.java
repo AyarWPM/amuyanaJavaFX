@@ -276,9 +276,9 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
         stage1.show();
     }
-
+/*
     @Override
     public Node getStyleableNode() {
         return null;
-    }
+    }*/
 }

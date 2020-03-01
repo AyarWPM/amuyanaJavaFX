@@ -86,47 +86,47 @@ public class Tie {
 
         // Line  1
         line1.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob1Bind.get().getCenterX(),
+                () -> knob1Bind.get().getMaxX(),
                 knob1Bind));
         line1.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob1Bind.get().getCenterY(),
+                () -> knob1Bind.get().getMaxY(),
                 knob1Bind));
 
         line1.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterX(),
+                () -> knob0Bind.get().getMaxX(),
                 knob0Bind));
         line1.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterY(),
+                () -> knob0Bind.get().getMaxY(),
                 knob0Bind));
 
         // Line  2
         line2.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob2Bind.get().getCenterX(),
+                () -> knob2Bind.get().getMaxX(),
                 knob2Bind));
         line2.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob2Bind.get().getCenterY(),
+                () -> knob2Bind.get().getMaxY(),
                 knob2Bind));
 
         line2.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterX(),
+                () -> knob0Bind.get().getMaxX(),
                 knob0Bind));
         line2.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterY(),
+                () -> knob0Bind.get().getMaxY(),
                 knob0Bind));
 
         // Line  3
         line3.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob3Bind.get().getCenterX(),
+                () -> knob3Bind.get().getMaxX(),
                 knob3Bind));
         line3.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob3Bind.get().getCenterY(),
+                () -> knob3Bind.get().getMaxY(),
                 knob3Bind));
 
         line3.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterX(),
+                () -> knob0Bind.get().getMaxX(),
                 knob0Bind));
         line3.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getCenterY(),
+                () -> knob0Bind.get().getMaxY(),
                 knob0Bind));
     }
 

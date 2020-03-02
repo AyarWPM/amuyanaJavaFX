@@ -29,6 +29,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
@@ -157,6 +158,13 @@ public class TodController implements Initializable {
 
         treeScrollPane.setHvalue((treeScrollPane.getHvalue()+1)*0.3+treeScrollPane.getHvalue()*deltaX*50);
         treeScrollPane.setVvalue((treeScrollPane.getVvalue()+1)*0.3+treeScrollPane.getVvalue()*deltaY*40);
+    }
+
+    void setContent(Node node) {
+        HBox hBox = new HBox(node);
+        hBox.setPadding(new Insets(300));
+        TodScrollPane todScrollPane = new TodScrollPane(hBox);
+        todBorderPane.setCenter(todScrollPane);
     }
 
     @FXML
@@ -313,7 +321,7 @@ public class TodController implements Initializable {
         }
         currentValue+=1;
         this.tod = this.dataInterface.newTod("New Table of deductions " + currentValue,logicSystem);
-        todBorderPane.setCenter(new TodScrollPane(loadFccSelector()));
+        setContent(loadFccSelector());
         //this.canvas.getChildren().setAll(loadFccSelector());
         bindProperties();
     }
@@ -322,7 +330,7 @@ public class TodController implements Initializable {
         this.tod = tod;
         bindProperties();
         if (dataInterface.getFccs(tod).isEmpty()) {
-            todBorderPane.setCenter(new TodScrollPane(loadFccSelector()));
+            setContent(loadFccSelector());
             //this.canvas.getChildren().setAll(node);
         } else if (!dataInterface.getFccs(tod).isEmpty()) {
             showTree();
@@ -375,7 +383,7 @@ public class TodController implements Initializable {
     void showNewTree() {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
-        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
+        setContent(this.tree);
         //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
@@ -392,7 +400,7 @@ public class TodController implements Initializable {
         //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
-        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
+        setContent(this.tree);
         showScaleSlider();
     }
 
@@ -404,7 +412,7 @@ public class TodController implements Initializable {
     void showNewTree(Fcc fcc) {
         this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
-        todBorderPane.setCenter(new TodScrollPane(new HBox(this.tree)));
+        setContent(this.tree);
         //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();

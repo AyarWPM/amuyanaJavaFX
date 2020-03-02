@@ -84,49 +84,50 @@ public class Tie {
         ObjectBinding<Bounds> knob3Bind =  ascendantFruit.getFruitController().knob3BoundsInTreeBindingProperty();
         ObjectBinding<Bounds> knob0Bind =  descendantFruit.getFruitController().knob0BoundsInTreeBindingProperty();
 
+        // todo replace getMax by getCenter
         // Line  1
         line1.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob1Bind.get().getMaxX(),
+                () -> knob1Bind.get().getMinX()+(knob1Bind.get().getMaxX()-knob1Bind.get().getMinX())/2,
                 knob1Bind));
         line1.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob1Bind.get().getMaxY(),
+                () -> knob1Bind.get().getMinY()+(knob1Bind.get().getMaxY()-knob1Bind.get().getMinY())/2,
                 knob1Bind));
 
         line1.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxX(),
+                () -> knob0Bind.get().getMinX()+(knob0Bind.get().getMaxX()-knob0Bind.get().getMinX())/2,
                 knob0Bind));
         line1.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxY(),
+                () -> knob0Bind.get().getMinY()+(knob0Bind.get().getMaxY()-knob0Bind.get().getMinY())/2,
                 knob0Bind));
 
         // Line  2
         line2.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob2Bind.get().getMaxX(),
+                () -> knob2Bind.get().getMinX()+(knob2Bind.get().getMaxX()-knob2Bind.get().getMinX())/2,
                 knob2Bind));
         line2.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob2Bind.get().getMaxY(),
+                () -> knob2Bind.get().getMinY()+(knob2Bind.get().getMaxY()-knob2Bind.get().getMinY())/2,
                 knob2Bind));
 
         line2.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxX(),
+                () -> knob0Bind.get().getMinX()+(knob0Bind.get().getMaxX()-knob0Bind.get().getMinX())/2,
                 knob0Bind));
         line2.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxY(),
+                () -> knob0Bind.get().getMinY()+(knob0Bind.get().getMaxY()-knob0Bind.get().getMinY())/2,
                 knob0Bind));
 
         // Line  3
         line3.startXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob3Bind.get().getMaxX(),
+                () -> knob3Bind.get().getMinX()+(knob3Bind.get().getMaxX()-knob3Bind.get().getMinX())/2,
                 knob3Bind));
         line3.startYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob3Bind.get().getMaxY(),
+                () -> knob3Bind.get().getMinY()+(knob3Bind.get().getMaxY()-knob3Bind.get().getMinY())/2,
                 knob3Bind));
 
         line3.endXProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxX(),
+                () -> knob0Bind.get().getMinX()+(knob0Bind.get().getMaxX()-knob0Bind.get().getMinX())/2,
                 knob0Bind));
         line3.endYProperty().bind(Bindings.createDoubleBinding(
-                () -> knob0Bind.get().getMaxY(),
+                () -> knob0Bind.get().getMinY()+(knob0Bind.get().getMaxY()-knob0Bind.get().getMinY())/2,
                 knob0Bind));
     }
 

@@ -49,6 +49,8 @@ public class Tree extends Group {
         setId("Tree");
         bindScale();
 
+
+
 /*
         Circle circle1 = new Circle(5, Paint.valueOf("RED"));
 

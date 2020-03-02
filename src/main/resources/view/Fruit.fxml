@@ -63,7 +63,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" fx:id="knob1Label" text="+" />
+                                    <Label id="Sign" fx:id="knob1Label" text="+" translateX="-7.0" translateY="-1.0" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -79,7 +79,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" fx:id="knob2Label" alignment="TOP_RIGHT" contentDisplay="TOP" prefWidth="10.0" text="‒" />
+                                    <Label id="Sign" fx:id="knob2Label" alignment="TOP_RIGHT" contentDisplay="TOP" text="−" translateX="-7.0" translateY="-1.0" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -95,7 +95,7 @@
                                     <Font size="16.0" />
                                  </font>
                                  <graphic>
-                                    <Label id="Sign" fx:id="knob3Label" text="=" />
+                                    <Label id="Sign" fx:id="knob3Label" text="=" translateX="-7.0" translateY="-1.0" />
                                  </graphic>
                               </MenuButton>
                            </children>
@@ -116,10 +116,10 @@
                <children>
                   <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0">
                      <children>
-                        <Circle fx:id="leftKnobCircle" centerX="-20.0" fill="#444444" radius="4.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle fx:id="leftKnobCircle" centerX="-10.0" fill="#444444" radius="1.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </Pane>
-                  <MenuButton id="BracketMenuButton" fx:id="bracketMenuButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="LEFT" BorderPane.alignment="CENTER">
+                  <MenuButton id="BracketMenuButton" fx:id="bracketMenuButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" popupSide="LEFT" prefHeight="100.0" prefWidth="40.0" BorderPane.alignment="CENTER">
                      <graphic>
                         <ImageView fx:id="bracketImageView">
                            <image>

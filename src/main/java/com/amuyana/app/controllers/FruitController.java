@@ -308,7 +308,7 @@ public class FruitController implements Initializable {
         this.mainContextMenu = new ContextMenu();
 
         //EDIT
-        MenuItem editMenuItem = new MenuItem("Edit");
+        MenuItem editMenuItem = new MenuItem("Edit \"" + fruit.getFcc() + "\"");
         editMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
         // todo
         

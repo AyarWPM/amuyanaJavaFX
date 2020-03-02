@@ -164,6 +164,8 @@ public class TodController implements Initializable {
         HBox hBox = new HBox(node);
         hBox.setPadding(new Insets(300));
         TodScrollPane todScrollPane = new TodScrollPane(hBox);
+        todScrollPane.setHvalue(0.5);
+        todScrollPane.setVvalue(0.5);
         todBorderPane.setCenter(todScrollPane);
     }
 

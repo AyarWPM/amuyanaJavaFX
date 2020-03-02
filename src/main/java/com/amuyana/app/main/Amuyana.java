@@ -23,12 +23,10 @@ public class Amuyana extends Application {
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
         stage.setTitle("Amuyaña v.3");
         stage.setScene(scene);
-        stage.show();
-
         // Debug lines
         //nodeInterface.openDebug1();
 
-        //for debug
+        // Debug TOD
         /*dataInterface.setDataConnectionValues("localhost","amuyana","");
         dataInterface.connect();
         dataInterface.loadData();
@@ -37,21 +35,7 @@ public class Amuyana extends Application {
         Tod tod = dataInterface.getTods(logicSystem).get(5);
         nodeInterface.load(logicSystem);
         nodeInterface.open(tod);*/
-
-
-        /*String lsName = "Personal";
-        String todName ="Ayar";
-        for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
-            if (logicSystem.getLabel().equals(lsName)) {
-                nodeInterface.load(logicSystem);
-                for (Tod tod : dataInterface.getTods(logicSystem)) {
-                    if (tod.getLabel().equals(todName)) {
-                        nodeInterface.open(tod);
-                    }
-                }
-
-            }
-        }*/
+        stage.show();
     }
 
     public static void main(String[] args) {

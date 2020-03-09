@@ -85,7 +85,10 @@ public class TopMenuBar extends MenuBar {
         this.todMenus = FXCollections.observableArrayList();
         MenuItem newTodMenuItem = new MenuItem("New");
         newTodMenuItem.setOnAction(actionEvent -> nodeInterface.newTodTab());
-        this.todMenu.getItems().addAll(newTodMenuItem,new SeparatorMenuItem());
+        MenuItem editFccsMenuItem = new MenuItem("FCCs viewer");
+        editFccsMenuItem.setOnAction(actionEvent -> nodeInterface.openFccTableTab());
+
+        this.todMenu.getItems().addAll(newTodMenuItem,editFccsMenuItem,new SeparatorMenuItem());
     }
 
     private void initializeDialecticsMenu() {

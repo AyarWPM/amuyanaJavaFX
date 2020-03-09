@@ -60,11 +60,12 @@ public class ConnectionController implements Initializable {
             // logic system in top menu bar
             nodeInterface.resetMenus();
             nodeInterface.closeTabsExceptConnection();
+            nodeInterface.log("The connection was successful!");
             NodeHandler.getDataInterface().disconnect();
         } else {
-            // Look at the sky
+            nodeInterface.log("The connection was unsuccessful. Possible problems are wrong data or no connection to the Internet");
         }
-        Message.testConnection(testConnection);
+
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {

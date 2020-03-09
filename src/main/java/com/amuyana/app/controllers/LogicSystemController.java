@@ -81,7 +81,7 @@ public class LogicSystemController implements Initializable {
     public void save(){
         //first check that all fields are filled
         if(labelTextField.getText().isEmpty()|descriptionTextArea.getText().isEmpty()){
-            Message.completeAllFieldsAlert();
+            nodeInterface.log("Please complete all fields.");
             return;
         }
         // Second, Is new logic system or not?
@@ -112,7 +112,7 @@ public class LogicSystemController implements Initializable {
         deleteButton.setDisable(false);
         nodeInterface.addToLogicSystemMenu(logicSystem); // todo add a listener in menu, replacing this line
 
-        Message.createdLogicSystemAlert();
+        nodeInterface.log("A new logic system has been created");
     }
 
     private void updateData() {
@@ -120,7 +120,7 @@ public class LogicSystemController implements Initializable {
         logicSystem.descriptionProperty().setValue(descriptionTextArea.getText());
         logicSystemTab.textProperty().bind(logicSystem.labelProperty());
         NodeHandler.getDataInterface().update(logicSystem);
-        Message.updatedLogicSystemAlert();
+        nodeInterface.log("The logic system has been updated");
     }
 
     @FXML

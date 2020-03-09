@@ -23,6 +23,7 @@ import com.amuyana.app.node.tod.Tree;
 
 import com.amuyana.app.node.tod.expression.Expression;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -49,6 +50,8 @@ public class TodController implements Initializable {
     @FXML private Label logicSystemNameLabel;
     @FXML private TextField todNameTextField;
     @FXML private ListView<Fcc> fccsInTodListView;
+    @FXML private TextField amountCopyTextField;
+    @FXML private TextField indexCopyTextField;
     @FXML private ListView<Inclusion> inclusionsInTodListView;
     @FXML private ScrollPane leftPanel;
     @FXML private Button toggleTodNameButton;
@@ -171,12 +174,37 @@ public class TodController implements Initializable {
 
     @FXML
     void duplicateFcc() {
+        int amount;
+        int index;
+        try {
+            amount = Integer.parseInt(amountCopyTextField.getText());
+            index = Integer.parseInt(indexCopyTextField.getText());
+        }catch(NumberFormatException e) {
+            nodeInterface.log("Enter positive values in \"amount\" and \"index\" fields");
+            return;
+        }
+        if (fccsInTodListView.getSelectionModel().isEmpty()) {
+            nodeInterface.log("Select an FCC from the list");
+        }
+        if (amount == 0) {
+            nodeInterface.log("0 Fccs have been duplicated");
+            return;
+        }
+
         dataInterface.connect();
         if (!fccsInTodListView.getSelectionModel().isEmpty()) {
             Fcc oldFcc = fccsInTodListView.getSelectionModel().getSelectedItem();
-            Fcc newFcc = dataInterface.duplicateFcc(oldFcc,tod.getLogicSystem());
-            Message.confirmDuplicateFcc();
+            int i=index;
+            while (i < index + amount) {
+                if (index == 0) {
+                    Fcc newFcc = dataInterface.duplicateFcc(oldFcc,0,tod.getLogicSystem());
+                } else if (index > 0) {
+                    Fcc newFcc = dataInterface.duplicateFcc(oldFcc,i,tod.getLogicSystem());
+                }
+                i++;
+            }
             tree.updateFruitsMenus();
+            nodeInterface.log(amount + " FCCs have been duplicated");
         }
         dataInterface.disconnect();
     }

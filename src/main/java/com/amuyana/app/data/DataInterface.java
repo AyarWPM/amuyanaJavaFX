@@ -66,7 +66,7 @@ public interface DataInterface {
     // Fcc
 
     Fcc newFcc(LogicSystem logicSystem);
-    Fcc duplicateFcc(Fcc fcc, LogicSystem logicSystem);
+    Fcc duplicateFcc(Fcc fcc, int i, LogicSystem logicSystem);
     void update(Fcc fcc);
     void update(Element element);
     void update(Dynamism dynamism);
@@ -109,4 +109,6 @@ public interface DataInterface {
 
     void connect();
     void disconnect();
+
+    LogicSystem getLogicSystem(Fcc fcc);
 }

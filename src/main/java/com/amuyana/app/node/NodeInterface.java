@@ -37,4 +37,7 @@ public interface NodeInterface {
 
     void openDebug1();
 
+    void openFccTableTab();
+
+    void log(String e);
 }

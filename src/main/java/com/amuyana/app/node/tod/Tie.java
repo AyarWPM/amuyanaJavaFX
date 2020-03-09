@@ -172,9 +172,60 @@ public class Tie {
         boolean sn = dataInterface.isInclusion(negativeDescendantDynamism, symmetricAscendantDynamism, tod);
         boolean ss = dataInterface.isInclusion(symmetricDescendantDynamism, symmetricAscendantDynamism, tod);
 
+        boolean pSwitch = false;
+        if (pp) {
+            positiveOrientation.set(true);
+            pSwitch=true;
+        }
+        else if (pn) {
+            positiveOrientation.set(true);
+            pSwitch=true;
+        }
+        else if (ps) {
+            positiveOrientation.set(true);
+            pSwitch=true;
+        }
+        if (!pSwitch) {
+            positiveOrientation.set(false);
+        }
+
+        boolean nSwitch = false;
+        if (np) {
+            negativeOrientation.set(true);
+            nSwitch=true;
+        }
+        else if (nn) {
+            negativeOrientation.set(true);
+            nSwitch=true;
+        }
+        else if (ns) {
+            negativeOrientation.set(true);
+            nSwitch=true;
+        }
+        if (!nSwitch) {
+            negativeOrientation.set(false);
+        }
+
+        boolean sSwitch = false;
+        if (sp) {
+            symmetricOrientation.set(true);
+            sSwitch=true;
+        }
+        else if (sn) {
+            symmetricOrientation.set(true);
+            sSwitch=true;
+        }
+        else if (ss) {
+            symmetricOrientation.set(true);
+            sSwitch=true;
+        }
+        if (!sSwitch) {
+            symmetricOrientation.set(false);
+        }
+/*
         if (pp || pn || ps) {
             positiveOrientation.set(true);
-        } else if (!pp && !pn && !ps) {
+        } else if (!(pp && pn && ps)) {
             positiveOrientation.set(false);
         }
 
@@ -188,7 +239,7 @@ public class Tie {
             symmetricOrientation.set(true);
         } else if (!sp && !sn && !ss) {
             symmetricOrientation.set(false);
-        }
+        }*/
     }
 
     public Fruit getAscendantFruit() {

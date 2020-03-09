@@ -16,6 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
@@ -29,6 +30,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     private static DataInterface dataInterface;
     private LogicSystem logicSystem;
     ConnectionTab connectionTab;
+    private Log log;
 
     public NodeHandler(DataInterface dataInterface, Stage stage) {
         NodeHandler.dataInterface = dataInterface;
@@ -40,6 +42,13 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
         setTop(this.topMenuBar);
         setCenter(this.contentTabPane);
+
+        this.log = new Log();
+        setBottom(log.getContainer());
+    }
+
+    public Log getLog() {
+        return log;
     }
 
     public static DataInterface getDataInterface() {
@@ -120,7 +129,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         stage.setTitle("Amuyaña - " + logicSystem.getLabel());
         topMenuBar.logicSystemIsLoaded(true);
         topMenuBar.updateTodMenu();
-        Message.loadedLogicSystem();
+        log("The Logic System has been loaded");
     }
 
     @Override
@@ -266,7 +275,6 @@ public class NodeHandler extends BorderPane implements NodeInterface {
      */
     @Override
     public void openDebug1() {
-
         Circle circle = new Circle(20);
         TodScrollPane todScrollPane = new TodScrollPane(circle);
 
@@ -275,6 +283,18 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         stage1.setScene(new Scene(todScrollPane));
 
         stage1.show();
+    }
+
+    @Override
+    public void openFccTableTab() {
+        FccTableTab fccTableTab = new FccTableTab();
+        contentTabPane.getTabs().add(fccTableTab);
+        contentTabPane.getSelectionModel().select(fccTableTab);
+    }
+
+    @Override
+    public void log(String e) {
+        log.register(e);
     }
 /*
     @Override

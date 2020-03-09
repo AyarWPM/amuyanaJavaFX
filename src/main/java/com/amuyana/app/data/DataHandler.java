@@ -371,8 +371,10 @@ public class DataHandler implements DataInterface {
         // First delete fccHasLogicSystem
         ObservableList<FccHasLogicSystem> tempFccHasLogicSystemToDelete = FXCollections.observableArrayList();
         for (FccHasLogicSystem fccHasLogicSystem : getListFccHasLogicSystem()) {
-            if (fccHasLogicSystem.deleteData(dataConnection.getConnection()) == 1) {
-                tempFccHasLogicSystemToDelete.add(fccHasLogicSystem);
+            if (fccHasLogicSystem.getLogicSystem().equals(logicSystem)) {
+                if (fccHasLogicSystem.deleteData(dataConnection.getConnection()) == 1) {
+                    tempFccHasLogicSystemToDelete.add(fccHasLogicSystem);
+                }
             }
         }
         listFccHasLogicSystem.removeAll(tempFccHasLogicSystemToDelete);
@@ -424,6 +426,21 @@ public class DataHandler implements DataInterface {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public LogicSystem getLogicSystem(Fcc fcc) {
+        for (LogicSystem logicSystem : getListLogicSystem()) {
+            for (FccHasLogicSystem fccHasLogicSystem : getListFccHasLogicSystem()) {
+                if (fccHasLogicSystem.getFcc().equals(fcc)) {
+                    if (fccHasLogicSystem.getLogicSystem().equals(logicSystem)) {
+                        return logicSystem;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 
     // FCC
     @Override
@@ -478,11 +495,11 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
-    public Fcc duplicateFcc(Fcc fcc, LogicSystem logicSystem) {
+    public Fcc duplicateFcc(Fcc fcc, int i, LogicSystem logicSystem) {
         //dataConnection.connect();
 
         // first fcc
-        Fcc newFcc = new Fcc(0, fcc.getName() + " (duplicate)",fcc.getDescription());
+        Fcc newFcc = new Fcc(0, fcc.getName() + " " + i,fcc.getDescription());
         int resultFcc = newFcc.saveData(dataConnection.getConnection());
         newFcc.setIdFcc(Fcc.currentAutoIncrement);
         if (resultFcc==1) {
@@ -496,8 +513,8 @@ public class DataHandler implements DataInterface {
         }
 
         // Elements
-        Element e0 = new Element(0, getElement(fcc,0).getSymbol(), 0, newFcc);
-        Element e1 = new Element(0, getElement(fcc,1).getSymbol(), 1, newFcc);
+        Element e0 = new Element(0, getElement(fcc,0).getSymbol()+i, 0, newFcc);
+        Element e1 = new Element(0, getElement(fcc,1).getSymbol()+i, 1, newFcc);
 
         int resultE0 = e0.saveData(dataConnection.getConnection());
         e0.setIdElement(Element.currentAutoIncrement);

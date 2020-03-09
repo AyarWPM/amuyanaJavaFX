@@ -310,14 +310,10 @@ public class FruitController implements Initializable {
         //EDIT
         MenuItem editMenuItem = new MenuItem("Edit \"" + fruit.getFcc() + "\"");
         editMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
-        // todo
-        
-        //  get parent fruit: if its descendant add an ascendant to parent with same attributes, if parent is ascendant
-        // then create descendant fruit in that parent,
-        // first if its in a branch of subbranch environement
 
+        // ADD NEW FCC AS CONJUNCTION
 
-        mainContextMenu.getItems().addAll(editMenuItem, new SeparatorMenuItem());
+        mainContextMenu.getItems().addAll(editMenuItem, addFccMenu(),new SeparatorMenuItem());
 
         // MOVE UP / DOWN (the subbranches the fruits are in)
         MenuItem moveUpMenuItem = new MenuItem("Move up");
@@ -333,6 +329,21 @@ public class FruitController implements Initializable {
         //Menu deployMenu = new Menu("Deploy");
         //deployMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
         mainContextMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
+    }
+
+    private Menu addFccMenu() {
+        Menu addFccMenu = new Menu("Add a FCC in conjunction");
+
+        MenuItem addNewFccMenuItem = new MenuItem("New Fcc");
+        addNewFccMenuItem.setOnAction(event -> {
+            dataInterface.connect();
+            fruit.getBranch().newSubBranch(dataInterface.newFcc(tree.getTodController().getTod().getLogicSystem()));
+            dataInterface.disconnect();
+        });
+
+        addFccMenu.getItems().add(addNewFccMenuItem);
+
+        return  addFccMenu;
     }
 
     private EventHandler<ActionEvent> moveUp() {

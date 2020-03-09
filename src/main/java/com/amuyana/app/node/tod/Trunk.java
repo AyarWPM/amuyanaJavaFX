@@ -10,6 +10,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -104,12 +105,20 @@ public class Trunk extends VBox {
     }
 
     private void setStyle() {
-        getStylesheets().add("/css/fruit.css");
-        setId("Trunk");
+        /*getStylesheets().add("/css/fruit.css");
+        setId("Trunk");*/
         this.spacingProperty().bind(Bindings.divide(10,levelProperty()));
         //setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(1))));
         this.tree.updateMaxLevel(level.getValue());
-
+        setAlignment(Pos.CENTER);
+        /*if (!branch.getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            if (branch.getTrunk().isSide()) {
+                setAlignment(Pos.CENTER_LEFT);
+            } else {
+                setAlignment(Pos.CENTER_RIGHT);
+            }
+        } else {
+        }*/
     }
     boolean isSide() {
         return this.side;

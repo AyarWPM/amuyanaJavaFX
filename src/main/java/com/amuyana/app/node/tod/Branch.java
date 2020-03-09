@@ -9,8 +9,10 @@ import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 // container1 equivalent
 public class Branch extends HBox {
@@ -69,10 +71,14 @@ public class Branch extends HBox {
     private void makeStyle() {
         this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
         //setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
-        if (trunk.isSide()) {
-            setId("RightSide");
+        if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            if (getTrunk().isSide()) {
+                setAlignment(Pos.CENTER_LEFT);
+            } else {
+                setAlignment(Pos.CENTER_RIGHT);
+            }
         } else {
-            setId("LeftSide");
+            setAlignment(Pos.CENTER);
         }
     }
 
@@ -94,7 +100,7 @@ public class Branch extends HBox {
         this.subBranchesVBox.getChildren().add(subBranch);
     }
 
-    SubBranch newSubBranch(Fcc fcc) {
+    public SubBranch newSubBranch(Fcc fcc) {
         SubBranch subBranch = new SubBranch(this);
         subBranch.loadFruitAndTrunks(fcc);
         addSubBranch(subBranch);

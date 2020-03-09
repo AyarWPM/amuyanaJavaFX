@@ -6,6 +6,7 @@ import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container2;
 import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
+import javafx.geometry.Pos;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -38,10 +39,14 @@ public class SubBranch extends HBox {
     private void makeStyle() {
         this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
         //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(3))));
-        if (branch.getTrunk().isSide()) {
-            setId("RightSide");
+        if (!branch.getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            if (branch.getTrunk().isSide()) {
+                setAlignment(Pos.CENTER_LEFT);
+            } else {
+                setAlignment(Pos.CENTER_RIGHT);
+            }
         } else {
-            setId("LeftSide");
+            setAlignment(Pos.CENTER);
         }
     }
 

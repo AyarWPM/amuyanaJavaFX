@@ -130,6 +130,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         topMenuBar.logicSystemIsLoaded(true);
         topMenuBar.updateTodMenu();
         log("The Logic System has been loaded");
+        closeTabsTod();
     }
 
     @Override
@@ -191,9 +192,22 @@ public class NodeHandler extends BorderPane implements NodeInterface {
                         topMenuBar.updateTodMenu();
                     }
                 }
+
+                closeTabsTod();
             } else if (result.get() == ButtonType.CANCEL) {
             }
         }
+    }
+
+    private void closeTabsTod() {
+        // Close all tabs of TOD that belong to this system
+        ObservableList<Tab> tabsToClose=FXCollections.observableArrayList();
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (tab.getClass().equals(TodTab.class)) {
+                tabsToClose.add(tab);
+            }
+        }
+        contentTabPane.getTabs().removeAll(tabsToClose);
     }
 
     @Override

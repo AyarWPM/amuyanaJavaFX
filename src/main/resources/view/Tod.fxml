@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -46,12 +47,12 @@
                   <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
                   <HBox alignment="CENTER_LEFT" spacing="3.0">
                      <children>
-                        <Label text="amount" />
-                        <TextField fx:id="amountCopyTextField" prefWidth="30.0" text="1" />
-                        <Label layoutX="10.0" layoutY="10.0" text="index" />
-                        <TextField fx:id="indexCopyTextField" layoutX="46.0" layoutY="10.0" prefWidth="30.0" text="0" />
+                        <Label minWidth="-Infinity" text="amount" />
+                        <TextField fx:id="amountCopyTextField" prefWidth="35.0" text="1" />
+                        <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="index" />
+                        <TextField fx:id="indexCopyTextField" layoutX="46.0" layoutY="10.0" prefWidth="35.0" text="0" />
                         <Separator orientation="VERTICAL" />
-                        <Button mnemonicParsing="false" onAction="#duplicateFcc" text="Duplicate" />
+                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" onMouseReleased="#waitMessage" text="Duplicate" />
                      </children>
                   </HBox>
                   <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="110.0" spacing="5.0">

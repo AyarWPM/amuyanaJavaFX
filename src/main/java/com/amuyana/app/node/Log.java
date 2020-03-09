@@ -20,7 +20,7 @@ public class Log extends Group {
         logListView = new ListView<>();
         messageGroup = new Group(new Label("Welcome"));
         container = new HBox(messageGroup);
-        container.setPadding(new Insets(1));
+        container.setPadding(new Insets(2));
         container.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(1), new BorderWidths(1,0,0,0))));
     }
 
@@ -31,7 +31,7 @@ public class Log extends Group {
     public void register(String messageString) {
         // in bottom bar
         messageGroup.getChildren().setAll(new Label(messageString));
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(4),messageGroup);
+        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(5),messageGroup);
         fadeTransition.setFromValue(1.0);
         fadeTransition.setToValue(0.0);
         fadeTransition.play();

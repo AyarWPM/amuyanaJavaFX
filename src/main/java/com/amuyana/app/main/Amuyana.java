@@ -32,7 +32,7 @@ public class Amuyana extends Application {
         dataInterface.loadData();
         dataInterface.disconnect();
         LogicSystem logicSystem = dataInterface.getListLogicSystem().get(0);
-        Tod tod = dataInterface.getTods(logicSystem).get(5);
+        Tod tod = dataInterface.getTods(logicSystem).get(0);
         nodeInterface.load(logicSystem);
         nodeInterface.open(tod);*/
         stage.show();

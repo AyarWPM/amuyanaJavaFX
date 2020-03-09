@@ -22,6 +22,7 @@ import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 
 import com.amuyana.app.node.tod.expression.Expression;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -194,22 +195,30 @@ public class TodController implements Initializable {
             nodeInterface.log("Maximum amount is 10");
         }
 
-        dataInterface.connect();
-        if (!fccsInTodListView.getSelectionModel().isEmpty()) {
-            Fcc oldFcc = fccsInTodListView.getSelectionModel().getSelectedItem();
-            int i=index;
-            while (i < index + amount) {
-                if (index == 0) {
-                    Fcc newFcc = dataInterface.duplicateFcc(oldFcc,0,tod.getLogicSystem());
-                } else if (index > 0) {
-                    Fcc newFcc = dataInterface.duplicateFcc(oldFcc,i,tod.getLogicSystem());
+        Platform.runLater(()->{
+            dataInterface.connect();
+            if (!fccsInTodListView.getSelectionModel().isEmpty()) {
+                Fcc oldFcc = fccsInTodListView.getSelectionModel().getSelectedItem();
+                int i=index;
+                while (i < index + amount) {
+                    if (index == 0) {
+                        Fcc newFcc = dataInterface.duplicateFcc(oldFcc,0,tod.getLogicSystem());
+                    } else if (index > 0) {
+                        Fcc newFcc = dataInterface.duplicateFcc(oldFcc,i,tod.getLogicSystem());
+                    }
+                    i++;
                 }
-                i++;
+                tree.updateFruitsMenus();
+                nodeInterface.log(amount + " FCCs have been duplicated");
             }
-            tree.updateFruitsMenus();
-            nodeInterface.log(amount + " FCCs have been duplicated");
-        }
-        dataInterface.disconnect();
+            dataInterface.disconnect();
+        });
+
+    }
+
+    @FXML
+    private void waitMessage() {
+        nodeInterface.log("Please wait");
     }
 
     @FXML

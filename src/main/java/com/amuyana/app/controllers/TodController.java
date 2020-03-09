@@ -190,6 +190,9 @@ public class TodController implements Initializable {
             nodeInterface.log("0 Fccs have been duplicated");
             return;
         }
+        if (amount > 10) {
+            nodeInterface.log("Maximum amount is 10");
+        }
 
         dataInterface.connect();
         if (!fccsInTodListView.getSelectionModel().isEmpty()) {

@@ -3,6 +3,10 @@ package com.amuyana.app.controllers;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.Message;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
@@ -50,21 +54,40 @@ public class ConnectionController implements Initializable {
 
     @FXML
     private void connect() {
-        NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
-        //todo if connection is not succesful setDataConnectionValues(null, null,null)
+        nodeInterface.log("Connecting to database, please wait...");
+        Task<Void> sleeper = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.err.println(e);
+                }
+                return null;
+            }
+        };
+        sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
+                //todo if connection is not succesful setDataConnectionValues(null, null,null)
 
-        boolean testConnection = NodeHandler.getDataInterface().testConnection();
-        if (testConnection) {
-            // load data
-            NodeHandler.getDataInterface().loadData();
-            // logic system in top menu bar
-            nodeInterface.resetMenus();
-            nodeInterface.closeTabsExceptConnection();
-            nodeInterface.log("The connection was successful!");
-            NodeHandler.getDataInterface().disconnect();
-        } else {
-            nodeInterface.log("The connection was unsuccessful. Possible problems are wrong data or no connection to the Internet");
-        }
+                boolean testConnection = NodeHandler.getDataInterface().testConnection();
+                if (testConnection) {
+                    // load data
+                    NodeHandler.getDataInterface().loadData();
+                    // logic system in top menu bar
+                    nodeInterface.resetMenus();
+                    nodeInterface.closeTabsExceptConnection();
+                    nodeInterface.log("The connection was successful!");
+                    NodeHandler.getDataInterface().disconnect();
+                } else {
+                    nodeInterface.log("The connection was unsuccessful. Possible problems are wrong data or no connection to the Internet");
+                }
+
+            }
+        });
+        new Thread(sleeper).start();
 
     }
 

@@ -21,7 +21,7 @@ public class Amuyana extends Application {
         NodeInterface nodeInterface = new NodeHandler(dataInterface, stage);
 
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
-        stage.setTitle("Amuyaña v.3");
+        stage.setTitle(NodeHandler.VERSION);
         stage.setScene(scene);
         // Debug lines
         //nodeInterface.openDebug1();
@@ -35,6 +35,7 @@ public class Amuyana extends Application {
         Tod tod = dataInterface.getTods(logicSystem).get(0);
         nodeInterface.load(logicSystem);
         nodeInterface.open(tod);*/
+
         stage.show();
     }
 

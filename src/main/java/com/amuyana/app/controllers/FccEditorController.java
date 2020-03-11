@@ -157,6 +157,7 @@ public class FccEditorController implements Initializable {
 
             // update menus?
             todController.getTree().updateFruitsMenus();
+            todController.updateListViews();
             // Redraw the tree to make ties be adjusted again
             //todController.showTree();
             //todController.showTree();

@@ -69,12 +69,68 @@ public class Fruit {
      * @return true if both conditions are true, false if either is false
      */
     public boolean isDescendant(Fruit fruit) {
+        // Left fruits: in leftTrunk of subBranch or of Branch
         ObservableList<Fruit> leftFruits = FXCollections.observableArrayList();
         for (Branch branch1 : fruit.getSubBranch().getLeftTrunk().getBranches()) {
             for (SubBranch subBranch1 : branch1.getSubBranches()) {
                 leftFruits.addAll(subBranch1.getFruit());
             }
         }
+        for (Branch branch1 : fruit.getBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                leftFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        // Right fruits: in rightTrunk of subBranch or of Branch
+        ObservableList<Fruit> rightFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : this.getSubBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                rightFruits.addAll(subBranch1.getFruit());
+            }
+        }
+        for (Branch branch1 : this.getBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                rightFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+            if (inclusion.getTod().equals(getTree().getTodController().getTod())) {
+                Dynamism particular = inclusion.getParticular();
+                Dynamism general = inclusion.getGeneral();
+                if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+                    if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                        // this.fruit is in right trunk of fruit
+                        if (rightFruits.contains(fruit)) {
+                            return true;
+                        }
+                        // this.fruit is in left trunk of fruit
+                        if (leftFruits.contains(this)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    /**
+     * Checks 1) if the fruit and fruit in parameter are one on the left or right container of the other and
+     * 2) if there's an inclusion between them
+     * @param fruit The descendant, ie situated at the right hand side of this.fruit
+     * @return true if both conditions are true, false if either is false
+     */
+    public boolean isDescendantOnlyFcc(Fruit fruit) {
+        // Left fruits: in leftTrunk of subBranch or of Branch
+        ObservableList<Fruit> leftFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : fruit.getSubBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                leftFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        // Right fruits: in rightTrunk of subBranch or of Branch
         ObservableList<Fruit> rightFruits = FXCollections.observableArrayList();
         for (Branch branch1 : this.getSubBranch().getRightTrunk().getBranches()) {
             for (SubBranch subBranch1 : branch1.getSubBranches()) {
@@ -88,7 +144,51 @@ public class Fruit {
                 Dynamism general = inclusion.getGeneral();
                 if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
                     if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
-                        // fruit is in right trunk of fruit
+                        // this.fruit is in right trunk of fruit
+                        if (rightFruits.contains(fruit)) {
+                            return true;
+                        }
+                        // this.fruit is in left trunk of fruit
+                        if (leftFruits.contains(this)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Tests if fruit descends in the sense inclusion from this.fruit, if fruit is descendant it can be in
+     * a parent node or a child node
+     * @param fruit
+     * @return
+     */
+    public boolean isDescendantConjunction(Fruit fruit) {
+        // Left fruits: in leftTrunk of Branch; is fruit in parent node?
+        ObservableList<Fruit> leftFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : fruit.getBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                leftFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        // Right fruits: in rightTrunk of Branch; is fruit in child node?
+        ObservableList<Fruit> rightFruits = FXCollections.observableArrayList();
+        for (Branch branch1 : this.getBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch1 : branch1.getSubBranches()) {
+                rightFruits.addAll(subBranch1.getFruit());
+            }
+        }
+
+        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+            if (inclusion.getTod().equals(getTree().getTodController().getTod())) {
+                Dynamism particular = inclusion.getParticular();
+                Dynamism general = inclusion.getGeneral();
+                if (fruit.getFcc().getIdFcc()==particular.getFcc().getIdFcc()) {
+                    if (this.getFcc().getIdFcc()==general.getFcc().getIdFcc()) {
+                        // this.fruit is in right trunk of fruit
                         if (rightFruits.contains(fruit)) {
                             return true;
                         }
@@ -148,9 +248,11 @@ public class Fruit {
         return fruitController;
     }
 
+    // Ok, takes subBranch's and branch's trunks
     public ObservableList<Fruit> getDescendantFruits() {
         ObservableList<Fruit> descendantFruits = FXCollections.observableArrayList();
-        // first child nodes of subBranch (and in later versions of branch) where this.fruit is
+
+// CHILD NODES OF SUBRANCH
         for (Branch rightTrunkBranch: getSubBranch().getRightTrunk().getBranches()) {
             for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
                 // If that other fruit's fcc is a descendant
@@ -161,10 +263,74 @@ public class Fruit {
         }
         // second consider this fruit is inside a leftTrunk of a subBranch that has
         // deployed this fruit as ascendant
-        if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.SUBBRANCH)) {
             if (!getTrunk().isSide()) {
-                // for now we only consider subBranches' trunks
                 descendantFruits.addAll(getTrunk().getSubBranch().getFruit());
+            }
+        }
+
+// CHILD NODES OF BRANCH
+        for (Branch rightTrunkBranch : getBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // now the case in which this fruit is in a leftTrunk of another fruits' Branch (not subBranch)
+
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.BRANCH)) {
+            if (!getTrunk().isSide()) {
+                for (SubBranch subBranch : getTrunk().getBranch().getSubBranches()) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        return descendantFruits;
+    }
+
+
+    public ObservableList<Fruit> getDescendantFruitsOnlyFcc() {
+        ObservableList<Fruit> descendantFruits = FXCollections.observableArrayList();
+
+// CHILD NODES OF SUBRANCH
+        for (Branch rightTrunkBranch: getSubBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                // If that other fruit's fcc is a descendant
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // second consider this fruit is inside a leftTrunk of a subBranch that has
+        // deployed this fruit as ascendant
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.SUBBRANCH)) {
+            if (!getTrunk().isSide()) {
+                descendantFruits.addAll(getTrunk().getSubBranch().getFruit());
+            }
+        }
+
+        return descendantFruits;
+    }
+
+    public ObservableList<Fruit> getDescendantFruitsConjunction() {
+        ObservableList<Fruit> descendantFruits = FXCollections.observableArrayList();
+
+// CHILD NODES OF BRANCH
+        for (Branch rightTrunkBranch : getBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // now the case in which this fruit is in a leftTrunk of another fruits' Branch (not subBranch)
+
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.BRANCH)) {
+            if (!getTrunk().isSide()) {
+                for (SubBranch subBranch : getTrunk().getBranch().getSubBranches()) {
+                    descendantFruits.addAll(subBranch.getFruit());
+                }
             }
         }
         return descendantFruits;
@@ -182,15 +348,72 @@ public class Fruit {
         }
         // 2. consider this fruit is inside a rightTrunk of another fruit's subBranch that has deployed
         // this fruit as descendant
-        if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.SUBBRANCH)) {
             if (getTrunk().isSide()) {
-                // for now we only consider subBranches' trunks
+                ascendantFruits.addAll(getTrunk().getSubBranch().getFruit());
+            }
+        }
+        // CHILD NODES OF BRANCH
+        for (Branch leftTrunkBranch : getBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // now the case in which this fruit is in a leftTrunk of another fruits' Branch (not subBranch)
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.BRANCH)) {
+            if (getTrunk().isSide()) {
+                for (SubBranch subBranch : getTrunk().getBranch().getSubBranches()) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        return ascendantFruits;
+    }
+
+    public ObservableList<Fruit> getAscendantFruitsOnlyFcc() {
+        ObservableList<Fruit> ascendantFruits = FXCollections.observableArrayList();
+        // 1. check left Trunk of subBranch
+        for (Branch leftTrunkBranch : getSubBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // 2. consider this fruit is inside a rightTrunk of another fruit's subBranch that has deployed
+        // this fruit as descendant
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.SUBBRANCH)) {
+            if (getTrunk().isSide()) {
                 ascendantFruits.addAll(getTrunk().getSubBranch().getFruit());
             }
         }
         return ascendantFruits;
     }
-    // Here I'm checking for trunks of subBranch only, not branch because I'm not considering conjunctions nor classes yet
+
+    public ObservableList<Fruit> getAscendantFruitsConjunction() {
+        ObservableList<Fruit> ascendantFruits = FXCollections.observableArrayList();
+// CHILD NODES OF BRANCH
+        for (Branch leftTrunkBranch : getBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        // now the case in which this fruit is in a leftTrunk of another fruits' Branch (not subBranch)
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.BRANCH)) {
+            if (getTrunk().isSide()) {
+                for (SubBranch subBranch : getTrunk().getBranch().getSubBranches()) {
+                    ascendantFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        return ascendantFruits;
+    }
+
+    // Ok, I check SubBranch and Branch
     boolean isChild(Fruit fruit) {
         for (Branch branch : subBranch.getLeftTrunk().getBranches()) {
             for (Fruit fruit1 : branch.getFruits()) {
@@ -200,6 +423,20 @@ public class Fruit {
             }
         }
         for (Branch branch : subBranch.getRightTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (fruit1.equals(fruit)) {
+                    return true;
+                }
+            }
+        }
+        for (Branch branch : getBranch().getLeftTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (fruit1.equals(fruit)) {
+                    return true;
+                }
+            }
+        }
+        for (Branch branch : getBranch().getRightTrunk().getBranches()) {
             for (Fruit fruit1 : branch.getFruits()) {
                 if (fruit1.equals(fruit)) {
                     return true;

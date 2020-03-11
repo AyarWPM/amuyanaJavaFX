@@ -207,11 +207,134 @@ public class Tree extends Group {
     // removes the fruit in both the fruits field and observableList of fruits in tree nodes
     // this is activated by an inclusions listener in Tie, we can invoke it again by removing all inclusions to child nodes
 
+    public void checkFruitsRemoval() {
+        // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
+        // But we also have to check that the fruit has no ties to conjunction FCC's
+        boolean removeTie = false;
+        Tie tieToRemove = null;
+        boolean removeFruit = false;
+        Fruit fruitToRemove = null;
+        for (Tie tie : ties) {
+            if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
+                removeTie = true;
+                tieToRemove=tie;
+                removeFruit = true;
+                if (tie.getAscendantFruit().isChild(tie.getDescendantFruit())) {
+                    // Check that tie.getDescendantFruit() is not tied to another fruit of the same conjunction as ascendant
+                    Fruit ascendantFruit = tie.getAscendantFruit();
+                    for (Fruit fruit : getObservableFruits()) {
+                        if(ascendantFruit.equals(fruit)) continue;
+                        //If the fruit is in a conjunction that contains ascendantFruit
+                        if (fruit.getBranch().getFruits().contains(ascendantFruit)) {
+                            // If that fruit also has a tie with descendantFruit
+                            for (Tie tie1 : ties) {
+                                if (tie1.getAscendantFruit().equals(fruit) && tie1.getDescendantFruit().equals(tie.getDescendantFruit())) {
+                                    // dont remove descendant
+                                    removeFruit = false;
+                                    break;
+                                }
+                            }
+                            if(!removeFruit) break;
+                        }
+                    }
+
+                    //Remove descendantFruit as it is child
+                    if(removeFruit) fruitToRemove=tie.getDescendantFruit();
+                } else if (tie.getDescendantFruit().isChild(tie.getAscendantFruit())) {
+                    // Check that tie.getAscendantFruit() (potentialRemove) is not tied to another fruit of the same conjunction as descendant
+                    Fruit descendantFruit = tie.getDescendantFruit();
+                    for (Fruit fruit : getObservableFruits()) {
+                        if(descendantFruit.equals(fruit)) continue;
+                        //If the fruit is in a conjunction that contains descendantFruit
+                        if (fruit.getBranch().getFruits().contains(descendantFruit)) {
+                            // If that fruit also has a tie with ascendantFruit
+                            for (Tie tie1 : ties) {
+                                if (tie1.getDescendantFruit().equals(fruit) && tie1.getAscendantFruit().equals(tie.getAscendantFruit())) {
+                                    // dont remove ascendant
+                                    removeFruit = false;
+                                    break;
+                                }
+                            }
+                            if(!removeFruit) break;
+                        }
+                    }
+                    if(removeFruit) fruitToRemove=tie.getAscendantFruit();
+                }
+            }
+        }
+        updateKnobsBounds();
+        if(removeTie) remove(tieToRemove);
+
+        if (removeFruit) {
+            remove(FXCollections.observableArrayList(),fruitToRemove);
+        }
+    }
+
+    /*public void checkFruitsRemoval() {
+        // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
+        // But we also have to check that the fruit has no ties to conjunction FCC's
+        boolean removeTie = false;
+        Tie tieToRemove = null;
+        boolean removeFruit = false;
+        Fruit fruitToRemove = null;
+        for (Tie tie : ties) {
+            if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
+                removeTie = true;
+                tieToRemove=tie;
+                removeFruit = true;
+                if (tie.getAscendantFruit().isChild(tie.getDescendantFruit())) {
+                    // Check there is not another tie with the descendant as descendant...
+                    for (Tie tie1 : ties) {
+                        // ignore if its the same tie
+                        if(tie.equals(tie1)) continue;
+                        if (tie1.getDescendantFruit().equals(tie.getDescendantFruit())) {
+                            removeFruit=false;
+                            break;
+                        }
+                    }
+                    //Remove descendantFruit as it is child
+                    if(removeFruit) fruitToRemove=tie.getDescendantFruit();
+                } else if (tie.getDescendantFruit().isChild(tie.getAscendantFruit())) {
+                    // check other ties as well
+                    for (Tie tie1 : ties) {
+                        if(tie.equals(tie1)) continue;
+                        if (tie1.getAscendantFruit().equals(tie.getAscendantFruit())) {
+                            removeFruit=false;
+                            break;
+                        }
+                    }
+                    //Remove ascendantFruit as it is child
+                    if(removeFruit) fruitToRemove=tie.getAscendantFruit();
+                }
+            }
+        }
+        updateKnobsBounds();
+        if(removeTie) remove(tieToRemove);
+
+        if (removeFruit) {
+            remove(FXCollections.observableArrayList(),fruitToRemove);
+        }
+    }*/
+
     public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
         fruitsToRemove.addAll(fruit);
         // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
-        ObservableList<Branch> leftBranches  = fruit.getSubBranch().getLeftTrunk().getBranches();
-        ObservableList<Branch> rightBranches  = fruit.getSubBranch().getRightTrunk().getBranches();
+        // left
+        ObservableList<Branch> leftBranches  = FXCollections.observableArrayList();
+        if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
+        }
+        leftBranches.addAll(fruit.getSubBranch().getLeftTrunk().getBranches());
+        if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
+        }
+        leftBranches.addAll(fruit.getBranch().getLeftTrunk().getBranches());
+        // right
+        ObservableList<Branch> rightBranches=FXCollections.observableArrayList();
+        if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
+        }
+        rightBranches.addAll(fruit.getSubBranch().getRightTrunk().getBranches());
+        if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
+        }
+        rightBranches.addAll(fruit.getBranch().getRightTrunk().getBranches());
 
         Dynamism thisPositiveDynamism = dataInterface.getDynamism(fruit.getFcc(),0);
         Dynamism thisNegativeDynamism = dataInterface.getDynamism(fruit.getFcc(),1);
@@ -222,7 +345,6 @@ public class Tree extends Group {
             for (Branch branch1 : leftBranches) {
                 for (SubBranch subBranch1 : branch1.getSubBranches()) {
                     remove(fruitsToRemove,subBranch1.getFruit());
-
                     // Delete inclusions
                     ObservableList<Inclusion> inclusionsToRemove = FXCollections.observableArrayList();
                     for (Inclusion inclusion : dataInterface.getListInclusions()) {
@@ -310,12 +432,16 @@ public class Tree extends Group {
     }
 
     public void update() {
-        clearTies();
         updateOrientationTies();
         checkFruitsRemoval();
         updateFruitsMenus();
-        buildTies();
-        todController.getScaleSlider().setValue(1);
+        getTodController().updateListViews();
+        // If there are no fruits show fccSelector
+        if (getObservableFruits().isEmpty()) {
+            //NodeHandler.getDataInterface().connect();
+            todController.showFccSelector();
+            //NodeHandler.getDataInterface().disconnect();
+        }
     }
 
     public void clearTies() {
@@ -343,30 +469,6 @@ public class Tree extends Group {
     public void updateOrientationTies() {
         for (Tie tie : getTies()) {
             tie.setOrientations();
-        }
-    }
-
-    public void checkFruitsRemoval() {
-    // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
-        Tie tieToRemove = null;
-        boolean tieBoolean = false;
-        Fruit fruitToRemove = null;
-        for (Tie tie : ties) {
-            if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
-                tieToRemove=tie;
-                tieBoolean = true;
-                if (tie.getAscendantFruit().isChild(tie.getDescendantFruit())) {
-                    //Remove descendantFruit as it is child
-                    fruitToRemove=tie.getDescendantFruit();
-                } else if (tie.getDescendantFruit().isChild(tie.getAscendantFruit())) {
-                    //Remove ascendantFruit as it is child
-                    fruitToRemove=tie.getAscendantFruit();
-                }
-            }
-        }
-        if (tieBoolean) {
-            remove(FXCollections.observableArrayList(),fruitToRemove);
-            remove(tieToRemove);
         }
     }
 

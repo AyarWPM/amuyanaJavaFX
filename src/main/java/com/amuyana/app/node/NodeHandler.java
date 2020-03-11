@@ -11,12 +11,10 @@ import com.amuyana.app.node.menu.TopMenuBar;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
@@ -31,6 +29,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     private LogicSystem logicSystem;
     ConnectionTab connectionTab;
     private Log log;
+    public static String VERSION ="Amuyaña 3.1";
 
     public NodeHandler(DataInterface dataInterface, Stage stage) {
         NodeHandler.dataInterface = dataInterface;
@@ -126,7 +125,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     @Override
     public void load(LogicSystem logicSystem) {
         this.logicSystem = logicSystem;
-        stage.setTitle("Amuyaña - " + logicSystem.getLabel());
+        stage.setTitle(VERSION+" - " + logicSystem.getLabel());
         topMenuBar.logicSystemIsLoaded(true);
         topMenuBar.updateTodMenu();
         log("The Logic System has been loaded");
@@ -186,7 +185,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
                 if (this.logicSystem != null) {
                     if (this.logicSystem.equals(logicSystem)) {
                         setLogicSystem(null);
-                        stage.setTitle("Amuyaña");
+                        stage.setTitle(VERSION);
                         // Menus
                         topMenuBar.logicSystemIsLoaded(false);
                         topMenuBar.updateTodMenu();

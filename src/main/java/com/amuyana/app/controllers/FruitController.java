@@ -58,6 +58,10 @@ public class FruitController implements Initializable {
     private SimpleBooleanProperty updateKnobs;
 
     private ContextMenu mainContextMenu;
+    private ContextMenu positiveContextMenu;
+    private ContextMenu negativeContextMenu;
+    private ContextMenu symmetricContextMenu;
+
     private FccExp fccExp;
     private ImplicationExp positiveImplicationExp;
     private ImplicationExp negativeImplicationExp;
@@ -113,15 +117,19 @@ public class FruitController implements Initializable {
         }
         manageBindings();
         buildExpressions();
-
-        fruitBorderPane.setOnMousePressed(event -> {
-            if (event.isSecondaryButtonDown()) {
-                mainContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
-            }
-            if (event.isPrimaryButtonDown()) {
-                mainContextMenu.hide();
-            }
-
+        fruitBorderPane.setOnMouseClicked(event -> {
+            /*for (Fruit fruit1 : fruit.getAscendantFruits()) {
+                System.out.println("1Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
+            }for (Fruit fruit1 : fruit.getAscendantFruitsOnlyFcc()) {
+                System.out.println("2Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
+            }for (Fruit fruit1 : fruit.getAscendantFruitsConjunction()) {
+                System.out.println("3Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
+            }*/
+            /*event.consume();
+            mainContextMenu.hide();
+            positiveContextMenu.hide();
+            negativeContextMenu.hide();
+            symmetricContextMenu.hide();*/
         });
     }
 
@@ -171,6 +179,9 @@ public class FruitController implements Initializable {
 
     private void buildExpressions() {
         this.fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION);
+        this.fccExp.setOnMouseEntered(mouseEvent -> this.fccExp.setHoverStyle());
+        this.fccExp.setOnMouseExited(mouseEvent -> this.fccExp.setNormalStyle());
+
         this.positiveImplicationExp =
                 new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),0),
                         Expression.ExpressionType.PROPOSITION, Pos.CENTER);
@@ -305,34 +316,394 @@ public class FruitController implements Initializable {
     }
 
     public void buildMenus() {
+        // MAIN MENU
         this.mainContextMenu = new ContextMenu();
+        fccExp.setOnMousePressed(event -> {
+            if (event.isSecondaryButtonDown()) {
+                this.mainContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+            if (event.isPrimaryButtonDown()) {
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
 
+            }
+
+        });
         //EDIT
         MenuItem editMenuItem = new MenuItem("Edit \"" + fruit.getFcc() + "\"");
         editMenuItem.setOnAction(this.tree.getTodController().openFccEditorEventHandler(fruit.getFcc()));
-        // todo
-        
-        //  get parent fruit: if its descendant add an ascendant to parent with same attributes, if parent is ascendant
-        // then create descendant fruit in that parent,
-        // first if its in a branch of subbranch environement
 
-
-        mainContextMenu.getItems().addAll(editMenuItem, new SeparatorMenuItem());
-
+        // ADD NEW FCC AS CONJUNCTION
+        mainContextMenu.getItems().addAll(editMenuItem, addFccMenu(),new SeparatorMenuItem());
         // MOVE UP / DOWN (the subbranches the fruits are in)
         MenuItem moveUpMenuItem = new MenuItem("Move up");
         moveUpMenuItem.setOnAction(moveUp());
         MenuItem moveDownMenuItem = new MenuItem("Move Down");
         moveDownMenuItem.setOnAction(moveDown());
         mainContextMenu.getItems().addAll(moveUpMenuItem,moveDownMenuItem, new SeparatorMenuItem());
-
         // SHOW PROPOSITIONAL / ALGEBRAIC FORMULATIONS
         mainContextMenu.getItems().addAll(changeFccExpressionTypeMenuItem(), changeDynamismsExpressionTypeMenuItem(),new SeparatorMenuItem());
 
-        // DEPLOY
-        //Menu deployMenu = new Menu("Deploy");
-        //deployMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
-        mainContextMenu.getItems().addAll(descendantsMenu(),ascendantsMenu());
+        // REMOVE FROM CONJUNCTION
+        MenuItem removeFromConjunctionMenuItem = new MenuItem("Remove from conjunction");
+        removeFromConjunctionMenuItem.setOnAction(event -> {
+            boolean remove=true;
+            // Check if there are no ascendants or descendants
+            for (Tie tie : tree.getTies()) {
+                if (tie.getAscendantFruit().equals(fruit)) {
+                    remove=false;
+                }
+                if (tie.getDescendantFruit().equals(fruit)) {
+                    remove=false;
+                }
+            }
+
+            if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
+                remove = false;
+            }
+            if (!fruit.getBranch().getRightTrunk().getBranches().isEmpty()) {
+                remove=false;
+            }
+
+            if (remove) {
+                dataInterface.connect();
+                fruit.getBranch().remove(fruit.getSubBranch());
+                dataInterface.disconnect();
+                // Remove branch if it is the last fruit
+                if (fruit.getBranch().getSubBranches().size() == 0) {
+                    dataInterface.connect();
+                    fruit.getBranch().getTrunk().remove(fruit.getBranch());
+                    dataInterface.disconnect();
+                }
+                //tree.updateKnobsBounds();
+                tree.update();
+            } else {
+                tree.getTodController().getNodeInterface().log("Cannot remove FCC because it has dependencies");
+            }
+
+        });
+        mainContextMenu.getItems().addAll(removeFromConjunctionMenuItem);
+
+        // DYNAMISMS MENU
+        Dynamism positiveDynamism = dataInterface.getDynamism(fruit.getFcc(),0);
+        Dynamism negativeDynamism = dataInterface.getDynamism(fruit.getFcc(),1);
+        Dynamism symmetricDynamism = dataInterface.getDynamism(fruit.getFcc(),2);
+
+        // positive
+        this.positiveContextMenu = new ContextMenu();
+        this.positiveImplicationExp.setOnMousePressed(event -> {
+            if (event.isSecondaryButtonDown()) {
+                this.positiveContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+                this.mainContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+            if (event.isPrimaryButtonDown()) {
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+        });
+
+        Menu onlyThisFccMenuItemPositive = new Menu("Deploy for this FCC only");
+        onlyThisFccMenuItemPositive.getItems().addAll(descendantsMenuOnlyThisFcc(positiveDynamism), ascendantsMenuOnlyThisFcc(positiveDynamism));
+
+        Menu allConjunctionFccMenuItemPositive = new Menu("Deploy for the FCCs conjunction");
+        allConjunctionFccMenuItemPositive.getItems().addAll(descendantsMenuAllConjunctionFccs(positiveDynamism), ascendantsMenuAllConjunctionFccs(positiveDynamism));
+
+        this.positiveContextMenu.getItems().addAll(onlyThisFccMenuItemPositive,allConjunctionFccMenuItemPositive);
+
+        // negative
+        this.negativeContextMenu = new ContextMenu();
+        this.negativeImplicationExp.setOnMousePressed(event -> {
+            if (event.isSecondaryButtonDown()) {
+                this.negativeContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+            if (event.isPrimaryButtonDown()) {
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+        });
+
+        Menu onlyThisFccMenuItemNegative = new Menu("Deploy for this FCC only");
+        onlyThisFccMenuItemNegative.getItems().addAll(descendantsMenuOnlyThisFcc(negativeDynamism), ascendantsMenuOnlyThisFcc(negativeDynamism));
+
+        Menu allConjunctionFccMenuItemNegative = new Menu("Deploy for the FCCs conjunction");
+        allConjunctionFccMenuItemNegative.getItems().addAll(descendantsMenuAllConjunctionFccs(negativeDynamism), ascendantsMenuAllConjunctionFccs(negativeDynamism));
+
+        this.negativeContextMenu.getItems().addAll(onlyThisFccMenuItemNegative,allConjunctionFccMenuItemNegative);
+
+        // symmetric
+        this.symmetricContextMenu = new ContextMenu();
+        this.symmetricImplicationExp.setOnMousePressed(event -> {
+            if (event.isSecondaryButtonDown()) {
+                this.symmetricContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+            }
+            if (event.isPrimaryButtonDown()) {
+                this.mainContextMenu.hide();
+                this.positiveContextMenu.hide();
+                this.negativeContextMenu.hide();
+                this.symmetricContextMenu.hide();
+            }
+        });
+
+        Menu onlyThisFccMenuSymmetric = new Menu("Deploy for this FCC only");
+        onlyThisFccMenuSymmetric.getItems().addAll(descendantsMenuOnlyThisFcc(symmetricDynamism), ascendantsMenuOnlyThisFcc(symmetricDynamism));
+
+        Menu allConjunctionFccMenuSymmetric = new Menu("Deploy for the FCCs conjunction");
+        allConjunctionFccMenuSymmetric.getItems().addAll(descendantsMenuAllConjunctionFccs(symmetricDynamism), ascendantsMenuAllConjunctionFccs(symmetricDynamism));
+
+        this.symmetricContextMenu.getItems().addAll(onlyThisFccMenuSymmetric,allConjunctionFccMenuSymmetric);
+
+    }
+
+    private Menu descendantsMenuAllConjunctionFccs(Dynamism thisDynamism) {
+        Menu descendantsMenu = new Menu("Deploy descendants (effects)");
+
+        // New FCC
+        MenuItem toNewFccMenuItem = new MenuItem("To a new FCC");
+        toNewFccMenuItem.setOnAction(deployNewOrientationDescendantAction(thisDynamism,false));
+        descendantsMenu.getItems().addAll(toNewFccMenuItem, new SeparatorMenuItem());
+
+        // Descendant Fruits directly from this fruit
+        ObservableList<Integer> descendantFccs = FXCollections.observableArrayList();
+        for (Fruit fruit1:fruit.getDescendantFruitsConjunction()) {
+            descendantFccs.add(fruit1.getFcc().getIdFcc());
+            FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS, false);
+            descendantsMenu.getItems().addAll(fccMenu);
+        }
+        descendantsMenu.getItems().add(new SeparatorMenuItem());
+        // Descendant Fruits from other fruits in conjunction
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            if(subBranch.getFruit().equals(fruit)) continue;
+            boolean breakloop = false;
+            for (Fruit fruit2 : subBranch.getFruit().getDescendantFruitsConjunction()) {
+                if(descendantFccs.contains(fruit2.getFcc().getIdFcc())) breakloop=true;
+            }
+            if(breakloop) continue;
+            for (Fruit fruit1:subBranch.getFruit().getDescendantFruitsConjunction()) {
+                descendantFccs.add(fruit1.getFcc().getIdFcc());
+                FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS, false);
+                descendantsMenu.getItems().addAll(fccMenu);
+            }
+        }
+        //descendantsMenu.getItems().addAll(new SeparatorMenuItem());
+
+        // Descendant already done
+        // If there's not a fruit elsewhere with same fcc
+        ObservableList<Integer> isDescendantFccIdsElsewhere = FXCollections.observableArrayList();
+        ObservableList<Integer> deployedFromOnlyFcc = FXCollections.observableArrayList();
+
+        for (Fruit fruit1 : tree.getObservableFruits()) {
+            //if(fruit1.equals(this.fruit)) continue;
+            if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
+                for (Fruit fruit2 : fruit1.getDescendantFruits()) {
+                    isDescendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
+                }
+            }
+            // Exclude if its a descendant of another fruit of conjunction
+            for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+                //if (fruit.getSubBranch().equals(subBranch))continue;
+                if (subBranch.getFruit().getDescendantFruitsOnlyFcc().contains(fruit1)) {
+                    deployedFromOnlyFcc.add(fruit1.getFcc().getIdFcc());
+                }
+            }
+        }
+        // If its not in descendant from subBranch
+        ObservableList<Fcc> isInOnlyFcc = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getDescendantFruitsOnlyFcc()) {
+            isInOnlyFcc.add(fruit1.getFcc());
+        }
+        // Other fccs in conjunction
+        ObservableList<Fcc> inConjunction = FXCollections.observableArrayList();
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            inConjunction.add(subBranch.getFruit().getFcc());
+        }
+
+        // Add the rest of menus
+        ObservableList<Fcc> fccs = dataInterface.getFccs(
+                tree.getTodController().getTod().getLogicSystem());
+        ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+        for (Fcc fcc : fccs){
+            // Ignore itself in the deployment list
+            if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+            // Ignore fccs already done
+            if (descendantFccs.contains(fcc.getIdFcc())) continue;
+            // Ignore descendant fccs elsewhere
+            if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
+            // It is descendant in subBranch
+            if(isInOnlyFcc.contains(fcc)) continue;
+            // If not a onlyFcc deployment in another fruit of conjunction
+            if(deployedFromOnlyFcc.contains(fcc.getIdFcc())) continue;
+            // In conjunction
+            if(inConjunction.contains(fcc)) continue;
+            // For all the rest create a menu
+            FccMenu fccMenu = new FccMenu(this, thisDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS, false);
+            fccSortedMenus.add(fccMenu);
+        }
+        // Sort remaining FccMenus alphabetically before adding them
+        Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+        FXCollections.sort(fccSortedMenus,comparator);
+        descendantsMenu.getItems().addAll(fccSortedMenus);//
+
+        return descendantsMenu;
+    }
+
+    private Menu ascendantsMenuAllConjunctionFccs(Dynamism thisDynamism) {
+        Menu ascendantsMenu = new Menu("Deploy ascendants (causes)");
+
+        // Add MenuItem: New fcc
+        MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
+        deployToNewFccMenuItem.setOnAction(deployNewAscendantAction(thisDynamism,false));
+        ascendantsMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
+
+        // Add MenuItems: Fruits already as ascendant
+        ObservableList<Integer> ascendantFCCs = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getAscendantFruitsConjunction()) {
+            ascendantFCCs.add(fruit1.getFcc().getIdFcc());
+            FccMenu fccMenu = new FccMenu(this, thisDynamism,fruit1.getFcc(), FccMenu.FccMenuType.FOR_ASCENDANTS, false);
+            ascendantsMenu.getItems().addAll(fccMenu);
+        }
+        ascendantsMenu.getItems().addAll(new SeparatorMenuItem());
+
+        // Descendant Fruits from conjunction
+        // If there's not a fruit elsewhere with same fcc
+        //ObservableList<Integer> isAscendantFccIds = FXCollections.observableArrayList();
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            if(subBranch.getFruit().equals(fruit)) continue;
+            boolean breakloop = false;
+            for (Fruit fruit2 : subBranch.getFruit().getAscendantFruitsConjunction()) {
+                if(ascendantFCCs.contains(fruit2.getFcc().getIdFcc())) breakloop=true;
+            }
+            if(breakloop) continue;
+            for (Fruit fruit1:subBranch.getFruit().getAscendantFruitsConjunction()) {
+                ascendantFCCs.add(fruit1.getFcc().getIdFcc());
+                FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_ASCENDANTS, false);
+                ascendantsMenu.getItems().addAll(fccMenu);
+            }
+        }
+        //ascendantsMenu.getItems().addAll(new SeparatorMenuItem());
+
+        // 2) find those that are already deployed in another fruit of the same fcc
+        ObservableList<Integer> isAscendantFccIdsElsewhere = FXCollections.observableArrayList();
+        ObservableList<Integer> deployedFromOnlyFcc = FXCollections.observableArrayList();
+
+        for (Fruit fruit1 : tree.getObservableFruits()) {
+            //if(fruit1.equals(this.fruit)) continue;
+            if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
+                for (Fruit fruit2 : fruit1.getAscendantFruits()) {
+                    isAscendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
+                }
+            }
+            // exclude ascendants of another fruit of conjunction
+            for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+                if (subBranch.getFruit().getAscendantFruitsOnlyFcc().contains(fruit1)) {
+                    deployedFromOnlyFcc.add(fruit1.getFcc().getIdFcc());
+                }
+            }
+        }
+        // If its not in ascendant from Branch
+        ObservableList<Fcc> isInConjunction = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getAscendantFruitsConjunction()) {
+            isInConjunction.add(fruit1.getFcc());
+        }
+
+        // Other fccs in conjunction
+        ObservableList<Fcc> inConjunction = FXCollections.observableArrayList();
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            inConjunction.add(subBranch.getFruit().getFcc());
+        }
+
+        // Add MenuItems : for all fccs in LS except those in 1 and 2
+        ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+        ObservableList<Fcc> fccs = dataInterface.getFccs(tree.getTodController().getTod().getLogicSystem());
+        for (Fcc fcc : fccs){
+            // Ignore itself in the deployment list
+            if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+            // Ignore fccs already done previously
+            if (ascendantFCCs.contains(fcc.getIdFcc())) continue;
+            // Ignore ascendants elsewhere
+            if(isAscendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
+            // It is ascendant in branch
+            if(isInConjunction.contains(fcc)) continue;
+            // If it is not a onlyFcc ascendant of another fruit of conjunction
+            if(deployedFromOnlyFcc.contains(fcc.getIdFcc())) continue;
+            // In conjunction
+            if(inConjunction.contains(fcc)) continue;
+            // For all the rest create a menu
+            FccMenu fccMenu = new FccMenu(this, thisDynamism,fcc, FccMenu.FccMenuType.FOR_ASCENDANTS, false);
+            fccSortedMenus.add(fccMenu);
+            //thisDynamismMenu.getItems().addAll(fccMenu);
+        }
+
+        // Sort remaining FccMenus alphabetically before adding them
+        Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+        FXCollections.sort(fccSortedMenus,comparator);
+        ascendantsMenu.getItems().addAll(fccSortedMenus);//
+
+        return ascendantsMenu;
+    }
+
+    private Menu addFccMenu() {
+        Menu addFccMenu = new Menu("Add a FCC in conjunction");
+        // MENU ADDNEW FCC
+        MenuItem addNewFccMenuItem = new MenuItem("To a new Fcc");
+        addNewFccMenuItem.setOnAction(event -> {
+            dataInterface.connect();
+            Fcc fcc = dataInterface.newFcc(tree.getTodController().getTod().getLogicSystem());
+            fruit.getBranch().newSubBranch(fcc);
+            dataInterface.disconnect();
+            tree.getTodController().openFccEditor(fcc);
+            tree.update();
+        });
+        addFccMenu.getItems().addAll(addNewFccMenuItem,new SeparatorMenuItem());
+
+        // MENU ADD EXISTING FCC
+        ObservableList<Fcc> fccToExclude = FXCollections.observableArrayList();
+        ObservableList<Fruit> deployedFruits = FXCollections.observableArrayList();
+
+        // exclusions
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            // Exclude fccs of conjunction
+            fccToExclude.add(subBranch.getFruit().getFcc());
+            // Exclude ascendants and descendants
+            deployedFruits.addAll(subBranch.getFruit().getAscendantFruits());
+            deployedFruits.addAll(subBranch.getFruit().getDescendantFruits());
+        }
+        for (Fruit fruit : tree.getObservableFruits()) {
+            if(deployedFruits.contains(fruit)) fccToExclude.add(fruit.getFcc());
+        }
+
+        for (Fcc fcc : dataInterface.getListFcc()) {
+            if (fccToExclude.contains(fcc)) {
+                continue;
+            } else {
+                MenuItem addFruit = new MenuItem(fcc.getName());
+                addFruit.setOnAction(event -> {
+                    NodeHandler.getDataInterface().connect();
+                    fruit.getBranch().newSubBranch(fcc);
+                    NodeHandler.getDataInterface().disconnect();
+                    tree.update();
+                });
+                addFccMenu.getItems().add(addFruit);
+            }
+
+        }
+        return  addFccMenu;
     }
 
     private EventHandler<ActionEvent> moveUp() {
@@ -442,139 +813,145 @@ public class FruitController implements Initializable {
         return changeDynamismExpressionTypeMenuItem;
     }
 
-    private Menu descendantsMenu() {
+    private Menu descendantsMenuOnlyThisFcc(Dynamism orientation) {
         Menu descendantsMenu = new Menu("Deploy descendants (effects)");
+        Dynamism thisDynamism = dataInterface.getDynamism(getFruit().getFcc(),orientation.getOrientation());
 
-        for (int i = 0; i <= 2; i++) {
-            Dynamism thisDynamism = dataInterface.getDynamism(getFruit().getFcc(),i);
-            Menu aFromOrientationMenu = new Menu();
-            aFromOrientationMenu.textProperty().bind(Bindings.concat("From ",thisDynamism.propositionProperty()));
+        // New FCC
+        MenuItem toNewFccMenuItem = new MenuItem("To a new FCC");
+        toNewFccMenuItem.setOnAction(deployNewOrientationDescendantAction(thisDynamism,true));
+        descendantsMenu.getItems().addAll(toNewFccMenuItem, new SeparatorMenuItem());
 
-            // New FCC
-            MenuItem toNewFccMenuItem = new MenuItem("To a new FCC");
-            toNewFccMenuItem.setOnAction(deployNewOrientationDescendantAction(thisDynamism));
-            aFromOrientationMenu.getItems().addAll(toNewFccMenuItem, new SeparatorMenuItem());
+        // Descendant Fruits
+        ObservableList<Integer> isDescendantFccIds = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getDescendantFruitsOnlyFcc()) {
+            isDescendantFccIds.add(fruit1.getFcc().getIdFcc());
+            FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS, true);
+            descendantsMenu.getItems().addAll(fccMenu);
+        }
+        descendantsMenu.getItems().addAll(new SeparatorMenuItem());
+        // 2 types of exclusion inside the for
+        ObservableList<Integer> isDescendantFccIdsElsewhere = FXCollections.observableArrayList();
+        ObservableList<Integer> deployedFromConjunction = FXCollections.observableArrayList();
 
-            // Descendant Fruits
-            ObservableList<Fcc> descendantFccs = FXCollections.observableArrayList();
-            for (Fruit fruit1:fruit.getDescendantFruits()) {
-                descendantFccs.add(fruit1.getFcc());
-                FccMenu fccMenu = new FccMenu(this, thisDynamism, fruit1.getFcc(), FccMenu.FccMenuType.FOR_DESCENDANTS);
-                aFromOrientationMenu.getItems().addAll(fccMenu);
-            }
-
-            aFromOrientationMenu.getItems().addAll(new SeparatorMenuItem());
-
-            // Descendant fruits elsewhere
-            ObservableList<Integer> isDescendantFccIds = FXCollections.observableArrayList();
-            for (Fcc fcc : descendantFccs) {
-                isDescendantFccIds.addAll(fcc.getIdFcc());
-            }
-            // If there's not a fruit deployed from this.fruit
-            ObservableList<Integer> isDescendantFccIdsElsewhere = FXCollections.observableArrayList();
-            for (Fruit fruit1 : tree.getObservableFruits()) {
-                if(fruit1.equals(this.fruit)) continue;
-                if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
-                    for (Fruit fruit2 : fruit1.getDescendantFruits()) {
-                        isDescendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
-                    }
+        for (Fruit fruit1 : tree.getObservableFruits()) {
+            if(fruit.equals(fruit1)) continue;
+            // Exclude descendants of another fruit with same fcc
+            if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
+                for (Fruit fruit2 : fruit1.getDescendantFruits()) {
+                    isDescendantFccIdsElsewhere.add(fruit2.getFcc().getIdFcc());
                 }
             }
-
-            // Add the rest of menus
-            ObservableList<Fcc> fccs = dataInterface.getFccs(
-                    tree.getTodController().getTod().getLogicSystem());
-            ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
-
-            for (Fcc fcc : fccs){
-                // Ignore itself in the deployment list
-                if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
-                // Ignore fccs already done
-                if (isDescendantFccIds.contains(fcc.getIdFcc())) continue;
-                // Ignore descendant fccs elsewhere
-                if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
-                // For all the rest create a menu
-                FccMenu fccMenu = new FccMenu(this, thisDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS);
-                fccSortedMenus.add(fccMenu);
-                //aFromOrientationMenu.getItems().addAll(fccMenu);
+            // Exclude if its a descendant of another fruit of conjunction
+            for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+                //if (fruit.getSubBranch().equals(subBranch))continue;
+                if (subBranch.getFruit().getDescendantFruitsConjunction().contains(fruit1)) {
+                    deployedFromConjunction.add(fruit1.getFcc().getIdFcc());
+                }
             }
-            // Sort remaining FccMenus alphabetically before adding them
-            Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
-            FXCollections.sort(fccSortedMenus,comparator);
-            aFromOrientationMenu.getItems().addAll(fccSortedMenus);//
-
-            descendantsMenu.getItems().add(aFromOrientationMenu);
         }
+
+        // Exclude from menu the fruits in same conjunction
+        ObservableList<Integer> isInConjunction = FXCollections.observableArrayList();
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            if(fruit.getSubBranch().equals(subBranch)) continue;
+            isInConjunction.add(subBranch.getFruit().getFcc().getIdFcc());
+        }
+        // Add the rest of menus
+        ObservableList<Fcc> fccs = dataInterface.getFccs(tree.getTodController().getTod().getLogicSystem());
+        ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+        for (Fcc fcc : fccs){
+            // Ignore itself in the deployment list
+            if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+            // Ignore fccs already done
+            if (isDescendantFccIds.contains(fcc.getIdFcc())) continue;
+            // Ignore descendant fccs elsewhere
+            if(isDescendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
+            // If its in conjunction
+            if(deployedFromConjunction.contains(fcc.getIdFcc())) continue;
+            // Ignore fruits in same conjunction
+            if(isInConjunction.contains(fcc.getIdFcc())) continue;
+            // For all the rest create a menu
+            FccMenu fccMenu = new FccMenu(this, thisDynamism, fcc, FccMenu.FccMenuType.FOR_DESCENDANTS, true);
+            fccSortedMenus.add(fccMenu);
+        }
+        // Sort remaining FccMenus alphabetically before adding them
+        Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+        FXCollections.sort(fccSortedMenus,comparator);
+        descendantsMenu.getItems().addAll(fccSortedMenus);//
+
         return descendantsMenu;
     }
 
-    private Menu ascendantsMenu() {
+    private Menu ascendantsMenuOnlyThisFcc(Dynamism orientation) {
         Menu ascendantsMenu = new Menu("Deploy ascendants (causes)");
-        for (int i=0; i <= 2; i++) {
-            Dynamism thisDynamism = dataInterface.getDynamism(fruit.getFcc(),i);
-            Menu thisDynamismMenu = new Menu();
-            thisDynamismMenu.textProperty().bind(Bindings.concat("To ",thisDynamism.propositionProperty()));
+        Dynamism thisDynamism = dataInterface.getDynamism(fruit.getFcc(),orientation.getOrientation());
 
-            ascendantsMenu.getItems().add(thisDynamismMenu);
+        // Add MenuItem: New fcc
+        MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
+        deployToNewFccMenuItem.setOnAction(deployNewAscendantAction(thisDynamism,true));
+        ascendantsMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
 
-            // Add MenuItem: New fcc
-            MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
-            deployToNewFccMenuItem.setOnAction(deployNewAscendantAction(thisDynamism));
-            thisDynamismMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
+        // Add MenuItems: Fruits already as descendants
+        ObservableList<Integer> ascendantFCCs = FXCollections.observableArrayList();
+        for (Fruit fruit1 : fruit.getAscendantFruitsOnlyFcc()) {
+            ascendantFCCs.add(fruit1.getFcc().getIdFcc());
+            FccMenu fccMenu = new FccMenu(this, thisDynamism,fruit1.getFcc(), FccMenu.FccMenuType.FOR_ASCENDANTS, true);
+            ascendantsMenu.getItems().addAll(fccMenu);
+        }
+        ascendantsMenu.getItems().addAll(new SeparatorMenuItem());
+        // Find fruits to exclude
+        ObservableList<Integer> isAscendantFccIdsElsewhere = FXCollections.observableArrayList();
+        ObservableList<Integer> deployedFromConjunction = FXCollections.observableArrayList();
 
-            // Add MenuItems: Fruits already as descendants
-            List<Fcc> ascendantFCCs = FXCollections.observableArrayList();
-            for (Fruit fruit1 : fruit.getAscendantFruits()) {
-                ascendantFCCs.add(fruit1.getFcc());
-                FccMenu fccMenu = new FccMenu(this, thisDynamism,fruit1.getFcc(), FccMenu.FccMenuType.FOR_ASCENDANTS);
-                thisDynamismMenu.getItems().addAll(fccMenu);
-            }
-            // Add separator
-            thisDynamismMenu.getItems().addAll(new SeparatorMenuItem());
-
-            // 1) Find those done above, and
-            ObservableList<Fcc> fccs = dataInterface.getFccs(
-                    tree.getTodController().getTod().getLogicSystem());
-            List<Integer> isAscendantFccIds = FXCollections.observableArrayList();
-            // Convert list of ascendantFCCs to list of Integers of their ids
-            for (Fcc fcc1 : ascendantFCCs) {
-                isAscendantFccIds.add(fcc1.getIdFcc());
-            }
-
+        for (Fruit fruit1 : tree.getObservableFruits()) {
+            if(fruit1.equals(this.fruit)) continue;
             // 2) find those that are already deployed in another fruit of the same fcc
-            ObservableList<Integer> isAscendantFccIdsElsewhere = FXCollections.observableArrayList();
-            for (Fruit fruit1 : tree.getObservableFruits()) {
-                if(fruit1.equals(this.fruit)) continue;
-                if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
-                    if (!fruit1.getAscendantFruits().isEmpty()) {
-                        for (Fruit fruit2 : fruit1.getAscendantFruits()) {
-                            isAscendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
-                        }
-                    }
+            if (fruit1.getFcc().getIdFcc() == this.fruit.getFcc().getIdFcc()) {
+                for (Fruit fruit2 : fruit1.getAscendantFruits()) {
+                    isAscendantFccIdsElsewhere.addAll(fruit2.getFcc().getIdFcc());
                 }
             }
-
-            // Add MenuItems : for all fccs in LS except those in 1 and 2
-            ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
-
-            for (Fcc fcc : fccs){
-                // Ignore itself in the deployment list
-                if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
-                // Ignore fccs already done previously
-                if (isAscendantFccIds.contains(fcc.getIdFcc())) continue;
-                // Ignore ascendants elsewhere
-                if(isAscendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
-                // For all the rest create a menu
-                FccMenu fccMenu = new FccMenu(this, thisDynamism,fcc, FccMenu.FccMenuType.FOR_ASCENDANTS);
-                fccSortedMenus.add(fccMenu);
-                //thisDynamismMenu.getItems().addAll(fccMenu);
+            // exclude ascendants of another fruit of conjunction
+            for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+                if (subBranch.getFruit().getAscendantFruitsConjunction().contains(fruit1)) {
+                    deployedFromConjunction.add(fruit1.getFcc().getIdFcc());
+                }
             }
-
-            // Sort remaining FccMenus alphabetically before adding them
-            Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
-            FXCollections.sort(fccSortedMenus,comparator);
-            thisDynamismMenu.getItems().addAll(fccSortedMenus);//
         }
+
+        // Exclude from menu the fruits in same conjunction
+        ObservableList<Integer> isInConjunction = FXCollections.observableArrayList();
+        for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
+            if(fruit.getSubBranch().equals(subBranch)) continue;
+            isInConjunction.add(subBranch.getFruit().getFcc().getIdFcc());
+        }
+
+        // Add MenuItems : for all fccs in LS except those in 1 and 2
+        ObservableList<FccMenu> fccSortedMenus = FXCollections.observableArrayList();
+        ObservableList<Fcc> fccs = dataInterface.getFccs(tree.getTodController().getTod().getLogicSystem());
+        for (Fcc fcc : fccs){
+            // Ignore itself in the deployment list
+            if (fcc.getIdFcc()==getFruit().getFcc().getIdFcc()) continue;
+            // Ignore fccs already done previously
+            if (ascendantFCCs.contains(fcc.getIdFcc())) continue;
+            // Ignore ascendants elsewhere
+            if(isAscendantFccIdsElsewhere.contains(fcc.getIdFcc())) continue;
+            // If its in conjunction
+            if(deployedFromConjunction.contains(fcc.getIdFcc())) continue;
+            // Ignore fruits in same conjunction
+            if(isInConjunction.contains(fcc.getIdFcc())) continue;
+            // For all the rest create a menu
+            FccMenu fccMenu = new FccMenu(this, thisDynamism,fcc, FccMenu.FccMenuType.FOR_ASCENDANTS, true);
+            fccSortedMenus.add(fccMenu);
+            //thisDynamismMenu.getItems().addAll(fccMenu);
+        }
+
+        // Sort remaining FccMenus alphabetically before adding them
+        Comparator<FccMenu> comparator = Comparator.comparing(FccMenu::getFccName);
+        FXCollections.sort(fccSortedMenus,comparator);
+        ascendantsMenu.getItems().addAll(fccSortedMenus);//
+
         return ascendantsMenu;
     }
 
@@ -583,17 +960,21 @@ public class FruitController implements Initializable {
         this.tree.getTodController().getScaleSlider().setValue(1);
     }
 
-    private EventHandler<ActionEvent>  deployNewOrientationDescendantAction(Dynamism ascendantDynamism) {
+    private EventHandler<ActionEvent>  deployNewOrientationDescendantAction(Dynamism ascendantDynamism, boolean onlyThisFcc) {
         return actionEvent -> {
             NodeHandler.getDataInterface().connect();
             TodController todController = this.tree.getTodController();
             // set scale to 1 before continuing, otherwise the binding of knobs does not work
-            resetValueInScaleSlider();
+            //resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
-
-            Fruit newFruit = fruit.getSubBranch().addToRightTrunk(newFcc); // we do nothing with newFruit
+            Fruit newFruit= null;
+            if (onlyThisFcc) {
+                newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
+            } else {
+                newFruit = fruit.getBranch().addToRightTrunk(newFcc);
+            }
 
             // Create inclusions
             Dynamism positiveDynamismOfDescendant = dataInterface.getDynamism(newFcc, 0);
@@ -626,7 +1007,7 @@ public class FruitController implements Initializable {
         }
     }
 
-    private EventHandler<ActionEvent> deployNewAscendantAction(Dynamism descendantDynamism) {
+    private EventHandler<ActionEvent> deployNewAscendantAction(Dynamism descendantDynamism, boolean onlyThisFcc) {
         return actionEvent -> {
             NodeHandler.getDataInterface().connect();
             TodController todController = this.tree.getTodController();
@@ -635,7 +1016,13 @@ public class FruitController implements Initializable {
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
-            Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc); // we do nothing with newFruit
+            Fruit newFruit = null;
+
+            if (onlyThisFcc) {
+                newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc);
+            } else {
+                newFruit = fruit.getBranch().addToLeftTrunk(newFcc);
+            }
 
             // Create inclusions
             Dynamism positiveDynamismOfAscendant = dataInterface.getDynamism(newFcc, 0);
@@ -670,7 +1057,7 @@ public class FruitController implements Initializable {
 
     // This should be called only when opening a new TOD
     public void buildTies() {
-        // Descendants
+        // Descendants in subBranch
         for (Branch branch : this.fruit.getSubBranch().getRightTrunk().getBranches()) {
             for (Fruit fruit1 : branch.getFruits()) {
                 if (this.fruit.isDescendant(fruit1)) {
@@ -680,9 +1067,29 @@ public class FruitController implements Initializable {
                 }
             }
         }
+        // Descendant in branch
+        for (Branch branch : this.fruit.getBranch().getRightTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (this.fruit.isDescendant(fruit1)) {
+                    Tie tie = new Tie(fruit1, this.fruit);
+                    this.tree.addTie(tie);
+                    tie.setOrientations();
+                }
+            }
+        }
 
-        // Ascendants
+        // Ascendants in subBranch
         for (Branch branch : this.fruit.getSubBranch().getLeftTrunk().getBranches()) {
+            for (Fruit fruit1 : branch.getFruits()) {
+                if (fruit1.isDescendant(this.fruit)) {
+                    Tie tie = new Tie(this.fruit, fruit1);
+                    this.tree.addTie(tie);
+                    tie.setOrientations();
+                }
+            }
+        }
+        // Ascendants in branch
+        for (Branch branch : this.fruit.getBranch().getLeftTrunk().getBranches()) {
             for (Fruit fruit1 : branch.getFruits()) {
                 if (fruit1.isDescendant(this.fruit)) {
                     Tie tie = new Tie(this.fruit, fruit1);

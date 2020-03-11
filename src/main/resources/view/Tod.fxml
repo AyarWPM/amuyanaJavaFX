@@ -8,7 +8,7 @@
 
 <SplitPane fx:id="splitPane" dividerPositions="0.4, 0.9" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
    <items>
-      <ScrollPane fx:id="leftPanel" fitToWidth="true" maxWidth="350.0" minWidth="-Infinity" prefViewportHeight="598.0" prefViewportWidth="291.0" SplitPane.resizableWithParent="false">
+      <ScrollPane fx:id="leftPanel" fitToWidth="true" maxWidth="-Infinity" minWidth="-Infinity" prefViewportWidth="300.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
          <content>
             <VBox id="LeftPanelRoot" alignment="CENTER_LEFT" spacing="5.0" SplitPane.resizableWithParent="false">
                <children>

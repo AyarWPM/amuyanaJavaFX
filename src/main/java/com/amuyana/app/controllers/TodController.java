@@ -8,6 +8,7 @@ import com.amuyana.app.data.tod.containers.Tod;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
@@ -26,6 +27,8 @@ import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -107,6 +110,10 @@ public class TodController implements Initializable {
     }
 
     public void updateListViews() {
+/*        ObservableList<Fcc> listOfFccsInTod = FXCollections.observableArrayList();
+        listOfFccsInTod.addAll(dataInterface.getFccs(this.tod));
+        Comparator comparator = Comparator.naturalOrder();
+        FXCollections.sort(,comparator);*/
         fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
         inclusionsInTodListView.setItems(dataInterface.getInclusions(tod));
     }
@@ -379,6 +386,10 @@ public class TodController implements Initializable {
         }
     }
 
+    public void showFccSelector() {
+        setContent(loadFccSelector());
+    }
+
     private Node loadFccSelector() {
         Node node = null;
         FccSelectorController fccSelectorController=null;
@@ -505,5 +516,7 @@ public class TodController implements Initializable {
         this.rightPanelOpen.set(rightPanelOpen);
     }
 
-
+    public NodeInterface getNodeInterface() {
+        return nodeInterface;
+    }
 }

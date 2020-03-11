@@ -21,20 +21,21 @@ public class Amuyana extends Application {
         NodeInterface nodeInterface = new NodeHandler(dataInterface, stage);
 
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
-        stage.setTitle("Amuyaña v.3");
+        stage.setTitle(NodeHandler.VERSION);
         stage.setScene(scene);
         // Debug lines
         //nodeInterface.openDebug1();
 
         // Debug TOD
-        dataInterface.setDataConnectionValues("localhost","amuyana","");
+        /*dataInterface.setDataConnectionValues("localhost","amuyana","");
         dataInterface.connect();
         dataInterface.loadData();
         dataInterface.disconnect();
         LogicSystem logicSystem = dataInterface.getListLogicSystem().get(0);
         Tod tod = dataInterface.getTods(logicSystem).get(0);
         nodeInterface.load(logicSystem);
-        nodeInterface.open(tod);
+        nodeInterface.open(tod);*/
+
         stage.show();
     }
 

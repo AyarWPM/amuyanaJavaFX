@@ -37,7 +37,8 @@ public class SubBranch extends HBox {
     }
 
     private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
+        setSpacing(5);
+        //this.spacingProperty().bind(Bindings.divide(50,branch.getTrunk().levelProperty()).multiply(branch.getSubBranches().size()));
         //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(3))));
         if (!branch.getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
             if (branch.getTrunk().isSide()) {

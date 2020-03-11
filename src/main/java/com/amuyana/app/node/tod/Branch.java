@@ -34,7 +34,19 @@ public class Branch extends HBox {
 
     void loadSubBranchesAndTrunks() {
         this.subBranchesVBox = new VBox();
-        this.subBranchesVBox.setId("BetweenBranchSubBranch");
+        // alignment depending on trunks side
+        if (getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
+            this.subBranchesVBox.setAlignment(Pos.CENTER);
+
+        } else {
+            // left
+            if (!getTrunk().isSide()) {
+                this.subBranchesVBox.setAlignment(Pos.CENTER_RIGHT);
+            } else {
+                this.subBranchesVBox.setAlignment(Pos.CENTER_LEFT);
+            }
+        }
+        this.subBranchesVBox.setId("BetweenBranchSubBranch"); //empty style
 
         Container0 leftContainer0 = dataInterface.getSideContainer0(container1,false);
         Container0 rightContainer0 = dataInterface.getSideContainer0(container1,true);
@@ -58,6 +70,7 @@ public class Branch extends HBox {
         this.trunk = trunk;
         this.container1 = NodeHandler.getDataInterface().newContainer1(this.trunk.getContainer0());
         this.subBranchesVBox = new VBox();
+        this.subBranchesVBox.setSpacing(5);
         this.subBranchesVBox.setId("BranchVBox");
 
         this.leftTrunk = new Trunk(trunk.getTree(), this, false);
@@ -69,7 +82,8 @@ public class Branch extends HBox {
     }
 
     private void makeStyle() {
-        this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
+        //this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
+        setSpacing(10);
         //setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
         if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
             if (getTrunk().isSide()) {
@@ -78,7 +92,7 @@ public class Branch extends HBox {
                 setAlignment(Pos.CENTER_RIGHT);
             }
         } else {
-            setAlignment(Pos.CENTER);
+            setAlignment(Pos.TOP_CENTER);
         }
     }
 
@@ -86,7 +100,7 @@ public class Branch extends HBox {
         return this.container1;
     }
 
-    ObservableList<SubBranch> getSubBranches() {
+    public ObservableList<SubBranch> getSubBranches() {
         ObservableList<SubBranch> subBranches = FXCollections.observableArrayList();
         VBox vBox = (VBox)this.getChildren().get(1);
         for (Node branchNode : vBox.getChildren()) {
@@ -107,17 +121,20 @@ public class Branch extends HBox {
         return subBranch;
     }
 
-    public void addToLeftTrunk(Fcc fcc) {
+    public Fruit addToLeftTrunk(Fcc fcc) {
         Branch branch = new Branch(this.leftTrunk);
+        SubBranch subBranch = branch.newSubBranch(fcc);
         this.leftTrunk.addBranch(branch);
+        return subBranch.getFruit();
     }
 
-    public void addToRightTrunk(Fcc fcc) {
+    public Fruit addToRightTrunk(Fcc fcc) {
         Branch branch = new Branch(this.rightTrunk);
-        SubBranch subBranch = new SubBranch(this);
-        subBranch.loadFruitAndTrunks(fcc);
-        addSubBranch(subBranch);
+        SubBranch subBranch = branch.newSubBranch(fcc);
+        //subBranch.loadFruitAndTrunks(fcc);
+        //branch.addSubBranch(subBranch);
         this.rightTrunk.addBranch(branch);
+        return subBranch.getFruit();
     }
 
     public Trunk getTrunk() {

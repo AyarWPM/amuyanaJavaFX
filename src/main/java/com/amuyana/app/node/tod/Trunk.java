@@ -107,7 +107,8 @@ public class Trunk extends VBox {
     private void setStyle() {
         /*getStylesheets().add("/css/fruit.css");
         setId("Trunk");*/
-        this.spacingProperty().bind(Bindings.divide(10,levelProperty()));
+        //this.spacingProperty().bind(Bindings.divide(10,levelProperty()));
+        this.setSpacing(10);
         //setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(1))));
         this.tree.updateMaxLevel(level.getValue());
         setAlignment(Pos.CENTER);

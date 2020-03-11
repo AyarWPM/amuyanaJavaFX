@@ -32,8 +32,10 @@ public class FccMenu extends Menu {
      * @param fruitController the controller of the fruit.fxml instance representing fruit
      * @param thisDynamism The dynamism of the fruit from which the other dynamisms of the deployFcc fruit will be deployed
      * @param fcc The fcc that descends from ascendantDynamism
+     * @param inFccOnly True means the fccMenu is for deployments of the fcc only, not the conjunction, therefore we deploy
+     *                  to subBranch. If its false we deploy for conjunction, ie in Branch's trunk
      */
-    public FccMenu(FruitController fruitController, Dynamism thisDynamism, Fcc fcc, FccMenuType fccMenuType) {
+    public FccMenu(FruitController fruitController, Dynamism thisDynamism, Fcc fcc, FccMenuType fccMenuType, boolean inFccOnly) {
         super(fcc.toString());
         this.fruitController = fruitController;
         this.fruit = fruitController.getFruit();
@@ -45,9 +47,9 @@ public class FccMenu extends Menu {
         this.dataInterface = NodeHandler.getDataInterface();
 
         if (fccMenuType.equals(FccMenuType.FOR_ASCENDANTS)) {
-            buildForAscendant(thisDynamism);
+            buildForAscendant(thisDynamism,inFccOnly);
         } else if (fccMenuType.equals(FccMenuType.FOR_DESCENDANTS)) {
-            buildForDescendant(thisDynamism);
+            buildForDescendant(thisDynamism,inFccOnly);
         }
     }
 
@@ -55,7 +57,7 @@ public class FccMenu extends Menu {
         return fcc.getName();
     }
 
-    private void buildForAscendant(Dynamism descendantDynamism) {
+    private void buildForAscendant(Dynamism descendantDynamism, boolean inFccOnly) {
         Dynamism positiveAscendant = dataInterface.getDynamism(fcc,0);
         Dynamism negativeAscendant = dataInterface.getDynamism(fcc,1);
         Dynamism symmetricAscendant = dataInterface.getDynamism(fcc,2);
@@ -77,14 +79,14 @@ public class FccMenu extends Menu {
             fromSymmetricCheckMenuItem.setSelected(true);
         }
 
-        fromPositiveCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, positiveAscendant, fromPositiveCheckMenuItem));
-        fromNegativeCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, negativeAscendant, fromNegativeCheckMenuItem));
-        fromSymmetricCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, symmetricAscendant, fromSymmetricCheckMenuItem));
+        fromPositiveCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, positiveAscendant, fromPositiveCheckMenuItem, inFccOnly));
+        fromNegativeCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, negativeAscendant, fromNegativeCheckMenuItem,inFccOnly));
+        fromSymmetricCheckMenuItem.setOnAction(fromAscendantCheckMenuAction(descendantDynamism, symmetricAscendant, fromSymmetricCheckMenuItem,inFccOnly));
 
         getItems().setAll(fromPositiveCheckMenuItem,fromNegativeCheckMenuItem,fromSymmetricCheckMenuItem);
     }
 
-    private void buildForDescendant(Dynamism ascendantDynamism) {
+    private void buildForDescendant(Dynamism ascendantDynamism, boolean inFccOnly) {
         Dynamism positiveDescendant = dataInterface.getDynamism(fcc,0);
         Dynamism negativeDescendant = dataInterface.getDynamism(fcc,1);
         Dynamism symmetricDescendant = dataInterface.getDynamism(fcc,2);
@@ -106,16 +108,16 @@ public class FccMenu extends Menu {
             toSymmetricCheckMenuItem.setSelected(true);
         }
 
-        toPositiveCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,positiveDescendant,toPositiveCheckMenuItem));
-        toNegativeCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,negativeDescendant,toNegativeCheckMenuItem));
-        toSymmetricCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,symmetricDescendant,toSymmetricCheckMenuItem));
+        toPositiveCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,positiveDescendant,toPositiveCheckMenuItem,inFccOnly));
+        toNegativeCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,negativeDescendant,toNegativeCheckMenuItem,inFccOnly));
+        toSymmetricCheckMenuItem.setOnAction(toOrientationCheckMenuAction(ascendantDynamism,symmetricDescendant,toSymmetricCheckMenuItem,inFccOnly));
 
         getItems().setAll(toPositiveCheckMenuItem,toNegativeCheckMenuItem,toSymmetricCheckMenuItem);
     }
 
     private EventHandler<ActionEvent> fromAscendantCheckMenuAction(Dynamism descendantDynamism,
                                                                    Dynamism ascendantDynamism,
-                                                                   CheckMenuItem checkMenuItem) {
+                                                                   CheckMenuItem checkMenuItem, boolean inFccOnly) {
         return actionEvent -> {
             dataInterface.connect();
             // If user selects
@@ -126,12 +128,19 @@ public class FccMenu extends Menu {
                 for (Fruit fruit1 : fruit.getAscendantFruits()) {
                     if (fruit1.getFcc().getIdFcc() == ascendantDynamism.getFcc().getIdFcc()) {
                         thereIsAFruit = true;
+                        fruitController.tieAscendant(fruit1);
                         break;
                     }
                 }
                 if (!thereIsAFruit) {
-                    fruitController.resetValueInScaleSlider();
-                    Fruit newFruit = fruit.getSubBranch().addToLeftTrunk(fcc);
+                    Fruit newFruit = null;
+                    if (inFccOnly) {
+                        newFruit = fruit.getSubBranch().addToLeftTrunk(fcc);
+                    } else {
+                        newFruit = fruit.getBranch().addToLeftTrunk(fcc);
+                    }
+                    //fruitController.resetValueInScaleSlider();
+
                     fruitController.tieAscendant(newFruit);
                 }
             }
@@ -160,28 +169,35 @@ public class FccMenu extends Menu {
 
     private EventHandler<ActionEvent> toOrientationCheckMenuAction(Dynamism ascendantDynamism,
                                                                    Dynamism descendantDynamism,
-                                                                   CheckMenuItem checkMenuItem) {
+                                                                   CheckMenuItem checkMenuItem,
+                                                                   boolean inFccOnly) {
         return actionEvent -> {
             dataInterface.connect();
             // if user selects
             if (checkMenuItem.selectedProperty().get()) {
-                boolean thereIsAFruit = false;
                 // Create inclusion
                 dataInterface.newInclusion(descendantDynamism, ascendantDynamism, tree.getTodController().getTod());
 
                 // If there's a fruit as descendant with fcc of descendantDynamism don't add a new Fruit
+                boolean thereIsAFruit = false;
                 for (Fruit fruit1 : fruit.getDescendantFruits()) {
                     if (fruit1.getFcc().getIdFcc() == descendantDynamism.getFcc().getIdFcc()) {
                         thereIsAFruit=true;
+                        fruitController.tieDescendant(fruit1);
                         break;
                     }
                 }
                 // If there's not a fruit add one
                 if (!thereIsAFruit) {
-                    fruitController.resetValueInScaleSlider();
-                    Fruit newFruit = fruit.getSubBranch().addToRightTrunk(fcc);
+                    Fruit newFruit=null;
+                    //fruitController.resetValueInScaleSlider();
+                    // in subBranch
+                    if (inFccOnly) {
+                        newFruit = fruit.getSubBranch().addToRightTrunk(fcc);
+                    } else {
+                        newFruit = fruit.getBranch().addToRightTrunk(fcc);
+                    }
                     fruitController.tieDescendant(newFruit);
-
                 }
             }
             // if user deselects

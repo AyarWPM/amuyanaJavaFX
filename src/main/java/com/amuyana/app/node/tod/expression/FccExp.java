@@ -3,6 +3,8 @@ package com.amuyana.app.node.tod.expression;
 import com.amuyana.app.data.Fcc;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
 
 public class FccExp extends Expression {
     private double maxHeight;
@@ -23,7 +25,13 @@ public class FccExp extends Expression {
         this.maxHeight = maxHeight;
         build(expressionType);
     }
+    public void setHoverStyle() {
+        setEffect(new DropShadow(4, Color.rgb(204, 0,0)));
+    }
 
+    public void setNormalStyle() {
+        setEffect(null);
+    }
     private void build(ExpressionType expressionType) {
         if (expressionType.equals(ExpressionType.ALGEBRA)) {
             ElementExp elementExp = new ElementExp(dataInterface.getElement(fcc,0));

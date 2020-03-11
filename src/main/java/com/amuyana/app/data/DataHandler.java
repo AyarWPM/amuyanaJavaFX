@@ -2,6 +2,7 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
+import com.amuyana.app.node.NodeHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -266,7 +267,6 @@ public class DataHandler implements DataInterface {
                 container1s.addAll(container1);
             }
         }
-
         return container1s;
     }
 
@@ -319,7 +319,7 @@ public class DataHandler implements DataInterface {
         ObservableList<Fcc> fccs = FXCollections.observableArrayList();
         for (Container2 container2 : getContainer2s(container1)) {
             // First add fccs from the center
-            fccs.setAll(container2.getFcc());
+            fccs.addAll(container2.getFcc());
             // from the left container0 of container2
             fccs.addAll(getFccs(getSideContainer0(container2, false)));
             // from the right container0 of container2

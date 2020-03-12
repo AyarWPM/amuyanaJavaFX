@@ -385,13 +385,15 @@ public class FruitController implements Initializable {
                     remove=false;
                 }
             }
+            if (fruit.getBranch().getSubBranches().size() == 1) {
+                if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
+                    remove = false;
+                }
+                if (!fruit.getBranch().getRightTrunk().getBranches().isEmpty()) {
+                    remove=false;
+                }
+            }
 
-            if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
-                remove = false;
-            }
-            if (!fruit.getBranch().getRightTrunk().getBranches().isEmpty()) {
-                remove=false;
-            }
 
             if (remove) {
                 dataInterface.connect();

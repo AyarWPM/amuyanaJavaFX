@@ -87,7 +87,6 @@ public class Container1 {
             instruccion.setInt(1, getBranchOrder());
             instruccion.setInt(2, getIdContainer1());
             return instruccion.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;

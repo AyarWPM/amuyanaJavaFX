@@ -455,6 +455,13 @@ public class Fruit {
         fruitController.setDynamismsExpressionType(expressionType);
     }
 
+    public void setHoverStyleFccExpression() {
+        fruitController.getFccExp().setHoverStyle();
+    }
+
+    public void setNormalStyleFccExpression() {
+        fruitController.getFccExp().setNormalStyle();
+    }
 
     public void setHoverStylePositiveImplication() {
         fruitController.setHoverStylePositiveImplication();

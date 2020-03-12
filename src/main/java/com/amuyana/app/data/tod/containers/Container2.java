@@ -13,12 +13,14 @@ public class Container2 {
     public static int currentAutoIncrement;
     private IntegerProperty idContainer2;
     private Fcc fcc;
+    private IntegerProperty subBranchOrder;
     private Container1 container1;
 
-    public Container2(int idContainer2, Fcc fcc, Container1 container1) {
+    public Container2(int idContainer2, Fcc fcc, Container1 container1, int subBranchOrder) {
         this.idContainer2 = new SimpleIntegerProperty(idContainer2);
         this.fcc = fcc;
         this.container1 = container1;
+        this.subBranchOrder = new SimpleIntegerProperty(subBranchOrder);
     }
 
     //Metodos atributo: idContainer2
@@ -31,25 +33,31 @@ public class Container2 {
     public IntegerProperty idContainer2Property() {
         return idContainer2;
     }
-
     public Fcc getFcc() {
         return fcc;
     }
     public void setFcc(Fcc fcc) {
         this.fcc = fcc;
     }
-
     public Container1 getContainer1() {
         return container1;
     }
-
     public void setContainer1(Container1 container1) {
         this.container1 = container1;
     }
+    public int getSubBranchOrder() {
+        return subBranchOrder.get();
+    }
+    public IntegerProperty subBranchOrderProperty() {
+        return subBranchOrder;
+    }
+    public void setSubBranchOrder(int subBranchOrder) {
+        this.subBranchOrder.set(subBranchOrder);
+    }
 
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_container_2 (id_container_2, id_fcc, id_container_1) "
-                + "VALUES (?,?,?)";
+        String sql = "INSERT INTO amuyana.tbl_container_2 (id_container_2, id_fcc, id_container_1, sub_branch_order) "
+                + "VALUES (?,?,?,?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql,
                     Statement.RETURN_GENERATED_KEYS);
@@ -57,6 +65,7 @@ public class Container2 {
             statement.setInt(1, this.getIdContainer2());
             statement.setInt(2, this.fcc.getIdFcc());
             statement.setInt(3, this.container1.getIdContainer1());
+            statement.setInt(4, this.getSubBranchOrder());
             int result = statement.executeUpdate();
             ResultSet rs = statement.getGeneratedKeys();
             if(rs.next()){
@@ -70,17 +79,14 @@ public class Container2 {
         return 0;
     }
 
-    // Maybe not going to be used...
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_container_2 SET  _blank_ = ? WHERE id_container_2 = ?";
+        String sql = "UPDATE amuyana.tbl_container_2 SET  sub_branch_order = ? WHERE id_container_2 = ?";
         try {
             PreparedStatement instruccion =
                     connection.prepareStatement(sql);
-            instruccion.setInt(1, idContainer2.get()); // change these
-            instruccion.setInt(2, idContainer2.get()); // change these
-
+            instruccion.setInt(1, this.getSubBranchOrder());
+            instruccion.setInt(2, idContainer2.get());
             return instruccion.executeUpdate();
-
         } catch (SQLException e) {
             e.printStackTrace();
             return 0;
@@ -108,8 +114,9 @@ public class Container2 {
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(
-                    "SELECT id_container_2, id_fcc, id_container_1 "
-                            + "FROM amuyana.tbl_container_2"
+                    "SELECT id_container_2, id_fcc, id_container_1, sub_branch_order "
+                            + "FROM amuyana.tbl_container_2 " +
+                            "ORDER BY sub_branch_order"
             );
 
             while(result.next()){
@@ -118,7 +125,7 @@ public class Container2 {
                         for (Container1 container1 : container1s) {
                             if (container1.getIdContainer1() == result.getInt("id_container_1")) {
                                 container2s.add(
-                                        new Container2(result.getInt("id_container_2"),fcc,container1)
+                                        new Container2(result.getInt("id_container_2"),fcc,container1,result.getInt("sub_branch_order"))
                                 );
                             }
                         }

@@ -26,11 +26,13 @@ public class FccExp extends Expression {
         build(expressionType);
     }
     public void setHoverStyle() {
-        setEffect(new DropShadow(4, Color.rgb(204, 0,0)));
+        setEffect(new DropShadow(1, Color.BLACK));
+        fccPropositionLabel.setTextFill(Color.rgb(204, 0,0));
     }
 
     public void setNormalStyle() {
         setEffect(null);
+        fccPropositionLabel.setTextFill(Color.BLACK);
     }
     private void build(ExpressionType expressionType) {
         if (expressionType.equals(ExpressionType.ALGEBRA)) {

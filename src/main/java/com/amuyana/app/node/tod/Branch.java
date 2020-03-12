@@ -9,6 +9,7 @@ import com.amuyana.app.node.NodeHandler;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.*;
@@ -84,7 +85,17 @@ public class Branch extends HBox {
     private void makeStyle() {
         //this.spacingProperty().bind(Bindings.divide(50,trunk.levelProperty()));
         setSpacing(10);
-        //setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+        setPadding(new Insets(5));
+
+        setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+
+        setOnMouseEntered(event -> {
+            setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+        });
+        setOnMouseExited(event -> {
+            setBorder(new Border(new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.DASHED, new CornerRadii(10), new BorderWidths(2))));
+        });
+
         if (!getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
             if (getTrunk().isSide()) {
                 setAlignment(Pos.CENTER_LEFT);
@@ -109,6 +120,8 @@ public class Branch extends HBox {
         }
         return subBranches;
     }
+
+
 
     private void addSubBranch(SubBranch subBranch) {
         this.subBranchesVBox.getChildren().add(subBranch);
@@ -216,5 +229,9 @@ public class Branch extends HBox {
     public void setBranchOrder(int order) {
         container1.setBranchOrder(order);
         dataInterface.update(container1);
+    }
+
+    public ObservableList<Node> getSubBranchesNodes() {
+        return subBranchesVBox.getChildren();
     }
 }

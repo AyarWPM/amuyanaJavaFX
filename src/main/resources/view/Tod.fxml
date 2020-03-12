@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -12,33 +10,23 @@
          <content>
             <VBox id="LeftPanelRoot" alignment="CENTER_LEFT" spacing="5.0" SplitPane.resizableWithParent="false">
                <children>
-                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" spacing="5.0">
+                  <HBox spacing="10.0">
                      <children>
-                        <Label text="Table of deductions" />
-                        <Button fx:id="toggleTodNameButton" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
+                        <Label id="todName" fx:id="todNameLabel" minHeight="-Infinity" minWidth="-Infinity" text="name" wrapText="true">
+                           <font>
+                              <Font size="15.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="toggleTodNameButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
                      </children>
                   </HBox>
+                 <TextField fx:id="todNameTextField" />
                   <HBox alignment="CENTER_LEFT" spacing="5.0">
                      <children>
                         <Label minWidth="-Infinity" text="In: " />
                         <Label id="LogicSystemName" fx:id="logicSystemNameLabel" layoutX="10.0" layoutY="10.0" maxWidth="250.0" text="Logic system (LS1)" wrapText="true" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
-                 <HBox alignment="CENTER_LEFT" minWidth="-Infinity" prefWidth="25.0" spacing="5.0">
-                    <children>
-                       <Label minHeight="-Infinity" minWidth="-Infinity" text="Name:" HBox.hgrow="ALWAYS">
-                          <font>
-                             <Font size="15.0" />
-                          </font>
-                       </Label>
-                        <Label id="todName" fx:id="todNameLabel" layoutX="10.0" layoutY="13.0" minHeight="-Infinity" minWidth="-Infinity" prefWidth="250.0" text="name" wrapText="true" HBox.hgrow="NEVER">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                       <TextField fx:id="todNameTextField" HBox.hgrow="ALWAYS" />
-                    </children>
-                 </HBox>
                   <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="20.0" spacing="5.0">
                      <children>
                         <Label text="Fundamental Conjunctions of Contradiction" wrapText="true" />
@@ -52,7 +40,7 @@
                         <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="index" />
                         <TextField fx:id="indexCopyTextField" layoutX="46.0" layoutY="10.0" prefWidth="35.0" text="0" />
                         <Separator orientation="VERTICAL" />
-                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" onMouseReleased="#waitMessage" text="Duplicate" />
+                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" text="Duplicate" />
                      </children>
                   </HBox>
                   <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="110.0" spacing="5.0">

@@ -33,7 +33,6 @@ import javafx.scene.shape.Circle;
 import java.net.URL;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ResourceBundle;
 
 public class FruitController implements Initializable {
@@ -177,10 +176,30 @@ public class FruitController implements Initializable {
 
     }
 
+    public FccExp getFccExp() {
+        return fccExp;
+    }
+
     private void buildExpressions() {
         this.fccExp = new FccExp(fruit.getFcc(), Expression.ExpressionType.PROPOSITION);
-        this.fccExp.setOnMouseEntered(mouseEvent -> this.fccExp.setHoverStyle());
-        this.fccExp.setOnMouseExited(mouseEvent -> this.fccExp.setNormalStyle());
+
+        this.fccExp.setOnMouseEntered(mouseEvent -> {
+            this.fccExp.setHoverStyle();
+            for (Fruit fruit1 : tree.getObservableFruits()) {
+                if (fruit1.getFcc().equals(this.fruit.getFcc())) {
+                    fruit1.setHoverStyleFccExpression();
+                }
+            }
+        });
+
+        this.fccExp.setOnMouseExited(mouseEvent -> {
+            this.fccExp.setNormalStyle();
+            for (Fruit fruit1 : tree.getObservableFruits()) {
+                if (fruit1.getFcc().equals(this.fruit.getFcc())) {
+                    fruit1.setNormalStyleFccExpression();
+                }
+            }
+        });
 
         this.positiveImplicationExp =
                 new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),0),
@@ -341,11 +360,15 @@ public class FruitController implements Initializable {
         // ADD NEW FCC AS CONJUNCTION
         mainContextMenu.getItems().addAll(editMenuItem, addFccMenu(),new SeparatorMenuItem());
         // MOVE UP / DOWN (the subbranches the fruits are in)
-        MenuItem moveUpMenuItem = new MenuItem("Move up");
-        moveUpMenuItem.setOnAction(moveUp());
-        MenuItem moveDownMenuItem = new MenuItem("Move Down");
-        moveDownMenuItem.setOnAction(moveDown());
-        mainContextMenu.getItems().addAll(moveUpMenuItem,moveDownMenuItem, new SeparatorMenuItem());
+        MenuItem moveUpConMenuItem = new MenuItem("Move up the conjunction");
+        moveUpConMenuItem.setOnAction(moveUp(true));
+        MenuItem moveDownConMenuItem = new MenuItem("Move down the conjunction");
+        moveDownConMenuItem.setOnAction(moveDown(true));
+        MenuItem moveUpFccMenuItem = new MenuItem("Move up the FCC ");
+        moveUpFccMenuItem.setOnAction(moveUp(false));
+        MenuItem moveDownFccMenuItem = new MenuItem("Move down the Fcc");
+        moveDownFccMenuItem.setOnAction(moveDown(false));
+        mainContextMenu.getItems().addAll(moveUpFccMenuItem, moveDownFccMenuItem,moveUpConMenuItem,moveDownConMenuItem, new SeparatorMenuItem());
         // SHOW PROPOSITIONAL / ALGEBRAIC FORMULATIONS
         mainContextMenu.getItems().addAll(changeFccExpressionTypeMenuItem(), changeDynamismsExpressionTypeMenuItem(),new SeparatorMenuItem());
 
@@ -501,7 +524,7 @@ public class FruitController implements Initializable {
                 descendantsMenu.getItems().addAll(fccMenu);
             }
         }
-        //descendantsMenu.getItems().addAll(new SeparatorMenuItem());
+        descendantsMenu.getItems().addAll(new SeparatorMenuItem());
 
         // Descendant already done
         // If there's not a fruit elsewhere with same fcc
@@ -596,7 +619,7 @@ public class FruitController implements Initializable {
                 ascendantsMenu.getItems().addAll(fccMenu);
             }
         }
-        //ascendantsMenu.getItems().addAll(new SeparatorMenuItem());
+        ascendantsMenu.getItems().addAll(new SeparatorMenuItem());
 
         // 2) find those that are already deployed in another fruit of the same fcc
         ObservableList<Integer> isAscendantFccIdsElsewhere = FXCollections.observableArrayList();
@@ -661,7 +684,7 @@ public class FruitController implements Initializable {
     private Menu addFccMenu() {
         Menu addFccMenu = new Menu("Add a FCC in conjunction");
         // MENU ADDNEW FCC
-        MenuItem addNewFccMenuItem = new MenuItem("To a new Fcc");
+        MenuItem addNewFccMenuItem = new MenuItem("New Fcc");
         addNewFccMenuItem.setOnAction(event -> {
             dataInterface.connect();
             Fcc fcc = dataInterface.newFcc(tree.getTodController().getTod().getLogicSystem());
@@ -675,7 +698,6 @@ public class FruitController implements Initializable {
         // MENU ADD EXISTING FCC
         ObservableList<Fcc> fccToExclude = FXCollections.observableArrayList();
         ObservableList<Fruit> deployedFruits = FXCollections.observableArrayList();
-
         // exclusions
         for (SubBranch subBranch : fruit.getBranch().getSubBranches()) {
             // Exclude fccs of conjunction
@@ -687,8 +709,8 @@ public class FruitController implements Initializable {
         for (Fruit fruit : tree.getObservableFruits()) {
             if(deployedFruits.contains(fruit)) fccToExclude.add(fruit.getFcc());
         }
-
-        for (Fcc fcc : dataInterface.getListFcc()) {
+        ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
+        for (Fcc fcc : dataInterface.getFccs(tree.getTodController().getTod().getLogicSystem())) {
             if (fccToExclude.contains(fcc)) {
                 continue;
             } else {
@@ -699,73 +721,139 @@ public class FruitController implements Initializable {
                     NodeHandler.getDataInterface().disconnect();
                     tree.update();
                 });
-                addFccMenu.getItems().add(addFruit);
+                menuItems.add(addFruit);
             }
-
         }
+        Comparator<MenuItem> comparator = Comparator.comparing(MenuItem::getText);
+        FXCollections.sort(menuItems,comparator);
+        addFccMenu.getItems().addAll(menuItems);
         return  addFccMenu;
     }
 
-    private EventHandler<ActionEvent> moveUp() {
+    private EventHandler<ActionEvent> moveUp(boolean moveConjunction) {
         return actionEvent -> {
-            Branch branch= getFruit().getBranch();
-            ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
-            // Check it is not in position 0
-            if (!(branches.indexOf(branch) ==0)) {
-                Branch upperBranch = branches.get(branches.indexOf(branch)-1);
-                // Changes in FX
-                int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
-                int upperBranchIndex = fruit.getTrunk().getChildren().indexOf(upperBranch);
+            // Move conjunction (branch)
+            if (moveConjunction) {
+                Branch branch = getFruit().getBranch();
+                ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
+                // Check it is not in position 0
+                if (!(branches.indexOf(branch) == 0)) {
+                    Branch upperBranch = branches.get(branches.indexOf(branch) - 1);
+                    // Changes in FX
+                    int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
+                    int upperBranchIndex = fruit.getTrunk().getChildren().indexOf(upperBranch);
 
-                ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
-                Collections.swap(workingCollection, thisBranchIndex, upperBranchIndex);
-                fruit.getTrunk().getChildren().setAll(workingCollection);
+                    ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
+                    Collections.swap(workingCollection, thisBranchIndex, upperBranchIndex);
+                    fruit.getTrunk().getChildren().setAll(workingCollection);
 
-                // Change in MYSQL
-                dataInterface.connect();
-                int orderOfThisBranch = branch.getBranchOrder();
-                int orderOfUpperBranch = upperBranch.getBranchOrder();
-                branch.setBranchOrder(orderOfUpperBranch);
-                upperBranch.setBranchOrder(orderOfThisBranch);
-                dataInterface.disconnect();
+                    // Change in MYSQL
+                    dataInterface.connect();
+                    int orderOfThisBranch = branch.getBranchOrder();
+                    int orderOfUpperBranch = upperBranch.getBranchOrder();
+                    branch.setBranchOrder(orderOfUpperBranch);
+                    upperBranch.setBranchOrder(orderOfThisBranch);
+                    dataInterface.disconnect();
 
-                // Changes in ObservableList of Container1
-                int upperContainer1Index = dataInterface.getListContainer1s().indexOf(upperBranch.getContainer1());
-                int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
-                Collections.swap(dataInterface.getListContainer1s(),upperContainer1Index,thisContainer1Index);
+                    // Changes in ObservableList of Container1
+                    int upperContainer1Index = dataInterface.getListContainer1s().indexOf(upperBranch.getContainer1());
+                    int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
+                    Collections.swap(dataInterface.getListContainer1s(), upperContainer1Index, thisContainer1Index);
+                }
+            } else {
+                // Move subBranch
+                SubBranch subBranch = getFruit().getSubBranch();
+                ObservableList<SubBranch> subBranches = getFruit().getBranch().getSubBranches();
+                // Check it is not in position 0
+                if (!(subBranches.indexOf(subBranch) == 0)) {
+                    System.out.println(1);
+                    SubBranch upperSubBranch = subBranches.get(subBranches.indexOf(subBranch)-1);
+                    //FX
+                    int thisSubBranchIndex = fruit.getBranch().getSubBranches().indexOf(subBranch);
+                    int upperSubBranchIndex = fruit.getBranch().getSubBranches().indexOf(upperSubBranch);
+
+                    ObservableList<SubBranch> workingCollection = FXCollections.observableArrayList(subBranches);
+                    Collections.swap(workingCollection, thisSubBranchIndex, upperSubBranchIndex);
+                    //fruit.getBranch().setSubBranches(workingCollection);
+                    fruit.getBranch().getSubBranchesNodes().setAll(workingCollection);
+
+                    // Change in MYSQL
+                    dataInterface.connect();
+                    int orderOfThisSubBranch = subBranch.getSubBranchOrder();
+                    int orderOfUpperSubBranch = upperSubBranch.getSubBranchOrder();
+                    subBranch.setSubBranchOrder(orderOfUpperSubBranch);
+                    upperSubBranch.setSubBranchOrder(orderOfThisSubBranch);
+                    dataInterface.disconnect();
+
+                    // Changes in ObservableList of Container1
+                    int upperContainer2Index = dataInterface.getListContainer2s().indexOf(upperSubBranch.getContainer2());
+                    int thisContainer2Index = dataInterface.getListContainer2s().indexOf(subBranch.getContainer2());
+                    Collections.swap(dataInterface.getListContainer2s(), upperContainer2Index, thisContainer2Index);
+                }
             }
             Platform.runLater(() -> tree.updateKnobsBounds());
         };
     }
 
-    private EventHandler<ActionEvent> moveDown() {
+    private EventHandler<ActionEvent> moveDown(boolean moveConjunction) {
         return actionEvent -> {
-            Branch branch= getFruit().getBranch();
-            ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
-            // Check it is not in last position
-            int lastPosition = branches.size()-1;
-            if (!(branches.indexOf(branch) ==lastPosition)) {
-                Branch lowerBranch = branches.get(branches.indexOf(branch)+1);
-                //changes in FX
-                int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
-                int lowerBranchIndex = fruit.getTrunk().getChildren().indexOf(lowerBranch);
+            if (moveConjunction) {
+                Branch branch= getFruit().getBranch();
+                ObservableList<Branch> branches = getFruit().getTrunk().getBranches();
+                // Check it is not in last position
+                int lastPosition = branches.size()-1;
+                if (!(branches.indexOf(branch) ==lastPosition)) {
+                    Branch lowerBranch = branches.get(branches.indexOf(branch)+1);
+                    //changes in FX
+                    int thisBranchIndex = fruit.getTrunk().getChildren().indexOf(branch);
+                    int lowerBranchIndex = fruit.getTrunk().getChildren().indexOf(lowerBranch);
 
-                ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
-                Collections.swap(workingCollection, thisBranchIndex, lowerBranchIndex);
-                fruit.getTrunk().getChildren().setAll(workingCollection);
+                    ObservableList<Branch> workingCollection = FXCollections.observableArrayList(fruit.getTrunk().getBranches());
+                    Collections.swap(workingCollection, thisBranchIndex, lowerBranchIndex);
+                    fruit.getTrunk().getChildren().setAll(workingCollection);
 
-                //Change in MYSQL
-                dataInterface.connect();
-                int orderOfThisBranch = branch.getBranchOrder();
-                int orderOfLowerBranch = lowerBranch.getBranchOrder();
-                branch.setBranchOrder(orderOfLowerBranch);
-                lowerBranch.setBranchOrder(orderOfThisBranch);
-                dataInterface.disconnect();
+                    //Change in MYSQL
+                    dataInterface.connect();
+                    int orderOfThisBranch = branch.getBranchOrder();
+                    int orderOfLowerBranch = lowerBranch.getBranchOrder();
+                    branch.setBranchOrder(orderOfLowerBranch);
+                    lowerBranch.setBranchOrder(orderOfThisBranch);
+                    dataInterface.disconnect();
 
-                // Changes in ObservableList
-                int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
-                int lowerContainer1Index = dataInterface.getListContainer1s().indexOf(lowerBranch.getContainer1());
-                Collections.swap(dataInterface.getListContainer1s(),lowerContainer1Index,thisContainer1Index);
+                    // Changes in ObservableList
+                    int thisContainer1Index = dataInterface.getListContainer1s().indexOf(branch.getContainer1());
+                    int lowerContainer1Index = dataInterface.getListContainer1s().indexOf(lowerBranch.getContainer1());
+                    Collections.swap(dataInterface.getListContainer1s(),lowerContainer1Index,thisContainer1Index);
+                }
+            } else {
+                // Move subBranch
+                SubBranch subBranch = getFruit().getSubBranch();
+                ObservableList<SubBranch> subBranches = getFruit().getBranch().getSubBranches();
+                // Check it is not in position 0
+                if (!(subBranches.indexOf(subBranch) == subBranches.size()-1)) {
+                    SubBranch lowerSubBranch = subBranches.get(subBranches.indexOf(subBranch)+1);
+                    //FX
+                    int thisSubBranchIndex = fruit.getBranch().getSubBranches().indexOf(subBranch);
+                    int lowerSubBranchIndex = fruit.getBranch().getSubBranches().indexOf(lowerSubBranch);
+
+                    ObservableList<SubBranch> workingCollection = FXCollections.observableArrayList(fruit.getBranch().getSubBranches());
+                    Collections.swap(workingCollection, thisSubBranchIndex, lowerSubBranchIndex);
+                    //fruit.getBranch().getSubBranches().setAll(workingCollection);
+                    fruit.getBranch().getSubBranchesNodes().setAll(workingCollection);
+
+                    // Change in MYSQL
+                    dataInterface.connect();
+                    int orderOfThisSubBranch = subBranch.getSubBranchOrder();
+                    int orderOfLowerSubBranch = lowerSubBranch.getSubBranchOrder();
+                    subBranch.setSubBranchOrder(orderOfLowerSubBranch);
+                    lowerSubBranch.setSubBranchOrder(orderOfThisSubBranch);
+                    dataInterface.disconnect();
+
+                    // Changes in ObservableList of Container1
+                    int upperContainer2Index = dataInterface.getListContainer2s().indexOf(lowerSubBranch.getContainer2());
+                    int thisContainer2Index = dataInterface.getListContainer2s().indexOf(subBranch.getContainer2());
+                    Collections.swap(dataInterface.getListContainer2s(), upperContainer2Index, thisContainer2Index);
+                }
             }
             Platform.runLater(() -> tree.updateKnobsBounds());
         };
@@ -888,7 +976,7 @@ public class FruitController implements Initializable {
         Dynamism thisDynamism = dataInterface.getDynamism(fruit.getFcc(),orientation.getOrientation());
 
         // Add MenuItem: New fcc
-        MenuItem deployToNewFccMenuItem = new MenuItem("New FCC");
+        MenuItem deployToNewFccMenuItem = new MenuItem("To a new FCC");
         deployToNewFccMenuItem.setOnAction(deployNewAscendantAction(thisDynamism,true));
         ascendantsMenu.getItems().addAll(deployToNewFccMenuItem, new SeparatorMenuItem());
 

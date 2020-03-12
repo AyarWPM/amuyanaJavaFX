@@ -5,9 +5,12 @@ import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Container0;
 import com.amuyana.app.data.tod.containers.Container1;
 import com.amuyana.app.data.tod.containers.Container2;
+import com.amuyana.app.node.NodeInterface;
 import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.CClassHasInclusion;
 import com.amuyana.app.data.tod.containers.Tod;
+
+import java.util.List;
 
 public interface DataInterface {
 
@@ -43,6 +46,7 @@ public interface DataInterface {
     ObservableList<Container2> getContainer2s(Container1 container1);
     ObservableList<Container1> getContainer1s(Container0 container0);
     ObservableList<Container1> getListContainer1s();
+    ObservableList<Container2> getListContainer2s();
 
     Container0 getSideContainer0(Container2 container2, boolean side); // 0 is left, 1 is right
     Container0 getSideContainer0(Container1 container1, boolean side); // 0 is left, 1 is right
@@ -87,6 +91,7 @@ public interface DataInterface {
     // Container2
     void delete(Container2 container2);
     Container2 newContainer2(Fcc fcc, Container1 container1);
+    void update(Container2 container2);
 
     void addContainer0in2(Container0 container0, Container2 container2, boolean side);
     void addContainer0in1(Container0 container0, Container1 container1, boolean side);

@@ -29,6 +29,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -188,44 +190,59 @@ public class TodController implements Initializable {
             amount = Integer.parseInt(amountCopyTextField.getText());
             index = Integer.parseInt(indexCopyTextField.getText());
         }catch(NumberFormatException e) {
-            nodeInterface.log("Enter positive values in \"amount\" and \"index\" fields");
+            nodeInterface.log("Enter integers in \"amount\" and \"index\" fields");
             return;
         }
         if (fccsInTodListView.getSelectionModel().isEmpty()) {
             nodeInterface.log("Select an FCC from the list");
+            return;
         }
-        if (amount == 0) {
-            nodeInterface.log("0 Fccs have been duplicated");
+        if (amount <= 0) {
+            nodeInterface.log("Amount must be positive");
             return;
         }
         if (amount > 10) {
             nodeInterface.log("Maximum amount is 10");
+            return;
         }
+        Fcc fccToDuplicate = fccsInTodListView.getSelectionModel().getSelectedItem();
 
-        Platform.runLater(()->{
-            dataInterface.connect();
-            if (!fccsInTodListView.getSelectionModel().isEmpty()) {
-                Fcc oldFcc = fccsInTodListView.getSelectionModel().getSelectedItem();
-                int i=index;
-                while (i < index + amount) {
-                    if (index == 0) {
-                        Fcc newFcc = dataInterface.duplicateFcc(oldFcc,0,tod.getLogicSystem());
-                    } else if (index > 0) {
-                        Fcc newFcc = dataInterface.duplicateFcc(oldFcc,i,tod.getLogicSystem());
-                    }
-                    i++;
+        nodeInterface.log("Duplicating " + fccToDuplicate + ", please wait...");
+        Task<Void> sleeper = new Task<Void>() {
+            @Override
+            protected Void call() {
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.err.println(e);
                 }
-                tree.updateFruitsMenus();
-                nodeInterface.log(amount + " FCCs have been duplicated");
+                return null;
             }
-            dataInterface.disconnect();
+        };
+        sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                dataInterface.connect();
+                if (!fccsInTodListView.getSelectionModel().isEmpty()) {
+                    int i=index;
+                    while (i < index + amount) {
+                        if (index == 0) {
+                            Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,0,tod.getLogicSystem());
+                        } else if (index > 0) {
+                            Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,i,tod.getLogicSystem());
+                        }
+                        i++;
+                    }
+                    tree.updateFruitsMenus();
+                    nodeInterface.log(fccToDuplicate.getName() + " has been duplicated " + amount + " times");
+                }
+                dataInterface.disconnect();
+            }
         });
+        new Thread(sleeper).start();
 
-    }
 
-    @FXML
-    private void waitMessage() {
-        nodeInterface.log("Please wait");
+
     }
 
     @FXML

@@ -27,7 +27,7 @@ public class Amuyana extends Application {
         //nodeInterface.openDebug1();
 
         // Debug TOD
-        /*dataInterface.setDataConnectionValues("localhost","amuyana","");
+/*        dataInterface.setDataConnectionValues("localhost","amuyana","");
         dataInterface.connect();
         dataInterface.loadData();
         dataInterface.disconnect();

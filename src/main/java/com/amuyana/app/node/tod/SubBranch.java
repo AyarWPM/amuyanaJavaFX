@@ -107,7 +107,7 @@ public class SubBranch extends HBox {
         return this.branch;
     }
 
-    Container2 getContainer2() {
+    public Container2 getContainer2() {
         return this.container2;
     }
 
@@ -142,6 +142,15 @@ public class SubBranch extends HBox {
     void initLeftTrunk() {
         Container0 leftContainer0 = dataInterface.getSideContainer0(container2,false);
         this.leftTrunk = new Trunk(getTrunk().getTree(), leftContainer0, this, false);
+    }
+
+    public int getSubBranchOrder() {
+        return container2.getSubBranchOrder();
+    }
+
+    public void setSubBranchOrder(int order) {
+        container2.setSubBranchOrder(order);
+        dataInterface.update(container2);
     }
 
 }

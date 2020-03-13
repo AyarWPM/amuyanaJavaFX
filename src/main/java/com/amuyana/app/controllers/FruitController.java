@@ -768,7 +768,6 @@ public class FruitController implements Initializable {
                 ObservableList<SubBranch> subBranches = getFruit().getBranch().getSubBranches();
                 // Check it is not in position 0
                 if (!(subBranches.indexOf(subBranch) == 0)) {
-                    System.out.println(1);
                     SubBranch upperSubBranch = subBranches.get(subBranches.indexOf(subBranch)-1);
                     //FX
                     int thisSubBranchIndex = fruit.getBranch().getSubBranches().indexOf(subBranch);

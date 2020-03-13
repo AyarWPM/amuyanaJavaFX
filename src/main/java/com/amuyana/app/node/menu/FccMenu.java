@@ -8,6 +8,9 @@ import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.CheckMenuItem;
@@ -119,51 +122,71 @@ public class FccMenu extends Menu {
                                                                    Dynamism ascendantDynamism,
                                                                    CheckMenuItem checkMenuItem, boolean inFccOnly) {
         return actionEvent -> {
-            dataInterface.connect();
-            // If user selects
-            if (checkMenuItem.selectedProperty().get()) {
-                dataInterface.newInclusion(descendantDynamism,ascendantDynamism, tree.getTodController().getTod());
-                // If there's a fruit already just add inclusion (fruits are tied already)
-                boolean thereIsAFruit = false;
-                for (Fruit fruit1 : fruit.getAscendantFruits()) {
-                    if (fruit1.getFcc().getIdFcc() == ascendantDynamism.getFcc().getIdFcc()) {
-                        thereIsAFruit = true;
-                        fruitController.tieAscendant(fruit1);
-                        break;
+            tree.getTodController().getNodeInterface().log("Applying changes, please wait...");
+            Task<Void> sleeper = new Task<Void>() {
+                @Override
+                protected Void call() {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        System.err.println(e);
                     }
+                    return null;
                 }
-                if (!thereIsAFruit) {
-                    Fruit newFruit = null;
-                    if (inFccOnly) {
-                        newFruit = fruit.getSubBranch().addToLeftTrunk(fcc);
-                    } else {
-                        newFruit = fruit.getBranch().addToLeftTrunk(fcc);
-                    }
-                    //fruitController.resetValueInScaleSlider();
-
-                    fruitController.tieAscendant(newFruit);
-                }
-            }
-            // If user deselects
-            else if (!checkMenuItem.selectedProperty().get()) {
-                Inclusion inclusionToRemove = null;
-                for (Inclusion inclusion : dataInterface.getListInclusions()) {
-                    if (inclusion.getTod().equals(tod)) {
-                        if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
-                            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                                inclusionToRemove=inclusion;
+            };
+            sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
+                    dataInterface.connect();
+                    // If user selects
+                    if (checkMenuItem.selectedProperty().get()) {
+                        dataInterface.newInclusion(descendantDynamism,ascendantDynamism, tree.getTodController().getTod());
+                        // If there's a fruit already just add inclusion (fruits are tied already)
+                        boolean thereIsAFruit = false;
+                        for (Fruit fruit1 : fruit.getAscendantFruits()) {
+                            if (fruit1.getFcc().getIdFcc() == ascendantDynamism.getFcc().getIdFcc()) {
+                                thereIsAFruit = true;
+                                fruitController.tieAscendant(fruit1);
+                                break;
                             }
                         }
+                        if (!thereIsAFruit) {
+                            Fruit newFruit = null;
+                            if (inFccOnly) {
+                                newFruit = fruit.getSubBranch().addToLeftTrunk(fcc);
+                            } else {
+                                newFruit = fruit.getBranch().addToLeftTrunk(fcc);
+                            }
+                            //fruitController.resetValueInScaleSlider();
+
+                            fruitController.tieAscendant(newFruit);
+                        }
                     }
+                    // If user deselects
+                    else if (!checkMenuItem.selectedProperty().get()) {
+                        Inclusion inclusionToRemove = null;
+                        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+                            if (inclusion.getTod().equals(tod)) {
+                                if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                                    if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                                        inclusionToRemove=inclusion;
+                                    }
+                                }
+                            }
+                        }
+                        dataInterface.delete(inclusionToRemove);
+                    }
+                    tree.updateOrientationTies();
+                    tree.checkFruitsRemoval();
+                    tree.updateFruitsMenus();
+                    tree.getTodController().updateListViews();
+                    //tree.update();
+                    dataInterface.disconnect();
                 }
-                dataInterface.delete(inclusionToRemove);
-            }
-            tree.updateOrientationTies();
-            tree.checkFruitsRemoval();
-            tree.updateFruitsMenus();
-            tree.getTodController().updateListViews();
-            //tree.update();
-            dataInterface.disconnect();
+            });
+            new Thread(sleeper).start();
+
+
         };
     }
 
@@ -172,54 +195,73 @@ public class FccMenu extends Menu {
                                                                    CheckMenuItem checkMenuItem,
                                                                    boolean inFccOnly) {
         return actionEvent -> {
-            dataInterface.connect();
-            // if user selects
-            if (checkMenuItem.selectedProperty().get()) {
-                // Create inclusion
-                dataInterface.newInclusion(descendantDynamism, ascendantDynamism, tree.getTodController().getTod());
+            tree.getTodController().getNodeInterface().log("Applying changes, please wait...");
+            Task<Void> sleeper = new Task<Void>() {
+                @Override
+                protected Void call() {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        System.err.println(e);
+                    }
+                    return null;
+                }
+            };
+            sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+                @Override
+                public void handle(WorkerStateEvent event) {
 
-                // If there's a fruit as descendant with fcc of descendantDynamism don't add a new Fruit
-                boolean thereIsAFruit = false;
-                for (Fruit fruit1 : fruit.getDescendantFruits()) {
-                    if (fruit1.getFcc().getIdFcc() == descendantDynamism.getFcc().getIdFcc()) {
-                        thereIsAFruit=true;
-                        fruitController.tieDescendant(fruit1);
-                        break;
-                    }
-                }
-                // If there's not a fruit add one
-                if (!thereIsAFruit) {
-                    Fruit newFruit=null;
-                    //fruitController.resetValueInScaleSlider();
-                    // in subBranch
-                    if (inFccOnly) {
-                        newFruit = fruit.getSubBranch().addToRightTrunk(fcc);
-                    } else {
-                        newFruit = fruit.getBranch().addToRightTrunk(fcc);
-                    }
-                    fruitController.tieDescendant(newFruit);
-                }
-            }
-            // if user deselects
-            else if (!checkMenuItem.selectedProperty().get()){
-                Inclusion inclusionToRemove = null;
-                for (Inclusion inclusion : dataInterface.getListInclusions()) {
-                    if (inclusion.getTod().equals(tod)) {
-                        if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
-                            if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
-                                inclusionToRemove=inclusion;
+                    dataInterface.connect();
+                    // if user selects
+                    if (checkMenuItem.selectedProperty().get()) {
+                        // Create inclusion
+                        dataInterface.newInclusion(descendantDynamism, ascendantDynamism, tree.getTodController().getTod());
+
+                        // If there's a fruit as descendant with fcc of descendantDynamism don't add a new Fruit
+                        boolean thereIsAFruit = false;
+                        for (Fruit fruit1 : fruit.getDescendantFruits()) {
+                            if (fruit1.getFcc().getIdFcc() == descendantDynamism.getFcc().getIdFcc()) {
+                                thereIsAFruit=true;
+                                fruitController.tieDescendant(fruit1);
+                                break;
                             }
                         }
+                        // If there's not a fruit add one
+                        if (!thereIsAFruit) {
+                            Fruit newFruit=null;
+                            //fruitController.resetValueInScaleSlider();
+                            // in subBranch
+                            if (inFccOnly) {
+                                newFruit = fruit.getSubBranch().addToRightTrunk(fcc);
+                            } else {
+                                newFruit = fruit.getBranch().addToRightTrunk(fcc);
+                            }
+                            fruitController.tieDescendant(newFruit);
+                        }
                     }
+                    // if user deselects
+                    else if (!checkMenuItem.selectedProperty().get()){
+                        Inclusion inclusionToRemove = null;
+                        for (Inclusion inclusion : dataInterface.getListInclusions()) {
+                            if (inclusion.getTod().equals(tod)) {
+                                if (inclusion.getParticular().getIdDynamism()==descendantDynamism.getIdDynamism()) {
+                                    if (inclusion.getGeneral().getIdDynamism()==ascendantDynamism.getIdDynamism()) {
+                                        inclusionToRemove=inclusion;
+                                    }
+                                }
+                            }
+                        }
+                        dataInterface.delete(inclusionToRemove);
+                    }
+                    tree.updateOrientationTies();
+                    tree.checkFruitsRemoval();
+                    tree.updateFruitsMenus();
+                    tree.getTodController().updateListViews();
+                    dataInterface.disconnect();
                 }
-                dataInterface.delete(inclusionToRemove);
-            }
-            tree.updateOrientationTies();
-            tree.checkFruitsRemoval();
-            tree.updateFruitsMenus();
-            tree.getTodController().updateListViews();
-            dataInterface.disconnect();
-            //tree.update();
+            });
+            new Thread(sleeper).start();
+
         };
     }
 }

@@ -16,6 +16,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -264,76 +267,28 @@ public class Tree extends Group {
         }
         updateKnobsBounds();
         if(removeTie) remove(tieToRemove);
-
-        if (removeFruit) {
-            remove(FXCollections.observableArrayList(),fruitToRemove);
-        }
+        if(removeFruit) remove(FXCollections.observableArrayList(), fruitToRemove);
     }
-
-    /*public void checkFruitsRemoval() {
-        // As the changes are produced one by one we'll find a tie with all orientations false (and no more than 1)
-        // But we also have to check that the fruit has no ties to conjunction FCC's
-        boolean removeTie = false;
-        Tie tieToRemove = null;
-        boolean removeFruit = false;
-        Fruit fruitToRemove = null;
-        for (Tie tie : ties) {
-            if (!tie.getPositiveOrientation() && !tie.getNegativeOrientation() && !tie.getSymmetricOrientation()) {
-                removeTie = true;
-                tieToRemove=tie;
-                removeFruit = true;
-                if (tie.getAscendantFruit().isChild(tie.getDescendantFruit())) {
-                    // Check there is not another tie with the descendant as descendant...
-                    for (Tie tie1 : ties) {
-                        // ignore if its the same tie
-                        if(tie.equals(tie1)) continue;
-                        if (tie1.getDescendantFruit().equals(tie.getDescendantFruit())) {
-                            removeFruit=false;
-                            break;
-                        }
-                    }
-                    //Remove descendantFruit as it is child
-                    if(removeFruit) fruitToRemove=tie.getDescendantFruit();
-                } else if (tie.getDescendantFruit().isChild(tie.getAscendantFruit())) {
-                    // check other ties as well
-                    for (Tie tie1 : ties) {
-                        if(tie.equals(tie1)) continue;
-                        if (tie1.getAscendantFruit().equals(tie.getAscendantFruit())) {
-                            removeFruit=false;
-                            break;
-                        }
-                    }
-                    //Remove ascendantFruit as it is child
-                    if(removeFruit) fruitToRemove=tie.getAscendantFruit();
-                }
-            }
-        }
-        updateKnobsBounds();
-        if(removeTie) remove(tieToRemove);
-
-        if (removeFruit) {
-            remove(FXCollections.observableArrayList(),fruitToRemove);
-        }
-    }*/
 
     public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
         fruitsToRemove.addAll(fruit);
         // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
         // left
-        ObservableList<Branch> leftBranches  = FXCollections.observableArrayList();
         if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
         }
-        leftBranches.addAll(fruit.getSubBranch().getLeftTrunk().getBranches());
         if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
         }
-        leftBranches.addAll(fruit.getBranch().getLeftTrunk().getBranches());
         // right
-        ObservableList<Branch> rightBranches=FXCollections.observableArrayList();
         if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
         }
-        rightBranches.addAll(fruit.getSubBranch().getRightTrunk().getBranches());
         if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
         }
+
+        ObservableList<Branch> leftBranches  = FXCollections.observableArrayList();
+        leftBranches.addAll(fruit.getSubBranch().getLeftTrunk().getBranches());
+        leftBranches.addAll(fruit.getBranch().getLeftTrunk().getBranches());
+        ObservableList<Branch> rightBranches=FXCollections.observableArrayList();
+        rightBranches.addAll(fruit.getSubBranch().getRightTrunk().getBranches());
         rightBranches.addAll(fruit.getBranch().getRightTrunk().getBranches());
 
         Dynamism thisPositiveDynamism = dataInterface.getDynamism(fruit.getFcc(),0);

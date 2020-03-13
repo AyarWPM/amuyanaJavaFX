@@ -36,12 +36,24 @@ public class Log extends Group {
         // in bottom bar
         Label label = new Label(messageString);
         label.setGraphic(new Circle(5,Color.web("#CC0000")));
-        messageGroup.getChildren().setAll(label);
 
-        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(7),messageGroup);
-        fadeTransition.setFromValue(1.0);
-        fadeTransition.setToValue(0.0);
-        fadeTransition.play();
+        FadeTransition fadeTransitionOut = new FadeTransition(Duration.seconds(7),messageGroup);
+        fadeTransitionOut.setFromValue(1.0);
+        fadeTransitionOut.setToValue(0.0);
+
+        FadeTransition fadeTransitionIn = new FadeTransition(Duration.seconds(0.5),messageGroup);
+        fadeTransitionIn.setFromValue(0.0);
+        fadeTransitionIn.setToValue(1.0);
+        messageGroup.getChildren().setAll(label);
+        messageGroup.setOnMouseEntered(event -> {
+            fadeTransitionOut.stop();
+            fadeTransitionIn.play();
+        });
+        messageGroup.setOnMouseExited(event -> {
+            fadeTransitionIn.stop();
+            fadeTransitionOut.play();
+        });
+        fadeTransitionOut.play();
 
         // in listview
         logListView.getItems().add(messageString);

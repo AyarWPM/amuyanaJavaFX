@@ -40,4 +40,6 @@ public interface NodeInterface {
     void openFccTableTab();
 
     void log(String e);
+
+    void logSQLException();
 }

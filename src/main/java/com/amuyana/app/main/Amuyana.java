@@ -19,7 +19,7 @@ public class Amuyana extends Application {
     public void start(Stage stage) {
         DataInterface dataInterface = new DataHandler();
         NodeInterface nodeInterface = new NodeHandler(dataInterface, stage);
-
+        dataInterface.setNodeInterface(nodeInterface);
         Scene scene = new Scene((BorderPane) nodeInterface.getRootNode(), 900, 700);
         stage.setTitle(NodeHandler.VERSION);
         stage.setScene(scene);

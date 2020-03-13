@@ -1,5 +1,7 @@
 package com.amuyana.app.data.tod.containers;
 
+import com.amuyana.app.data.DataHandler;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
@@ -43,6 +45,7 @@ public class Container0 {
             return result;
 
         } catch (SQLException ex) {
+            DataHandler.getNodeInterface().logSQLException();
             ex.printStackTrace();
         }
 

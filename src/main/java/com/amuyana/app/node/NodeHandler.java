@@ -309,6 +309,15 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     public void log(String e) {
         log.register(e);
     }
+
+    @Override
+    public void logSQLException() {
+        log("It seems like you're not connected to the Internet. Otherwise please inform the developers of this error.");
+    }
+/*
+    public static void logError(String s) {
+        log("e");
+    }*/
 /*
     @Override
     public Node getStyleableNode() {

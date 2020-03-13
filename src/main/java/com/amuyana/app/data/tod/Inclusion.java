@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataHandler;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.tod.containers.Tod;
 import javafx.beans.property.IntegerProperty;
@@ -132,6 +133,7 @@ public class Inclusion{
             instruction.setInt(1, this.idInclusion.get());
             return instruction.executeUpdate();
         } catch (SQLException e) {
+            DataHandler.getNodeInterface().logSQLException();
             e.printStackTrace();
             return 0;
         }

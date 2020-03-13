@@ -2,13 +2,9 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
-import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +46,7 @@ public class DataHandler implements DataInterface {
     private ObservableList<InclusionHasSyllogism> listIHS;
 
     private DataConnection dataConnection;
+    private static NodeInterface nodeInterface;
 
     public DataHandler() {
         this.dataConnection = new DataConnection();
@@ -399,8 +396,8 @@ public class DataHandler implements DataInterface {
     }
 
     @Override
-    public void connect() {
-        dataConnection.connect();
+    public boolean connect() {
+        return dataConnection.connect();
 /*        Task<Void> sleeper = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -441,6 +438,15 @@ public class DataHandler implements DataInterface {
             }
         }
         return null;
+    }
+
+    @Override
+    public void setNodeInterface(NodeInterface nodeInterface) {
+        DataHandler.nodeInterface = nodeInterface;
+    }
+
+    public static NodeInterface getNodeInterface() {
+        return DataHandler.nodeInterface;
     }
 
     // FCC

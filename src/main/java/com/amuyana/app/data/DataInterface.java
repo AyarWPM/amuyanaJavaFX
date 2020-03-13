@@ -10,8 +10,6 @@ import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.CClassHasInclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 
-import java.util.List;
-
 public interface DataInterface {
 
     void setDataConnectionValues(String url, String name, String password);
@@ -112,8 +110,10 @@ public interface DataInterface {
     boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism, Tod tod);
     boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism);
 
-    void connect();
+    boolean connect();
     void disconnect();
 
     LogicSystem getLogicSystem(Fcc fcc);
+
+    void setNodeInterface(NodeInterface nodeInterface);
 }

@@ -688,7 +688,10 @@ public class FruitController implements Initializable {
         // MENU ADDNEW FCC
         MenuItem addNewFccMenuItem = new MenuItem("New Fcc");
         addNewFccMenuItem.setOnAction(event -> {
-            dataInterface.connect();
+            if(!dataInterface.connect()){
+                tree.getTodController().getNodeInterface().logSQLException();
+                return;
+            }
             Fcc fcc = dataInterface.newFcc(tree.getTodController().getTod().getLogicSystem());
             fruit.getBranch().newSubBranch(fcc);
             dataInterface.disconnect();
@@ -718,10 +721,14 @@ public class FruitController implements Initializable {
             } else {
                 MenuItem addFruit = new MenuItem(fcc.getName());
                 addFruit.setOnAction(event -> {
-                    NodeHandler.getDataInterface().connect();
-                    fruit.getBranch().newSubBranch(fcc);
-                    NodeHandler.getDataInterface().disconnect();
-                    tree.update();
+                    if(!dataInterface.connect()){
+                        tree.getTodController().getNodeInterface().logSQLException();
+                        return;
+                    } else{
+                        fruit.getBranch().newSubBranch(fcc);
+                        NodeHandler.getDataInterface().disconnect();
+                        tree.update();
+                    }
                 });
                 menuItems.add(addFruit);
             }

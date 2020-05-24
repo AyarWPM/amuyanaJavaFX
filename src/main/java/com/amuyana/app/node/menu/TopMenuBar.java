@@ -8,18 +8,24 @@ import com.amuyana.app.node.NodeInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 
-public class TopMenuBar extends MenuBar {
+public class TopMenuBar extends HBox {
     private NodeInterface nodeInterface;
     private DataInterface dataInterface;
 
-    private Menu fileMenu;
-    private Menu logicSystemMenu;
-    private Menu todMenu;
+    private Button connectionButton;
+    private MenuButton logicSystemMenuButton;
+    private MenuButton todMenuButton;
+    private Button syllogismButton;
+    private Button fccButton;
+    private Button tutorialButton;
+    private Button aboutButton;
+
     private Menu dialecticsMenu;
     private Menu statisticsMenu;
-    private Menu tutorialsMenu;
-    private Menu helpMenu;
 
     private ObservableList<LogicSystemMenu> logicSystemMenus;
     private ObservableList<TodMenu> todMenus;
@@ -27,68 +33,96 @@ public class TopMenuBar extends MenuBar {
     public TopMenuBar(NodeInterface nodeInterface) {
         this.nodeInterface = nodeInterface;
         this.dataInterface = NodeHandler.getDataInterface();
-        initialize();
-        setInitialValues();
+        buildMenu();
+        setInitialStates();
     }
 
-    private void setInitialValues() {
-        this.logicSystemMenu.setDisable(true);
-        this.todMenu.setDisable(true);
+    private void setInitialStates() {
+        this.logicSystemMenuButton.setDisable(true);
+        this.todMenuButton.setDisable(true);
         //this.dialecticsMenu.setDisable(true);
         //this.statisticsMenu.setDisable(true);
     }
 
-    private void initialize() {
-        this.fileMenu = new Menu("Amuyaña");
-        this.logicSystemMenu = new Menu("Logic System");
-        this.todMenu = new Menu("Table of Deductions");
-        initializeFileMenu();
-        initializeLogicSystemMenu();
-        initializeTodMenu();
-        //initializeDialecticsMenu();
-        //initializeStatisticsMenu();
-        initializeTutorialsMenu();
-        initializeHelpMenu();
-        getMenus().addAll(fileMenu,logicSystemMenu,todMenu, helpMenu);
-        //getMenus().addAll(fileMenu,logicSystemMenu,todMenu,dialecticsMenu,statisticsMenu,tutorialsMenu,helpMenu);
-    }
-
     public void logicSystemIsLoaded(boolean isLoaded) {
         if (isLoaded) {
-            todMenu.setDisable(false);
+            todMenuButton.setDisable(false);
             //dialecticsMenu.setDisable(false);
             //statisticsMenu.setDisable(false);
         } else {
-            todMenu.setDisable(true);
+            todMenuButton.setDisable(true);
             //dialecticsMenu.setDisable(true);
             //statisticsMenu.setDisable(true);
         }
     }
 
-    private void initializeFileMenu() {
-        MenuItem connexionMenuItem = new MenuItem("Connexion");
-        connexionMenuItem.setOnAction(actionEvent -> openConnectionTab());
+    private void buildMenu() {
+        buildConnectionMenu();
+        buildLogicSystemMenu();
+        buildTodMenu();
+        buildSyllogismMenu();
+        buildFccMenu();
+        buildTutorialMenu();
+        buildAboutMenu();
+        getChildren().addAll(this.connectionButton,this.logicSystemMenuButton,this.todMenuButton,this.syllogismButton,this.fccButton,tutorialButton, aboutButton);
 
-        MenuItem exitMenuItem = new MenuItem("Exit");
-        exitMenuItem.setOnAction(actionEvent -> nodeInterface.exitAmuyana());
-        fileMenu.getItems().addAll(connexionMenuItem,exitMenuItem);
+        //getMenus().addAll(connectionMenu,logicSystemMenu,todMenu, helpMenu);
+        //getMenus().addAll(fileMenu,logicSystemMenu,todMenu,dialecticsMenu,statisticsMenu,tutorialsMenu,helpMenu);
+        //initializeDialecticsMenu();
+        //initializeStatisticsMenu();
     }
 
-    private void initializeLogicSystemMenu() {
+    private void buildConnectionMenu() {
+        this.connectionButton = new Button("Connection");
+        ImageView connectionImageView = new ImageView(
+                new Image("/images/icons/menu/connection.png",50,50,true,true));
+        this.connectionButton.setGraphic(connectionImageView);
+        this.connectionButton.setContentDisplay(ContentDisplay.TOP);
+        this.connectionButton.setOnAction(actionEvent -> openConnectionTab());
+    }
+
+    private void buildLogicSystemMenu() {
         logicSystemMenus = FXCollections.observableArrayList();
+        this.logicSystemMenuButton = new MenuButton("Logic System");
+        ImageView systemImageView = new ImageView(
+                new Image("/images/icons/menu/system.png",50,50,true,true));
+        this.logicSystemMenuButton.setGraphic(systemImageView);
+        this.logicSystemMenuButton.setContentDisplay(ContentDisplay.TOP);
         MenuItem newLogicSystemMenuItem = new MenuItem("New");
         newLogicSystemMenuItem.setOnAction(actionEvent -> nodeInterface.openLogicSystemTab());
-        logicSystemMenu.getItems().addAll(newLogicSystemMenuItem,new SeparatorMenuItem());
+        logicSystemMenuButton.getItems().addAll(newLogicSystemMenuItem,new SeparatorMenuItem());
     }
 
-    private void initializeTodMenu() {
+    private void buildTodMenu() {
         this.todMenus = FXCollections.observableArrayList();
+        this.todMenuButton = new MenuButton("Table of Deductions");
+        ImageView todImageView = new ImageView(
+                new Image("/images/icons/menu/table.png",50,50,true,true));
+        this.todMenuButton.setGraphic(todImageView);
+        this.todMenuButton.setContentDisplay(ContentDisplay.TOP);
         MenuItem newTodMenuItem = new MenuItem("New");
         newTodMenuItem.setOnAction(actionEvent -> nodeInterface.newTodTab());
-        MenuItem editFccsMenuItem = new MenuItem("FCCs viewer");
-        editFccsMenuItem.setOnAction(actionEvent -> nodeInterface.openFccTableTab());
+        this.todMenuButton.getItems().addAll(newTodMenuItem,new SeparatorMenuItem());
+    }
 
-        this.todMenu.getItems().addAll(newTodMenuItem,editFccsMenuItem,new SeparatorMenuItem());
+    private void buildSyllogismMenu() {
+        this.syllogismButton = new Button("Syllogisms");
+        ImageView imageView = new ImageView(
+                new Image("/images/icons/menu/syllogism.png",50,50,true,true));
+        this.syllogismButton.setGraphic(imageView);
+        this.syllogismButton.setContentDisplay(ContentDisplay.TOP);
+        this.syllogismButton.setOnAction(actionEvent -> {
+            nodeInterface.log("Not yet implemented");
+        });
+    }
+
+    private void buildFccMenu() {
+        this.fccButton = new Button("Dualities");
+        ImageView imageView = new ImageView(
+                new Image("/images/icons/menu/fcc.png",50,50,true,true));
+        this.fccButton.setGraphic(imageView);
+        this.fccButton.setContentDisplay(ContentDisplay.TOP);
+        this.fccButton.setOnAction(actionEvent -> nodeInterface.openFccTableTab());
     }
 
     private void initializeDialecticsMenu() {
@@ -99,17 +133,26 @@ public class TopMenuBar extends MenuBar {
         this.statisticsMenu = new Menu("Statistics");
     }
 
-    private void initializeTutorialsMenu() {
-        this.tutorialsMenu = new Menu("Tutorials");
+    private void buildTutorialMenu() {
+        this.tutorialButton = new Button("Tutorial");
+        ImageView imageView = new ImageView(
+                new Image("/images/icons/menu/tutorial.png",50,50,true,true));
+        this.tutorialButton.setGraphic(imageView);
+        this.tutorialButton.setContentDisplay(ContentDisplay.TOP);
+        this.tutorialButton.setOnAction(actionEvent -> {
+            nodeInterface.log("Not yet implemented");
+        });
     }
 
-    private void initializeHelpMenu() {
-        this.helpMenu = new Menu("Help");
-        MenuItem aboutMenuItem = new MenuItem("About");
-        aboutMenuItem.setOnAction(actionEvent -> {
+    private void buildAboutMenu() {
+        this.aboutButton = new Button("About");
+        ImageView imageView = new ImageView(
+                new Image("/images/icons/menu/about.png",50,50,true,true));
+        this.aboutButton.setGraphic(imageView);
+        this.aboutButton.setContentDisplay(ContentDisplay.TOP);
+        this.aboutButton.setOnAction(actionEvent -> {
             nodeInterface.openAboutWindow();
         });
-        this.helpMenu.getItems().addAll(aboutMenuItem);
     }
 
     private void openConnectionTab() {
@@ -124,21 +167,21 @@ public class TopMenuBar extends MenuBar {
                 toRemove=logicSystemMenu;
             }
         }
-        this.logicSystemMenu.getItems().remove(toRemove);
+        this.logicSystemMenuButton.getItems().remove(toRemove);
         this.logicSystemMenus.remove(toRemove);
     }
 
     public void addMenu(LogicSystem logicSystem) {
         LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
         logicSystemMenu.textProperty().bind(logicSystem.labelProperty());
-        this.logicSystemMenu.getItems().add(logicSystemMenu);
+        this.logicSystemMenuButton.getItems().add(logicSystemMenu);
         this.logicSystemMenus.add(logicSystemMenu);
     }
 
     public void addMenu(Tod tod) {
         TodMenu todMenu = new TodMenu(tod, nodeInterface);
         todMenu.textProperty().bind(tod.labelProperty());
-        this.todMenu.getItems().add(todMenu);
+        this.todMenuButton.getItems().add(todMenu);
         this.todMenus.add(todMenu);
     }
 
@@ -150,12 +193,12 @@ public class TopMenuBar extends MenuBar {
     private void clearTodMenu() {
         this.todMenus = FXCollections.observableArrayList();
         ObservableList<TodMenu> tempToRemove = FXCollections.observableArrayList();
-        for (MenuItem menuItem : this.todMenu.getItems()) {
+        for (MenuItem menuItem : this.todMenuButton.getItems()) {
             if (menuItem.getClass().equals(TodMenu.class)) {
                 tempToRemove.add((TodMenu)menuItem);
             }
         }
-        todMenu.getItems().removeAll(tempToRemove);
+        todMenuButton.getItems().removeAll(tempToRemove);
     }
 
     private void fillTodMenu() {
@@ -165,34 +208,34 @@ public class TopMenuBar extends MenuBar {
             this.todMenus.add(todMenu);
         }
         for (TodMenu todMenu : todMenus) {
-            this.todMenu.getItems().add(todMenu);
+            this.todMenuButton.getItems().add(todMenu);
         }
     }
 
     private void clearLogicSystemMenu() {
         this.logicSystemMenus = FXCollections.observableArrayList();
         ObservableList<LogicSystemMenu> tempToRemove = FXCollections.observableArrayList();
-        for (MenuItem menuItem : this.logicSystemMenu.getItems()) {
+        for (MenuItem menuItem : this.logicSystemMenuButton.getItems()) {
             if (menuItem.getClass().equals(LogicSystemMenu.class)) {
                 tempToRemove.add((LogicSystemMenu) menuItem);
             }
         }
-        this.logicSystemMenu.getItems().removeAll(tempToRemove);
+        this.logicSystemMenuButton.getItems().removeAll(tempToRemove);
     }
 
     private void fillLogicSystemMenu() {
         for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
             LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
-            this.logicSystemMenu.getItems().add(logicSystemMenu);
+            this.logicSystemMenuButton.getItems().add(logicSystemMenu);
         }
     }
 
     public void resetMenus() {
         // Logic System
-        this.logicSystemMenu.setDisable(false);
+        this.logicSystemMenuButton.setDisable(false);
         clearLogicSystemMenu();
         fillLogicSystemMenu();
         // Tod
-        todMenu.setDisable(true);
+        todMenuButton.setDisable(true);
     }
 }

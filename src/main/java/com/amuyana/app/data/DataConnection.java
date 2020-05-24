@@ -34,7 +34,7 @@ public class DataConnection {
         boolean response = false;
         try {
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + DataConnection.URL + "/amuyana", DataConnection.USERNAME, DataConnection.PASSWORD);
+                    "jdbc:mysql://" + DataConnection.URL + "/amuyana"+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC", DataConnection.USERNAME, DataConnection.PASSWORD);
 
             response = true;
         } catch (SQLException ex) {

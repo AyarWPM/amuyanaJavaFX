@@ -244,7 +244,7 @@ public class Fruit {
         return fruit;
     }
 
-    FruitController getFruitController() {
+    public FruitController getFruitController() {
         return fruitController;
     }
 
@@ -487,4 +487,8 @@ public class Fruit {
         fruitController.setNormalStyleSymmetricImplication();
     }
 
+    @Override
+    public String toString() {
+        return "Fruit of " + getFcc().getName();
+    }
 }

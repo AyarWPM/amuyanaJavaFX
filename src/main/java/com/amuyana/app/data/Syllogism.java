@@ -1,5 +1,6 @@
 package com.amuyana.app.data;
 
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,10 +8,12 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Syllogism{
+public class Syllogism {
 
     public static int currentAutoIncrement;
 	private IntegerProperty idSyllogism;
@@ -21,7 +24,15 @@ public class Syllogism{
 		this.label = new SimpleStringProperty(label);
 	}
 
-	//Metodos atributo: idSyllogism
+    /**
+     * Constructor.
+     * @param listInclusions List of inclusions. The order is algebraically correct.
+     */
+    public Syllogism(List listInclusions) {
+
+    }
+
+    //Metodos atributo: idSyllogism
 	public int getIdSyllogism() {
 		return idSyllogism.get();
 	}
@@ -67,7 +78,6 @@ public class Syllogism{
         String sql="INSERT INTO amuyana.tbl_syllogism (id_syllogism, label)"
                     + "VALUES (?,?)";
         try {
-            // Cual es la instruction sql para insertar datos?
             PreparedStatement instruction = connection.prepareStatement(sql,
                     Statement.RETURN_GENERATED_KEYS);
             
@@ -119,6 +129,7 @@ public class Syllogism{
 
     @Override
     public String toString(){
-        return "Syllogism: " + this.getLabel();
+        return this.getLabel();
     }
+
 }

@@ -2,14 +2,18 @@ package com.amuyana.app.data.tod;
 
 import com.amuyana.app.data.DataHandler;
 import com.amuyana.app.data.Dynamism;
+import com.amuyana.app.data.InclusionHasSyllogism;
+import com.amuyana.app.data.Syllogism;
 import com.amuyana.app.data.tod.containers.Tod;
+import com.amuyana.app.node.NodeHandler;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.Comparator;
 
-public class Inclusion{
+public class Inclusion {
     private IntegerProperty idInclusion;
     private Dynamism particular;
     private Dynamism general;
@@ -22,6 +26,10 @@ public class Inclusion{
         this.particular = particular;
         this.general = general;
         this.tod = tod;
+    }
+
+    public Inclusion() {
+
     }
 
     public int getIdInclusion() {

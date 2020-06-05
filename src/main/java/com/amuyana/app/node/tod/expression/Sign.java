@@ -11,8 +11,14 @@ public abstract class Sign {
                 "-fx-font-style:italic;");
     }
 
+    public static Label Inclusion() {
+        Label label = new Label("(");
+        label.setStyle("-fx-font-size:200%;"); //18px
+        return label;
+    }
+
     public enum Value{
-        ACTUAL,POTENTIAL,SYMMETRIC;
+        ACTUAL,POTENTIAL,SYMMETRIC
     }
 
 /*
@@ -56,6 +62,8 @@ public abstract class Sign {
                 "-fx-font-size: 100%;");
         return styledLabel;
     }
+
+
 
     static Label actualIndex() {
         return indexLabel("A");

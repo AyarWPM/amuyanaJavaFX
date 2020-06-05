@@ -49,9 +49,7 @@ public class ElementExp extends Expression {
     }
 
     private void manageEvents() {
-        this.element.symbolProperty().addListener((observable, oldValue, newValue) -> {
-            setStyle();
-        });
+        this.element.symbolProperty().addListener((observable, oldValue, newValue) -> setStyle());
     }
 
     private void setStyle() {
@@ -105,7 +103,7 @@ public class ElementExp extends Expression {
         return this.element;
     }
 
-    private ElementExp getThis() {
+    private ElementExp getExpression() {
         return this;
     }
 

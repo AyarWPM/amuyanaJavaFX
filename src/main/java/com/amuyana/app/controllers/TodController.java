@@ -8,11 +8,8 @@ import com.amuyana.app.data.tod.containers.Tod;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 
-import com.amuyana.app.node.Message;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
 import com.amuyana.app.node.content.TodScrollPane;
@@ -23,10 +20,12 @@ import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 
 import com.amuyana.app.node.tod.expression.Expression;
-import javafx.application.Platform;
+import com.amuyana.app.node.tod.expression.ImplicationExp;
+import com.amuyana.app.node.tod.expression.SyllogismExp;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -46,7 +45,7 @@ public class TodController implements Initializable {
     @FXML private SplitPane splitPane;
     //@FXML private HBox canvas;
 
-    @FXML private Slider scaleSlider;
+    private Slider scaleSlider;
     @FXML private Button changeFCCsNotationButton;
     @FXML private Button changeDynamismsNotationButton;
 
@@ -65,6 +64,14 @@ public class TodController implements Initializable {
     @FXML private Button toggleLeftPanelButton;
     @FXML private TabPane rightTabPane;
 
+    @FXML private HBox selectedSyllogismHBox;
+    @FXML private ListView<Syllogism> syllogismsListView;
+    @FXML private VBox selectedSyllogismVBox;
+    @FXML private Label syllogismLabel;
+    @FXML private TextField syllogismTextField;
+    @FXML private Button syllogismButton;
+    @FXML private Label syllogismTitle;
+    
     private NodeInterface nodeInterface;
     private DataInterface dataInterface;
     private Tod tod;
@@ -74,6 +81,7 @@ public class TodController implements Initializable {
     private BooleanProperty editName;
     private BooleanProperty leftPanelOpen;
     private BooleanProperty rightPanelOpen;
+    private Syllogism selectedSyllogism;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -85,7 +93,13 @@ public class TodController implements Initializable {
         toggleRightTabPane();
         manageEvents();
         //todo : zoom
-        scaleSlider.setManaged(false);
+        scaleSlider = new Slider(1,1,1);
+        /*scaleSlider.setManaged(false);*/
+        this.selectedSyllogismVBox.setManaged(false);
+        this.syllogismTitle.setManaged(false);
+        this.syllogismLabel.setManaged(false);
+        this.syllogismTextField.setManaged(false);
+        this.syllogismButton.setManaged(false);
     }
 
     public void setTab(TodTab todTab) {
@@ -109,50 +123,125 @@ public class TodController implements Initializable {
     public void fillData() {
         logicSystemNameLabel.textProperty().bind(nodeInterface.getLogicSystem().labelProperty());
         updateListViews();
+        syllogismsListView.setItems(dataInterface.getSyllogisms(tod));
     }
 
     public void updateListViews() {
-/*        ObservableList<Fcc> listOfFccsInTod = FXCollections.observableArrayList();
-        listOfFccsInTod.addAll(dataInterface.getFccs(this.tod));
-        Comparator comparator = Comparator.naturalOrder();
-        FXCollections.sort(,comparator);*/
         fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
         inclusionsInTodListView.setItems(dataInterface.getInclusions(tod));
     }
 
+    public void updateSyllogismListView() {
+        tree.setChangeOfSelectionFromTree(true);
+        syllogismsListView.getItems().clear();
+        syllogismsListView.setItems(dataInterface.getSyllogisms(tod));
+        syllogismsListView.getSelectionModel().select(selectedSyllogism);
+        tree.setChangeOfSelectionFromTree(false);
+    }
+
     private void manageEvents() {
-        // Part of zoom
-        /*treeScrollPane.viewportBoundsProperty().addListener(
-                new ChangeListener<Bounds>() {
-                    @Override public void changed(ObservableValue<? extends Bounds> observableValue, Bounds oldBounds, Bounds newBounds) {
-                        System.out.println("newBounds = " + newBounds);
-
-                        canvas.setPrefSize(
-                                Math.max(tree.getBoundsInParent().getMaxX(), newBounds.getWidth()),
-                                Math.max(tree.getBoundsInParent().getMaxY(), newBounds.getHeight())
-                        );
-
-                    }
-                });*/
-
-        /*rightTabPane.getTabs().addListener((ListChangeListener<Tab>) change -> {
-            if (change.next()) {
-                if (change.wasRemoved()) {
-                    if (change.getList().size() == 1) {
-                        setRightPanelOpen(false);
-                    }
+        syllogismsListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Syllogism>() {
+            @Override
+            public void changed(ObservableValue<? extends Syllogism> observable, Syllogism oldValue, Syllogism newValue) {
+                // Change from TableView to a null value (selecting non syllogism)
+                if (newValue == null && !tree.getChangeOfSelectionFromTree()) {
+                    //System.out.println("null from TableView");
+                    clearSelectionOfSyllogism();
+                }
+                // Change from tree to a null value
+                if (newValue == null && tree.getChangeOfSelectionFromTree()) {
+                    //System.out.println("null from tree");
+                    // do nothing
+                }
+                // Change from TableView to a non-null value
+                if (newValue!=null && !tree.getChangeOfSelectionFromTree()) {
+                    //System.out.println("non null from tableview");
+                    clearSelectionOfSyllogism();
+                    selectSyllogism(newValue);
+                    // for all ties
+                }
+                // Change from tree to a non-null value
+                if (newValue!=null && tree.getChangeOfSelectionFromTree()) {
+                    //System.out.println("non null from tree");
+                    // do nothing
                 }
             }
-        });*/
 
+            private void selectSyllogism(Syllogism syllogism) {
+                List<Inclusion> listOfInclusions = new ArrayList<>(dataInterface.getInclusions(syllogism));
+                Collections.reverse(listOfInclusions);
 
+                ObservableList<List<ImplicationExp>> listOfLists = FXCollections.observableArrayList();
 
-        // old zoom stuff
-        /*treeScrollPane.addEventFilter(ScrollEvent.SCROLL, event -> {
-            event.consume();
-            manageScrollEvent(event);
-        });*/
+                for (Fruit fruit : tree.getObservableFruits()) {
+                    ObservableList<ImplicationExp> anImplicationExps = FXCollections.observableArrayList();
+                    int count = 0;
+                    List<ImplicationExp> tempListOfImplicationExps = new ArrayList<>(findImplicationExpsOfSyllogism(count, fruit, listOfInclusions, anImplicationExps));
 
+                    if (tempListOfImplicationExps.size()-1 == listOfInclusions.size()) {
+                        listOfLists.add(tempListOfImplicationExps);
+                    }
+                }
+
+                // There may be more than one list of implicationsExps, in the case where is repetition of the exact syllogism in two or more places
+                // in the TOD. Here we only consider the first one... but later we may take account of the fact that these repetitions are only possible when
+                // the general term of an inclusion is in one case non part of a conjunction ("Deploy from this fcc" menu) and in other cases part of a conjunction
+                // or more generally the conjunctions are different.
+
+                for (ImplicationExp implicationExp : listOfLists.get(0)) {
+                    implicationExp.setSelection(true);
+                }
+
+                if (!listOfLists.isEmpty()) {
+                    tree.setSelection(true);
+                    tree.setSelectedListInclusions(listOfInclusions);
+                    tree.setImplicationExps(listOfLists.get(0));
+                    showSelectedSyllogismExpression(listOfInclusions);
+                }
+            }
+
+            private List<ImplicationExp> findImplicationExpsOfSyllogism(int count, Fruit fruit, List<Inclusion> listOfInclusions, ObservableList<ImplicationExp> anImplicationExps) {
+                boolean foundImplicationExp=false;
+                for (ImplicationExp implicationExp : fruit.getFruitController().getImplicationExps()) {
+                    if(foundImplicationExp) break;
+                    if (listOfInclusions.get(count).getGeneral().equals(implicationExp.getDynamism())) {
+                        for (Fruit fruit1 : fruit.getDescendantFruits()) {
+                            if(foundImplicationExp) break;
+                            for (ImplicationExp implicationExp1 : fruit1.getFruitController().getImplicationExps()) {
+                                if (listOfInclusions.get(count).getParticular().equals(implicationExp1.getDynamism())) {
+                                    if(!anImplicationExps.contains(implicationExp)){
+                                        anImplicationExps.add(implicationExp);
+                                    }
+                                    if(!anImplicationExps.contains(implicationExp1)){
+                                        anImplicationExps.add(implicationExp1);
+                                    }
+
+                                    if (count < listOfInclusions.size()-1) {
+                                        findImplicationExpsOfSyllogism(++count,fruit1,listOfInclusions,anImplicationExps);
+                                    }
+                                    if (count == listOfInclusions.size() - 1) {
+                                        foundImplicationExp=true;
+                                    }
+                                    if(foundImplicationExp) break;
+                                }
+                            }
+                            //
+                        }
+                    }
+                }
+                return anImplicationExps;
+            }
+
+            private void clearSelectionOfSyllogism() {
+                tree.setSelection(false);
+                tree.getSelectedListInclusions().clear();
+                tree.getImplicationExps().clear();
+                selectedSyllogismVBox.setManaged(false);
+                for (Fruit fruit : getTree().getObservableFruits()) {
+                    fruit.getFruitController().unselectAllImplicationExp();
+                }
+            }
+        });
     }
 
     private void manageScrollEvent(ScrollEvent scrollEvent) {
@@ -219,25 +308,22 @@ public class TodController implements Initializable {
                 return null;
             }
         };
-        sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                dataInterface.connect();
-                if (!fccsInTodListView.getSelectionModel().isEmpty()) {
-                    int i=index;
-                    while (i < index + amount) {
-                        if (index == 0) {
-                            Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,0,tod.getLogicSystem());
-                        } else if (index > 0) {
-                            Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,i,tod.getLogicSystem());
-                        }
-                        i++;
+        sleeper.setOnSucceeded(event -> {
+            dataInterface.connect();
+            if (!fccsInTodListView.getSelectionModel().isEmpty()) {
+                int i=index;
+                while (i < index + amount) {
+                    if (index == 0) {
+                        Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,0,tod.getLogicSystem());
+                    } else if (index > 0) {
+                        Fcc newFcc = dataInterface.duplicateFcc(fccToDuplicate,i,tod.getLogicSystem());
                     }
-                    tree.updateFruitsMenus();
-                    nodeInterface.log(fccToDuplicate.getName() + " has been duplicated " + amount + " times");
+                    i++;
                 }
-                dataInterface.disconnect();
+                tree.updateFruitsMenus();
+                nodeInterface.log(fccToDuplicate.getName() + " has been duplicated " + amount + " times");
             }
+            dataInterface.disconnect();
         });
         new Thread(sleeper).start();
 
@@ -454,7 +540,6 @@ public class TodController implements Initializable {
         this.tree = new Tree(this);
         this.tree.loadNewTree();
         setContent(this.tree);
-        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
@@ -467,7 +552,6 @@ public class TodController implements Initializable {
     public void showTree() {
         this.tree = new Tree(this);
         this.tree.loadExistingTree();
-        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
         setContent(this.tree);
@@ -483,7 +567,6 @@ public class TodController implements Initializable {
         this.tree = new Tree(this);
         this.tree.loadNewTreeFromExistingFcc(fcc);
         setContent(this.tree);
-        //canvas.getChildren().setAll(this.tree);
         this.tree.updateFruitsMenus();
         this.tree.buildTies();
         showScaleSlider();
@@ -535,5 +618,105 @@ public class TodController implements Initializable {
 
     public NodeInterface getNodeInterface() {
         return nodeInterface;
+    }
+
+    public HBox getSelectedSyllogismHBox() {
+        return selectedSyllogismHBox;
+    }
+
+    public VBox getSelectedSyllogismVBox() {
+        return selectedSyllogismVBox;
+    }
+
+    /**
+     *
+     * @param selectedListInclusions The list is in reverse order as that of the syllogism, it is in the order of
+     *                              the table of deductions from left to right
+     */
+    public void showSelectedSyllogismExpression(List<Inclusion> selectedListInclusions) {
+        // 1. reverse the list
+        List<Inclusion> listInclusions = new ArrayList<>(selectedListInclusions);
+        Collections.reverse(listInclusions);
+        // 2. Determine if there is already a syllogism with those inclusions
+        syllogismTitle.setManaged(true);
+        syllogismButton.setManaged(true);
+        if (dataInterface.isSyllogism(listInclusions,getTod())) {
+            this.selectedSyllogism=dataInterface.getSyllogism(listInclusions,getTod());
+            syllogismLabel.setText(selectedSyllogism.getLabel());
+            syllogismLabel.setManaged(true);
+            syllogismLabel.setVisible(true);
+            syllogismTextField.setManaged(false);
+            syllogismTextField.setVisible(false);
+            syllogismButton.setText("Edit");
+            updateSyllogismListView();
+
+        } else {
+            tree.setChangeOfSelectionFromTree(true);
+            syllogismsListView.getSelectionModel().clearSelection();
+            tree.setChangeOfSelectionFromTree(false);
+            syllogismLabel.setManaged(false);
+            syllogismLabel.setVisible(false);
+            syllogismTextField.setManaged(true);
+            syllogismTextField.setVisible(true);
+            syllogismTextField.setText("Syllogism label");
+            syllogismButton.setText("Create");
+            selectedSyllogism=null;
+        }
+
+        if (!getSelectedSyllogismVBox().isManaged()) {
+            getSelectedSyllogismVBox().setManaged(true);
+        }
+        SyllogismExp syllogismExp = new SyllogismExp(selectedListInclusions);
+        getSelectedSyllogismHBox().getChildren().setAll(syllogismExp.getExpression());
+    }
+
+    @FXML
+    public void syllogismButtonOnAction() {
+        switch (syllogismButton.getText()) {
+            // It will save a new Syllogism
+            case "Create":{
+                List<Inclusion> listInclusions = new ArrayList<>(tree.getSelectedListInclusions());
+                Collections.reverse(listInclusions);
+                NodeHandler.getDataInterface().connect();
+                selectedSyllogism = dataInterface.newSyllogism(syllogismTextField.getText(),listInclusions, tod);
+                NodeHandler.getDataInterface().disconnect();
+                syllogismLabel.setText(syllogismTextField.getText());
+                syllogismLabel.setManaged(true);
+                syllogismLabel.setVisible(true);
+                syllogismTextField.setManaged(false);
+                syllogismTextField.setVisible(false);
+                syllogismButton.setText("Edit");
+                updateSyllogismListView();
+                break;
+            }
+            case "Edit":{
+                syllogismLabel.setManaged(false);
+                syllogismLabel.setVisible(false);
+                syllogismTextField.setManaged(true);
+                syllogismTextField.setVisible(true);
+                syllogismTextField.setText(selectedSyllogism.getLabel());
+                syllogismButton.setText("Save");
+                break;
+            }
+                //it will save an existing syllogism
+            case "Save":{
+                selectedSyllogism.setLabel(syllogismTextField.getText());
+                NodeHandler.getDataInterface().connect();
+                dataInterface.update(selectedSyllogism);
+                NodeHandler.getDataInterface().disconnect();
+                syllogismLabel.setText(syllogismTextField.getText());
+                syllogismLabel.setManaged(true);
+                syllogismLabel.setVisible(true);
+                syllogismTextField.setManaged(false);
+                syllogismTextField.setVisible(false);
+                syllogismButton.setText("Edit");
+                updateSyllogismListView();
+                break;
+            }
+        }
+    }
+
+    public void setSelectedSyllogism(Syllogism syllogism) {
+        selectedSyllogism = syllogism;
     }
 }

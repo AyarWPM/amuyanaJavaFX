@@ -38,9 +38,6 @@ public class DataConnection {
 
             response = true;
         } catch (SQLException ex) {
-            System.err.println("SQLException");
-            System.err.println("Message: " + ex.getMessage());
-            System.err.println("Cause: " + ex.getCause());
         }
         return response;
     }

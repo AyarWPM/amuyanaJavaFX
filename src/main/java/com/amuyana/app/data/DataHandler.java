@@ -2,9 +2,12 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
+import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
+import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +46,8 @@ public class DataHandler implements DataInterface {
     private ObservableList<Dynamism> listDynamisms; //
     private ObservableList<Inclusion> listInclusions; //
     private ObservableList<Syllogism> listSyllogisms;
-    private ObservableList<InclusionHasSyllogism> listIHS;
+    private ObservableList<SyllogismHasTod> listSyllogismHasTod;
+    private ObservableList<InclusionHasSyllogism> listInclusionHasSyllogisms;
 
     private DataConnection dataConnection;
     private static NodeInterface nodeInterface;
@@ -72,7 +76,8 @@ public class DataHandler implements DataInterface {
         this.listCClassHasInclusion = FXCollections.observableArrayList();
         this.listInclusions = FXCollections.observableArrayList();
         this.listSyllogisms = FXCollections.observableArrayList();
-        this.listIHS = FXCollections.observableArrayList();
+        this.listSyllogismHasTod = FXCollections.observableArrayList();
+        this.listInclusionHasSyllogisms = FXCollections.observableArrayList();
         this.listContainer0s = FXCollections.observableArrayList();
     }
 
@@ -147,7 +152,8 @@ public class DataHandler implements DataInterface {
         CClass.loadList(this.dataConnection.getConnection(),this.listCClass);
         CClassHasInclusion.loadList(this.dataConnection.getConnection(),this.listCClassHasInclusion,this.listCClass,this.listInclusions);
         Syllogism.loadList(this.dataConnection.getConnection(),this.listSyllogisms);
-        InclusionHasSyllogism.loadList(this.dataConnection.getConnection(),this.listIHS,this.listInclusions,this.listSyllogisms);
+        InclusionHasSyllogism.loadList(this.dataConnection.getConnection(),this.listInclusionHasSyllogisms,this.listInclusions,this.listSyllogisms);
+        SyllogismHasTod.loadList(this.dataConnection.getConnection(),listSyllogismHasTod,listSyllogisms,listTod);
 
 //        Dialectic.loadList(this.dataConnection.getConnection(), listDialectic);
 //        Register.loadList(this.dataConnection.getConnection(), listRegister);
@@ -218,12 +224,38 @@ public class DataHandler implements DataInterface {
         return inclusions;
     }
 
+    public ObservableList<SyllogismHasTod> getListSyllogismHasTod() {
+        return listSyllogismHasTod;
+    }
+
     public ObservableList<Syllogism> getListSyllogisms() {
         return listSyllogisms;
     }
 
-    public ObservableList<InclusionHasSyllogism> getListIHS() {
-        return listIHS;
+    @Override
+    public ObservableList<Syllogism> getSyllogisms(Tod tod) {
+        ObservableList<Syllogism> listSyllogisms = FXCollections.observableArrayList();
+        for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+            if (syllogismHasTod.getTod().equals(tod)) {
+                listSyllogisms.add(syllogismHasTod.getSyllogism());
+            }
+        }
+        return listSyllogisms;
+    }
+
+    @Override
+    public List<Inclusion> getInclusions(Syllogism syllogism) {
+        List<Inclusion> listInclusions = new ArrayList<>();
+        for (InclusionHasSyllogism inclusionHasSyllogism : listInclusionHasSyllogisms) {
+            if (inclusionHasSyllogism.getSyllogism().equals(syllogism)) {
+                listInclusions.add(inclusionHasSyllogism.getInclusion());
+            }
+        }
+        return listInclusions;
+    }
+
+    public ObservableList<InclusionHasSyllogism> getListInclusionHasSyllogisms() {
+        return listInclusionHasSyllogisms;
     }
 
     public ObservableList<Tod> getTods(LogicSystem logicSystem) {
@@ -445,6 +477,157 @@ public class DataHandler implements DataInterface {
         DataHandler.nodeInterface = nodeInterface;
     }
 
+    /**
+     * Assumes there is an inclusion. Use method isInclusion() before.
+     * @param ascendantDynamism Ascendant dynamism
+     * @param descendantDynamism Descendant dynamism
+     * @param tod The Table of deductions
+     * @return The inclusion (if any) that has parameters as its definition, null otherwise
+     */
+    @Override
+    public Inclusion getInclusion(Dynamism ascendantDynamism, Dynamism descendantDynamism, Tod tod) {
+        for (Inclusion inclusion1 : getInclusions(tod)) {
+            if (inclusion1.getGeneral().equals(ascendantDynamism)) {
+                if (inclusion1.getParticular().equals(descendantDynamism)) {
+                    return inclusion1;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     *
+     * @param listInclusions List is in the correct order, i.e. particular notion at left and general notion at the right
+     * @return True if there's a syllogism with the same inclusions, false otherwise
+     */
+    @Override
+    public boolean isSyllogism(List<Inclusion> listInclusions, Tod tod) {
+        ObservableList<List<Inclusion>> listOfListsOfInclusions  = FXCollections.observableArrayList();
+
+        // create list of lists
+        for (Syllogism syllogism1 : listSyllogisms) {
+            List<Inclusion> tempListInclusions = new ArrayList<>();
+            for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+                if (syllogismHasTod.getTod().equals(tod) && syllogismHasTod.getSyllogism().equals(syllogism1)) {
+                    for (InclusionHasSyllogism inclusionHasSyllogism : listInclusionHasSyllogisms) {
+                        if (inclusionHasSyllogism.getSyllogism().equals(syllogism1)) {
+                            tempListInclusions.add(inclusionHasSyllogism.getInclusion());
+                        }
+                    }
+
+                }
+            }
+            /*Collections.sort(tempListInclusions);
+            Collections.sort(tempListInclusions,new Inclusion());*/
+// this function orders inclusion lists
+            Comparator<Inclusion> comparator = (inclusion1, inclusion2) -> {
+                int order1=0;
+                int order2=0;
+                for (InclusionHasSyllogism inclusionHasSyllogism : NodeHandler.getDataInterface().getListInclusionHasSyllogisms()) {
+                    if (inclusionHasSyllogism.getSyllogism().equals(syllogism1)) {
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusion1)) {
+                            order1 = inclusionHasSyllogism.getInclusionOrder();
+                        }
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusion2)) {
+                            order2 = inclusionHasSyllogism.getInclusionOrder();
+                        }
+                    }
+                }
+
+                return order1-order2;
+
+            };
+            tempListInclusions.sort(comparator);
+            // add tempList to listOfLists
+            listOfListsOfInclusions.add(tempListInclusions);
+            if(listInclusions.equals(tempListInclusions)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public Syllogism getSyllogism(List<Inclusion> listInclusions, Tod tod) {
+        Syllogism syllogism = null;
+
+        // create list of lists
+        ObservableList<List<Inclusion>> listOfListsOfInclusions  = FXCollections.observableArrayList();
+
+        for (Syllogism syllogism1 : listSyllogisms) {
+            List<Inclusion> tempListInclusions = new ArrayList<>();
+            for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+                if (syllogismHasTod.getTod().equals(tod) && syllogismHasTod.getSyllogism().equals(syllogism1)) {
+                    for (InclusionHasSyllogism inclusionHasSyllogism : listInclusionHasSyllogisms) {
+                        if (inclusionHasSyllogism.getSyllogism().equals(syllogism1)) {
+                            tempListInclusions.add(inclusionHasSyllogism.getInclusion());
+                        }
+                    }
+
+                }
+            }
+            /*Collections.sort(tempListInclusions);
+            Collections.sort(tempListInclusions,new Inclusion());*/
+
+            Comparator<Inclusion> comparator = (inclusion1, inclusion2) -> {
+                int order1=0;
+                int order2=0;
+                for (InclusionHasSyllogism inclusionHasSyllogism : NodeHandler.getDataInterface().getListInclusionHasSyllogisms()) {
+                    if (inclusionHasSyllogism.getSyllogism().equals(syllogism1)) {
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusion1)) {
+                            order1 = inclusionHasSyllogism.getInclusionOrder();
+                        }
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusion2)) {
+                            order2 = inclusionHasSyllogism.getInclusionOrder();
+                        }
+                    }
+                }
+
+                return order1-order2;
+
+            };
+            tempListInclusions.sort(comparator);
+            // add tempList to listOfLists
+            listOfListsOfInclusions.add(tempListInclusions);
+            if(listInclusions.equals(tempListInclusions)) return syllogism1;
+        }
+        return syllogism;
+    }
+
+    @Override
+    public void update(Syllogism syllogism) {
+        syllogism.updateData(dataConnection.getConnection());
+    }
+
+    @Override
+    public Syllogism newSyllogism(String label, List<Inclusion> listInclusions, Tod tod) {
+        Syllogism syllogism = new Syllogism(0,label);
+        SyllogismHasTod syllogismHasTod = new SyllogismHasTod(syllogism,tod);
+
+        if (syllogism.saveData(dataConnection.getConnection()) == 1) {
+            syllogism.setIdSyllogism(Syllogism.currentAutoIncrement);
+            syllogism.setLabel(label);
+            listSyllogisms.add(syllogism);
+        }
+        syllogism.updateData(dataConnection.getConnection());
+
+        if (syllogismHasTod.saveData(dataConnection.getConnection()) == 1) {
+            listSyllogismHasTod.add(syllogismHasTod);
+        }
+
+        // inclusionHasSyllogism
+        int order = 0;
+        for (Inclusion inclusion : listInclusions) {
+            InclusionHasSyllogism inclusionHasSyllogism = new InclusionHasSyllogism(inclusion,syllogism,order);
+            if (inclusionHasSyllogism.saveData(dataConnection.getConnection()) == 1) {
+                this.listInclusionHasSyllogisms.add(inclusionHasSyllogism);
+                order++;
+            }
+        }
+        return syllogism;
+    }
+
     public static NodeInterface getNodeInterface() {
         return DataHandler.nodeInterface;
     }
@@ -562,6 +745,17 @@ public class DataHandler implements DataInterface {
 
     @Override
     public void delete(Tod tod) {
+
+        // delete Syllogisms
+        ObservableList<Syllogism> syllogismsToDelete = FXCollections.observableArrayList();
+        for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+            if (syllogismHasTod.getTod().equals(tod)) {
+                syllogismsToDelete.add(syllogismHasTod.getSyllogism());
+            }
+        }
+        for (Syllogism syllogism : syllogismsToDelete) {
+            delete(syllogism);
+        }
         // delete Inclusions
         ObservableList<Inclusion> inclusionsToDelete = FXCollections.observableArrayList();
         for (Inclusion inclusion : listInclusions) {
@@ -578,6 +772,37 @@ public class DataHandler implements DataInterface {
             this.listTod.remove(tod);
         }
         deleteAll(tod.getContainer0());
+    }
+
+    private void delete(Syllogism syllogism) {
+        ObservableList<SyllogismHasTod> syllogismHasTodsToDelete = FXCollections.observableArrayList();
+        for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+            if (syllogismHasTod.getSyllogism().equals(syllogism)) {
+                syllogismHasTodsToDelete.add(syllogismHasTod);
+            }
+        }
+        for (SyllogismHasTod syllogismHasTod : syllogismHasTodsToDelete) {
+            if (syllogismHasTod.deleteData(getDataConnection().getConnection()) == 1) {
+                listSyllogismHasTod.remove(syllogismHasTod);
+            }
+        }
+        //inclusion-syllogism
+        ObservableList<InclusionHasSyllogism> inclusionHasSyllogismToDelete = FXCollections.observableArrayList();
+        for (InclusionHasSyllogism inclusionHasSyllogism : listInclusionHasSyllogisms) {
+            if (inclusionHasSyllogism.getSyllogism().equals(syllogism)) {
+                inclusionHasSyllogismToDelete.add(inclusionHasSyllogism);
+            }
+        }
+        for (InclusionHasSyllogism inclusionHasSyllogism : inclusionHasSyllogismToDelete) {
+            if (inclusionHasSyllogism.deleteData(getDataConnection().getConnection())==1) {
+                listInclusionHasSyllogisms.remove(inclusionHasSyllogism);
+            }
+        }
+
+        int result = syllogism.deleteData(getDataConnection().getConnection());
+        if (result == 1) {
+            this.listSyllogisms.remove(syllogism);
+        }
     }
 
     private void deleteAll(Container0 container0) {

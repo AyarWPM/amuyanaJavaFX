@@ -1,9 +1,7 @@
 package com.amuyana.app.controllers;
 
-import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.data.Dynamism;
-import com.amuyana.app.data.Fcc;
-import com.amuyana.app.data.LogicSystem;
+import com.amuyana.app.data.*;
+import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.menu.FccMenu;
@@ -25,15 +23,14 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 
 import java.net.URL;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class FruitController implements Initializable {
     private static DataInterface dataInterface = NodeHandler.getDataInterface();
@@ -112,17 +109,15 @@ public class FruitController implements Initializable {
         this.fruit = fruit;
         this.tree = this.fruit.getTree();
         if (fruit.getTrunk().getTrunkType().equals(Trunk.TrunkType.TREE)) {
-            fruitBorderPane.setStyle("-fx-border-width:2.5;");
+            fruitBorderPane.setStyle("-fx-border-width:4;");
         }
         manageBindings();
         buildExpressions();
         fruitBorderPane.setOnMouseClicked(event -> {
+            //tree.getTodController().getNodeInterface().log("fruit pressed");
             /*for (Fruit fruit1 : fruit.getAscendantFruits()) {
-                System.out.println("1Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
             }for (Fruit fruit1 : fruit.getAscendantFruitsOnlyFcc()) {
-                System.out.println("2Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
             }for (Fruit fruit1 : fruit.getAscendantFruitsConjunction()) {
-                System.out.println("3Descendant of " +fruit.getFcc()+ " is " + fruit1.getFcc());
             }*/
             /*event.consume();
             mainContextMenu.hide();
@@ -145,32 +140,28 @@ public class FruitController implements Initializable {
                 () -> {
                     Bounds nodeLocal = leftKnobCircle.getBoundsInLocal();
                     Bounds nodeScene = leftKnobCircle.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
-                    return nodeTree;
+                    return tree.sceneToLocal(nodeScene);
                 },
                 updateKnobsProperty());
 
         knob1BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob1Label.getBoundsInLocal();
                     Bounds nodeScene = knob1Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
-                    return nodeTree;
+                    return tree.sceneToLocal(nodeScene);
                 },
                 updateKnobsProperty());
 
         knob2BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob2Label.getBoundsInLocal();
                     Bounds nodeScene = knob2Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
-                    return nodeTree;
+                    return tree.sceneToLocal(nodeScene);
                 },
                 updateKnobsProperty());
 
         knob3BoundsInTreeBinding = Bindings.createObjectBinding(() -> {
                     Bounds nodeLocal = knob3Label.getBoundsInLocal();
                     Bounds nodeScene = knob3Label.localToScene(nodeLocal);
-                    Bounds nodeTree = tree.sceneToLocal(nodeScene);
-                    return nodeTree;
+                    return tree.sceneToLocal(nodeScene);
                 },
                 updateKnobsProperty());
 
@@ -202,26 +193,25 @@ public class FruitController implements Initializable {
         });
 
         this.positiveImplicationExp =
-                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),0),
-                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+                new ImplicationExp(fruit.getTree().getTodController(), getFruit(),
+                        dataInterface.getDynamism(fruit.getFcc(),0), Expression.ExpressionType.PROPOSITION, Pos.CENTER);
         this.negativeImplicationExp =
-                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),1),
-                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+                new ImplicationExp(fruit.getTree().getTodController(),  getFruit(),
+                        dataInterface.getDynamism(fruit.getFcc(),1), Expression.ExpressionType.PROPOSITION, Pos.CENTER);
         this.symmetricImplicationExp =
-                new ImplicationExp(fruit.getTree().getTodController(), dataInterface.getDynamism(fruit.getFcc(),2),
-                        Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+                new ImplicationExp(fruit.getTree().getTodController(),  getFruit(),
+                        dataInterface.getDynamism(fruit.getFcc(),2), Expression.ExpressionType.PROPOSITION, Pos.CENTER);
         //this.positiveImplicationExp.effectProperty().bind(this.positiveImplicationExp.onMouseEnteredProperty());
 
         //Binding<Effect> binding = Bindings.createObjectBinding(() -> {return new Glow();},this.positiveImplicationExp.onMouseEnteredProperty());
-        //System.out.println("binding.getValue() = " + binding.getValue());
 
         // ON HOVER EFFECT
-        this.positiveImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),0)));
-        this.positiveImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
-        this.negativeImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),1)));
-        this.negativeImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
-        this.symmetricImplicationExp.setOnMouseEntered(mouseEvent -> addHoverEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),2)));
-        this.symmetricImplicationExp.setOnMouseExited(mouseEvent -> removeHoverEffect());
+        this.positiveImplicationExp.setOnMouseEntered(mouseEvent -> addHighlightEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),0)));
+        this.positiveImplicationExp.setOnMouseExited(mouseEvent -> removeHighlightEffect());
+        this.negativeImplicationExp.setOnMouseEntered(mouseEvent -> addHighlightEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),1)));
+        this.negativeImplicationExp.setOnMouseExited(mouseEvent -> removeHighlightEffect());
+        this.symmetricImplicationExp.setOnMouseEntered(mouseEvent -> addHighlightEffect(fruit,dataInterface.getDynamism(fruit.getFcc(),2)));
+        this.symmetricImplicationExp.setOnMouseExited(mouseEvent -> removeHighlightEffect());
 
         expressionsVBox.getChildren().setAll(positiveImplicationExp,negativeImplicationExp,symmetricImplicationExp);
         expressionsVBox.setAlignment(Pos.CENTER);
@@ -231,7 +221,7 @@ public class FruitController implements Initializable {
         fccNameStackPane.getChildren().setAll(fccExp);
     }
 
-    private void addHoverEffect(Fruit fruit, Dynamism dynamism) {
+    private void addHighlightEffect(Fruit fruit, Dynamism dynamism) {
         Tod tod  =tree.getTodController().getTod();
         // If algebraic
 
@@ -297,7 +287,7 @@ public class FruitController implements Initializable {
         }
     }
 
-    private void removeHoverEffect() {
+    private void removeHighlightEffect() {
         for (Fruit fruit : tree.getObservableFruits()) {
             fruit.setNormalStylePositiveImplication();
             fruit.setNormalStyleNegativeImplication();
@@ -335,23 +325,35 @@ public class FruitController implements Initializable {
     }
 
     public void buildMenus() {
+        buildMainMenu();
+        buildDynamismsMenus();
+
+    }
+
+    private void buildMainMenu() {
         // MAIN MENU
         this.mainContextMenu = new ContextMenu();
         fccExp.setOnMousePressed(event -> {
             if (event.isSecondaryButtonDown()) {
-                this.mainContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
-                this.positiveContextMenu.hide();
-                this.negativeContextMenu.hide();
-                this.symmetricContextMenu.hide();
+                if (tree.isSelection()) {
+                    this.positiveContextMenu.hide();
+                    this.mainContextMenu.hide();
+                    this.negativeContextMenu.hide();
+                    this.symmetricContextMenu.hide();
+                }
+                if (!tree.isSelection()) {
+                    this.mainContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
+                    this.positiveContextMenu.hide();
+                    this.negativeContextMenu.hide();
+                    this.symmetricContextMenu.hide();
+                }
             }
             if (event.isPrimaryButtonDown()) {
                 this.mainContextMenu.hide();
                 this.positiveContextMenu.hide();
                 this.negativeContextMenu.hide();
                 this.symmetricContextMenu.hide();
-
             }
-
         });
         //EDIT
         MenuItem editMenuItem = new MenuItem("Edit \"" + fruit.getFcc() + "\"");
@@ -413,7 +415,9 @@ public class FruitController implements Initializable {
 
         });
         mainContextMenu.getItems().addAll(removeFromConjunctionMenuItem);
+    }
 
+    private void buildDynamismsMenus() {
         // DYNAMISMS MENU
         Dynamism positiveDynamism = dataInterface.getDynamism(fruit.getFcc(),0);
         Dynamism negativeDynamism = dataInterface.getDynamism(fruit.getFcc(),1);
@@ -422,18 +426,7 @@ public class FruitController implements Initializable {
         // positive
         this.positiveContextMenu = new ContextMenu();
         this.positiveImplicationExp.setOnMousePressed(event -> {
-            if (event.isSecondaryButtonDown()) {
-                this.positiveContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
-                this.mainContextMenu.hide();
-                this.negativeContextMenu.hide();
-                this.symmetricContextMenu.hide();
-            }
-            if (event.isPrimaryButtonDown()) {
-                this.mainContextMenu.hide();
-                this.positiveContextMenu.hide();
-                this.negativeContextMenu.hide();
-                this.symmetricContextMenu.hide();
-            }
+            switchSelectorImplicationExp(event, this.positiveImplicationExp);
         });
 
         Menu onlyThisFccMenuItemPositive = new Menu("Deploy for this FCC only");
@@ -447,18 +440,7 @@ public class FruitController implements Initializable {
         // negative
         this.negativeContextMenu = new ContextMenu();
         this.negativeImplicationExp.setOnMousePressed(event -> {
-            if (event.isSecondaryButtonDown()) {
-                this.negativeContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
-                this.mainContextMenu.hide();
-                this.positiveContextMenu.hide();
-                this.symmetricContextMenu.hide();
-            }
-            if (event.isPrimaryButtonDown()) {
-                this.mainContextMenu.hide();
-                this.positiveContextMenu.hide();
-                this.negativeContextMenu.hide();
-                this.symmetricContextMenu.hide();
-            }
+            switchSelectorImplicationExp(event,negativeImplicationExp);
         });
 
         Menu onlyThisFccMenuItemNegative = new Menu("Deploy for this FCC only");
@@ -472,18 +454,7 @@ public class FruitController implements Initializable {
         // symmetric
         this.symmetricContextMenu = new ContextMenu();
         this.symmetricImplicationExp.setOnMousePressed(event -> {
-            if (event.isSecondaryButtonDown()) {
-                this.symmetricContextMenu.show(fruitBorderPane, event.getScreenX(), event.getScreenY());
-                this.mainContextMenu.hide();
-                this.positiveContextMenu.hide();
-                this.negativeContextMenu.hide();
-            }
-            if (event.isPrimaryButtonDown()) {
-                this.mainContextMenu.hide();
-                this.positiveContextMenu.hide();
-                this.negativeContextMenu.hide();
-                this.symmetricContextMenu.hide();
-            }
+            switchSelectorImplicationExp(event,symmetricImplicationExp);
         });
 
         Menu onlyThisFccMenuSymmetric = new Menu("Deploy for this FCC only");
@@ -493,7 +464,106 @@ public class FruitController implements Initializable {
         allConjunctionFccMenuSymmetric.getItems().addAll(descendantsMenuAllConjunctionFccs(symmetricDynamism), ascendantsMenuAllConjunctionFccs(symmetricDynamism));
 
         this.symmetricContextMenu.getItems().addAll(onlyThisFccMenuSymmetric,allConjunctionFccMenuSymmetric);
+    }
 
+    private void switchSelectorImplicationExp(MouseEvent event, ImplicationExp implicationExp) {
+        if (event.isSecondaryButtonDown()) {
+            if (!tree.isSelection()) {
+                mainContextMenu.hide();
+                if(positiveImplicationExp.equals(implicationExp)) positiveContextMenu.show(fruitBorderPane,event.getScreenX(),event.getScreenY());
+                if(negativeImplicationExp.equals(implicationExp)) negativeContextMenu.show(fruitBorderPane,event.getScreenX(),event.getScreenY());
+                if(symmetricImplicationExp.equals(implicationExp)) symmetricContextMenu.show(fruitBorderPane,event.getScreenX(),event.getScreenY());
+            }
+            if (tree.isSelection()) {
+                hideAllContextMenus();
+            }
+        }
+        if (event.isPrimaryButtonDown()) {
+            hideAllContextMenus();
+            // If nothing is selected
+            if (!tree.isSelection()) {
+                tree.setSelection(true);
+                implicationExp.setSelection(true);
+                tree.addToSelectedImplicationExp(0,implicationExp);
+            } else if (tree.isSelection()) {
+                // if the implication is not selected
+                // It can only be selected if it is ascendant or descendant of any dynamism of a selected implicationExp
+                boolean select=false;
+                if (!implicationExp.isSelection()) {
+                    // if it is an ascendant and selectable
+                    if (implicationExp.isAscendantSelectable()) {
+                        Dynamism descendantDynamism = tree.getImplicationExps().get(0).getDynamism();
+                        Inclusion inclusion = NodeHandler.getDataInterface().getInclusion(
+                                implicationExp.getDynamism(), descendantDynamism,tree.getTodController().getTod());
+                        select=true;
+                        tree.addToSelectedImplicationExp(0,implicationExp);
+                        tree.addInclusionInSelection(0,inclusion);
+                    }
+                    // if it is a descendant and selectable
+                    else if (implicationExp.isDescendantSelectable()) {
+                        Dynamism ascendantDynamism = tree.getImplicationExps().get(tree.getImplicationExps().size()-1).getDynamism();
+                        Inclusion inclusion = NodeHandler.getDataInterface().getInclusion(
+                                ascendantDynamism, implicationExp.getDynamism(), tree.getTodController().getTod());
+                        select=true;
+                        tree.addToSelectedImplicationExp(1,implicationExp);
+                        tree.addInclusionInSelection(1,inclusion);
+                    }
+                    if (select) {
+                        implicationExp.setSelection(true);
+                    }
+                }
+
+                // if the implication is selected already
+                else if (implicationExp.isSelection()) {
+                    // User can unselect only if it is first or last of tree.implicationExps, otherwise do nothing
+                    if (tree.getImplicationExps().get(0).equals(implicationExp)) {
+                        if (tree.getImplicationExps().size() > 1) {
+                            Dynamism ascendantDynamism = tree.getImplicationExps().get(0).getDynamism();
+                            Dynamism descendantDynamism = tree.getImplicationExps().get(1).getDynamism();
+                            tree.removeInclusionInSelection(dataInterface.getInclusion(ascendantDynamism,descendantDynamism,tree.getTodController().getTod()));
+                        }
+                        tree.removeFromSelectedImplicationExp(implicationExp);
+                        implicationExp.setSelection(false);
+                    } else if (tree.getImplicationExps().get(tree.getImplicationExps().size() - 1).equals(implicationExp)) {
+                        if (tree.getImplicationExps().size() > 1) {
+                            int size = tree.getImplicationExps().size();
+                            Dynamism ascendantDynamism = tree.getImplicationExps().get(size-2).getDynamism();
+                            Dynamism descendantDynamism = tree.getImplicationExps().get(size-1).getDynamism();
+                            tree.removeInclusionInSelection(dataInterface.getInclusion(ascendantDynamism,descendantDynamism,tree.getTodController().getTod()));
+                        }
+                        tree.removeFromSelectedImplicationExp(implicationExp);
+                        implicationExp.setSelection(false);
+                    }
+                    // there is a change
+                    if (tree.getImplicationExps().isEmpty()) {
+                        tree.setSelection(false);
+                    }
+                }
+            }
+        }
+    }
+
+    private void hideAllContextMenus() {
+        mainContextMenu.hide();
+        positiveContextMenu.hide();
+        negativeContextMenu.hide();
+        symmetricContextMenu.hide();
+    }
+
+    /*private void unselect*/
+
+    public void unselectAllImplicationExp() {
+        positiveImplicationExp.setSelection(false);
+        negativeImplicationExp.setSelection(false);
+        symmetricImplicationExp.setSelection(false);
+    }
+
+    private boolean hasSelectedImplicationExp() {
+        boolean hasSelected=false;
+        if (this.positiveImplicationExp.isSelection() | this.negativeImplicationExp.isSelection() | this.symmetricImplicationExp.isSelection()) {
+            hasSelected=true;
+        }
+        return hasSelected;
     }
 
     private Menu descendantsMenuAllConjunctionFccs(Dynamism thisDynamism) {
@@ -716,14 +786,11 @@ public class FruitController implements Initializable {
         }
         ObservableList<MenuItem> menuItems = FXCollections.observableArrayList();
         for (Fcc fcc : dataInterface.getFccs(tree.getTodController().getTod().getLogicSystem())) {
-            if (fccToExclude.contains(fcc)) {
-                continue;
-            } else {
+            if (!fccToExclude.contains(fcc)) {
                 MenuItem addFruit = new MenuItem(fcc.getName());
                 addFruit.setOnAction(event -> {
                     if(!dataInterface.connect()){
                         tree.getTodController().getNodeInterface().logSQLException();
-                        return;
                     } else{
                         fruit.getBranch().newSubBranch(fcc);
                         NodeHandler.getDataInterface().disconnect();
@@ -1065,7 +1132,7 @@ public class FruitController implements Initializable {
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
-            Fruit newFruit= null;
+            Fruit newFruit;
             if (onlyThisFcc) {
                 newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
             } else {
@@ -1112,14 +1179,12 @@ public class FruitController implements Initializable {
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
             todController.openFccEditor(newFcc);
-            Fruit newFruit = null;
-
+            Fruit newFruit;
             if (onlyThisFcc) {
                 newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc);
             } else {
                 newFruit = fruit.getBranch().addToLeftTrunk(newFcc);
             }
-
             // Create inclusions
             Dynamism positiveDynamismOfAscendant = dataInterface.getDynamism(newFcc, 0);
             Dynamism negativeDynamismOfAscendant = dataInterface.getDynamism(newFcc, 1);
@@ -1251,32 +1316,6 @@ public class FruitController implements Initializable {
     public void setFontSize(String fontSize) {
         this.fontSize.set(fontSize);
     }
-/*
-
-    public String getFirstPart() {
-        return firstPart.get();
-    }
-
-    public StringProperty firstPartProperty() {
-        return firstPart;
-    }
-
-    public void setFirstPart(String firstPart) {
-        this.firstPart.set(firstPart);
-    }
-*/
-/*
-    public String getLastPart() {
-        return lastPart.get();
-    }
-
-    public StringProperty lastPartProperty() {
-        return lastPart;
-    }
-
-    public void setLastPart(String lastPart) {
-        this.lastPart.set(lastPart);
-    }*/
 
     public Bounds getKnob1BoundsInTreeBinding() {
         return knob1BoundsInTreeBinding.get();
@@ -1310,4 +1349,16 @@ public class FruitController implements Initializable {
         return knob3BoundsInTreeBinding;
     }
 
+    public void log(String string) {
+        tree.getTodController().getNodeInterface().log(string);
+    }
+
+
+    public List<ImplicationExp> getImplicationExps() {
+        List<ImplicationExp> list = new ArrayList<>();
+        list.add(positiveImplicationExp);
+        list.add(negativeImplicationExp);
+        list.add(symmetricImplicationExp);
+        return list;
+    }
 }

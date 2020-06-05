@@ -10,6 +10,9 @@ import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.CClassHasInclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 
+import java.util.Collection;
+import java.util.List;
+
 public interface DataInterface {
 
     void setDataConnectionValues(String url, String name, String password);
@@ -35,7 +38,7 @@ public interface DataInterface {
     ObservableList<Inclusion> getListInclusions();
     ObservableList<Inclusion> getInclusions(Tod tod);
     ObservableList<Syllogism> getListSyllogisms();
-    ObservableList<InclusionHasSyllogism> getListIHS();
+    ObservableList<InclusionHasSyllogism> getListInclusionHasSyllogisms();
 
     // Containers
     ObservableList<Tod> getTods(LogicSystem logicSystem);
@@ -116,4 +119,19 @@ public interface DataInterface {
     LogicSystem getLogicSystem(Fcc fcc);
 
     void setNodeInterface(NodeInterface nodeInterface);
+
+    Inclusion getInclusion(Dynamism ascendantDynamism, Dynamism descendantDynamism, Tod tod);
+
+    // listInclusions is already reversed
+    boolean isSyllogism(List<Inclusion> listInclusions, Tod tod);
+
+    Syllogism newSyllogism(String label, List<Inclusion> listInclusions, Tod tod);
+
+    Syllogism getSyllogism(List<Inclusion> listInclusions, Tod tod);
+
+    void update(Syllogism syllogism);
+
+    ObservableList<Syllogism> getSyllogisms(Tod tod);
+
+    List<Inclusion> getInclusions(Syllogism syllogism);
 }

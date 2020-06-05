@@ -1,59 +1,137 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<SplitPane fx:id="splitPane" dividerPositions="0.4, 0.9" prefHeight="600.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
+<SplitPane fx:id="splitPane" dividerPositions="0.4, 0.9" prefHeight="1000.0" prefWidth="1000.0" stylesheets="@../css/tod.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.amuyana.app.controllers.TodController">
    <items>
-      <ScrollPane fx:id="leftPanel" fitToWidth="true" maxWidth="-Infinity" minWidth="-Infinity" prefViewportWidth="300.0" prefWidth="300.0" SplitPane.resizableWithParent="false">
+      <ScrollPane fx:id="leftPanel" fitToHeight="true" fitToWidth="true" prefViewportWidth="300.0" SplitPane.resizableWithParent="false">
          <content>
-            <VBox id="LeftPanelRoot" alignment="CENTER_LEFT" spacing="5.0" SplitPane.resizableWithParent="false">
-               <children>
-                  <HBox spacing="10.0">
-                     <children>
-                        <Label id="todName" fx:id="todNameLabel" minHeight="-Infinity" minWidth="-Infinity" text="name" wrapText="true">
-                           <font>
-                              <Font size="15.0" />
-                           </font>
-                        </Label>
-                        <Button fx:id="toggleTodNameButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
-                     </children>
-                  </HBox>
-                 <TextField fx:id="todNameTextField" />
-                  <HBox alignment="CENTER_LEFT" spacing="5.0">
-                     <children>
-                        <Label minWidth="-Infinity" text="In: " />
-                        <Label id="LogicSystemName" fx:id="logicSystemNameLabel" layoutX="10.0" layoutY="10.0" maxWidth="250.0" text="Logic system (LS1)" wrapText="true" HBox.hgrow="ALWAYS" />
-                     </children>
-                  </HBox>
-                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="20.0" spacing="5.0">
-                     <children>
-                        <Label text="Fundamental Conjunctions of Contradiction" wrapText="true" />
-                     </children>
-                  </HBox>
-                  <ListView fx:id="fccsInTodListView" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-                  <HBox alignment="CENTER_LEFT" spacing="3.0">
-                     <children>
-                        <Label minWidth="-Infinity" text="amount" />
-                        <TextField fx:id="amountCopyTextField" prefWidth="35.0" text="1" />
-                        <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="index" />
-                        <TextField fx:id="indexCopyTextField" layoutX="46.0" layoutY="10.0" prefWidth="35.0" text="0" />
-                        <Separator orientation="VERTICAL" />
-                        <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" text="Duplicate" />
-                     </children>
-                  </HBox>
-                  <HBox id="LeftPanelSectionTitle" alignment="CENTER_LEFT" layoutX="15.0" layoutY="110.0" spacing="5.0">
-                     <children>
-                        <Label text="Inclusions" wrapText="true" />
-                     </children>
-                  </HBox>
-                  <ListView fx:id="inclusionsInTodListView" layoutX="15.0" layoutY="161.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-               </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
-            </VBox>
+            <Accordion>
+              <panes>
+                <TitledPane animated="false" text="Table of deductions">
+                     <content>
+                        <VBox spacing="5.0">
+                           <children>
+                              <HBox spacing="10.0">
+                                 <children>
+                                    <Label id="todName" fx:id="todNameLabel" minHeight="-Infinity" minWidth="-Infinity" text="name" wrapText="true">
+                                       <font>
+                                          <Font size="15.0" />
+                                       </font>
+                                    </Label>
+                                    <Button fx:id="toggleTodNameButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#toggleTodName" text="Edit" />
+                                 </children>
+                              </HBox>
+                              <TextField fx:id="todNameTextField" prefWidth="300.0" />
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
+                                 <children>
+                                    <Label minWidth="-Infinity" text="In: " />
+                                    <Label id="LogicSystemName" fx:id="logicSystemNameLabel" layoutX="10.0" layoutY="10.0" maxWidth="250.0" text="Logic system (LS1)" wrapText="true" HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                <TitledPane animated="false" expanded="false" text="Fundamental conjunctions of contradiction (FCCs)" wrapText="true">
+                     <content>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="FCCs in this Table of deductions" />
+                              <ListView fx:id="fccsInTodListView" VBox.vgrow="ALWAYS" />
+                              <Label layoutX="20.0" layoutY="20.0" text="Duplicate selected FCC" />
+                              <HBox alignment="CENTER_LEFT" spacing="3.0">
+                                 <children>
+                                    <Label minWidth="-Infinity" text="amount" />
+                                    <TextField fx:id="amountCopyTextField" prefWidth="35.0" text="1" />
+                                    <Label layoutX="10.0" layoutY="10.0" minWidth="-Infinity" text="index" />
+                                    <TextField fx:id="indexCopyTextField" layoutX="46.0" layoutY="10.0" prefWidth="35.0" text="0" />
+                                    <Separator orientation="VERTICAL" />
+                                    <Button minWidth="-Infinity" mnemonicParsing="false" onAction="#duplicateFcc" text="Duplicate" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" expanded="false" layoutX="10.0" layoutY="35.0" text="Inclusions" wrapText="true">
+                     <content>
+                        <VBox>
+                           <children>
+                              <Label text="Inclusions in this Table of deductions" />
+                              <ListView fx:id="inclusionsInTodListView" minWidth="0.0" prefHeight="120.0" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" expanded="false" layoutX="10.0" layoutY="60.0" text="Syllogisms" wrapText="true">
+                     <content>
+                        <VBox spacing="5.0">
+                           <children>
+                              <Label text="Syllogisms in this Table of deductions" />
+                              <Label layoutX="20.0" layoutY="20.0" text="(press CTRL to unselect)">
+                                 <font>
+                                    <Font size="10.0" />
+                                 </font>
+                              </Label>
+                              <ListView fx:id="syllogismsListView" VBox.vgrow="ALWAYS" />
+                           </children>
+                        </VBox>
+                     </content>
+                  </TitledPane>
+                  <TitledPane animated="false" expanded="false" layoutX="10.0" layoutY="110.0" text="Register" wrapText="true">
+                     <content>
+                        <VBox spacing="5.0">
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="Dynamism :" />
+                                    <HBox fx:id="conjunctionExpHBox" prefHeight="40.0" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0">
+                                 <children>
+                                    <Label text="From syllogism :" />
+                                    <Label fx:id="syllogismLabelInRegister" layoutX="10.0" layoutY="10.0" text="Syllogism" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="75.0">
+                                 <children>
+                                    <Label text="Value :" />
+                                    <TextField />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="105.0">
+                                 <children>
+                                    <Label text="Units :" />
+                                    <ComboBox prefWidth="150.0" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="135.0">
+                                 <children>
+                                    <Label text="Start :" />
+                                    <Label layoutX="10.0" layoutY="10.0" text="- add start dateTimePciker -" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="165.0">
+                                 <children>
+                                    <Label text="End :" />
+                                    <Label layoutX="10.0" layoutY="10.0" text="- add end dateTimePciker -" />
+                                 </children>
+                              </HBox>
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="165.0">
+                                 <children>
+                                    <Button mnemonicParsing="false" text="Add entry/New" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </content></TitledPane>
+              </panes>
+            </Accordion>
          </content>
       </ScrollPane>
       <BorderPane fx:id="todBorderPane" prefHeight="200.0" prefWidth="200.0">
@@ -69,15 +147,51 @@
             </ScrollPane>
          </center>
          <top>
-            <HBox alignment="CENTER_LEFT">
+            <VBox spacing="5.0">
                <children>
-                  <Button fx:id="toggleLeftPanelButton" mnemonicParsing="false" onAction="#toggleLeftPanel" text="←" />
-                  <Separator orientation="VERTICAL" />
-                  <Slider fx:id="scaleSlider" blockIncrement="1.0" majorTickUnit="0.1" max="1.0" min="1.0" minWidth="-Infinity" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToTicks="true" visible="false" />
-                  <Button fx:id="changeFCCsNotationButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeFCCsNotation" prefWidth="130.0" text="Show algebraic notation for all FCCs" wrapText="true" />
-                  <Button fx:id="changeDynamismsNotationButton" layoutX="185.0" layoutY="17.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeDynamismsNotation" prefWidth="130.0" text="Show algebraic notation for all dynamisms" wrapText="true" />
+                  <HBox alignment="CENTER_LEFT" spacing="5.0">
+                     <children>
+                        <Button fx:id="toggleLeftPanelButton" maxHeight="1.7976931348623157E308" mnemonicParsing="false" onAction="#toggleLeftPanel" text="←" />
+                        <Separator orientation="VERTICAL" />
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                              <HBox>
+                                 <children>
+                                    <Button fx:id="changeFCCsNotationButton" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeFCCsNotation" prefWidth="130.0" text="Show algebraic notation for all FCCs" wrapText="true" />
+                                    <Button fx:id="changeDynamismsNotationButton" layoutX="185.0" layoutY="17.0" maxWidth="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#changeDynamismsNotation" prefWidth="130.0" text="Show algebraic notation for all dynamisms" wrapText="true" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+                  <VBox fx:id="selectedSyllogismVBox" spacing="5.0">
+                     <children>
+                        <Label fx:id="syllogismTitle" text="Selected syllogism:">
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="CENTER_LEFT" spacing="10.0">
+                           <children>
+                              <Label fx:id="syllogismLabel" text="Syllogism label" HBox.hgrow="ALWAYS" />
+                              <TextField fx:id="syllogismTextField" text="Syllogism label" HBox.hgrow="ALWAYS" />
+                              <Button fx:id="syllogismButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#syllogismButtonOnAction" text="Create/Save/Edit" />
+                           </children>
+                        </HBox>
+                        <HBox fx:id="selectedSyllogismHBox" alignment="TOP_CENTER" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </VBox.margin>
+                  </VBox>
+                  <Separator layoutX="10.0" layoutY="75.0" prefWidth="200.0" />
                </children>
-            </HBox>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </VBox>
          </top>
       </BorderPane>
       <TabPane fx:id="rightTabPane" maxWidth="350.0" minWidth="300.0" side="RIGHT" tabClosingPolicy="ALL_TABS" SplitPane.resizableWithParent="false" />

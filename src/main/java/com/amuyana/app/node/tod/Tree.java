@@ -1,31 +1,25 @@
 package com.amuyana.app.node.tod;
 
 import com.amuyana.app.controllers.TodController;
-import com.amuyana.app.data.DataConnection;
-import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.data.Dynamism;
-import com.amuyana.app.data.Fcc;
+import com.amuyana.app.data.*;
 import com.amuyana.app.data.tod.CClass;
 import com.amuyana.app.data.tod.Conjunction;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.node.NodeHandler;
-import javafx.application.Platform;
+import com.amuyana.app.node.tod.expression.ImplicationExp;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.shape.Line;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Equivalent to tod in data package: this.todController.getTod();
@@ -43,6 +37,15 @@ public class Tree extends Group {
     //private ObservableList<Fruit> fruits;
     private ObservableList<Tie> ties;
 
+    // Selection of syllogisms
+    private BooleanProperty selection;
+    private List<ImplicationExp> implicationExps;
+    public List<Inclusion> selectedListInclusions;
+    private boolean changeOfSelectionFromTree;
+    //private Syllogism selectedSyllogism;
+
+    //private Dynamism firstSelectedDynamism;
+
 //    private Group linesGroup;
 
     // constructor to loadExistingTree an existing Tree
@@ -51,7 +54,11 @@ public class Tree extends Group {
         initializeAndBind();
         setId("Tree");
         bindScale();
+        selection = new SimpleBooleanProperty();
+        implicationExps = new ArrayList<>();
+        selectedListInclusions = new ArrayList<>();
 
+        setSelection(false);
 
 
 /*
@@ -63,8 +70,6 @@ public class Tree extends Group {
         Circle circle3 = new Circle(5);
         Circle circle4 = new Circle(5);
 */
-
-
     }
 
     // constructor for debug1 - lines
@@ -158,7 +163,6 @@ public class Tree extends Group {
         ties.add(tie);
         for (Line line : tie.getLines()) {
             int position = getChildren().size()-1;
-
             getChildren().add(position,line);
         }
     }
@@ -273,17 +277,6 @@ public class Tree extends Group {
     public ObservableList<Fruit> remove(ObservableList<Fruit> fruitsToRemove, Fruit fruit) {
         fruitsToRemove.addAll(fruit);
         // removing inclusions to fruits in subBranches of Branches in left and right trunks of fruit's subBranch
-        // left
-        if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
-        }
-        if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
-        }
-        // right
-        if (!fruit.getSubBranch().getLeftTrunk().getBranches().isEmpty()) {
-        }
-        if (!fruit.getBranch().getLeftTrunk().getBranches().isEmpty()) {
-        }
-
         ObservableList<Branch> leftBranches  = FXCollections.observableArrayList();
         leftBranches.addAll(fruit.getSubBranch().getLeftTrunk().getBranches());
         leftBranches.addAll(fruit.getBranch().getLeftTrunk().getBranches());
@@ -434,5 +427,94 @@ public class Tree extends Group {
             else
                 fruit.getFruitController().updateKnobsProperty().setValue(true);
         }
+    }
+
+    public boolean isSelection() {
+        return selection.get();
+    }
+
+    public BooleanProperty selectionProperty() {
+        return selection;
+    }
+
+    public void setSelection(boolean selection) {
+        this.selection.set(selection);
+    }
+
+    public List<ImplicationExp> getImplicationExps() {
+        return implicationExps;
+    }
+
+    /**
+     *
+     * @param position 0 if initial, 1 if final position in the implicationExps list
+     * @param implicationExp The one added
+     */
+    public void addToSelectedImplicationExp(int position, ImplicationExp implicationExp) {
+        if (position == 0) {
+            this.implicationExps.add(0,implicationExp);
+        } else if (position == 1) {
+            this.implicationExps.add(implicationExp);
+        }
+    }
+
+    public void removeFromSelectedImplicationExp(ImplicationExp implicationExp) {
+        this.implicationExps.remove(implicationExp);
+    }
+
+    /**
+     *
+     * @param position 0 is at the beginning of list, 1 is at the end
+     * @param inclusion Inclusion that is going to be added
+     */
+    public void addInclusionInSelection(int position, Inclusion inclusion) {
+        switch (position) {
+            case 0:
+                selectedListInclusions.add(0, inclusion);
+                break;
+            case 1:
+                selectedListInclusions.add(inclusion);
+                break;
+        }
+        todController.showSelectedSyllogismExpression(selectedListInclusions);
+    }
+
+    /**
+     * Used in the syllogism
+     * @param inclusion Inclusion that is going to be removed
+     */
+    public void removeInclusionInSelection(Inclusion inclusion) {
+        selectedListInclusions.remove(inclusion);
+        if (selectedListInclusions.isEmpty()) {
+            todController.getSelectedSyllogismHBox().getChildren().setAll();
+            todController.getSelectedSyllogismVBox().setManaged(false);
+            todController.setSelectedSyllogism(null);
+            todController.updateSyllogismListView();
+        }
+        else {
+            todController.showSelectedSyllogismExpression(selectedListInclusions);
+        }
+    }
+
+    public List<Inclusion> getSelectedListInclusions() {
+        return selectedListInclusions;
+    }
+
+    public boolean getChangeOfSelectionFromTree() {
+        return changeOfSelectionFromTree;
+    }
+
+    public void setChangeOfSelectionFromTree(boolean changeOfSelectionFromTree) {
+        this.changeOfSelectionFromTree = changeOfSelectionFromTree;
+    }
+
+    public void setSelectedListInclusions(List<Inclusion> selectedListInclusions) {
+        this.selectedListInclusions.clear();
+        this.selectedListInclusions.addAll(selectedListInclusions);
+    }
+
+    public void setImplicationExps(List<ImplicationExp> implicationExps) {
+        this.implicationExps.clear();
+        this.implicationExps.addAll(implicationExps);
     }
 }

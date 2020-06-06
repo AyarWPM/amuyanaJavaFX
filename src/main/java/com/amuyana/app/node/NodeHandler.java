@@ -29,7 +29,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     private LogicSystem logicSystem;
     ConnectionTab connectionTab;
     private Log log;
-    public static String VERSION ="Amuyaña 3.1";
+    public static String VERSION ="Amuyaña 3.2dev";
 
     public NodeHandler(DataInterface dataInterface, Stage stage) {
         NodeHandler.dataInterface = dataInterface;

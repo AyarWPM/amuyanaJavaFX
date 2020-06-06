@@ -27,6 +27,7 @@ public class Amuyana extends Application {
         //nodeInterface.openDebug1();
 
         // Debug TOD
+/*
         dataInterface.setDataConnectionValues("localhost","amuyana","");
         dataInterface.connect();
         dataInterface.loadData();
@@ -35,6 +36,7 @@ public class Amuyana extends Application {
         Tod tod = dataInterface.getTods(logicSystem).get(0);
         nodeInterface.load(logicSystem);
         nodeInterface.open(tod);
+*/
 
         stage.show();
     }

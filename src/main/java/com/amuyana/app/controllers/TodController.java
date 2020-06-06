@@ -71,7 +71,7 @@ public class TodController implements Initializable {
     @FXML private TextField syllogismTextField;
     @FXML private Button syllogismButton;
     @FXML private Label syllogismTitle;
-    
+
     private NodeInterface nodeInterface;
     private DataInterface dataInterface;
     private Tod tod;

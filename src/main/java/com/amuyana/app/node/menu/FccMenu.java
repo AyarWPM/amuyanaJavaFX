@@ -1,20 +1,25 @@
 package com.amuyana.app.node.menu;
 import com.amuyana.app.controllers.FruitController;
-import com.amuyana.app.data.DataInterface;
-import com.amuyana.app.data.Dynamism;
-import com.amuyana.app.data.Fcc;
+import com.amuyana.app.data.*;
 import com.amuyana.app.data.tod.Inclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Menu;
+import javafx.scene.layout.Region;
+
+import java.util.Optional;
 
 
 public class FccMenu extends Menu {
@@ -172,13 +177,71 @@ public class FccMenu extends Menu {
                             }
                         }
                     }
-                    dataInterface.delete(inclusionToRemove);
+                    // if there are syllogisms with the inclusion ask if user wants to remove them, otherwise cancel
+                    ObservableList<Syllogism> syllogismsWithInclusionToRemove = FXCollections.observableArrayList();
+                    for (InclusionHasSyllogism inclusionHasSyllogism : dataInterface.getListInclusionHasSyllogisms()) {
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusionToRemove)) {
+                            syllogismsWithInclusionToRemove.add(inclusionHasSyllogism.getSyllogism());
+                        }
+                    }
+
+                    // check if by removing the inclusion we also remove the fruit, if so then check if there are
+                    // child syllogisms that would be removed
+                    if (dataInterface.getInclusions(fruit.getTree().getTodController().getTod(), inclusionToRemove.getParticular().getFcc(), inclusionToRemove.getGeneral().getFcc()).size() == 1) {
+                        for (Syllogism syllogism : dataInterface.getListSyllogisms(tod)) {
+                            ObservableList<Inclusion> listAllChildInclusions = FXCollections.observableArrayList();
+                            for (Fruit fruit1 : fruit.getAscendantChildFruits()) {
+                                if (fruit1.getFcc().equals(inclusionToRemove.getGeneral().getFcc())) {
+                                    if (fruit.getChildAscendantInclusions(listAllChildInclusions).containsAll(dataInterface.getInclusions(syllogism))) {
+                                        if (!syllogismsWithInclusionToRemove.contains(syllogism)) {
+                                            syllogismsWithInclusionToRemove.add(syllogism);
+                                        }
+                                    }
+                                } else {
+                                    if (fruit.getChildInclusions(listAllChildInclusions).containsAll(dataInterface.getInclusions(syllogism))) {
+                                        if (!syllogismsWithInclusionToRemove.contains(syllogism)) {
+                                            syllogismsWithInclusionToRemove.add(syllogism);
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+
+                    if (syllogismsWithInclusionToRemove.isEmpty()) {
+                        dataInterface.delete(inclusionToRemove);
+                    } else {
+                        // ask
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                        alert.setResizable(true);
+                        alert.setTitle("Confirm deletion of dependent syllogisms");
+                        alert.setHeaderText("If you continue the following syllogisms will also be removed, do you want to continue?");
+                        String contentText="";
+                        for (Syllogism syllogism : syllogismsWithInclusionToRemove) {
+                            contentText=contentText+syllogism.getLabel() + "\n";
+                        }
+                        alert.setContentText(contentText);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.isPresent()) {
+                            if (result.get() == ButtonType.OK) {
+                                // delete the syllogisms and all dependencies
+                                //dataInterface.getDataConnection().connect();
+                                for (Syllogism syllogism : syllogismsWithInclusionToRemove) {
+                                    dataInterface.delete(syllogism);
+                                }
+                                dataInterface.delete(inclusionToRemove);
+                                //dataInterface.getDataConnection().disconnect();
+                            }
+                        }
+                    }
                 }
                 tree.updateOrientationTies();
                 tree.checkFruitsRemoval();
                 tree.updateFruitsMenus();
                 tree.getTodController().updateListViews();
-                //tree.update();
+                tree.getTodController().updateSyllogismListView();
                 dataInterface.disconnect();
             });
             new Thread(sleeper).start();
@@ -245,12 +308,70 @@ public class FccMenu extends Menu {
                             }
                         }
                     }
-                    dataInterface.delete(inclusionToRemove);
+                    // if there are syllogisms with the inclusion ask if user wants to remove them, otherwise cancel
+                    ObservableList<Syllogism> syllogismsWithInclusionToRemove = FXCollections.observableArrayList();
+                    for (InclusionHasSyllogism inclusionHasSyllogism : dataInterface.getListInclusionHasSyllogisms()) {
+                        if (inclusionHasSyllogism.getInclusion().equals(inclusionToRemove)) {
+                            syllogismsWithInclusionToRemove.add(inclusionHasSyllogism.getSyllogism());
+                        }
+                    }
+
+                    // check if by removing the inclusion we also remove the fruit, if so then check if there are
+                    // child syllogisms that would be removed
+                    if (dataInterface.getInclusions(fruit.getTree().getTodController().getTod(), inclusionToRemove.getParticular().getFcc(), inclusionToRemove.getGeneral().getFcc()).size() == 1) {
+                        for (Syllogism syllogism : dataInterface.getListSyllogisms(tod)) {
+                            ObservableList<Inclusion> listAllChildInclusions = FXCollections.observableArrayList();
+                            // If this.fruit is the child in the inclusion, then getChildInclusions, otherwise getChildDescendantInclusions.
+                            for (Fruit fruit1 : fruit.getDescendantChildFruits()) {
+                                if (fruit1.getFcc().equals(inclusionToRemove.getParticular().getFcc())) {
+                                    if (fruit.getChildDescendantInclusions(listAllChildInclusions).containsAll(dataInterface.getInclusions(syllogism))) {
+                                        if (!syllogismsWithInclusionToRemove.contains(syllogism)) {
+                                            syllogismsWithInclusionToRemove.add(syllogism);
+                                        }
+                                    }
+                                } else {
+                                    if (fruit.getChildInclusions(listAllChildInclusions).containsAll(dataInterface.getInclusions(syllogism))) {
+                                        if (!syllogismsWithInclusionToRemove.contains(syllogism)) {
+                                            syllogismsWithInclusionToRemove.add(syllogism);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (syllogismsWithInclusionToRemove.isEmpty()) {
+                        dataInterface.delete(inclusionToRemove);
+                    } else {
+                        // ask
+                        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                        alert.setResizable(true);
+                        alert.setTitle("Confirm deletion of dependent syllogisms");
+                        alert.setHeaderText("If you continue the following syllogisms will also be removed, do you want to continue?");
+                        String contentText="";
+                        for (Syllogism syllogism : syllogismsWithInclusionToRemove) {
+                            contentText=contentText+syllogism.getLabel() + "\n";
+                        }
+                        alert.setContentText(contentText);
+                        Optional<ButtonType> result = alert.showAndWait();
+                        if (result.isPresent()) {
+                            if (result.get() == ButtonType.OK) {
+                                // delete the syllogisms and all dependencies
+                                //dataInterface.getDataConnection().connect();
+                                for (Syllogism syllogism : syllogismsWithInclusionToRemove) {
+                                    dataInterface.delete(syllogism);
+                                }
+                                dataInterface.delete(inclusionToRemove);
+                            }
+                        }
+                    }
                 }
                 tree.updateOrientationTies();
                 tree.checkFruitsRemoval();
                 tree.updateFruitsMenus();
                 tree.getTodController().updateListViews();
+                tree.getTodController().updateSyllogismListView();
                 dataInterface.disconnect();
             });
             new Thread(sleeper).start();

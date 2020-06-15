@@ -23,11 +23,9 @@ import java.util.*;
 public class DataHandler implements DataInterface {
     // LISTS
     private ObservableList<User> listUser;
-
     private ObservableList<LogicSystem> listLogicSystem;
     private ObservableList<FccHasLogicSystem> listFccHasLogicSystem;
     private ObservableList<Fcc> listFcc;
-
     private ObservableList<Tod> listTod;
     private ObservableList<Container0> listContainer0s;
     private ObservableList<Container1> listContainer1s;
@@ -40,14 +38,15 @@ public class DataHandler implements DataInterface {
     private ObservableList<CClassHasInclusion> listCClassHasInclusion; //
     private ObservableList<Conjunction> listConjunction;
     private ObservableList<ConjunctionHasInclusion> listConjunctionHasInclusions; //
-
-    // to check
     private ObservableList<Element> listElements;
     private ObservableList<Dynamism> listDynamisms; //
     private ObservableList<Inclusion> listInclusions; //
     private ObservableList<Syllogism> listSyllogisms;
     private ObservableList<SyllogismHasTod> listSyllogismHasTod;
     private ObservableList<InclusionHasSyllogism> listInclusionHasSyllogisms;
+    private ObservableList<Register> listRegister;
+    private ObservableList<RegisterHasSyllogism> listRegisterHasSyllogism;
+
 
     private DataConnection dataConnection;
     private static NodeInterface nodeInterface;
@@ -79,6 +78,8 @@ public class DataHandler implements DataInterface {
         this.listSyllogismHasTod = FXCollections.observableArrayList();
         this.listInclusionHasSyllogisms = FXCollections.observableArrayList();
         this.listContainer0s = FXCollections.observableArrayList();
+        this.listRegister = FXCollections.observableArrayList();
+        this.listRegisterHasSyllogism = FXCollections.observableArrayList();
     }
 
     /**
@@ -154,9 +155,10 @@ public class DataHandler implements DataInterface {
         Syllogism.loadList(this.dataConnection.getConnection(),this.listSyllogisms);
         InclusionHasSyllogism.loadList(this.dataConnection.getConnection(),this.listInclusionHasSyllogisms,this.listInclusions,this.listSyllogisms);
         SyllogismHasTod.loadList(this.dataConnection.getConnection(),listSyllogismHasTod,listSyllogisms,listTod);
+        Register.loadList(this.dataConnection.getConnection(), listRegister, listDynamisms);
+        RegisterHasSyllogism.loadList(this.dataConnection.getConnection(), listRegisterHasSyllogism,listRegister,listSyllogisms);
 
 //        Dialectic.loadList(this.dataConnection.getConnection(), listDialectic);
-//        Register.loadList(this.dataConnection.getConnection(), listRegister);
 //        Space.loadList(this.dataConnection.getConnection(), listSpace);
 //        Time.loadList(this.dataConnection.getConnection(), listTime);
 //        Quantum.loadList(this.dataConnection.getConnection(), listQuantum);
@@ -745,7 +747,6 @@ public class DataHandler implements DataInterface {
 
     @Override
     public void delete(Tod tod) {
-
         // delete Syllogisms
         ObservableList<Syllogism> syllogismsToDelete = FXCollections.observableArrayList();
         for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
@@ -774,7 +775,8 @@ public class DataHandler implements DataInterface {
         deleteAll(tod.getContainer0());
     }
 
-    private void delete(Syllogism syllogism) {
+    @Override
+    public void delete(Syllogism syllogism) {
         ObservableList<SyllogismHasTod> syllogismHasTodsToDelete = FXCollections.observableArrayList();
         for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
             if (syllogismHasTod.getSyllogism().equals(syllogism)) {
@@ -803,6 +805,65 @@ public class DataHandler implements DataInterface {
         if (result == 1) {
             this.listSyllogisms.remove(syllogism);
         }
+    }
+
+    @Override
+    public ObservableList<Syllogism> getListSyllogisms(Tod tod) {
+        ObservableList<Syllogism> listSyllogisms = FXCollections.observableArrayList();
+        for (SyllogismHasTod syllogismHasTod : getListSyllogismHasTod()) {
+            if (syllogismHasTod.getTod().equals(tod)) {
+                listSyllogisms.add(syllogismHasTod.getSyllogism());
+            }
+        }
+        return listSyllogisms;
+    }
+
+    @Override
+    public ObservableList<Register> getRegisters(Syllogism syllogism) {
+        ObservableList<Register> registers = FXCollections.observableArrayList();
+        for (RegisterHasSyllogism registerHasSyllogism : listRegisterHasSyllogism) {
+            if (registerHasSyllogism.getSyllogism().equals(syllogism)) {
+                registers.add(registerHasSyllogism.getRegister());
+            }
+        }
+        return registers;
+    }
+
+    @Override
+    public Register newRegister(Syllogism syllogism, LocalDateTime startTimeValue, LocalDateTime endTimeValue) {
+        Dynamism dynamism = getInclusions(syllogism).get(0).getParticular();
+        Register register = new Register(0,dynamism,Timestamp.valueOf(LocalDateTime.now()),Timestamp.valueOf(startTimeValue),Timestamp.valueOf(endTimeValue));
+        if (register.saveData(getDataConnection().getConnection())==1) {
+            register.setIdRegister(Register.getCurrentAutoIncrement());
+            listRegister.add(register);
+        }
+        RegisterHasSyllogism registerHasSyllogism = new RegisterHasSyllogism(register, syllogism);
+        if (registerHasSyllogism.saveData(getDataConnection().getConnection()) == 1) {
+            listRegisterHasSyllogism.add(registerHasSyllogism);
+        }
+
+        return register;
+    }
+
+    @Override
+    public void delete(Register register) {
+        register.deleteData(dataConnection.getConnection());
+    }
+
+    @Override
+    public Tod getTod(Syllogism syllogism) {
+        Tod tod = null;
+        for (SyllogismHasTod syllogismHasTod : listSyllogismHasTod) {
+            if (syllogismHasTod.getSyllogism().equals(syllogism)) {
+                tod = syllogismHasTod.getTod();
+            }
+        }
+        return tod;
+    }
+
+    @Override
+    public ObservableList<Register> getListRegisters() {
+        return listRegister;
     }
 
     private void deleteAll(Container0 container0) {
@@ -1026,6 +1087,8 @@ public class DataHandler implements DataInterface {
             this.listInclusions.remove(inclusion);
         }
     }
+
+
     /*
              _____                       _                        _   _
             /  __ \                     | |                      | | | |
@@ -1137,4 +1200,47 @@ public class DataHandler implements DataInterface {
         }
         return false;
     }
+
+    @Override
+    public boolean isInclusion(Tod tod,Fcc descendantFcc, Fcc ascendantFcc) {
+        Dynamism positiveDescendant = getDynamism(descendantFcc,0);
+        Dynamism negativeDescendant = getDynamism(descendantFcc,1);
+        Dynamism symmetricDescendant = getDynamism(descendantFcc,2);
+        Dynamism positiveAscendant = getDynamism(ascendantFcc,0);
+        Dynamism negativeAscendant = getDynamism(ascendantFcc,1);
+        Dynamism symmetricAscendant = getDynamism(ascendantFcc,2);
+        for (Inclusion inclusion : getListInclusions()) {
+            if (inclusion.getTod().equals(tod)) {
+                if (inclusion.getGeneral().equals(positiveAscendant) | inclusion.getGeneral().equals(negativeAscendant) | inclusion.getGeneral().equals(symmetricAscendant)) {
+                    if (inclusion.getParticular().equals(positiveDescendant) | inclusion.getParticular().equals(negativeDescendant) | inclusion.getParticular().equals(symmetricDescendant)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ObservableList<Inclusion> getInclusions(Tod tod, Fcc descendantFcc, Fcc ascendantFcc) {
+        ObservableList<Inclusion> listInclusions = FXCollections.observableArrayList();
+        Dynamism positiveDescendant = getDynamism(descendantFcc,0);
+        Dynamism negativeDescendant = getDynamism(descendantFcc,1);
+        Dynamism symmetricDescendant = getDynamism(descendantFcc,2);
+        Dynamism positiveAscendant = getDynamism(ascendantFcc,0);
+        Dynamism negativeAscendant = getDynamism(ascendantFcc,1);
+        Dynamism symmetricAscendant = getDynamism(ascendantFcc,2);
+        for (Inclusion inclusion : getListInclusions()) {
+            if (inclusion.getTod().equals(tod)) {
+                if (inclusion.getGeneral().equals(positiveAscendant) | inclusion.getGeneral().equals(negativeAscendant) | inclusion.getGeneral().equals(symmetricAscendant)) {
+                    if (inclusion.getParticular().equals(positiveDescendant) | inclusion.getParticular().equals(negativeDescendant) | inclusion.getParticular().equals(symmetricDescendant)) {
+                        listInclusions.add(inclusion);
+                    }
+                }
+            }
+        }
+        return listInclusions;
+    }
+
+
 }

@@ -8,6 +8,8 @@ import com.amuyana.app.data.tod.containers.Tod;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.chrono.ChronoLocalDateTime;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 import com.amuyana.app.node.NodeHandler;
@@ -16,9 +18,11 @@ import com.amuyana.app.node.content.TodScrollPane;
 import com.amuyana.app.node.content.FccEditorTab;
 import com.amuyana.app.node.content.RightPanelTab;
 import com.amuyana.app.node.content.TodTab;
+import com.amuyana.app.node.tod.DateTimePicker;
 import com.amuyana.app.node.tod.Fruit;
 import com.amuyana.app.node.tod.Tree;
 
+import com.amuyana.app.node.tod.expression.ConjunctionExp;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.tod.expression.ImplicationExp;
 import com.amuyana.app.node.tod.expression.SyllogismExp;
@@ -36,12 +40,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 
 public class TodController implements Initializable {
+    private NodeInterface nodeInterface;
+    private DataInterface dataInterface;
+    private Tod tod;
+
+    private TodTab todTab;
+    private Tree tree;
+    private BooleanProperty editName;
+    private BooleanProperty leftPanelOpen;
+    private BooleanProperty rightPanelOpen;
+    private Syllogism selectedSyllogism;
+
     @FXML private SplitPane splitPane;
     //@FXML private HBox canvas;
 
@@ -71,17 +87,19 @@ public class TodController implements Initializable {
     @FXML private TextField syllogismTextField;
     @FXML private Button syllogismButton;
     @FXML private Label syllogismTitle;
+    @FXML private Button deleteSyllogismButton;
 
-    private NodeInterface nodeInterface;
-    private DataInterface dataInterface;
-    private Tod tod;
+    @FXML private Button viewFccFromRegisterButton;
+    @FXML private Label syllogismLabelInRegister;
+    @FXML private HBox dynamismInRegisterPropositionHBox;
+    @FXML private HBox dynamismInRegisterConjunctionHBox;
 
-    private TodTab todTab;
-    private Tree tree;
-    private BooleanProperty editName;
-    private BooleanProperty leftPanelOpen;
-    private BooleanProperty rightPanelOpen;
-    private Syllogism selectedSyllogism;
+    @FXML private HBox startDateRegisterHBox;
+    @FXML private HBox endDateRegisterHBox;
+    @FXML private ListView<Register> registerListView;
+
+    private DateTimePicker startDateTimePicker;
+    private DateTimePicker endDateTimePicker;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,6 +118,14 @@ public class TodController implements Initializable {
         this.syllogismLabel.setManaged(false);
         this.syllogismTextField.setManaged(false);
         this.syllogismButton.setManaged(false);
+        this.deleteSyllogismButton.setManaged(false);
+        this.startDateTimePicker = new DateTimePicker();
+        this.endDateTimePicker = new DateTimePicker();
+        this.startDateTimePicker.setDisable(true);
+        this.endDateTimePicker.setDisable(true);
+
+        startDateRegisterHBox.getChildren().setAll(startDateTimePicker);
+        endDateRegisterHBox.getChildren().setAll(endDateTimePicker);
     }
 
     public void setTab(TodTab todTab) {
@@ -129,6 +155,7 @@ public class TodController implements Initializable {
     public void updateListViews() {
         fccsInTodListView.setItems(dataInterface.getFccs(this.tod));
         inclusionsInTodListView.setItems(dataInterface.getInclusions(tod));
+
     }
 
     public void updateSyllogismListView() {
@@ -424,12 +451,11 @@ public class TodController implements Initializable {
         }
     }
 
-
     EventHandler<ActionEvent> openFccEditorEventHandler(Fcc fcc) {
-        return actionEvent -> openFccEditor(fcc);
+        return actionEvent -> openFccEditor(fcc,true);
     }
 
-    public void openFccEditor(Fcc fcc) {
+    public void openFccEditor(Fcc fcc, boolean editMode) {
         for (Tab tab : rightTabPane.getTabs()) {
             if (tab.getClass().equals(FccEditorTab.class)) {
                 FccEditorTab fccEditorTab = (FccEditorTab)tab;
@@ -443,7 +469,7 @@ public class TodController implements Initializable {
             toggleRightTabPane();
         }
         FccEditorTab fccEditorTab =new FccEditorTab(getThisTodController(),nodeInterface,fcc);
-        fccEditorTab.getFccEditorController().setEditMode(true);
+        fccEditorTab.getFccEditorController().setEditMode(editMode);
         rightTabPane.getTabs().add(fccEditorTab);
         rightTabPane.getSelectionModel().select(fccEditorTab);
     }
@@ -648,8 +674,11 @@ public class TodController implements Initializable {
             syllogismTextField.setManaged(false);
             syllogismTextField.setVisible(false);
             syllogismButton.setText("Edit");
+            deleteSyllogismButton.setDisable(false);
+            deleteSyllogismButton.setManaged(true);
+            deleteSyllogismButton.setVisible(true);
             updateSyllogismListView();
-
+            updateRegisterPane();
         } else {
             tree.setChangeOfSelectionFromTree(true);
             syllogismsListView.getSelectionModel().clearSelection();
@@ -660,6 +689,9 @@ public class TodController implements Initializable {
             syllogismTextField.setVisible(true);
             syllogismTextField.setText("Syllogism label");
             syllogismButton.setText("Create");
+            deleteSyllogismButton.setDisable(true);
+            deleteSyllogismButton.setManaged(false);
+            deleteSyllogismButton.setVisible(false);
             selectedSyllogism=null;
         }
 
@@ -668,6 +700,90 @@ public class TodController implements Initializable {
         }
         SyllogismExp syllogismExp = new SyllogismExp(selectedListInclusions);
         getSelectedSyllogismHBox().getChildren().setAll(syllogismExp.getExpression());
+    }
+
+    public void updateRegisterPane() {
+        if (Objects.isNull(selectedSyllogism)) {
+            this.viewFccFromRegisterButton.setDisable(true);
+            this.syllogismLabelInRegister.setText("");
+
+            this.dynamismInRegisterPropositionHBox.getChildren().clear();
+            this.dynamismInRegisterConjunctionHBox.getChildren().clear();
+
+            this.startDateTimePicker.setDisable(true);
+            this.endDateTimePicker.setDisable(true);
+            this.startDateTimePicker.setDateTimeValue(null);
+            this.endDateTimePicker.setDateTimeValue(null);
+
+            registerListView.getItems().clear();
+        } else {
+            this.viewFccFromRegisterButton.setDisable(false);
+            this.syllogismLabelInRegister.setText(selectedSyllogism.getLabel());
+
+            Dynamism registerDynamism = dataInterface.getInclusions(selectedSyllogism).get(0).getParticular();
+            ImplicationExp implicationExpPropositional = new ImplicationExp(this,null,registerDynamism, Expression.ExpressionType.PROPOSITION, Pos.CENTER);
+            ConjunctionExp conjunctionExp = new ConjunctionExp(registerDynamism);
+            this.dynamismInRegisterPropositionHBox.getChildren().setAll(implicationExpPropositional);
+            this.dynamismInRegisterConjunctionHBox.getChildren().setAll(conjunctionExp);
+            this.startDateTimePicker.setDisable(false);
+            this.endDateTimePicker.setDisable(false);
+
+            // load listview
+            registerListView.getItems().setAll(dataInterface.getRegisters(selectedSyllogism));
+        }
+    }
+
+    @FXML
+    public void openFccEditor() {
+        Fcc fcc = dataInterface.getInclusions(selectedSyllogism).get(0).getParticular().getFcc();
+        this.tree.getTodController().openFccEditor(fcc,false);
+    }
+
+    @FXML
+    public void addRegister() {
+        // Selected syllogism condition
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cannot add an entry");
+        alert.setHeaderText(null);
+        if (Objects.isNull(selectedSyllogism)) {
+            alert.setContentText("Please select a syllogism.");
+            alert.showAndWait();
+        } else {
+            // start datetime condition
+            if (Objects.isNull(startDateTimePicker.getDateTimeValue())) {
+                alert.setContentText("Please specify a starting date-time.");
+                alert.showAndWait();
+            } else {
+                // end datetime condition
+                if (Objects.isNull(endDateTimePicker.getDateTimeValue())) {
+                    alert.setContentText("Please specify an ending date-time.");
+                    alert.showAndWait();
+                } else {
+                    //Dynamism dynamism = dataInterface.getInclusions(selectedSyllogism).get(0).getParticular();
+                    dataInterface.getDataConnection().connect();
+                    Register newRegister = dataInterface.newRegister(selectedSyllogism,startDateTimePicker.getDateTimeValue(),endDateTimePicker.getDateTimeValue());
+                    dataInterface.getDataConnection().disconnect();
+                    updateRegisterPane();
+                    registerListView.getSelectionModel().select(newRegister);
+                }
+            }
+        }
+    }
+
+    @FXML
+    public void deleteRegister() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cannot add an entry");
+        alert.setHeaderText(null);
+        if (registerListView.getSelectionModel().isEmpty()) {
+            alert.setContentText("Please select an entry.");
+            alert.showAndWait();
+        } else {
+            dataInterface.getDataConnection().connect();
+            dataInterface.delete(registerListView.getSelectionModel().getSelectedItem());
+            dataInterface.getDataConnection().disconnect();
+        }
+        updateRegisterPane();
     }
 
     @FXML
@@ -686,7 +802,11 @@ public class TodController implements Initializable {
                 syllogismTextField.setManaged(false);
                 syllogismTextField.setVisible(false);
                 syllogismButton.setText("Edit");
+                deleteSyllogismButton.setVisible(true);
+                deleteSyllogismButton.setManaged(true);
+                deleteSyllogismButton.setDisable(false);
                 updateSyllogismListView();
+                updateRegisterPane();
                 break;
             }
             case "Edit":{
@@ -714,6 +834,17 @@ public class TodController implements Initializable {
                 break;
             }
         }
+    }
+
+    @FXML
+    private void deleteSyllogismButtonOnAction() {
+        dataInterface.getDataConnection().connect();
+        dataInterface.delete(selectedSyllogism);
+        dataInterface.getDataConnection().disconnect();
+        selectedSyllogism=null;
+        syllogismsListView.getItems().clear();
+        syllogismsListView.setItems(dataInterface.getSyllogisms(tod));
+        //syllogismsListView.getSelectionModel().select(selectedSyllogism);
     }
 
     public void setSelectedSyllogism(Syllogism syllogism) {

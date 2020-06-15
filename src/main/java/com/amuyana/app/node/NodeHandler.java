@@ -30,6 +30,8 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     ConnectionTab connectionTab;
     private Log log;
     public static String VERSION ="Amuyaña 3.2dev";
+    private SyllogismsTab syllogismTab;
+    private StatisticsTab statisticsTab;
 
     public NodeHandler(DataInterface dataInterface, Stage stage) {
         NodeHandler.dataInterface = dataInterface;
@@ -37,7 +39,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         Expression.initializeLists(); //todo move
         this.topMenuBar = new TopMenuBar(this);
         this.connectionTab = new ConnectionTab(this);
-        this.contentTabPane = new ContentTabPane();
+        this.contentTabPane = new TabPane();
 
         setTop(this.topMenuBar);
         setCenter(this.contentTabPane);
@@ -300,6 +302,12 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
     @Override
     public void openFccTableTab() {
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (tab.getClass().equals(FccTableTab.class)) {
+                contentTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
         FccTableTab fccTableTab = new FccTableTab();
         contentTabPane.getTabs().add(fccTableTab);
         contentTabPane.getSelectionModel().select(fccTableTab);
@@ -313,6 +321,32 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     @Override
     public void logSQLException() {
         log("It seems like you're not connected to the Internet. Otherwise please inform the developers of this error.");
+    }
+
+    @Override
+    public void openSyllogismTab() {
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (tab.getClass().equals(SyllogismsTab.class)) {
+                contentTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+        this.syllogismTab = new SyllogismsTab();
+        contentTabPane.getTabs().add(syllogismTab);
+        contentTabPane.getSelectionModel().select(syllogismTab);
+    }
+
+    @Override
+    public void openStatisticsTab() {
+        for (Tab tab : contentTabPane.getTabs()) {
+            if (tab.getClass().equals(StatisticsTab.class)) {
+                contentTabPane.getSelectionModel().select(tab);
+                return;
+            }
+        }
+        this.statisticsTab = new StatisticsTab();
+        contentTabPane.getTabs().add(statisticsTab);
+        contentTabPane.getSelectionModel().select(statisticsTab);
     }
 /*
     public static void logError(String s) {

@@ -23,9 +23,10 @@ public class TopMenuBar extends HBox {
     private Button fccButton;
     private Button tutorialButton;
     private Button aboutButton;
+    private Button statisticsButton;
 
+    //private Menu statisticsMenu;
     private Menu dialecticsMenu;
-    private Menu statisticsMenu;
 
     private ObservableList<LogicSystemMenu> logicSystemMenus;
     private ObservableList<TodMenu> todMenus;
@@ -40,19 +41,14 @@ public class TopMenuBar extends HBox {
     private void setInitialStates() {
         this.logicSystemMenuButton.setDisable(true);
         this.todMenuButton.setDisable(true);
-        //this.dialecticsMenu.setDisable(true);
-        //this.statisticsMenu.setDisable(true);
+
     }
 
     public void logicSystemIsLoaded(boolean isLoaded) {
         if (isLoaded) {
             todMenuButton.setDisable(false);
-            //dialecticsMenu.setDisable(false);
-            //statisticsMenu.setDisable(false);
         } else {
             todMenuButton.setDisable(true);
-            //dialecticsMenu.setDisable(true);
-            //statisticsMenu.setDisable(true);
         }
     }
 
@@ -62,14 +58,24 @@ public class TopMenuBar extends HBox {
         buildTodMenu();
         buildSyllogismMenu();
         buildFccMenu();
+        buildStatisticsButton();
         buildTutorialMenu();
         buildAboutMenu();
-        getChildren().addAll(this.connectionButton,this.logicSystemMenuButton,this.todMenuButton,this.syllogismButton,this.fccButton,tutorialButton, aboutButton);
+
+        getChildren().addAll(connectionButton,logicSystemMenuButton,todMenuButton,syllogismButton,fccButton,statisticsButton,tutorialButton, aboutButton);
 
         //getMenus().addAll(connectionMenu,logicSystemMenu,todMenu, helpMenu);
         //getMenus().addAll(fileMenu,logicSystemMenu,todMenu,dialecticsMenu,statisticsMenu,tutorialsMenu,helpMenu);
         //initializeDialecticsMenu();
         //initializeStatisticsMenu();
+    }
+
+    private void buildStatisticsButton() {
+        this.statisticsButton = new Button("Statistics");
+        ImageView statisticsImageView = new ImageView(new Image("/images/icons/menu/statistics.png", 50, 50, true, true));
+        this.statisticsButton.setGraphic(statisticsImageView);
+        this.statisticsButton.setContentDisplay(ContentDisplay.TOP);
+        this.statisticsButton.setOnAction(actionEvent -> nodeInterface.openStatisticsTab());
     }
 
     private void buildConnectionMenu() {
@@ -78,7 +84,7 @@ public class TopMenuBar extends HBox {
                 new Image("/images/icons/menu/connection.png",50,50,true,true));
         this.connectionButton.setGraphic(connectionImageView);
         this.connectionButton.setContentDisplay(ContentDisplay.TOP);
-        this.connectionButton.setOnAction(actionEvent -> openConnectionTab());
+        this.connectionButton.setOnAction(actionEvent -> nodeInterface.openConnectionTab());
     }
 
     private void buildLogicSystemMenu() {
@@ -112,7 +118,7 @@ public class TopMenuBar extends HBox {
         this.syllogismButton.setGraphic(imageView);
         this.syllogismButton.setContentDisplay(ContentDisplay.TOP);
         this.syllogismButton.setOnAction(actionEvent -> {
-            nodeInterface.log("Not yet implemented");
+            nodeInterface.openSyllogismTab();
         });
     }
 
@@ -128,10 +134,12 @@ public class TopMenuBar extends HBox {
     private void initializeDialecticsMenu() {
         this.dialecticsMenu = new Menu("Dialectics");
     }
+/*
 
     private void initializeStatisticsMenu() {
         this.statisticsMenu = new Menu("Statistics");
     }
+*/
 
     private void buildTutorialMenu() {
         this.tutorialButton = new Button("Tutorial");
@@ -155,9 +163,6 @@ public class TopMenuBar extends HBox {
         });
     }
 
-    private void openConnectionTab() {
-        nodeInterface.openConnectionTab();
-    }
 
     // LOGIC SYSTEM
     public void removeLogicSystemMenu(LogicSystem logicSystem) {

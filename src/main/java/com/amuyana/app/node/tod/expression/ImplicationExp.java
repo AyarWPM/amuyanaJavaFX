@@ -16,7 +16,7 @@ import javafx.scene.text.Font;
 
 public class ImplicationExp extends Expression {
     private static DataInterface dataInterface = NodeHandler.getDataInterface();
-    private final Fruit fruit;
+    private Fruit fruit;
     private ExpressionType expressionType;
     private Dynamism dynamism;
     private TodController todController;
@@ -27,6 +27,21 @@ public class ImplicationExp extends Expression {
     public ImplicationExp(TodController todController, Fruit fruit, Dynamism dynamism, ExpressionType expressionType, Pos alignment) {
         this.todController = todController;
         this.fruit = fruit;
+        this.dynamism = dynamism;
+        this.expressionType = expressionType;
+        this.label = new Label();
+        this.label.setFont(Font.font("Monospaced"));
+        this.label.textProperty().bind(dynamism.propositionProperty());
+        //buildContextMenu();
+        buildExpression(expressionType);
+        setAlignment(alignment);
+        //setPrefHeight(height);
+        setMaxWidth(getPrefWidth());
+        //setMaxHeight(getPrefHeight());
+        selection = new SimpleBooleanProperty();
+    }
+
+    public ImplicationExp(Dynamism dynamism, ExpressionType expressionType, Pos alignment) {
         this.dynamism = dynamism;
         this.expressionType = expressionType;
         this.label = new Label();

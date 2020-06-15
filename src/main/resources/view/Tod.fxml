@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -86,47 +87,47 @@
                      <content>
                         <VBox spacing="5.0">
                            <children>
-                              <HBox alignment="CENTER_LEFT">
+                              <HBox alignment="CENTER_LEFT" spacing="5.0">
                                  <children>
-                                    <Label text="Dynamism :" />
-                                    <HBox fx:id="conjunctionExpHBox" prefHeight="40.0" />
+                                    <HBox fx:id="dynamismInRegisterPropositionHBox" prefHeight="40.0" />
+                                    <Button fx:id="viewFccFromRegisterButton" disable="true" mnemonicParsing="false" onAction="#openFccEditor" text="View details" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0">
+                              <HBox fx:id="dynamismInRegisterConjunctionHBox" prefHeight="40.0" />
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="20.0" spacing="5.0">
                                  <children>
-                                    <Label text="From syllogism :" />
-                                    <Label fx:id="syllogismLabelInRegister" layoutX="10.0" layoutY="10.0" text="Syllogism" />
+                                    <Label text="In syllogism :" />
+                                    <Label fx:id="syllogismLabelInRegister" layoutX="10.0" layoutY="10.0" />
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="75.0">
-                                 <children>
-                                    <Label text="Value :" />
-                                    <TextField />
-                                 </children>
-                              </HBox>
-                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="105.0">
-                                 <children>
-                                    <Label text="Units :" />
-                                    <ComboBox prefWidth="150.0" />
-                                 </children>
-                              </HBox>
+                              <Separator prefWidth="200.0" />
                               <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="135.0">
                                  <children>
                                     <Label text="Start :" />
-                                    <Label layoutX="10.0" layoutY="10.0" text="- add start dateTimePciker -" />
+                                    <HBox fx:id="startDateRegisterHBox">
+                                       <children>
+                                          <Label layoutX="10.0" layoutY="10.0" text="- add start dateTimePciker -" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </HBox>
                               <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="165.0">
                                  <children>
                                     <Label text="End :" />
-                                    <Label layoutX="10.0" layoutY="10.0" text="- add end dateTimePciker -" />
+                                    <HBox fx:id="endDateRegisterHBox">
+                                       <children>
+                                          <Label layoutX="10.0" layoutY="10.0" text="- add end dateTimePciker -" />
+                                       </children>
+                                    </HBox>
                                  </children>
                               </HBox>
-                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="165.0">
+                              <HBox alignment="CENTER_LEFT" layoutX="20.0" layoutY="165.0" spacing="5.0">
                                  <children>
-                                    <Button mnemonicParsing="false" text="Add entry/New" />
+                                    <Button mnemonicParsing="false" onAction="#addRegister" text="Add entry" />
+                                    <Button mnemonicParsing="false" onAction="#deleteRegister" text="Delete" />
                                  </children>
                               </HBox>
+                              <ListView fx:id="registerListView" VBox.vgrow="ALWAYS" />
                            </children>
                         </VBox>
                      </content></TitledPane>
@@ -178,6 +179,7 @@
                               <Label fx:id="syllogismLabel" text="Syllogism label" HBox.hgrow="ALWAYS" />
                               <TextField fx:id="syllogismTextField" text="Syllogism label" HBox.hgrow="ALWAYS" />
                               <Button fx:id="syllogismButton" minWidth="-Infinity" mnemonicParsing="false" onAction="#syllogismButtonOnAction" text="Create/Save/Edit" />
+                              <Button fx:id="deleteSyllogismButton" layoutX="261.0" layoutY="10.0" minWidth="-Infinity" mnemonicParsing="false" onAction="#deleteSyllogismButtonOnAction" text="Delete" />
                            </children>
                         </HBox>
                         <HBox fx:id="selectedSyllogismHBox" alignment="TOP_CENTER" />

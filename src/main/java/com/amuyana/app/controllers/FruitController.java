@@ -510,6 +510,7 @@ public class FruitController implements Initializable {
                     }
                     if (select) {
                         implicationExp.setSelection(true);
+                        tree.getTodController().updateRegisterPane();
                     }
                 }
 
@@ -534,10 +535,12 @@ public class FruitController implements Initializable {
                         tree.removeFromSelectedImplicationExp(implicationExp);
                         implicationExp.setSelection(false);
                     }
-                    // there is a change
+
                     if (tree.getImplicationExps().isEmpty()) {
                         tree.setSelection(false);
                     }
+                    tree.getTodController().updateRegisterPane();
+
                 }
             }
         }
@@ -765,7 +768,7 @@ public class FruitController implements Initializable {
             Fcc fcc = dataInterface.newFcc(tree.getTodController().getTod().getLogicSystem());
             fruit.getBranch().newSubBranch(fcc);
             dataInterface.disconnect();
-            tree.getTodController().openFccEditor(fcc);
+            tree.getTodController().openFccEditor(fcc,true);
             tree.update();
         });
         addFccMenu.getItems().addAll(addNewFccMenuItem,new SeparatorMenuItem());
@@ -1131,7 +1134,7 @@ public class FruitController implements Initializable {
             //resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
-            todController.openFccEditor(newFcc);
+            todController.openFccEditor(newFcc,true);
             Fruit newFruit;
             if (onlyThisFcc) {
                 newFruit = fruit.getSubBranch().addToRightTrunk(newFcc);
@@ -1178,7 +1181,7 @@ public class FruitController implements Initializable {
             resetValueInScaleSlider();
             LogicSystem logicSystem = todController.getTod().getLogicSystem();
             Fcc newFcc = NodeHandler.getDataInterface().newFcc(logicSystem);
-            todController.openFccEditor(newFcc);
+            todController.openFccEditor(newFcc,true);
             Fruit newFruit;
             if (onlyThisFcc) {
                 newFruit = fruit.getSubBranch().addToLeftTrunk(newFcc);

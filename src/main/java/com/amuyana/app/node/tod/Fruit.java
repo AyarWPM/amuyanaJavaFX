@@ -15,6 +15,7 @@ import javafx.scene.Node;
 import com.amuyana.app.data.Fcc;
 
 import java.io.IOException;
+import java.util.Collection;
 
 public class Fruit {
     private final DataInterface dataInterface = NodeHandler.getDataInterface();
@@ -490,5 +491,93 @@ public class Fruit {
     @Override
     public String toString() {
         return "Fruit of " + getFcc().getName();
+    }
+
+    public ObservableList<Fruit> getDescendantChildFruits() {
+        ObservableList<Fruit> childFruits = FXCollections.observableArrayList();
+// DESCENDANT NODES OF SUBRANCH
+        for (Branch rightTrunkBranch: getSubBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                // If that other fruit's fcc is a descendant
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    childFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+// DESCENDANT NODES OF BRANCH
+        for (Branch rightTrunkBranch : getBranch().getRightTrunk().getBranches()) {
+            for (SubBranch subBranch : rightTrunkBranch.getSubBranches()) {
+                if (isDescendant(subBranch.getFruit().getFcc())) {
+                    childFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        return  childFruits;
+    }
+
+    public ObservableList<Fruit> getAscendantChildFruits() {
+        ObservableList<Fruit> childFruits = FXCollections.observableArrayList();
+// ASCENDANT NODES OF SUBRANCH
+        for (Branch leftTrunkBranch : getSubBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    childFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+// ASCENDANT NODES OF BRANCH
+        for (Branch leftTrunkBranch : getBranch().getLeftTrunk().getBranches()) {
+            for (SubBranch subBranch : leftTrunkBranch.getSubBranches()) {
+                if (subBranch.getFruit().isDescendant(getFcc())) {
+                    childFruits.addAll(subBranch.getFruit());
+                }
+            }
+        }
+        return  childFruits;
+    }
+
+    public ObservableList<Inclusion> getChildInclusions(ObservableList<Inclusion> listChildInclusions) {
+        // Descendant child fruits
+        ObservableList<Inclusion> tempChildInclusions = FXCollections.observableArrayList();
+        for (Fruit fruit1 : getDescendantChildFruits()) {
+            if (dataInterface.isInclusion(getTree().getTodController().getTod(),fruit1.getFcc(), this.getFcc())) {
+                tempChildInclusions.addAll(dataInterface.getInclusions(getTree().getTodController().getTod(), fruit1.getFcc(), this.getFcc()));
+                listChildInclusions.addAll(fruit1.getChildInclusions(tempChildInclusions));
+            }
+        }
+        for (Fruit fruit1 : getAscendantChildFruits()) {
+            if (dataInterface.isInclusion(getTree().getTodController().getTod(), this.getFcc(), fruit1.getFcc())) {
+                tempChildInclusions.addAll(dataInterface.getInclusions(getTree().getTodController().getTod(), this.getFcc(), fruit1.getFcc()));
+                listChildInclusions.addAll(fruit1.getChildInclusions(tempChildInclusions));
+            }
+        }
+        return listChildInclusions;
+    }
+
+    public ObservableList<Inclusion> getChildDescendantInclusions(ObservableList<Inclusion> listChildInclusions) {
+        // Descendant child fruits
+        ObservableList<Inclusion> tempChildInclusions = FXCollections.observableArrayList();
+        for (Fruit fruit1 : getDescendantChildFruits()) {
+            if (dataInterface.isInclusion(getTree().getTodController().getTod(),fruit1.getFcc(), this.getFcc())) {
+                tempChildInclusions.addAll(dataInterface.getInclusions(getTree().getTodController().getTod(), fruit1.getFcc(), this.getFcc()));
+                listChildInclusions.addAll(fruit1.getChildInclusions(tempChildInclusions));
+            }
+        }
+        // remove duplicates
+        return listChildInclusions;
+    }
+
+    public ObservableList<Inclusion> getChildAscendantInclusions(ObservableList<Inclusion> listChildInclusions) {
+        // Descendant child fruits
+        ObservableList<Inclusion> tempChildInclusions = FXCollections.observableArrayList();
+        for (Fruit fruit1 : getAscendantChildFruits()) {
+            if (dataInterface.isInclusion(getTree().getTodController().getTod(), this.getFcc(), fruit1.getFcc())) {
+                tempChildInclusions.addAll(dataInterface.getInclusions(getTree().getTodController().getTod(), this.getFcc(), fruit1.getFcc()));
+                listChildInclusions.addAll(fruit1.getChildInclusions(tempChildInclusions));
+            }
+        }
+
+        // remove duplicates
+        return listChildInclusions;
     }
 }

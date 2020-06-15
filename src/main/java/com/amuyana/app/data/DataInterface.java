@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.CClassHasInclusion;
 import com.amuyana.app.data.tod.containers.Tod;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -112,6 +113,7 @@ public interface DataInterface {
     boolean descendsFrom(Fcc fcc, Dynamism dynamism);
     boolean isInclusion(Dynamism descendantDynamism, Dynamism ascendantDynamism, Tod tod);
     boolean isInclusion(Fcc descendantFcc, Dynamism ascendantDynamism);
+    boolean isInclusion(Tod tod, Fcc descendantFcc, Fcc ascendantFcc);
 
     boolean connect();
     void disconnect();
@@ -134,4 +136,20 @@ public interface DataInterface {
     ObservableList<Syllogism> getSyllogisms(Tod tod);
 
     List<Inclusion> getInclusions(Syllogism syllogism);
+
+    ObservableList<Inclusion> getInclusions(Tod tod, Fcc descendantFcc, Fcc ascendantFcc);
+
+    void delete(Syllogism syllogism);
+
+    ObservableList<Syllogism> getListSyllogisms(Tod tod);
+
+    ObservableList<Register> getRegisters(Syllogism syllogism);
+
+    Register newRegister(Syllogism syllogism, LocalDateTime startTimeValue, LocalDateTime endTimeValue);
+
+    void delete(Register register);
+
+    Tod getTod(Syllogism syllogism);
+
+    ObservableList<Register> getListRegisters();
 }

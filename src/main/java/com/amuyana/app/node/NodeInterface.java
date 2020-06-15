@@ -42,4 +42,8 @@ public interface NodeInterface {
     void log(String e);
 
     void logSQLException();
+
+    void openSyllogismTab();
+
+    void openStatisticsTab();
 }

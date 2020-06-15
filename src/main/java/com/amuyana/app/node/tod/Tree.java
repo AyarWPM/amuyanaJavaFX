@@ -98,7 +98,7 @@ public class Tree extends Group {
         Fcc newFcc = NodeHandler.getDataInterface().newFcc(todController.getTod().getLogicSystem());
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
         this.mainTrunk.loadNewBranch(newFcc);
-        todController.openFccEditor(newFcc);
+        todController.openFccEditor(newFcc,true);
         getChildren().add(this.mainTrunk);
 
         // for debug
@@ -119,7 +119,7 @@ public class Tree extends Group {
         this.mainTrunk = new Trunk(this, todController.getTod().getContainer0());
         getChildren().add(this.mainTrunk);
         this.mainTrunk.loadNewBranch(fcc);
-        todController.openFccEditor(fcc);
+        todController.openFccEditor(fcc,false);
     }
 
     private void initializeAndBind() {

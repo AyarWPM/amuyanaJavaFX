@@ -253,4 +253,9 @@ public class TopMenuBar extends HBox {
         clearLogicSystemMenu();
         fillLogicSystemMenu();
     }
+
+    public void updateLogicSystemMenu() {
+        clearLogicSystemMenu();
+        fillLogicSystemMenu();
+    }
 }

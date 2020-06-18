@@ -191,6 +191,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
                         stage.setTitle(VERSION);
                         // Menus
                         topMenuBar.logicSystemIsLoaded(false);
+                        topMenuBar.updateLogicSystemMenu();
                         topMenuBar.updateTodMenu();
                     }
                 }

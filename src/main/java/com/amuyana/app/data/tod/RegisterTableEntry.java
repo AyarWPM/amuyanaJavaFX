@@ -3,6 +3,7 @@ package com.amuyana.app.data.tod;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.Register;
 import com.amuyana.app.data.Syllogism;
+import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.expression.ConjunctionExp;
 import com.amuyana.app.node.tod.expression.Expression;
@@ -23,6 +24,7 @@ import java.util.List;
 public class RegisterTableEntry {
     private String id;
     private String date;
+    private String tods="";
     private ImplicationExp dynamismName;
     private ConjunctionExp conjunctionExp;
     private String start;
@@ -35,6 +37,9 @@ public class RegisterTableEntry {
 
         id=String.valueOf(register.getIdRegister());
         date=register.getDate().toString();
+        for (Tod tod : NodeHandler.getDataInterface().getTods(register.getDynamism().getFcc())) {
+            tods+=tod.getLabel();
+        }
         dynamismName = new ImplicationExp(register.getDynamism(), Expression.ExpressionType.PROPOSITION, Pos.CENTER);
         conjunctionExp = new ConjunctionExp(register.getDynamism());
         start = register.getStart().toString();
@@ -73,8 +78,6 @@ public class RegisterTableEntry {
                 }
             }
         }
-
-
     }
 
     public String getId() {
@@ -91,6 +94,14 @@ public class RegisterTableEntry {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTods() {
+        return tods;
+    }
+
+    public void setTods(String tods) {
+        this.tods = tods;
     }
 
     public String getStart() {

@@ -41,14 +41,22 @@ public class TopMenuBar extends HBox {
     private void setInitialStates() {
         this.logicSystemMenuButton.setDisable(true);
         this.todMenuButton.setDisable(true);
-
+        this.syllogismButton.setDisable(true);
+        this.fccButton.setDisable(true);
+        this.statisticsButton.setDisable(true);
     }
 
     public void logicSystemIsLoaded(boolean isLoaded) {
         if (isLoaded) {
             todMenuButton.setDisable(false);
+            this.syllogismButton.setDisable(false);
+            this.fccButton.setDisable(false);
+            this.statisticsButton.setDisable(false);
         } else {
             todMenuButton.setDisable(true);
+            this.syllogismButton.setDisable(true);
+            this.fccButton.setDisable(true);
+            this.statisticsButton.setDisable(true);
         }
     }
 
@@ -238,9 +246,11 @@ public class TopMenuBar extends HBox {
     public void resetMenus() {
         // Logic System
         this.logicSystemMenuButton.setDisable(false);
+        this.syllogismButton.setDisable(true);
+        this.fccButton.setDisable(true);
+        this.statisticsButton.setDisable(true);
+        this.todMenuButton.setDisable(true);
         clearLogicSystemMenu();
         fillLogicSystemMenu();
-        // Tod
-        todMenuButton.setDisable(true);
     }
 }

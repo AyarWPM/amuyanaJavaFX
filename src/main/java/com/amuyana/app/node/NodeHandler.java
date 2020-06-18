@@ -5,6 +5,7 @@ import com.amuyana.app.controllers.LogicSystemController;
 import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.LogicSystem;
 import com.amuyana.app.data.tod.containers.Tod;
+import com.amuyana.app.main.Amuyana;
 import com.amuyana.app.node.content.*;
 import com.amuyana.app.node.tod.expression.Expression;
 import com.amuyana.app.node.menu.TopMenuBar;
@@ -29,7 +30,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     private LogicSystem logicSystem;
     ConnectionTab connectionTab;
     private Log log;
-    public static String VERSION ="Amuyaña 3.2dev";
+    public static String VERSION ="Amuyaña 3.2";
     private SyllogismsTab syllogismTab;
     private StatisticsTab statisticsTab;
 

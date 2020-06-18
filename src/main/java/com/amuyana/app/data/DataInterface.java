@@ -152,4 +152,6 @@ public interface DataInterface {
     Tod getTod(Syllogism syllogism);
 
     ObservableList<Register> getListRegisters();
+
+    ObservableList<Tod> getTods(Fcc fcc);
 }

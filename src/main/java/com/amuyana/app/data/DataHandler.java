@@ -4,11 +4,10 @@ import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
-import javafx.beans.property.BooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.fxml.FXML;
 
+import javax.xml.soap.Node;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -864,6 +863,55 @@ public class DataHandler implements DataInterface {
     @Override
     public ObservableList<Register> getListRegisters() {
         return listRegister;
+    }
+
+    @Override
+    public ObservableList<Tod> getTods(Fcc fcc) {
+        ObservableList<Tod> tods = FXCollections.observableArrayList();
+        System.out.println("NodeHandler.getDataInterface().getListTod() = " + NodeHandler.getDataInterface().getListTod());
+        for (Container2 container2 : listContainer2s) {
+            // if its the container of the fcc
+            if (container2.getFcc().equals(fcc)) {
+                for (Tod tod : getListTod()) {
+                    // if the container 0 is the one of the top
+                    if (tod.getContainer0().equals(container2.getContainer1().getContainer0())) {
+                        tods.add(tod);
+                    }
+                    // if the container 0 is not at the top, repeat...
+                    else {
+                        findTods(tods,tod,container2.getContainer1());
+                    }
+
+                }
+            }
+        }
+        return tods;
+    }
+
+    private void findTods(ObservableList<Tod> tods, Tod tod, Container1 container1) {
+        // it is either inside a container 1 or container 2
+        for (Container0In1 container0In1 : listContainer0In1s) {
+            if (container0In1.getContainer0().equals(container1.getContainer0())) {
+                if (container0In1.getContainer1().getContainer0().equals(tod.getContainer0())) {
+                    tods.add(tod);
+                }
+                // repeat...
+                else {
+                    findTods(tods,tod,container0In1.getContainer1());
+                }
+            }
+        }
+        for (Container0In2 container0In2 : listContainer0In2s) {
+            if (container0In2.getContainer0().equals(container1.getContainer0())) {
+                if (container0In2.getContainer2().getContainer1().getContainer0().equals(tod.getContainer0())) {
+                    tods.add(tod);
+                }
+                // repeat...
+                else {
+                    findTods(tods,tod,container0In2.getContainer2().getContainer1());
+                }
+            }
+        }
     }
 
     private void deleteAll(Container0 container0) {

@@ -1,16 +1,15 @@
 package com.amuyana.app.data.tod;
 
-import com.amuyana.app.data.DataHandler;
-import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Fcc;
+import com.amuyana.app.data.tod.containers.Tod;
 import com.amuyana.app.node.NodeHandler;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
+
+import java.util.Objects;
 
 public class FccTableEntry {
     String fccId;
     String logicSystem;
+    String tods="";
     String element;
     String antiElement;
     String fccName;
@@ -24,7 +23,12 @@ public class FccTableEntry {
 
     public FccTableEntry(Fcc fcc) {
         this.fccId = String.valueOf(fcc.getIdFcc());
-        this.logicSystem = NodeHandler.getDataInterface().getLogicSystem(fcc).getLabel();
+        if (!Objects.isNull(NodeHandler.getDataInterface().getLogicSystem(fcc))) {
+            this.logicSystem = NodeHandler.getDataInterface().getLogicSystem(fcc).getLabel();
+        }
+        for (Tod tod : NodeHandler.getDataInterface().getTods(fcc)) {
+            this.tods += tod.getLabel() + ", ";
+        }
         this.element = NodeHandler.getDataInterface().getElement(fcc,0).getSymbol();
         this.antiElement = NodeHandler.getDataInterface().getElement(fcc,1).getSymbol();
         this.fccName = fcc.getName();
@@ -51,6 +55,14 @@ public class FccTableEntry {
 
     public void setLogicSystem(String logicSystem) {
         this.logicSystem = logicSystem;
+    }
+
+    public String getTods() {
+        return tods;
+    }
+
+    public void setTods(String tods) {
+        this.tods = tods;
     }
 
     public String getElement() {

@@ -1,10 +1,12 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.Syllogism;
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.tod.expression.SyllogismExp;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SyllogismTableEntry {
     // id
@@ -17,6 +19,7 @@ public class SyllogismTableEntry {
 
     private String id;
     private String label;
+    private String logicSystem;
     private String tod;
     private String numDynamisms;
     private String numInclusions;
@@ -26,8 +29,15 @@ public class SyllogismTableEntry {
     public SyllogismTableEntry(Syllogism syllogism) {
         this.id = String.valueOf(syllogism.getIdSyllogism());
         this.label = syllogism.getLabel();
+        if (NodeHandler.getDataInterface().getInclusions(syllogism).isEmpty()) {
+            this.logicSystem="";
+        } else {
+            this.logicSystem=NodeHandler.getDataInterface().getInclusions(syllogism).get(0).getTod().getLogicSystem().getLabel();
+        }
 
-        this.tod = NodeHandler.getDataInterface().getTod(syllogism).getLabel();
+        if (!Objects.isNull(NodeHandler.getDataInterface().getTod(syllogism))) {
+            this.tod = NodeHandler.getDataInterface().getTod(syllogism).getLabel();
+        }
         List<Inclusion> listInclusions = NodeHandler.getDataInterface().getInclusions(syllogism);
         String nD = String.valueOf(listInclusions.size()+1);
         this.numDynamisms = nD;
@@ -50,6 +60,14 @@ public class SyllogismTableEntry {
 
     public void setLabel(String label) {
         this.label = label;
+    }
+
+    public String getLogicSystem() {
+        return logicSystem;
+    }
+
+    public void setLogicSystem(String logicSystem) {
+        this.logicSystem = logicSystem;
     }
 
     public String getTod() {
@@ -91,4 +109,5 @@ public class SyllogismTableEntry {
     public void setNumRegisters(String numRegisters) {
         this.numRegisters = numRegisters;
     }
+
 }

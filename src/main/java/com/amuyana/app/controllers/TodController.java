@@ -759,12 +759,18 @@ public class TodController implements Initializable {
                     alert.setContentText("Please specify an ending date-time.");
                     alert.showAndWait();
                 } else {
-                    //Dynamism dynamism = dataInterface.getInclusions(selectedSyllogism).get(0).getParticular();
-                    dataInterface.getDataConnection().connect();
-                    Register newRegister = dataInterface.newRegister(selectedSyllogism,startDateTimePicker.getDateTimeValue(),endDateTimePicker.getDateTimeValue());
-                    dataInterface.getDataConnection().disconnect();
-                    updateRegisterPane();
-                    registerListView.getSelectionModel().select(newRegister);
+                    // verify end date is later than start date
+                    if (startDateTimePicker.getDateTimeValue().isBefore(endDateTimePicker.getDateTimeValue())) {
+                        //Dynamism dynamism = dataInterface.getInclusions(selectedSyllogism).get(0).getParticular();
+                        dataInterface.getDataConnection().connect();
+                        Register newRegister = dataInterface.newRegister(selectedSyllogism, startDateTimePicker.getDateTimeValue(), endDateTimePicker.getDateTimeValue());
+                        dataInterface.getDataConnection().disconnect();
+                        updateRegisterPane();
+                        registerListView.getSelectionModel().select(newRegister);
+                    } else {
+                        alert.setContentText("The Starting date must be prior to the Ending date.");
+                        alert.showAndWait();
+                    }
                 }
             }
         }

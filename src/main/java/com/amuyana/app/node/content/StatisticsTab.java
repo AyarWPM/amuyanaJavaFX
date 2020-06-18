@@ -29,6 +29,9 @@ public class StatisticsTab extends Tab {
         // date
         TableColumn<RegisterTableEntry, String> date = new TableColumn<>("Date of registration");
         date.setCellValueFactory(new PropertyValueFactory<>("date"));
+        // tods
+        TableColumn<RegisterTableEntry, String> tods = new TableColumn<>("Table of deductions");
+        tods.setCellValueFactory(new PropertyValueFactory<>("tods"));
         // propositional dynamism
         TableColumn<RegisterTableEntry, String> dynamismName = new TableColumn<>("Dynamism name");
         dynamismName.setCellValueFactory(new PropertyValueFactory<>("dynamismName"));
@@ -45,7 +48,7 @@ public class StatisticsTab extends Tab {
         TableColumn<RegisterTableEntry, String> interval = new TableColumn<>("Elapsed time");
         interval.setCellValueFactory(new PropertyValueFactory<>("interval"));
         // ENTRIES
-        tableView.getColumns().addAll(id, date, dynamismName, conjunctionExp, start, end, interval);
+        tableView.getColumns().addAll(id, date, tods, dynamismName, conjunctionExp, start, end, interval);
 
         tableView.getItems().setAll(getListRegisterEntries());
 

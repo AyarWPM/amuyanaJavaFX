@@ -25,6 +25,9 @@ public class SyllogismsTab extends Tab {
         // label
         TableColumn<SyllogismTableEntry, String> label = new TableColumn<>("Label");
         label.setCellValueFactory(new PropertyValueFactory<>("label"));
+        // logicSystem
+        TableColumn<SyllogismTableEntry, String> logicSystem = new TableColumn<>("Logic System");
+        logicSystem.setCellValueFactory(new PropertyValueFactory<>("logicSystem"));
         // tod
         TableColumn<SyllogismTableEntry, String> tod = new TableColumn<>("Table of deductions");
         tod.setCellValueFactory(new PropertyValueFactory<>("tod"));
@@ -43,7 +46,7 @@ public class SyllogismsTab extends Tab {
 
         // ENTRIES
         try {
-            tableView.getColumns().addAll(id, label, tod, nDynamisms, nInclusions, syllogismExp, nRegisters);
+            tableView.getColumns().addAll(id, label, logicSystem,tod, nDynamisms, nInclusions, syllogismExp, nRegisters);
         } catch (Exception e) {
             System.err.println(e);
         }

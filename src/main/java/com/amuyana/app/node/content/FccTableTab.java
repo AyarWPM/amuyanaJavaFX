@@ -25,10 +25,13 @@ public class FccTableTab extends Tab {
         // FCC
         TableColumn<FccTableEntry,String> fccId = new TableColumn<>("ID");
         fccId.setCellValueFactory(new PropertyValueFactory<>("fccId"));
-
+        // LOGIC SYSTEM
         TableColumn<FccTableEntry,String> logicSystem = new TableColumn<>("Logic System");
         logicSystem.setCellValueFactory(new PropertyValueFactory<>("logicSystem"));
-
+        // LOGIC SYSTEM
+        TableColumn<FccTableEntry,String> tods = new TableColumn<>("Table of deductions");
+        tods.setCellValueFactory(new PropertyValueFactory<>("tods"));
+        // TOD
         TableColumn<FccTableEntry,String> nameFcc = new TableColumn<>("FCC name");
         nameFcc.setCellValueFactory(new PropertyValueFactory<>("fccName"));
 
@@ -59,7 +62,7 @@ public class FccTableTab extends Tab {
         symmetricDescription.setCellValueFactory(new PropertyValueFactory<>("symmetricDescription"));
 
         // ENTRIES
-        tableView.getColumns().addAll(fccId,logicSystem,element,antiElement,nameFcc,descriptionFcc,positiveName,positiveDescription,negativeName,negativeDescription,symmetricName,symmetricDescription);
+        tableView.getColumns().addAll(fccId,logicSystem,tods,element,antiElement,nameFcc,descriptionFcc,positiveName,positiveDescription,negativeName,negativeDescription,symmetricName,symmetricDescription);
         tableView.getItems().setAll(getlistFccEntries());
 
         // BUTTON TO REFRESH

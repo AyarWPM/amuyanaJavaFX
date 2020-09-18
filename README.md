@@ -1,5 +1,5 @@
 # Amuyaña
-![Amuyaña](http://i64.tinypic.com/24g3loz.png)
+![Amuyaña](https://reciprocidad.org/wp-content/uploads/2020/09/Logo-01.png)
 
 [Amuyaña](http://amuyaña.com) is a prototype software that creates visual representations of Systems with the formal logic axioms of the Dynamic Logic of the Contradictory. The word *amuyaña* is a term in Aymara that means "thinking", "reasoning" or "understanding".
 

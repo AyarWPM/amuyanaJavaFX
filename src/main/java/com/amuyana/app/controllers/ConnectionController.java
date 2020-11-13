@@ -2,8 +2,6 @@ package com.amuyana.app.controllers;
 
 import com.amuyana.app.node.NodeHandler;
 import com.amuyana.app.node.NodeInterface;
-import com.amuyana.app.node.Message;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -14,6 +12,7 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+@Deprecated
 public class ConnectionController implements Initializable {
     @FXML private TextField hostTextField;
     @FXML private TextField userTextField;
@@ -69,7 +68,7 @@ public class ConnectionController implements Initializable {
         sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override
             public void handle(WorkerStateEvent event) {
-                NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
+                //NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
                 //todo if connection is not succesful setDataConnectionValues(null, null,null)
 
                 boolean testConnection = NodeHandler.getDataInterface().testConnection();
@@ -77,18 +76,16 @@ public class ConnectionController implements Initializable {
                     // load data
                     NodeHandler.getDataInterface().loadData();
                     // logic system in top menu bar
-                    nodeInterface.resetMenus();
-                    nodeInterface.closeTabsExceptConnection();
+                    nodeInterface.fillLogicSystemMenu();
+                    //nodeInterface.closeTabsExceptConnection();
                     nodeInterface.log("The connection was successful!");
                     NodeHandler.getDataInterface().disconnect();
                 } else {
                     nodeInterface.log("The connection was unsuccessful. Possible problems are wrong data or no connection to the Internet");
                 }
-
             }
         });
         new Thread(sleeper).start();
-
     }
 
     public void setNodeInterface(NodeInterface nodeInterface) {
@@ -96,7 +93,7 @@ public class ConnectionController implements Initializable {
     }
 
     private void setDataConnectionValues() {
-        NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
+        //NodeHandler.getDataInterface().setDataConnectionValues(hostTextField.getText(),userTextField.getText(),passwordTextField.getText());
     }
 
     public TextField getHostTextField() {

@@ -74,7 +74,7 @@ public class LogicSystem{
         try {
             Statement statement = connection.createStatement();
             ResultSet resultado = statement.executeQuery(
-                    "SELECT id_logic_system, label, description, creation_date FROM amuyana.tbl_logic_system");
+                    "SELECT id_logic_system, label, description, creation_date FROM " + DataConnection.DATABASE + ".tbl_logic_system");
 
             while(resultado.next()){
                 listLogicSystems.add(new LogicSystem(
@@ -94,7 +94,7 @@ public class LogicSystem{
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_logic_system (id_logic_system, label, description, creation_date)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_logic_system (id_logic_system, label, description, creation_date)"
                     + "VALUES (?,?,?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -120,7 +120,7 @@ public class LogicSystem{
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_logic_system SET label = ?, description = ? "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_logic_system SET label = ?, description = ? "+
             "WHERE id_logic_system = ?";
         try {
             PreparedStatement preparedStatement =
@@ -138,7 +138,7 @@ public class LogicSystem{
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_logic_system "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_logic_system "+
                                             "WHERE id_logic_system = ?"
             );
             instruccion.setInt(1, this.idLogicSystem.get());

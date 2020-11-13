@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -45,7 +46,7 @@ public class CClass {
 
     public static void loadList(Connection connection,ObservableList<CClass> cClasses) {
         
-        String sql = "SELECT id_c_class, name FROM amuyana.tbl_c_class";
+        String sql = "SELECT id_c_class, name FROM " + DataConnection.DATABASE + ".tbl_c_class";
         
         try {
             Statement statement = connection.createStatement();
@@ -60,7 +61,7 @@ public class CClass {
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_c_class (id_c_class, name) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_c_class (id_c_class, name) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql, 
@@ -82,7 +83,7 @@ public class CClass {
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_c_class SET name = ? "
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_c_class SET name = ? "
                 + "WHERE id_c_class = ?";
         try {
             PreparedStatement instruccion =
@@ -97,7 +98,7 @@ public class CClass {
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_c_class " +
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_c_class " +
                         "WHERE id_c_class = ? ";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);

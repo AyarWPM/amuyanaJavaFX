@@ -1,5 +1,7 @@
 package com.amuyana.app.data;
 
+import com.amuyana.app.node.Message;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -8,15 +10,16 @@ import java.util.logging.Logger;
 
 public class DataConnection {
     private Connection connection;
-    private static String URL;
-    private static String USERNAME;
-    private static String PASSWORD;
+    private static String URL="amuyana.net";
+    private static String USERNAME="coxpueqo_client";
+    private static String PASSWORD="coxpueqo_password";
+    public static String DATABASE="coxpueqo_amuyana";
 
-    public static void setValues(String url, String username, String password) {
+/*    public static void setValues(String url, String username, String password) {
         DataConnection.URL = url;
         DataConnection.USERNAME = username;
         DataConnection.PASSWORD = password;
-    }
+    }*/
 
     public static String getUsername() {
         return USERNAME;
@@ -32,10 +35,9 @@ public class DataConnection {
     
     public boolean connect(){
         boolean response = false;
+        String fullUrl = "jdbc:mysql://"+URL+"/"+DATABASE;
         try {
-            connection = DriverManager.getConnection(
-                    "jdbc:mysql://" + DataConnection.URL + "/amuyana", DataConnection.USERNAME, DataConnection.PASSWORD);
-
+            connection = DriverManager.getConnection(fullUrl,USERNAME,PASSWORD);
             response = true;
         } catch (SQLException ex) {
             System.err.println("SQLException");

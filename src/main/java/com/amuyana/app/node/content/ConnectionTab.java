@@ -8,6 +8,7 @@ import javafx.scene.control.Tab;
 
 import java.io.IOException;
 
+@Deprecated
 public class ConnectionTab extends Tab {
     ConnectionController connectionController;
 

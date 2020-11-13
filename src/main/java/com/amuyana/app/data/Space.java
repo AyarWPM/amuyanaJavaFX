@@ -58,7 +58,7 @@ public class Space{
         String sql = "SELECT id_space, "
                         + "label, "
                         + "description "
-                + "FROM amuyana.tbl_space";
+                + "FROM " + DataConnection.DATABASE + ".tbl_space";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -80,7 +80,7 @@ public class Space{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_space (id_space, label, description)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_space (id_space, label, description)"
                     + "VALUES (?,?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -107,7 +107,7 @@ public class Space{
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_space SET label = ?,  "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_space SET label = ?,  "+
             " description = ? WHERE id_space = ?";
         try {
             PreparedStatement instruccion =
@@ -124,7 +124,7 @@ public class Space{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_space "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_space "+
                     "WHERE id_space = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

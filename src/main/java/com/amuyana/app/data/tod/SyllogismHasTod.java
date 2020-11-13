@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.collections.ObservableList;
 import com.amuyana.app.data.Syllogism;
 import com.amuyana.app.data.tod.containers.Tod;
@@ -36,7 +37,7 @@ public class SyllogismHasTod{
                                 ObservableList<SyllogismHasTod> syllogismHasTods,
                                 ObservableList<Syllogism> syllogisms,
                                 ObservableList<Tod> tods){
-        String sql = "SELECT id_syllogism, id_tod FROM amuyana.tbl_syllogism_has_tbl_tod";
+        String sql = "SELECT id_syllogism, id_tod FROM " + DataConnection.DATABASE + ".tbl_syllogism_has_tbl_tod";
 
         try {
             Statement instruction = connection.createStatement();
@@ -61,7 +62,7 @@ public class SyllogismHasTod{
     }
 
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_syllogism_has_tbl_tod (id_syllogism, id_tod) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_syllogism_has_tbl_tod (id_syllogism, id_tod) "
                 + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -81,7 +82,7 @@ public class SyllogismHasTod{
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruction = connection.prepareStatement(
-                    "DELETE FROM amuyana.tbl_syllogism_has_tbl_tod "+
+                    "DELETE FROM " + DataConnection.DATABASE + ".tbl_syllogism_has_tbl_tod "+
                             "WHERE id_syllogism = ? and id_tod = ?"
             );
             instruction.setInt(1, this.syllogism.getIdSyllogism());

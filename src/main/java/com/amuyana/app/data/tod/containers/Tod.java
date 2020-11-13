@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod.containers;
 
+import com.amuyana.app.data.DataConnection;
 import com.amuyana.app.data.LogicSystem;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -67,7 +68,7 @@ public class Tod {
                                 ObservableList<Tod> tods,
                                 ObservableList<LogicSystem> logicSystems,
                                 ObservableList<Container0> container0s) {
-        String sql = "SELECT id_tod, label, id_logic_system, id_container_0 FROM amuyana.tbl_tod";
+        String sql = "SELECT id_tod, label, id_logic_system, id_container_0 FROM " + DataConnection.DATABASE + ".tbl_tod";
 
         try {
             Statement statement = connection.createStatement();
@@ -95,7 +96,7 @@ public class Tod {
     }
 
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_tod (id_tod, label, id_logic_system, id_container_0) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_tod (id_tod, label, id_logic_system, id_container_0) "
                 + "VALUES (?,?,?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql,
@@ -119,7 +120,7 @@ public class Tod {
     }
 
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_tod SET label = ? "
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_tod SET label = ? "
                 + "WHERE id_tod = ?";
         try {
             PreparedStatement statement =
@@ -134,7 +135,7 @@ public class Tod {
     }
 
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_tod " +
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_tod " +
                 "WHERE id_tod = ? ";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);

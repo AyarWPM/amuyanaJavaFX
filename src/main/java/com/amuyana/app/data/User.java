@@ -89,7 +89,7 @@ String password, Date joinedDate) {
                             + "email, "
                             + "password, "
                             + "joined_date "
-                            + "FROM amuyana.tbl_user");
+                            + "FROM " + DataConnection.DATABASE + ".tbl_user");
             
             while(resultado.next()){
                 listUser.add(new User(

@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod.containers;
 
+import com.amuyana.app.data.DataConnection;
 import com.amuyana.app.data.DataHandler;
 import com.amuyana.app.node.NodeHandler;
 import javafx.beans.property.IntegerProperty;
@@ -27,7 +28,7 @@ public class Container0 {
     }
 
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_container_0 (id_container_0) "
+        String sql = "INSERT INTO " + DataConnection.DATABASE + ".tbl_container_0 (id_container_0) "
                 + "VALUES (?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql,
@@ -53,7 +54,7 @@ public class Container0 {
     }
 
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_container_0 SET _blank_ = ? WHERE id_container_0 = ?";
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_container_0 SET _blank_ = ? WHERE id_container_0 = ?";
         try {
             PreparedStatement instruccion =
                     connection.prepareStatement(sql);
@@ -71,7 +72,7 @@ public class Container0 {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                    "DELETE FROM amuyana.tbl_container_0 "+
+                    "DELETE FROM " + DataConnection.DATABASE + ".tbl_container_0 "+
                             "WHERE id_container_0 = ?"
             );
             instruccion.setInt(1, this.idContainer0.get());
@@ -89,7 +90,7 @@ public class Container0 {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(
                     "SELECT id_container_0 "
-                            + "FROM amuyana.tbl_container_0"
+                            + "FROM " + DataConnection.DATABASE + ".tbl_container_0"
             );
 
             while(result.next()){

@@ -35,7 +35,7 @@ public class SpaceHasRegister{
             ObservableList<SpaceHasRegister> listSpaceHasRegisters,
             ObservableList<Space> listSpaces,
             ObservableList<Register> listRegisters){
-        String sql = "SELECT id_space, id_register FROM amuyana.tbl_space_has_tbl_register";
+        String sql = "SELECT id_space, id_register FROM " + DataConnection.DATABASE + ".tbl_space_has_tbl_register";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -58,7 +58,7 @@ public class SpaceHasRegister{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_space_has_tbl_register (id_space, id_register) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_space_has_tbl_register (id_space, id_register) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -79,7 +79,7 @@ public class SpaceHasRegister{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_space_has_tbl_register "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_space_has_tbl_register "+
                     "WHERE id_space = ? and id_register = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

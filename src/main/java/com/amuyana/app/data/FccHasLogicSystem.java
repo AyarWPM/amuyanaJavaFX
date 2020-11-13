@@ -38,7 +38,7 @@ public class FccHasLogicSystem{
             ObservableList<FccHasLogicSystem> listFccHasLogicSystem,
             ObservableList<Fcc> listFcc,
             ObservableList<LogicSystem> listLogicSystem){
-        String sql = "SELECT id_fcc, id_logic_system FROM amuyana.tbl_fcc_has_tbl_logic_system";
+        String sql = "SELECT id_fcc, id_logic_system FROM " + DataConnection.DATABASE + ".tbl_fcc_has_tbl_logic_system";
         
         try {
             Statement instruction = connection.createStatement();
@@ -61,7 +61,7 @@ public class FccHasLogicSystem{
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_fcc_has_tbl_logic_system (id_fcc, id_logic_system) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_fcc_has_tbl_logic_system (id_fcc, id_logic_system) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -81,7 +81,7 @@ public class FccHasLogicSystem{
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_fcc_has_tbl_logic_system "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_fcc_has_tbl_logic_system "+
                                             "WHERE id_fcc = ? and id_logic_system = ?"
             );
             instruccion.setInt(1, this.fcc.getIdFcc());

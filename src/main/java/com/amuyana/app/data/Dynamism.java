@@ -85,7 +85,8 @@ String description, Fcc fcc) {
                             + "proposition, "
                             + "description, "
                             + "id_fcc "
-                            + "FROM amuyana.tbl_dynamism";
+                            + "FROM " + DataConnection.DATABASE + ".tbl_dynamism";
+
         try {
             Statement instruction = connection.createStatement();
             ResultSet resultado = instruction.executeQuery(sql);
@@ -114,7 +115,7 @@ String description, Fcc fcc) {
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_dynamism (id_dynamism, orientation, proposition, description, id_fcc)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_dynamism (id_dynamism, orientation, proposition, description, id_fcc)"
                     + "VALUES (?,?,?,?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -144,7 +145,7 @@ String description, Fcc fcc) {
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_dynamism SET proposition = ?,  "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_dynamism SET proposition = ?,  "+
             " description = ? WHERE id_dynamism = ?";
         try {
             PreparedStatement instruccion =
@@ -162,7 +163,7 @@ String description, Fcc fcc) {
     }
     
     public int deleteData(Connection connection){
-        String sql="DELETE FROM amuyana.tbl_dynamism WHERE id_dynamism = ?";
+        String sql="DELETE FROM " + DataConnection.DATABASE + ".tbl_dynamism WHERE id_dynamism = ?";
         try {
             PreparedStatement instruccion = connection.prepareStatement(sql);
             instruccion.setInt(1, this.idDynamism.get());

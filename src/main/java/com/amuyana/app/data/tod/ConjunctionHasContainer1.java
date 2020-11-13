@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.collections.ObservableList;
 import com.amuyana.app.data.tod.containers.Container1;
 
@@ -33,7 +34,7 @@ public class ConjunctionHasContainer1 {
             ObservableList<ConjunctionHasContainer1> conjunctionHasContainer1s,
             ObservableList<Conjunction> conjunctions,
             ObservableList<Container1> container1s){
-        String sql = "SELECT id_conjunction, id_container_1 FROM amuyana.tbl_conjunction_has_tbl_container_1";
+        String sql = "SELECT id_conjunction, id_container_1 FROM " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_container_1";
         
         try {
             Statement instruction = connection.createStatement();
@@ -56,7 +57,7 @@ public class ConjunctionHasContainer1 {
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_conjunction_has_tbl_container_1 (id_conjunction, id_container_1) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_container_1 (id_conjunction, id_container_1) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -76,7 +77,7 @@ public class ConjunctionHasContainer1 {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_conjunction_has_tbl_container_1 "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_container_1 "+
                                             "WHERE id_conjunction = ? and id_container_1 = ?"
             );
             instruccion.setInt(1, this.conjunction.getIdConjunction());

@@ -32,7 +32,7 @@ public class TopMenuBar extends MenuBar {
     }
 
     private void setInitialValues() {
-        this.logicSystemMenu.setDisable(true);
+        //this.logicSystemMenu.setDisable(true);
         this.todMenu.setDisable(true);
         //this.dialecticsMenu.setDisable(true);
         //this.statisticsMenu.setDisable(true);
@@ -66,12 +66,12 @@ public class TopMenuBar extends MenuBar {
     }
 
     private void initializeFileMenu() {
-        MenuItem connexionMenuItem = new MenuItem("Connexion");
-        connexionMenuItem.setOnAction(actionEvent -> openConnectionTab());
+        //MenuItem connexionMenuItem = new MenuItem("Connexion");
+        //connexionMenuItem.setOnAction(actionEvent -> openConnectionTab());
 
         MenuItem exitMenuItem = new MenuItem("Exit");
         exitMenuItem.setOnAction(actionEvent -> nodeInterface.exitAmuyana());
-        fileMenu.getItems().addAll(connexionMenuItem,exitMenuItem);
+        fileMenu.getItems().addAll(exitMenuItem);
     }
 
     private void initializeLogicSystemMenu() {
@@ -112,9 +112,9 @@ public class TopMenuBar extends MenuBar {
         this.helpMenu.getItems().addAll(aboutMenuItem);
     }
 
-    private void openConnectionTab() {
+    /*private void openConnectionTab() {
         nodeInterface.openConnectionTab();
-    }
+    }*/
 
     // LOGIC SYSTEM
     public void removeLogicSystemMenu(LogicSystem logicSystem) {
@@ -180,7 +180,8 @@ public class TopMenuBar extends MenuBar {
         this.logicSystemMenu.getItems().removeAll(tempToRemove);
     }
 
-    private void fillLogicSystemMenu() {
+    public void fillLogicSystemMenu() {
+        clearLogicSystemMenu();
         for (LogicSystem logicSystem : dataInterface.getListLogicSystem()) {
             LogicSystemMenu logicSystemMenu = new LogicSystemMenu(logicSystem, nodeInterface);
             this.logicSystemMenu.getItems().add(logicSystemMenu);
@@ -189,7 +190,7 @@ public class TopMenuBar extends MenuBar {
 
     public void resetMenus() {
         // Logic System
-        this.logicSystemMenu.setDisable(false);
+        //this.logicSystemMenu.setDisable(false);
         clearLogicSystemMenu();
         fillLogicSystemMenu();
         // Tod

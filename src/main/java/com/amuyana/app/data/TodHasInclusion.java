@@ -42,7 +42,7 @@ public class TodHasInclusion {
         ObservableList<Inclusion> listInclusions) {
 
         String sql = "SELECT id_tod, id_inclusion "
-                + "FROM amuyana.tbl_tod_has_tbl_inclusion";
+                + "FROM " + DataConnection.DATABASE + ".tbl_tod_has_tbl_inclusion";
 
         try {
             Statement statement = connection.createStatement();
@@ -68,7 +68,7 @@ public class TodHasInclusion {
 
     /*
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_tod (id_dynamism, id_inclusion)"
+        String sql = "INSERT INTO " + DataConnection.DATABASE + ".tbl_tod (id_dynamism, id_inclusion)"
                     + "VALUES (?,?)";
         try {            
             PreparedStatement statement = connection.prepareStatement(sql, 
@@ -91,7 +91,7 @@ public class TodHasInclusion {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_general "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_general "+
                                             "WHERE id_dynamism = ? and id_inclusion = ?"
             );
             instruccion.setInt(1, this.tod.getIdDynamism());
@@ -104,7 +104,7 @@ public class TodHasInclusion {
     }
 
     public static int dropData(Connection connection, int idInclusion) {
-        String sql = "DELETE FROM amuyana.tbl_general " +
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_general " +
                      "WHERE id_inclusion = ? ";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);

@@ -35,7 +35,7 @@ public class InclusionHasSyllogism{
             ObservableList<InclusionHasSyllogism> listInclusionHasSyllogisms,
             ObservableList<Inclusion> listInclusions,
             ObservableList<Syllogism> listSyllogisms){
-        String sql = "SELECT id_inclusion, id_syllogism FROM amuyana.tbl_inclusion_has_tbl_syllogism";
+        String sql = "SELECT id_inclusion, id_syllogism FROM " + DataConnection.DATABASE + ".tbl_inclusion_has_tbl_syllogism";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -59,7 +59,7 @@ public class InclusionHasSyllogism{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_inclusion_has_tbl_syllogism (id_inclusion, id_syllogism)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_inclusion_has_tbl_syllogism (id_inclusion, id_syllogism)"
                     + "VALUES (?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -81,7 +81,7 @@ public class InclusionHasSyllogism{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_inclusion_has_tbl_syllogism "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_inclusion_has_tbl_syllogism "+
                     "WHERE id_inclusion = ? and id_syllogism = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

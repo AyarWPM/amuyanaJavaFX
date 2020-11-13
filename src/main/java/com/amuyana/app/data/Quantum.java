@@ -73,7 +73,7 @@ String unit) {
                     + "label, "
                     + "description, "
                     + "unit "
-                    + "FROM amuyana.tbl_quantum";
+                    + "FROM " + DataConnection.DATABASE + ".tbl_quantum";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -95,7 +95,7 @@ String unit) {
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_quantum (id_quantum, label, description, unit) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_quantum (id_quantum, label, description, unit) "
                     + "VALUES (?,?,?, ?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -123,7 +123,7 @@ String unit) {
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_quantum SET label = ?, "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_quantum SET label = ?, "+
             "description = ? ,  unit = ? WHERE id_quantum = ?";
         try {
             PreparedStatement instruccion = connection.prepareStatement(sql);

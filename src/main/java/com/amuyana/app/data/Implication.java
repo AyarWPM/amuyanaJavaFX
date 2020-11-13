@@ -57,7 +57,7 @@ public class Implication{
             ObservableList<Fcc> listFcc) {
         String sql = "SELECT id_implication, "
                 + "orientation, "
-                + "id_fcc FROM amuyana.tbl_implication";
+                + "id_fcc FROM " + DataConnection.DATABASE + ".tbl_implication";
         try {
             Statement statement = connection.createStatement();
             
@@ -84,7 +84,7 @@ public class Implication{
     }
     
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_implication (id_implication, orientation, id_fcc)"
+        String sql = "INSERT INTO " + DataConnection.DATABASE + ".tbl_implication (id_implication, orientation, id_fcc)"
                     + "VALUES (?,?,?)";
         try {            
             PreparedStatement statement = connection.prepareStatement(sql,
@@ -118,7 +118,7 @@ public class Implication{
     public int deleteData(Connection connection){
         try {
                 PreparedStatement instruccion = connection.prepareStatement(
-                                                "DELETE FROM amuyana.tbl_implication "+
+                                                "DELETE FROM " + DataConnection.DATABASE + ".tbl_implication "+
                                                 "WHERE id_implication = ?"
                 );
                 instruccion.setInt(1, this.idImplication.get());

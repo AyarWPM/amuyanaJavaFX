@@ -66,7 +66,7 @@ public class Register{
                         + "date, "
                         + "value, "
                         + "id_syllogism "
-                + "FROM amuyana.tbl_register";
+                + "FROM " + DataConnection.DATABASE + ".tbl_register";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -92,7 +92,7 @@ public class Register{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_register (id_register, date, value, id_syllogism) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_register (id_register, date, value, id_syllogism) "
                     + "VALUES (?,?,?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql,
@@ -119,7 +119,7 @@ public class Register{
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_register SET value = ? WHERE id_register = ?";
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_register SET value = ? WHERE id_register = ?";
         try {
             PreparedStatement instruccion =
                             connection.prepareStatement(sql);
@@ -134,7 +134,7 @@ public class Register{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_register "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_register "+
                     "WHERE id_register = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

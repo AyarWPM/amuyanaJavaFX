@@ -77,7 +77,7 @@ int polarity, Fcc fcc) {
                                 + "symbol, "
                                 + "polarity, "
                                 + "id_fcc "
-                                + "FROM amuyana.tbl_element"
+                                + "FROM " + DataConnection.DATABASE + ".tbl_element"
                 );
 
                 while(resultado.next()){
@@ -101,7 +101,7 @@ int polarity, Fcc fcc) {
     }       
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_element (id_element, symbol, polarity, id_fcc) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_element (id_element, symbol, polarity, id_fcc) "
                     + "VALUES (?,?,?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -129,7 +129,7 @@ int polarity, Fcc fcc) {
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_element SET symbol = ?,  "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_element SET symbol = ?,  "+
             " polarity = ? WHERE id_element = ?";
         try {
             PreparedStatement instruccion =
@@ -147,7 +147,7 @@ int polarity, Fcc fcc) {
     }
     
     public int deleteData(Connection connection){
-        String sql="DELETE FROM amuyana.tbl_element WHERE id_element = ?";
+        String sql="DELETE FROM " + DataConnection.DATABASE + ".tbl_element WHERE id_element = ?";
         try {
             PreparedStatement instruccion = connection.prepareStatement(sql);
             instruccion.setInt(1, this.getIdElement());

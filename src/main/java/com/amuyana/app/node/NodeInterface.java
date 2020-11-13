@@ -14,12 +14,12 @@ public interface NodeInterface {
     TopMenuBar getTopMenuBar();
 
     Node getRootNode();
-    void closeTabsExceptConnection();
-    void resetMenus();
+    //void closeTabsExceptConnection();
+    void fillLogicSystemMenu();
     LogicSystem getLogicSystem();
 
     void exitAmuyana();
-    void openConnectionTab();
+    //void openConnectionTab();
     void openLogicSystemTab();
     void addToLogicSystemMenu(LogicSystem logicSystem);
     void load(LogicSystem logicSystem);

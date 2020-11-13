@@ -79,7 +79,7 @@ Timestamp end) {
                         + "description, "
                         + "start, "
                         + "end "
-                + "FROM amuyana.tbl_time";
+                + "FROM " + DataConnection.DATABASE + ".tbl_time";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -103,7 +103,7 @@ Timestamp end) {
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_time (id_time, label, description, start, end )"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_time (id_time, label, description, start, end )"
                     + "VALUES (?,?,?, ?, ?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -132,7 +132,7 @@ Timestamp end) {
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_time SET label = ?,  "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_time SET label = ?,  "+
             " description = ?, start = ?, end = ? WHERE id_time = ?";
         try {
             PreparedStatement instruccion =
@@ -151,7 +151,7 @@ Timestamp end) {
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_time "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_time "+
                     "WHERE id_time = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

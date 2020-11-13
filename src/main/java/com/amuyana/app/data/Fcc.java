@@ -55,7 +55,7 @@ public class Fcc{
 
 
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_fcc (id_fcc, name, description)"
+        String sql = "INSERT INTO " + DataConnection.DATABASE + ".tbl_fcc (id_fcc, name, description)"
                     + "VALUES (?,?,?)";
         try {            
             PreparedStatement statement = connection.prepareStatement(sql,
@@ -82,7 +82,7 @@ public class Fcc{
     }
 
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_fcc SET name = ?,  "+
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_fcc SET name = ?,  "+
             " description = ? WHERE id_fcc = ?";
         try {
             PreparedStatement instruccion =
@@ -102,7 +102,7 @@ public class Fcc{
     public int deleteData(Connection connection){
         try {
                 PreparedStatement instruccion = connection.prepareStatement(
-                                                "DELETE FROM amuyana.tbl_fcc "+
+                                                "DELETE FROM " + DataConnection.DATABASE + ".tbl_fcc "+
                                                 "WHERE id_fcc = ?"
                 );
                 instruccion.setInt(1, this.idFcc.get());
@@ -123,7 +123,7 @@ public class Fcc{
                 "SELECT id_fcc, "
                         + "name, "
                         + "description "
-                + "FROM amuyana.tbl_fcc"
+                + "FROM " + DataConnection.DATABASE + ".tbl_fcc"
             );
 
             while(result.next()){

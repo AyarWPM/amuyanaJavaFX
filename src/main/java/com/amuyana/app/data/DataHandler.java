@@ -2,6 +2,7 @@ package com.amuyana.app.data;
 
 import com.amuyana.app.data.tod.*;
 import com.amuyana.app.data.tod.containers.*;
+import com.amuyana.app.node.Message;
 import com.amuyana.app.node.NodeInterface;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -76,15 +77,12 @@ public class DataHandler implements DataInterface {
         this.listContainer0s = FXCollections.observableArrayList();
     }
 
-    /**
+/*    *//**
      * For prototype there's only one notationType of user, however users might need permissions.
-     * @param url host address or name of the MYSQL database
-     * @param username username for accessing the MYSQL database
-     * @param password password of user with username
-     */
+     *//*
     public void setDataConnectionValues(String url, String username, String password) {
         DataConnection.setValues(url,username,password);
-    }
+    }*/
 
     @Override
     public DataConnection getDataConnection() {
@@ -397,24 +395,10 @@ public class DataHandler implements DataInterface {
 
     @Override
     public boolean connect() {
-        return dataConnection.connect();
-/*        Task<Void> sleeper = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                try {
-                    Thread.sleep(900);
-                } catch (InterruptedException e) {
-                    System.err.println(e);
-                }
-                return null;
-            }
-        };
-        sleeper.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-            }
-        });
-        new Thread(sleeper).start();*/
+        while (!dataConnection.connect()) {
+            Message.errorConnecting();
+        }
+        return true;
     }
 
     @Override
@@ -443,6 +427,16 @@ public class DataHandler implements DataInterface {
     @Override
     public void setNodeInterface(NodeInterface nodeInterface) {
         DataHandler.nodeInterface = nodeInterface;
+    }
+
+    @Override
+    public void initiate() {
+        // check connexion and load data
+        connect();
+        loadData();
+        nodeInterface.fillLogicSystemMenu();
+        disconnect();
+
     }
 
     public static NodeInterface getNodeInterface() {

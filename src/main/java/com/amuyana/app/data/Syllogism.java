@@ -44,7 +44,7 @@ public class Syllogism{
         
     public static void loadList(Connection connection, 
             ObservableList<Syllogism> listSyllogisms){
-        String sql = "SELECT id_syllogism, label FROM amuyana.tbl_syllogism";
+        String sql = "SELECT id_syllogism, label FROM " + DataConnection.DATABASE + ".tbl_syllogism";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -64,7 +64,7 @@ public class Syllogism{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_syllogism (id_syllogism, label)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_syllogism (id_syllogism, label)"
                     + "VALUES (?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -90,7 +90,7 @@ public class Syllogism{
     }
     
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_syllogism SET label = ? "
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_syllogism SET label = ? "
                 + "WHERE id_syllogism = ?";
         try {
             PreparedStatement instruccion =
@@ -106,7 +106,7 @@ public class Syllogism{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_syllogism "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_syllogism "+
                     "WHERE id_syllogism = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

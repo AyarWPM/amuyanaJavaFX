@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import com.amuyana.app.data.DataHandler;
 import com.amuyana.app.data.Dynamism;
 import com.amuyana.app.data.tod.containers.Tod;
@@ -66,7 +67,7 @@ public class Inclusion{
                                 ObservableList<Tod> listTods) {
         
         String sql = "SELECT id_inclusion, id_particular, id_general, id_tod "
-                + "FROM amuyana.tbl_inclusion";
+                + "FROM " + DataConnection.DATABASE + ".tbl_inclusion";
         
         try {
             Statement statement = connection.createStatement();
@@ -99,7 +100,7 @@ public class Inclusion{
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_inclusion (id_inclusion, id_particular, id_general, id_tod) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_inclusion (id_inclusion, id_particular, id_general, id_tod) "
                     + "VALUES (?,?,?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql, 
@@ -126,7 +127,7 @@ public class Inclusion{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_inclusion " +
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_inclusion " +
                         "WHERE id_inclusion = ?";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);

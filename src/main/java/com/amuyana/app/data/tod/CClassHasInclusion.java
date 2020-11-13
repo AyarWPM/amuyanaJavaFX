@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import com.amuyana.app.data.Fcc;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -41,7 +42,7 @@ public class CClassHasInclusion {
             ObservableList<CClass> cClasses,
             ObservableList<Inclusion> inclusions){
         String sql = "SELECT id_c_class, id_inclusion "
-                + "FROM amuyana.tbl_c_class_has_tbl_inclusion";
+                + "FROM " + DataConnection.DATABASE + ".tbl_c_class_has_tbl_inclusion";
         
         try {
             Statement instruction = connection.createStatement();
@@ -66,7 +67,7 @@ public class CClassHasInclusion {
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_c_class_has_tbl_inclusion (id_c_class, id_inclusion) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_c_class_has_tbl_inclusion (id_c_class, id_inclusion) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -91,7 +92,7 @@ public class CClassHasInclusion {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_c_class_has_tbl_inclusion "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_c_class_has_tbl_inclusion "+
                                             "WHERE id_c_class = ? and id_inclusion = ?"
             );
             instruccion.setInt(1, cClass.getIdCClass());

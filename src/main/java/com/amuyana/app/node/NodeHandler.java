@@ -27,16 +27,16 @@ public class NodeHandler extends BorderPane implements NodeInterface {
     private TabPane contentTabPane;
     private static DataInterface dataInterface;
     private LogicSystem logicSystem;
-    ConnectionTab connectionTab;
+    //ConnectionTab connectionTab;
     private Log log;
-    public static String VERSION ="Amuyaña 3.1";
+    public static String VERSION ="Amuyaña 3.2";
 
     public NodeHandler(DataInterface dataInterface, Stage stage) {
         NodeHandler.dataInterface = dataInterface;
         this.stage = stage;
         Expression.initializeLists(); //todo move
         this.topMenuBar = new TopMenuBar(this);
-        this.connectionTab = new ConnectionTab(this);
+        //this.connectionTab = new ConnectionTab(this);
         this.contentTabPane = new ContentTabPane();
 
         setTop(this.topMenuBar);
@@ -68,7 +68,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         return this;
     }
 
-    @Override
+    /*@Override
     public void closeTabsExceptConnection() {
         ObservableList<Tab> tabsToClose = FXCollections.observableArrayList();
 
@@ -78,11 +78,11 @@ public class NodeHandler extends BorderPane implements NodeInterface {
             }
         }
         contentTabPane.getTabs().removeAll(tabsToClose);
-    }
+    }*/
 
     @Override
-    public void resetMenus() {
-        getTopMenuBar().resetMenus();
+    public void fillLogicSystemMenu() {
+        getTopMenuBar().fillLogicSystemMenu();
     }
 
     @Override
@@ -95,7 +95,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         stage.close();
     }
 
-    @Override
+    /*@Override
     public void openConnectionTab() {
         for (Tab tab : contentTabPane.getTabs()) {
             if (tab.getClass().equals(ConnectionTab.class)) {
@@ -105,7 +105,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
         }
         contentTabPane.getTabs().add(connectionTab);
         contentTabPane.getSelectionModel().select(connectionTab);
-    }
+    }*/
 
     @Override
     public void openLogicSystemTab() {
@@ -211,7 +211,7 @@ public class NodeHandler extends BorderPane implements NodeInterface {
 
     @Override
     public void newTodTab() {
-        dataInterface.getDataConnection().connect();
+        dataInterface.connect();
         TodTab todTab = new TodTab(this);
         contentTabPane.getTabs().add(todTab);
         contentTabPane.getSelectionModel().select(todTab);

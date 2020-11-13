@@ -1,5 +1,6 @@
 package com.amuyana.app.node;
 
+import com.amuyana.app.data.DataInterface;
 import com.amuyana.app.data.Fcc;
 import com.amuyana.app.data.tod.CClass;
 import javafx.scene.control.Alert;
@@ -10,6 +11,27 @@ import javafx.scene.layout.Region;
 import java.util.Optional;
 
 public abstract class Message {
+
+    public static void errorConnecting() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.setResizable(true);
+        alert.setTitle("Error");
+        alert.setHeaderText("Cannot connect to the server database");
+        alert.setContentText("Amuyana cannot connect to the database. Unfortunately you cannot continue unless you are connected to the Internet.\n" +
+                "Verify that you are connected to the Internet.\n" +
+                "If you are connected to the Internet and the problem persists, please contact the developer to inform him of this error.");
+        ButtonType exitButtonType = new ButtonType("Exit");
+        ButtonType tryAgainButtonType = new ButtonType("Try again");
+        alert.getButtonTypes().setAll(exitButtonType,tryAgainButtonType);
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent()) {
+            if (result.get().equals(exitButtonType)) {
+                System.exit(0);
+            }
+        }
+        //alert.showAndWait();
+    }
 
     public static boolean testConnection(boolean result) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

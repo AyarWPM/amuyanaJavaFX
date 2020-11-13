@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
@@ -32,7 +33,7 @@ public class ConjunctionHasInclusion {
             ObservableList<ConjunctionHasInclusion> conjunctionHasInclusions,
             ObservableList<Conjunction> conjunctions,
             ObservableList<Inclusion> inclusions){
-        String sql = "SELECT id_conjunction, id_inclusion FROM amuyana.tbl_conjunction_has_tbl_inclusion";
+        String sql = "SELECT id_conjunction, id_inclusion FROM " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_inclusion";
         
         try {
             Statement instruction = connection.createStatement();
@@ -55,7 +56,7 @@ public class ConjunctionHasInclusion {
     }
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_conjunction_has_tbl_inclusion (id_conjunction, id_inclusion) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_inclusion (id_conjunction, id_inclusion) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -75,7 +76,7 @@ public class ConjunctionHasInclusion {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                                            "DELETE FROM amuyana.tbl_conjunction_has_tbl_inclusion "+
+                                            "DELETE FROM " + DataConnection.DATABASE + ".tbl_conjunction_has_tbl_inclusion "+
                                             "WHERE id_conjunction = ? and id_inclusion = ?"
             );
             instruccion.setInt(1, this.conjunction.getIdConjunction());

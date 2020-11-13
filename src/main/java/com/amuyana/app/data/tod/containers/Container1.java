@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod.containers;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
@@ -11,15 +12,11 @@ public class Container1 {
     private Container0 container0;
     private IntegerProperty branchOrder;
     public static int currentAutoIncrement;
-
     public Container1(int idContainer1, Container0 container0, int branchOrder) {
         this.idContainer1 = new SimpleIntegerProperty(idContainer1);
         this.container0 = container0;
         this.branchOrder = new SimpleIntegerProperty(branchOrder);
     }
-
-
-    //Metodos atributo: idContainer1
     public int getIdContainer1() {
         return idContainer1.get();
     }
@@ -46,18 +43,8 @@ public class Container1 {
     public IntegerProperty branchOrderProperty() {
         return branchOrder;
     }
-
-    /*
-                      __    ____  __
-          /\/\  _   _/ _\  /___ \/ /
-         /    \| | | \ \  //  / / /
-        / /\/\ \ |_| |\ \/ \_/ / /___
-        \/    \/\__, \__/\___,_\____/
-                |___/
-
-     */
     public int saveData(Connection connection){
-        String sql = "INSERT INTO amuyana.tbl_container_1 (id_container_1, id_container_0, branch_order) "
+        String sql = "INSERT INTO " + DataConnection.DATABASE + ".tbl_container_1 (id_container_1, id_container_0, branch_order) "
                 + "VALUES (?, ?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql,
@@ -80,7 +67,7 @@ public class Container1 {
 
     // Used when moving fruits (they move branches)
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_container_1 SET branch_order = ? WHERE id_container_1 = ?";
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_container_1 SET branch_order = ? WHERE id_container_1 = ?";
         try {
             PreparedStatement instruccion =
                     connection.prepareStatement(sql);
@@ -96,7 +83,7 @@ public class Container1 {
     public int deleteData(Connection connection){
         try {
             PreparedStatement instruccion = connection.prepareStatement(
-                    "DELETE FROM amuyana.tbl_container_1 "+
+                    "DELETE FROM " + DataConnection.DATABASE + ".tbl_container_1 "+
                             "WHERE id_container_1 = ? and id_container_0 = ?"
             );
             instruccion.setInt(1, this.idContainer1.get());
@@ -116,7 +103,7 @@ public class Container1 {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(
                     "SELECT id_container_1, id_container_0, branch_order "
-                            + "FROM amuyana.tbl_container_1 " +
+                            + "FROM " + DataConnection.DATABASE + ".tbl_container_1 " +
                             "ORDER BY branch_order"
             );
 

@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -42,7 +43,7 @@ public class Conjunction{
 
     public static void loadList(Connection connection,
                                 ObservableList<Conjunction> listConjunctions){
-        String sql = "SELECT id_conjunction, name FROM amuyana.tbl_conjunction";
+        String sql = "SELECT id_conjunction, name FROM " + DataConnection.DATABASE + ".tbl_conjunction";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -62,7 +63,7 @@ public class Conjunction{
     }
 
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_conjunction (id_conjunction, name)"
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_conjunction (id_conjunction, name)"
                 + "VALUES (?,?)";
         try {
             // Cual es la instruction sql para insertar datos?
@@ -88,7 +89,7 @@ public class Conjunction{
     }
 
     public int updateData(Connection connection){
-        String sql = "UPDATE amuyana.tbl_conjunction SET name = ? "
+        String sql = "UPDATE " + DataConnection.DATABASE + ".tbl_conjunction SET name = ? "
                 + "WHERE id_conjunction = ?";
         try {
             PreparedStatement instruccion =
@@ -104,7 +105,7 @@ public class Conjunction{
     }
 
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_conjunction "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_conjunction "+
                 "WHERE id_conjunction = ?";
         try {
             PreparedStatement instruccion = connection.prepareStatement(sql);

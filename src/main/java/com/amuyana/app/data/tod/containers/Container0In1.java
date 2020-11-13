@@ -1,5 +1,6 @@
 package com.amuyana.app.data.tod.containers;
 
+import com.amuyana.app.data.DataConnection;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
@@ -49,7 +50,7 @@ public class Container0In1 {
                                 ObservableList<Container0In1> container0In1s,
                                 ObservableList<Container0> container0s,
                                 ObservableList<Container1> container1s){
-        String sql = "SELECT id_container_0, id_container_1, side FROM amuyana.tbl_container_0_in_1";
+        String sql = "SELECT id_container_0, id_container_1, side FROM " + DataConnection.DATABASE + ".tbl_container_0_in_1";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -73,7 +74,7 @@ public class Container0In1 {
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_container_0_in_1 (id_container_0, id_container_1, side) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_container_0_in_1 (id_container_0, id_container_1, side) "
                     + "VALUES (?,?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -87,7 +88,7 @@ public class Container0In1 {
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_container_0_in_1 "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_container_0_in_1 "+
                     "WHERE id_container_0 = ? and id_container_1 = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

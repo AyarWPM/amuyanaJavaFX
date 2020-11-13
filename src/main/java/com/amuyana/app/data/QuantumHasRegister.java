@@ -35,7 +35,7 @@ public class QuantumHasRegister{
             ObservableList<QuantumHasRegister> listQuantumHasRegisters,
             ObservableList<Quantum> listQuantums,
             ObservableList<Register> listRegisters){
-        String sql = "SELECT id_quantum, id_register FROM amuyana.tbl_quantum_has_tbl_register";
+        String sql = "SELECT id_quantum, id_register FROM " + DataConnection.DATABASE + ".tbl_quantum_has_tbl_register";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -59,7 +59,7 @@ public class QuantumHasRegister{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_quantum_has_tbl_register (id_quantum, id_register) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_quantum_has_tbl_register (id_quantum, id_register) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -80,7 +80,7 @@ public class QuantumHasRegister{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_quantum_has_tbl_register "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_quantum_has_tbl_register "+
                     "WHERE id_quantum = ? and id_register = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

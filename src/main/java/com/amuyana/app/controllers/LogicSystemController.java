@@ -133,6 +133,7 @@ public class LogicSystemController implements Initializable {
         NodeHandler.getDataInterface().connect();
         nodeInterface.delete(logicSystem);
         NodeHandler.getDataInterface().disconnect();
+        nodeInterface.fillLogicSystemMenu();
     }
 
     private void showCompleteFieldsAlert() {

@@ -33,7 +33,7 @@ public class TimeHasRegister{
             ObservableList<TimeHasRegister> listTimeHasRegisters,
             ObservableList<Time> listTimes,
             ObservableList<Register> listRegisters){
-        String sql = "SELECT id_time, id_register FROM amuyana.tbl_time_has_tbl_register";
+        String sql = "SELECT id_time, id_register FROM " + DataConnection.DATABASE + ".tbl_time_has_tbl_register";
         try {
             Statement instruction = connection.createStatement();
             ResultSet result = instruction.executeQuery(sql);
@@ -56,7 +56,7 @@ public class TimeHasRegister{
     }  
     
     public int saveData(Connection connection){
-        String sql="INSERT INTO amuyana.tbl_time_has_tbl_register (id_time, id_register) "
+        String sql="INSERT INTO " + DataConnection.DATABASE + ".tbl_time_has_tbl_register (id_time, id_register) "
                     + "VALUES (?,?)";
         try {
             PreparedStatement instruction = connection.prepareStatement(sql);
@@ -77,7 +77,7 @@ public class TimeHasRegister{
     }
     
     public int deleteData(Connection connection){
-        String sql = "DELETE FROM amuyana.tbl_time_has_tbl_register "+
+        String sql = "DELETE FROM " + DataConnection.DATABASE + ".tbl_time_has_tbl_register "+
                     "WHERE id_time = ? and id_register = ?";
         try {
                 PreparedStatement instruccion = connection.prepareStatement(sql);

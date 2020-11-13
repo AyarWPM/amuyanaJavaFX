@@ -12,7 +12,7 @@ import com.amuyana.app.data.tod.containers.Tod;
 
 public interface DataInterface {
 
-    void setDataConnectionValues(String url, String name, String password);
+    //void setDataConnectionValues(String url, String name, String password);
     boolean testConnection();
     void reinitializeDatabase();
 
@@ -116,4 +116,7 @@ public interface DataInterface {
     LogicSystem getLogicSystem(Fcc fcc);
 
     void setNodeInterface(NodeInterface nodeInterface);
+
+    // last method to avoid having the connexion tab
+    void initiate();
 }
